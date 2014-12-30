@@ -1,0 +1,24 @@
+script OnsetTrendDetector {
+    input price = close;
+    input cutoffLength = 10;
+    input k = .8;
+
+    def alpha1 = (Cos(Sqrt(2) * Double.Pi / 100) + Sin (Sqrt(2) * Double.Pi / 100) - 1) / Cos(Sqrt(2) * Double.Pi / 100);
+    def highpass = if IsNaN(price + price[1] + price[2]) then highpass[1] else Sqr(1 - alpha1 / 2) * (price - 2 * price[1] + price[2]) + 2 * (1 - alpha1) * highpass[1] - Sqr(1 - alpha1) * highpass[2];
+    def filt = reference EhlersSuperSmootherFilter(highpass, cutoffLength);
+    def peak = if AbsValue(filt) > peak[1] * .991 then AbsValue(filt) else peak[1] * .991;
+    plot NormRoofingFilter = filt / peak;
+    plot Quotient = (NormRoofingFilter + k) / (k * NormRoofingFilter + 1);
+}
+
+input price = close;
+input cutoffLength = 10;
+input k1 = .8;
+input k2 = .4;
+
+def quotient1 = reference OnsetTrendDetector(price, cutoffLength, k1).Quotient;
+def quotient2 = reference OnsetTrendDetector(price, cutoffLength, k2).Quotient;
+
+AddOrder(OrderType.BUY_AUTO, quotient1 crosses above 0, tickcolor = GetColor(1), arrowcolor = GetColor(1), name = "OnsetTrendLE");
+AddOrder(OrderType.SELL_TO_CLOSE, quotient2 crosses below 0, tickcolor = GetColor(2), arrowcolor = GetColor(2), name = "OnsetTrendLX");
+
