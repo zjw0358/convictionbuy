@@ -2,7 +2,7 @@ import pandas.io.data as web
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import matplotlib.dates as mdates
-
+import pandas as pd
 import datetime
 import sys
 
@@ -15,6 +15,19 @@ axescolor  = '#f6f6f6'  # the axes background color
 ax1 = fig.add_axes(rect1, axisbg=axescolor)  #left, bottom, width, height
 ax2 = fig.add_axes(rect2, axisbg=axescolor, sharex=ax1)
 
+def convert2AdjPrice(df):
+    ratio=1.
+    for index, row in df.iterrows():        
+        if row['Close']!=row['Adj Close']:
+            ratio=row['Adj Close']/row['Close']
+            df.loc[index,'Close']=df.loc[index,'Close']*ratio
+            df.loc[index,'Open']=df.loc[index,'Open']*ratio
+            df.loc[index,'High']=df.loc[index,'High']*ratio
+            df.loc[index,'Low']=df.loc[index,'Low']*ratio
+    return df
+                
+   
+    
 
 def drawChart(sdatelabel,benchmark_px,close_px,strgy_ret,offset):
     plt.rc('axes', grid=True)
@@ -47,8 +60,17 @@ def drawChart(sdatelabel,benchmark_px,close_px,strgy_ret,offset):
     #print "offset=",offset
     #print pxret_index[offset:]
     #print sgyret_index[offset:]
-    
-    ax2.text(0.025, 0.95, 'Price', va='top', transform=ax2.transAxes, fontsize=textsize)
+    '''print type(sgyret_index)
+    print type(bmret_index)
+    print type(pxret_index)
+    print bmret_index[-1]
+    print pxret_index[-1]
+    print sgyret_index.iloc[-1]
+    print "dump"
+    lastPctStr="price"'''
+    lastPctStr = "benchmark:%.2f,portfolio:%.2f,strategy:%.2f" %(bmret_index.iloc[-1],pxret_index.iloc[-1],sgyret_index.iloc[-1])
+    #ax2.text(0.025, 0.95, lastPctStr, verticalalignment='top',transform=ax2.transAxes, fontsize=textsize)
+
     ax2.plot(sdatelabel[offset:],bmret_index,label='benchmark')
     ax2.plot(sdatelabel[offset:],pxret_index,label='portfolio')
     ax2.plot(sdatelabel[offset:],sgyret_index,label='strategy')
@@ -58,6 +80,8 @@ def drawChart(sdatelabel,benchmark_px,close_px,strgy_ret,offset):
     ax2.yaxis.set_major_locator(mticker.MaxNLocator(8))
     ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     ax2.yaxis.label.set_color("b")
+    #bottom left = 0,0; upper right = 1,1
+    ax2.text(0.55, 0.95, lastPctStr, horizontalalignment='left',transform=ax2.transAxes, fontsize=textsize)    
     
  
     #ax2.yaxis.label.set_color("w")
@@ -66,7 +90,16 @@ def drawChart(sdatelabel,benchmark_px,close_px,strgy_ret,offset):
     ax2.spines['left'].set_color("#5998ff")
     ax2.spines['right'].set_color("#5998ff")
 
-    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    #legend
+    # draw at right side
+    #plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    
+    #draw at upper left
+    legend = ax2.legend(loc='upper left', shadow=True)
+    
+    # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
+    frame = legend.get_frame()
+    frame.set_facecolor('0.90')
     plt.show()
 
 
@@ -77,26 +110,40 @@ def startTest(strategy,symlst,startdate,enddate):
     
     for ticker in symlst:
         all_data[ticker] = web.get_data_yahoo(ticker, startdate, enddate)
+        all_data[ticker] = convert2AdjPrice(all_data[ticker])
+        #print all_data[ticker]
+
 
     spy_px = web.get_data_yahoo("spy", startdate, enddate)['Adj Close']
     
+    
     for ticker in symlst:
+        #print all_data[ticker]
         close_px = all_data[ticker]['Adj Close']
+        ohlc_px = all_data[ticker]
         sdate = all_data[ticker].index        
         sdatelabel = sdate.to_pydatetime()
         strategy.setup(100000)
-        df = strategy.procMultiData(close_px)
+        df = strategy.procMultiData(ohlc_px)#close_px
     
         offset = strategy.getOffset()
-        print df[offset:]
+        #print df[offset:]
         drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
         strategy.drawChart(ax1,sdatelabel)
-        #quolst = quotient.quotient(close_px,sdatelabel)
+        dd_2(df['dayvalue'])
 
-        #print "date=",len(sdate),"quo=",len(quolst)
-        #print sdate'''
     
+def dd_2(ser):
+    # only compare each point to the previous running peak
+    # O(N)
+    running_max = pd.expanding_max(ser)
+    cur_dd = ser - running_max
+    #print ser
+    #for item in running_max.values:
+    for index in range(0, len(running_max)):
+        print ser[index],running_max[index]
     
+    return min(0, cur_dd.min())    
     
 def createStrategy(filename):
     #__import__(filename)

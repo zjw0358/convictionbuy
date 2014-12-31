@@ -2,6 +2,7 @@
 import basestrategy
 import math
 import pandas
+#import numpy
 
 
 class quostgy(basestrategy.basestrategy):
@@ -41,6 +42,7 @@ class quostgy(basestrategy.basestrategy):
         ax.set_ylim([-1,1])
         ax.set_yticks([-0.5,0.5])
         ax.plot(sdatelabel[self.offset:], self.df['quo1'][self.offset:])
+        ax.plot(sdatelabel[self.offset:], self.df['quo2'][self.offset:])
         ax.axhline(0, color='r')
      
     def config(self,name,value):
@@ -53,17 +55,16 @@ class quostgy(basestrategy.basestrategy):
     #
     #
     #
+    
+    def getMeanpx(self,ohlc_px,index):
+        return (ohlc_px['Open'][index]+ohlc_px['Close'][index]+ohlc_px['High'][index]+ohlc_px['Low'][index])/4
+
     def EhlersSuperSmootherFilter(self,hp0,hp1,filt1,filt2):
-        '''cutoffLength = 10;'''
-        #a1 = math.exp(-1.414 * math.pi / cutoffLength);
-        #global a1
-        #b1 = 2 * a1 * math.cosh(1.414 * math.pi / cutoffLength);        
-        
         filt =  self.c1 * (hp0 + hp1) / 2 + self.c2 * filt1 + self.c3 * filt2;
         return filt
 
 
-    def quotient(self,pricelst):    
+    def quotient(self,ohlc_px):    
         hplst=[]
         filtlst=[]
         nrflst=[]
@@ -73,7 +74,12 @@ class quostgy(basestrategy.basestrategy):
         buyorder=[]
         sellorder=[]
         buyFlag = False
+        order=0 #0 nothing,1-buy,2-sell
         dailyvalue=[]
+        pricelst = ohlc_px['Adj Close']
+#        open_px = ohlc_px['Open']
+#        print open_px
+        
         for index in range(0, len(pricelst)):
             hplst.append(0.)
             filtlst.append(0.)
@@ -134,22 +140,53 @@ class quostgy(basestrategy.basestrategy):
             
             
             
-            
+            if order==1:
+                order=0
+                buyorder.append(index)
+                buyFlag = True
+#find a mean price   
+                #print index         
+                #print ohlc_px['Open'][index]
+                '''print ohlc_px.loc[index,'Close']
+                print ohlc_px.loc[index,'High']
+                print ohlc_px.loc[index,'Low']'''
+
+                meanpx = self.getMeanpx(ohlc_px,index)
+                #(ohlc_px['Open'][index]+ohlc_px['Close'][index]+ohlc_px['High'][index]+ohlc_px['Low'][index])/4
+                self.shares = self.deposit/meanpx #pricelst[index]
+                self.deposit = 0
+                if self.offset==0:
+                    self.offset = index
+                datelb = ohlc_px.index[index].to_pydatetime()
+                print datelb," buy @",meanpx,",ohlc=",ohlc_px['Open'][index],ohlc_px['Close'][index],ohlc_px['High'][index],ohlc_px['Low'][index]
+            elif order==2:
+                order=0
+                meanpx = self.getMeanpx(ohlc_px,index)
+                self.deposit = self.shares*meanpx  #pricelst[index]
+                self.shares = 0
+                sellorder.append(index)
+                buyFlag = False
+                print datelb," sell @",meanpx,",ohlc=",ohlc_px['Open'][index],ohlc_px['Close'][index],ohlc_px['High'][index],ohlc_px['Low'][index]
             #buy order 
             prevQuotient = quolst[index-1]
             prevShortQuo = shortquolst[index-1]
-            if prevQuotient<0 and Quotient1>=0 and buyFlag==False:
-                buyorder.append(index)
+            if prevQuotient<0 and Quotient1>=0 and buyFlag==False:                
+                order=1
+                '''buyorder.append(index)
                 buyFlag = True
                 self.shares = self.deposit/pricelst[index]
                 self.deposit = 0
                 if self.offset==0:
-                    self.offset = index
+                    self.offset = index'''
+                
+            
+                    
             if prevShortQuo>0 and Quotient2<=0 and buyFlag==True:                
-                self.deposit = self.shares*pricelst[index]
+                order=2
+                '''self.deposit = self.shares*pricelst[index]
                 self.shares = 0
                 sellorder.append(index)
-                buyFlag = False
+                buyFlag = False'''
             
             # day to day value
             dailyvalue.append(self.deposit+self.shares*pricelst[index])
