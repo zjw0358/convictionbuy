@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import matplotlib.dates as mdates
 import pandas as pd
+import numpy as np
 import datetime
 import sys
 
@@ -130,20 +131,32 @@ def startTest(strategy,symlst,startdate,enddate):
         #print df[offset:]
         drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
         strategy.drawChart(ax1,sdatelabel)
-        dd_2(df['dayvalue'])
+        print "Max draw down %.2f %%" % (maxdd(df['dayvalue'][offset:])*100)
+        print "Sharpe %.2f " % (getSharpe(df['dayvalue'][offset:])) #,sdatelabel[offset:]
 
-    
-def dd_2(ser):
+# sharpe
+def getSharpe(dayvalue):
+     daily_rets = dayvalue.pct_change()
+     daily_sr = lambda x:x.mean()/x.std()
+     compound = lambda x:(1+x).prod()-1
+     #print "daily return"
+     #for index in range(0, len(daily_rets)):
+     #   print index,sdatelabel[index],daily_rets.iloc[index],dayvalue.iloc[index]
+     #returns = daily_rets.resample('1B',how=compound)
+     return daily_sr(daily_rets)*np.sqrt(252)
+# max drawdown    
+def maxdd(ser):
     # only compare each point to the previous running peak
     # O(N)
     running_max = pd.expanding_max(ser)
-    cur_dd = ser - running_max
+    #cur_dd = ser - running_max
+    ddpct =  (ser - running_max)/running_max
     #print ser
     #for item in running_max.values:
-    for index in range(0, len(running_max)):
-        print ser[index],running_max[index]
-    
-    return min(0, cur_dd.min())    
+    #for index in range(0, len(running_max)):
+    #    print ser[index],running_max[index],ddpct[index]
+    return abs(ddpct.min())
+    #return min(0, cur_dd.min())    
     
 def createStrategy(filename):
     #__import__(filename)
