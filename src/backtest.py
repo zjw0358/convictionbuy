@@ -128,12 +128,97 @@ def startTest(strategy,symlst,startdate,enddate):
         df = strategy.procMultiData(ohlc_px)#close_px
     
         offset = strategy.getOffset()
-        #print df[offset:]
-        drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
-        strategy.drawChart(ax1,sdatelabel)
+        '''drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
+        strategy.drawChart(ax1,sdatelabel)'''
+        
+        #calculation
+        bm_returns = spy_px[offset:].pct_change()
+        bmret_index = (1+bm_returns).cumprod()
+        bmret_index[offset] = 1
+        
+        sgy_returns = df['dayvalue'][offset:].pct_change()
+        sgyret_index = (1+sgy_returns).cumprod()
+        sgyret_index[offset] = 1  
+        
+        px_returns = close_px[offset:].pct_change()
+        pxret_index = (1+px_returns).cumprod()
+        pxret_index[offset] = 1
+        
+        #print ohlc_px.index.values
+        #print df
+        #print spy_px[offset:]
+        rtbm = spy_px[offset:].resample('M',how='last')
+        rtsgy = df['dayvalue'][offset:].resample('M',how='last')
+        
+        bm_returns = rtbm.pct_change()
+        sgy_returns = rtsgy.pct_change()
+        bm_returns=bm_returns.dropna()
+        sgy_returns=sgy_returns.dropna()
+        
+        #print rts.pct_change()
+        #print rbts.pct_change()
+        #beta2 = getBeta2(bmret_index[offset:],sgyret_index[offset:])
+        #beta2 = getBeta2(rts,rbts)
+        #beta2 = getBeta2(bmret_index[offset:],pxret_index[offset:])
+        #beta = getBeta(bm_returns,sgy_returns)
+        #alpha = getAlpha(beta,bm_returns,sgy_returns)
+        #print "Beta %.2f " % (beta)
+        #print "Alpha %.2f " % (alpha)        
+        #print "Beta2 %.2f " % (beta2)
+        basefacts(bm_returns,sgy_returns)
         print "Max draw down %.2f %%" % (maxdd(df['dayvalue'][offset:])*100)
         print "Sharpe %.2f " % (getSharpe(df['dayvalue'][offset:])) #,sdatelabel[offset:]
 
+# beta
+'''def getBeta2(sra,srm):
+    bm_returns = srm.pct_change()
+    sgy_returns = sra.pct_change()
+    bm_returns=bm_returns.dropna()
+    sgy_returns=sgy_returns.dropna()
+    
+    covariances = np.cov(sgy_returns, bm_returns)
+    print "beta2",covariances
+    return np.mean(covariances) / np.var(srm) wrong'''
+
+def getBeta(bm_returns,sgy_returns):
+    '''bm_returns = srm.pct_change()
+    sgy_returns = sra.pct_change()
+    bm_returns=bm_returns.dropna()
+    sgy_returns=sgy_returns.dropna()'''
+    #print type(bm_returns)
+    #print bm_returns
+    #print sgy_returns
+    
+    covmat = np.cov(bm_returns,sgy_returns)
+    print "beta1",covmat
+    beta = covmat[0,1]/covmat[1,1]
+    return beta
+    
+def basefacts(bm_returns,sgy_returns):
+    covmat = np.cov(bm_returns,sgy_returns)
+
+    beta = covmat[0,1]/covmat[1,1]
+    alpha = np.mean(sgy_returns)-beta*np.mean(bm_returns)
+    
+    
+    ypred = alpha + beta * bm_returns
+    SS_res = np.sum(np.power(ypred-sgy_returns,2))
+    SS_tot = covmat[0,0]*(len(bm_returns)-1) # SS_tot is sample_variance*(n-1)
+    r_squared = 1. - SS_res/SS_tot
+    # 5- year volatiity and 1-year momentum
+    volatility = np.sqrt(covmat[0,0])
+    momentum = np.prod(1+sgy_returns.tail(12).values) -1
+    
+    # annualize the numbers
+    prd = 12. # used monthly returns; 12 periods to annualize
+    alpha = alpha*prd
+    volatility = volatility*np.sqrt(prd) 
+    print beta,alpha, r_squared, volatility, momentum      
+    
+#alpha
+def getAlpha(beta,bm_returns,strgy_returns):
+    return np.mean(strgy_returns)-beta*np.mean(bm_returns)
+   
 # sharpe
 def getSharpe(dayvalue):
      daily_rets = dayvalue.pct_change()

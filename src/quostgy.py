@@ -31,8 +31,8 @@ class quostgy(basestrategy.basestrategy):
     def procSingleData(self,price):
         return
         
-    def procMultiData(self,pricelst):
-        return self.quotient(pricelst)
+    def procMultiData(self,df):
+        return self.quotient(df)
 
     def setup(self,deposit):
         self.deposit = deposit
@@ -197,6 +197,6 @@ class quostgy(basestrategy.basestrategy):
         #print "sellorder=",sellorder
         #backtest(buyorder,sellorder,pricelst,datelst)
         
-        self.df = pandas.DataFrame({'quo1':quolst,'quo2':shortquolst,'dayvalue':dailyvalue})
+        self.df = pandas.DataFrame({'quo1':quolst,'quo2':shortquolst,'dayvalue':dailyvalue},index=ohlc_px.index)
         return self.df
 
