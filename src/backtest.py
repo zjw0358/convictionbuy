@@ -124,12 +124,15 @@ def startTest(strategy,symlst,startdate,enddate):
         ohlc_px = all_data[ticker]
         sdate = all_data[ticker].index        
         sdatelabel = sdate.to_pydatetime()
-        strategy.setup(100000)
-        df = strategy.procMultiData(ohlc_px)#close_px
+        #strategy.setup(10000)
+        
+        df = strategy.processOptimization(ohlc_px,spy_px)
+        
+        '''df = strategy.procMultiData(ohlc_px)#close_px
     
         offset = strategy.getOffset()
-        '''drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
-        strategy.drawChart(ax1,sdatelabel)'''
+        drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
+        strategy.drawChart(ax1,sdatelabel)
         
         #calculation
         bm_returns = spy_px[offset:].pct_change()
@@ -167,7 +170,7 @@ def startTest(strategy,symlst,startdate,enddate):
         #print "Beta2 %.2f " % (beta2)
         basefacts(bm_returns,sgy_returns)
         print "Max draw down %.2f %%" % (maxdd(df['dayvalue'][offset:])*100)
-        print "Sharpe %.2f " % (getSharpe(df['dayvalue'][offset:])) #,sdatelabel[offset:]
+        print "Sharpe %.2f " % (getSharpe(df['dayvalue'][offset:])) #,sdatelabel[offset:]'''
 
 # beta
 '''def getBeta2(sra,srm):
