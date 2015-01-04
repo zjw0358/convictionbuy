@@ -107,6 +107,7 @@ class Trade:
         
     def getDailyValue(self):
         self.dy = pandas.DataFrame({'dayvalue':self.dailyvalue},index=self.ohlc_px.index.values)
+        #print self.dy
         return self.dy
   
     def getTradeReport(self):

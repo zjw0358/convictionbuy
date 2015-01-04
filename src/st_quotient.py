@@ -4,17 +4,13 @@ import math
 import pandas
 from collections import defaultdict
 import operator
-import tradesupport
-
+#import tradesupport
+#import simutable
 #import numpy
 
 
 class st_quotient:
-    def __init__(self): 
-        #self.deposit = 10000
-        #self.shares = 0
-        #self.offset = 0   
-        
+    def __init__(self):      
         cutoffLength = 20;
         k1 = 0.9;
         k2 = 0.4
@@ -26,7 +22,8 @@ class st_quotient:
         self.c3 = - self.a1**2
         self.c1 = 1 - self.c2 - self.c3;'''
         self.setup(k1,k2,cutoffLength)         
-        self.support = tradesupport.Trade()
+        #self.support = tradesupport.Trade()
+        #self.simutable = simutable.SimuTable("quotient",self.support)
 
     #for optimization test        
     def setup(self,k1,k2,cf):
@@ -55,31 +52,71 @@ class st_quotient:
         print "c3,",self.c3  
         print "================================================================"
 
-           
+    def process(self,bt,symbol,param,ohlc_px,spy_px):
+        # parameter
+        k1 = 0.9
+        k2 = 0.4
+        cl = 25
+        if 'k1' in param:
+            k1 = float(param['k1'])
+        if 'k2' in param:
+            k2 = float(param['k2'])
+        if 'cf' in param:
+            cf = int(param['cf'])
+        
+        #setup component
+        self.support = bt.getTradeSupport()
+        self.simutable = bt.getSimuTable()
+        
+        #different approach
+        
+        if param['mode']=='1':
+            self.processOptimization(symbol,ohlc_px,spy_px)
+            return None
+        elif param['mode']==None or param['mode']=='0':            
+            self.setup(k1,k2,cl)
+            dv = self.processAllPriceData(ohlc_px)
+            return dv
+        return None
+        
     def procSingleData(self,price):
         return
         
-    def procMultiData(self,ohlc):
+    def processAllPriceData(self,ohlc):
         self.support.setup(ohlc,10000)
         return self.quotient(ohlc)
 
-    def processOptimization(self,ohlc,bm):
-        length = range(10, 50, 5)
+    def processOptimization(self,symbol,ohlc,bm):
+        length = range(10, 55, 5)
         k1set = [x * 0.1 for x in range(6, 10)]
         k2set = [x * 0.1 for x in range(1, 5)]
-        dd = defaultdict(dict)
-        writer = pandas.ExcelWriter('output.xlsx')        
+        #dd = defaultdict(dict)
+        #writer = pandas.ExcelWriter('output.xlsx')        
+        
+        pandas.set_option('display.max_columns', 50)
+        pandas.set_option('display.precision', 3)
+        pandas.set_option('display.expand_frame_repr', False)
+        #pandas.set_option('display.expand_max_repr', False)
+        #columns = ['param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order'] #,
 
-        columns = ['param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order'] #,
+        #must setup report tool before simulation test
+        self.simutable.setupSymbol(symbol,bm)
+
         #dftbl = pandas.DataFrame(columns=columns,index=length) 
-        dftbl = pandas.DataFrame(columns=columns) 
+        #dftbl = pandas.DataFrame(columns=columns) 
+
         for k2 in k2set:
             for k1 in k1set: 
                 for cl in length:
                     self.setup(k1,k2,cl)
                     self.support.setup(ohlc,10000)
                     df = self.quotient(ohlc)
-                    firstTradeIdx = self.support.getFirstTradeIdx()
+                    
+                    param = "k1=%.1f,k2=%.1f,cf=%d"%(k1,k2,cl)
+                    
+                    self.simutable.addSymbolResult(param,df)
+                    
+                    '''firstTradeIdx = self.support.getFirstTradeIdx()
                     rtbm = bm[firstTradeIdx:].resample('M',how='last')
                     bm_returns = rtbm.pct_change()        
                     bm_returns=bm_returns.dropna()
@@ -87,13 +124,14 @@ class st_quotient:
                     sgy_returns = rtsgy.pct_change()
                     sgy_returns=sgy_returns.dropna()
                     dct = self.support.basefacts(bm_returns,sgy_returns)
+                    
                     perfdata = self.getPerf()
                     param = "k1=%.1f,k2=%.1f,cf=%d"%(k1,k2,cl)
                     d0 = {'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
                         'max_drawdown':self.support.getMaxdd(),'profit_order':self.support.getProfitOrderNum(),\
                         'loss_order':self.support.getLossOrderNum()}
                     dftbl.loc[len(dftbl)+1]=d0                
-                    #d0 = {dct['alpha'],dct['beta'],perfdata}
+                    #d0 = {dct['alpha'],dct['beta'],perfdata}'''
                     
                     '''dftbl.loc[cl,'alpha'] = dct['alpha']
                     dftbl.loc[cl,'beta'] = dct['beta']
@@ -103,8 +141,11 @@ class st_quotient:
                     #dftbl.append(d1)         
                     #dd[cl] = self.getPerf()
                     #print cl," performance=",dd[cl]
-        print dftbl
-        dftbl.to_excel(writer,'Sheet1')
+        
+        #add results to report
+        self.simutable.makeSymbolReport()
+        
+       
         #print "max=",max(dd.iteritems(), key=operator.itemgetter(1))[0]
         return
 
@@ -229,8 +270,6 @@ class st_quotient:
         #print self.report
         #print self.report['pnl'].sum()
         #self.df = pandas.DataFrame({'quo1':quolst,'quo2':shortquolst,'dayvalue':dailyvalue},index=ohlc_px.index.values)
-        self.report = self.support.getTradeReport()
+        #self.report = self.support.getTradeReport()
         return self.support.getDailyValue()
 
-    def getPerf(self):
-        return self.report['pnl'].sum()
