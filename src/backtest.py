@@ -1,102 +1,22 @@
-import pandas.io.data as web
-import matplotlib.pyplot as plt
+
+
 import matplotlib.ticker as mticker
 import matplotlib.dates as mdates
 import pandas as pd
 import numpy as np
-import datetime
+
 import sys
 import getopt
 
-
+#from datetime import datetime
 import simutable
 import tradesupport
+import matplotlib.pyplot as plt
+import pandas.io.data as web
+import datetime
 
 
-left, width = 0.1, 0.8
-rect1 = [left, 0.7, width, 0.2]
-rect2 = [left, 0.3, width, 0.4]
-rect3 = [left, 0.1, width, 0.2]
-fig = plt.figure(facecolor='white')
-axescolor  = '#f6f6f6'  # the axes background color
-ax1 = fig.add_axes(rect1, axisbg=axescolor)  #left, bottom, width, height
-ax2 = fig.add_axes(rect2, axisbg=axescolor, sharex=ax1)
-
-def drawChart(sdatelabel,benchmark_px,close_px,strgy_ret,offset):
-    plt.rc('axes', grid=True)
-    plt.rc('grid', color='0.75', linestyle='-', linewidth=0.5)
-    
-    textsize = 9
-  
-    #ax2t = ax2.twinx()
-    #ax3  = fig.add_axes(rect3, axisbg=axescolor, sharex=ax1)
-    plt.setp(ax1.get_xticklabels(), visible=False)
-    #plt.setp(ax3.get_xticklabels(), visible=False)
-    #plt.setp(ax2t.get_xticklabels(), visible=False)
-        
-    #ax1
-    px_returns = close_px[offset:].pct_change()
-    pxret_index = (1+px_returns).cumprod()
-    pxret_index[offset] = 1
-    
-    sgy_returns = strgy_ret[offset:].pct_change()
-    sgyret_index = (1+sgy_returns).cumprod()
-    sgyret_index[offset] = 1
-
-    bm_returns = benchmark_px[offset:].pct_change()
-    bmret_index = (1+bm_returns).cumprod()
-    bmret_index[offset] = 1       
-    
-    
-    
-    ### plot the price and volume data
-    #print "offset=",offset
-    #print pxret_index[offset:]
-    #print sgyret_index[offset:]
-    '''print type(sgyret_index)
-    print type(bmret_index)
-    print type(pxret_index)
-    print bmret_index[-1]
-    print pxret_index[-1]
-    print sgyret_index.iloc[-1]
-    print "dump"
-    lastPctStr="price"'''
-    lastPctStr = "benchmark:%.2f,portfolio:%.2f,strategy:%.2f" %(bmret_index.iloc[-1],pxret_index.iloc[-1],sgyret_index.iloc[-1])
-    #ax2.text(0.025, 0.95, lastPctStr, verticalalignment='top',transform=ax2.transAxes, fontsize=textsize)
-
-    ax2.plot(sdatelabel[offset:],bmret_index,label='benchmark')
-    ax2.plot(sdatelabel[offset:],pxret_index,label='portfolio')
-    ax2.plot(sdatelabel[offset:],sgyret_index,label='strategy')
-    
-    ax2.grid(True, color='w')
-    ax2.xaxis.set_major_locator(mticker.MaxNLocator(10))
-    ax2.yaxis.set_major_locator(mticker.MaxNLocator(8))
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    ax2.yaxis.label.set_color("b")
-    #bottom left = 0,0; upper right = 1,1
-    ax2.text(0.55, 0.95, lastPctStr, horizontalalignment='left',transform=ax2.transAxes, fontsize=textsize)    
-    
- 
-    #ax2.yaxis.label.set_color("w")
-    ax2.spines['bottom'].set_color("#5998ff")
-    ax2.spines['top'].set_color("#5998ff")
-    ax2.spines['left'].set_color("#5998ff")
-    ax2.spines['right'].set_color("#5998ff")
-
-    #legend
-    # draw at right side
-    #plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    
-    #draw at upper left
-    legend = ax2.legend(loc='upper left', shadow=True)
-    
-    # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
-    frame = legend.get_frame()
-    frame.set_facecolor('0.90')
-    plt.show()
-
-
-def startTest(strategy,symlst,startdate,enddate):
+'''def startTest(strategy,symlst,startdate,enddate):
     #prepare data
     all_data = {}
     initialDeposit = 100000
@@ -120,7 +40,7 @@ def startTest(strategy,symlst,startdate,enddate):
         
         df = strategy.processOptimization(ticker,ohlc_px,spy_px)
 
-        '''df = strategy.procMultiData(ohlc_px)#close_px
+        df = strategy.procMultiData(ohlc_px)#close_px
     
         offset = strategy.getOffset()
         drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
@@ -227,6 +147,7 @@ class BackTest:
     def __init__(self):
         self.support = tradesupport.Trade()
         self.simutable = simutable.SimuTable(self.support)
+        self.parameter={}
         
     def loadPortfolioFile(self,fileName):
         fp = open(fileName,'r',-1)
@@ -266,11 +187,11 @@ class BackTest:
                 self.enddate = arg
             elif opt in ("-p", "--parameter"):
                 newstr = arg.replace("'", "")   
-                self.parameter={}
                 for item in newstr.split(','):
                     key,value = item.split('=')
                     self.parameter[key]=value
         self.hasChart = False
+        
         if 'chart' in self.parameter:
             if self.parameter['chart']=='1':
                 self.hasChart = True
@@ -328,10 +249,8 @@ class BackTest:
             print "System/Network Error,exit"
             sys.exit()
                 
-        #print all_data,type(all_data)
-        #return
-        #benchmark
-        
+
+        #benchmark_px is series?
         benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
         if self.hasChart==True:
             self.setupChart()
@@ -358,13 +277,13 @@ class BackTest:
 
     def setupChart(self):
         left, width = 0.1, 0.8
-        rect1 = [left, 0.7, width, 0.2]
-        rect2 = [left, 0.3, width, 0.4]
-        rect3 = [left, 0.1, width, 0.2]
+        rect1 = [left, 0.75, width, 0.2]
+        rect2 = [left, 0.1, width, 0.65]  #lower left = 0.1,0.1, upper right = 0.9,0.75
+        #rect3 = [left, 0.1, width, 0.2]
         fig = plt.figure(facecolor='white')
         axescolor  = '#f6f6f6'  # the axes background color
         self.ax1 = fig.add_axes(rect1, axisbg=axescolor)  #left, bottom, width, height
-        self.ax2 = fig.add_axes(rect2, axisbg=axescolor, sharex=ax1)
+        self.ax2 = fig.add_axes(rect2, axisbg=axescolor, sharex=self.ax1)
         plt.rc('axes', grid=True)
         plt.rc('grid', color='0.75', linestyle='-', linewidth=0.5)        
         plt.setp(self.ax1.get_xticklabels(), visible=False)
@@ -376,21 +295,23 @@ class BackTest:
         bm_returns = benchmark_px[offset:].pct_change()
         bmret_index = (1+bm_returns).cumprod()
         bmret_index[offset] = 1
-        self.ax2.plot(self.sdatelabel[offset:],bmret_index,label='benchmark')
         
+        self.ax2.plot(self.sdatelabel[offset:],bmret_index,label='benchmark')        
         self.ax2.text(0.55, 0.95, self.perftxt, horizontalalignment='left',transform=self.ax2.transAxes, fontsize=textsize)
-         
-        #draw at upper left
-        legend = self.ax2.legend(loc='upper left', shadow=True)
         
+        #draw legend at upper left
+        legend = self.ax2.legend(loc='upper left', shadow=True)        
         # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
         frame = legend.get_frame()
         frame.set_facecolor('0.90')
+        
+
+        ylim = self.ax2.get_ylim()
+        self.ax2.set_ylim([ylim[0]-0.5,ylim[1]+0.5]);
+
         plt.show()
-        
-        
         return
-                
+    
     # draw pnl vs benchmark curve 
     def drawChart(self,symbol,close_px,stgy_name,strgy_ret,offset):
         #plt.rc('axes', grid=True)
@@ -409,32 +330,19 @@ class BackTest:
         pxret_index = (1+px_returns).cumprod()
         pxret_index[offset] = 1
         
-        print type(pxret_index.iloc[-1])
-        print pxret_index
+        #print type(pxret_index.iloc[-1])
+        #print pxret_index
+        
         sgy_returns = strgy_ret[offset:].pct_change()
         sgyret_index = (1+sgy_returns).cumprod()
         sgyret_index[offset] = 1
-        print type(sgyret_index.iloc[-1])
-        print sgyret_index
-    
-        '''bm_returns = benchmark_px[offset:].pct_change()
-        bmret_index = (1+bm_returns).cumprod()
-        bmret_index[offset] = 1 '''      
         
+        stgy_name = stgy_name+"_"+symbol
         
-        
-        ### plot the price and volume data
-        #print "offset=",offset
-        #print pxret_index[offset:]
-        #print sgyret_index[offset:]
-        '''print type(sgyret_index)
-        print type(bmret_index)
-        print type(pxret_index)
-        print bmret_index[-1]
-        print pxret_index[-1]
-        print sgyret_index.iloc[-1]
-        print "dump"
-        lastPctStr="price"'''
+        '''miny=min(sgyret_index[offset:].min(),pxret_index[offset].min())-1
+        maxy=max(sgyret_index[offset:].max(),pxret_index[offset].max())+1
+        print "miny=",miny," maxy=",maxy'''
+
         
         #lastPctStr = "benchmark:%.2f,portfolio:%.2f,strategy:%.2f" %(bmret_index.iloc[-1],pxret_index.iloc[-1],sgyret_index.iloc[-1])
         #ax2.text(0.55, 0.95, lastPctStr, horizontalalignment='left',transform=ax2.transAxes, fontsize=textsize) 
@@ -446,12 +354,64 @@ class BackTest:
         #ax2.plot(sdatelabel[offset:],bmret_index,label='benchmark')
         self.ax2.plot(self.sdatelabel[offset:],pxret_index,label=symbol)
         self.ax2.plot(self.sdatelabel[offset:],sgyret_index,label=stgy_name)
-        
         self.ax2.grid(True, color='w')
         self.ax2.xaxis.set_major_locator(mticker.MaxNLocator(10))
-        self.ax2.yaxis.set_major_locator(mticker.MaxNLocator(8))
+        self.ax2.yaxis.set_major_locator(mticker.MaxNLocator(10))
+        
         self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.ax2.yaxis.label.set_color("b")
+        
+        # buy / sell orders annotation
+        dforders = self.support.getTradeReport()
+        prevbuyyxis = 0
+        prevsellyxis = 0
+        prevselldate = dforders.index[0]
+        prevbuydate = dforders.index[0]
+        
+        #saveOldDate=False
+        for row_index, row in dforders.iterrows():
+            date = row_index
+
+            #away = 0.2 # make text not overlapped
+            ordertxt = "%s@%.2f"%(row['order'],row['price'])
+            if row['pnl']!="":
+                ordertxt+=('\np/l=%.2f'%row['pnl'])            
+            
+            oriyxis = sgyret_index.asof(date)
+            
+
+                
+            if row['order']=='buy':
+                '''buycount+=1
+                if (buycount%2)==0:
+                    away=0.'''
+
+                newyxis = oriyxis + 0.3;
+                
+                '''if abs(newyxis - prevbuyyxis)<0.2:
+                    newyxis = oriyxis+0.2
+                prevbuyyxis = newyxis'''
+                
+                self.ax2.annotate(ordertxt, xy=(date, oriyxis + 0.1),
+                xytext=(date, newyxis),                
+                arrowprops=dict(facecolor='black'),
+                horizontalalignment='left', verticalalignment='top')
+            else:
+                datedelta = (date-prevselldate).days
+                prevselldate = date
+
+                newyxis = oriyxis - 0.3;
+                
+                if datedelta<30:
+                    if prevbuyyxis!=0:
+                        newyxis = prevbuyyxis-0.2
+                prevbuyyxis = newyxis
+                
+                self.ax2.annotate(ordertxt, xy=(date, oriyxis - 0.1),
+                xytext=(date, newyxis),
+                arrowprops=dict(facecolor='green'),
+                horizontalalignment='left', verticalalignment='top')
+
         #bottom left = 0,0; upper right = 1,1
            
         
