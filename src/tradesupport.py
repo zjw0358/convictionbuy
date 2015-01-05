@@ -56,7 +56,7 @@ class Trade:
 
             self.ser_orders.append('buy')
             self.ser_orderdate.append(self.ohlc_px.index[index])
-            self.ser_pnl.append('')
+            self.ser_pnl.append(0)
             self.ser_price.append(meanpx)
             if self.verbose==True:
                 print datelb," buy ",self.shares,"@",meanpx,(",commission=%.3f"%self.getBuyComm(self.shares*meanpx)),",remain=%.3f"%(self.deposit)

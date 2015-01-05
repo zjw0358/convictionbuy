@@ -16,6 +16,7 @@ import pandas.io.data as web
 import datetime
 
 
+
 '''def startTest(strategy,symlst,startdate,enddate):
     #prepare data
     all_data = {}
@@ -148,6 +149,10 @@ class BackTest:
         self.support = tradesupport.Trade()
         self.simutable = simutable.SimuTable(self.support)
         self.parameter={}
+        #default log to file, unless specified in parameter
+        sys.stdout = open("cbdaylog.txt", "w")
+
+
         
     def loadPortfolioFile(self,fileName):
         fp = open(fileName,'r',-1)
@@ -161,6 +166,8 @@ class BackTest:
         return self.simutable
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
+        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cf=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+
                     
     def parseOption(self):
         self.startdate="1990-1-1"
@@ -288,6 +295,12 @@ class BackTest:
         plt.rc('grid', color='0.75', linestyle='-', linewidth=0.5)        
         plt.setp(self.ax1.get_xticklabels(), visible=False)
         self.perftxt=""
+         #ax2.yaxis.label.set_color("w")
+        self.ax2.spines['bottom'].set_color("#5998ff")
+        self.ax2.spines['top'].set_color("#5998ff")
+        self.ax2.spines['left'].set_color("#5998ff")
+        self.ax2.spines['right'].set_color("#5998ff")
+        
 
     #draw benchmark curve
     def drawBenchMark(self,benchmark_px,offset):
@@ -339,9 +352,6 @@ class BackTest:
         
         stgy_name = stgy_name+"_"+symbol
         
-        '''miny=min(sgyret_index[offset:].min(),pxret_index[offset].min())-1
-        maxy=max(sgyret_index[offset:].max(),pxret_index[offset].max())+1
-        print "miny=",miny," maxy=",maxy'''
 
         
         #lastPctStr = "benchmark:%.2f,portfolio:%.2f,strategy:%.2f" %(bmret_index.iloc[-1],pxret_index.iloc[-1],sgyret_index.iloc[-1])
@@ -363,6 +373,8 @@ class BackTest:
         
         # buy / sell orders annotation
         dforders = self.support.getTradeReport()
+        if len(dforders.index)==0:
+            return
         prevbuyyxis = 0
         prevsellyxis = 0
         prevselldate = dforders.index[0]
@@ -374,7 +386,7 @@ class BackTest:
 
             #away = 0.2 # make text not overlapped
             ordertxt = "%s@%.2f"%(row['order'],row['price'])
-            if row['pnl']!="":
+            if row['order']!="buy":
                 ordertxt+=('\np/l=%.2f'%row['pnl'])            
             
             oriyxis = sgyret_index.asof(date)
@@ -413,26 +425,7 @@ class BackTest:
                 horizontalalignment='left', verticalalignment='top')
 
         #bottom left = 0,0; upper right = 1,1
-           
         
-    
-        #ax2.yaxis.label.set_color("w")
-        self.ax2.spines['bottom'].set_color("#5998ff")
-        self.ax2.spines['top'].set_color("#5998ff")
-        self.ax2.spines['left'].set_color("#5998ff")
-        self.ax2.spines['right'].set_color("#5998ff")
-    
-        #legend
-        # draw at right side
-        #plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        
-        #draw at upper left
-        '''legend = ax2.legend(loc='upper left', shadow=True)
-        
-        # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
-        frame = legend.get_frame()
-        frame.set_facecolor('0.90')
-        plt.show()'''
 ################################################################################        
 # main routine
 ################################################################################            

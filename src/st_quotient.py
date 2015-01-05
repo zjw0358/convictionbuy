@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#import basestrategy
 import math
 import pandas
 from collections import defaultdict
@@ -10,26 +9,11 @@ import operator
 
 
 class st_quotient:
-    def __init__(self):      
-        cutoffLength = 20;
-        k1 = 0.9;
-        k2 = 0.4
-
-        '''self.alpha1 = (math.cos(math.radians(0.707*360 / 100)) + math.sin (math.radians(0.707*360 / 100)) - 1) / math.cos(math.radians(0.707*360 / 100))
-        self.a1 = math.exp(-1.414 * math.pi / self.cutoffLength);
-        self.b1 = 2 * self.a1 * math.cos(math.radians(1.414 * 180 / self.cutoffLength));
-        self.c2 = self.b1
-        self.c3 = - self.a1**2
-        self.c1 = 1 - self.c2 - self.c3;'''
-        self.setup(k1,k2,cutoffLength)         
-        #self.support = tradesupport.Trade()
-        #self.simutable = simutable.SimuTable("quotient",self.support)
-
     #for optimization test        
-    def setup(self,k1,k2,cf):
+    def setup(self,k1,k2,cl):
         self.k1=k1
         self.k2=k2
-        self.cutoffLength = cf
+        self.cutoffLength = cl
         #self.deposit = 10000
         #self.shares = 0
         #self.offset = 0   
@@ -61,8 +45,8 @@ class st_quotient:
             k1 = float(param['k1'])
         if 'k2' in param:
             k2 = float(param['k2'])
-        if 'cf' in param:
-            cf = int(param['cf'])
+        if 'cl' in param:
+            cl = int(param['cl'])
         
         #setup component
         self.support = bt.getTradeSupport()
@@ -113,34 +97,7 @@ class st_quotient:
                     df = self.quotient(ohlc)
                     
                     param = "k1=%.1f,k2=%.1f,cf=%d"%(k1,k2,cl)
-                    
                     self.simutable.addSymbolResult(param,df)
-                    
-                    '''firstTradeIdx = self.support.getFirstTradeIdx()
-                    rtbm = bm[firstTradeIdx:].resample('M',how='last')
-                    bm_returns = rtbm.pct_change()        
-                    bm_returns=bm_returns.dropna()
-                    rtsgy = df['dayvalue'][firstTradeIdx:].resample('M',how='last')
-                    sgy_returns = rtsgy.pct_change()
-                    sgy_returns=sgy_returns.dropna()
-                    dct = self.support.basefacts(bm_returns,sgy_returns)
-                    
-                    perfdata = self.getPerf()
-                    param = "k1=%.1f,k2=%.1f,cf=%d"%(k1,k2,cl)
-                    d0 = {'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
-                        'max_drawdown':self.support.getMaxdd(),'profit_order':self.support.getProfitOrderNum(),\
-                        'loss_order':self.support.getLossOrderNum()}
-                    dftbl.loc[len(dftbl)+1]=d0                
-                    #d0 = {dct['alpha'],dct['beta'],perfdata}'''
-                    
-                    '''dftbl.loc[cl,'alpha'] = dct['alpha']
-                    dftbl.loc[cl,'beta'] = dct['beta']
-                    dftbl.loc[cl,'perf'] = perfdata'''
-                    
-                    #d1 = pandas.DataFrame(d0,index=[cl])
-                    #dftbl.append(d1)         
-                    #dd[cl] = self.getPerf()
-                    #print cl," performance=",dd[cl]
         
         #add results to report
         self.simutable.makeSymbolReport()
