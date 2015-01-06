@@ -47,12 +47,12 @@ class Trade:
                 buyFlag=False
                 break
                 
-        sellFlag=True
+        sellFlag=False
 
         #check sell flag
         for strategy in self.stgyorder:
-            if self.stgyorder[strategy]!='s':
-                sellFlag=False
+            if self.stgyorder[strategy]=='s':
+                sellFlag=True
                 break
 
                                       
@@ -80,6 +80,8 @@ class Trade:
             
             # open an order
             self.buyopen=True
+            # clean all 'buy' signal
+            
             
         elif sellFlag==True and self.buyopen==True:
             meanpx = self.getMeanpx(index)
@@ -162,20 +164,21 @@ class Trade:
         
         
     def buyorder(self,stname):
-        self.stgyorder[stname]='b'
+        if stname in self.stgyorder:
+            self.stgyorder[stname]='b'
         #if self.buyFlag==False:
             #self.order=1
             #self.buyFlag=True
         return
     
     def sellorder(self,stname):
-        self.stgyorder[stname]='s'
+        if stname in self.stgyorder:
+            self.stgyorder[stname]='s'
         
-        #if self.buyFlag==True:
-        #    self.order=2
-        #    #self.buyFlag=False
-        return
- 
+    def holdorder(self,stname):
+        if stname in self.stgyorder:
+            self.stgyorder[stname]='h'
+        
     def setDailyValue(self,index):
         # day to day value
         self.dailyvalue.append(self.deposit+self.shares*self.ohlc_px['Adj Close'][index])

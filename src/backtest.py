@@ -150,7 +150,7 @@ class BackTest:
         self.simutable = simutable.SimuTable(self.support)
         self.parameter={}
         #default log to file, unless specified in parameter
-        sys.stdout = open("cbdaylog.txt", "w")
+        #sys.stdout = open("cbdaylog.txt", "w")
 
 
         

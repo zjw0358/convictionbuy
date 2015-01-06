@@ -20,7 +20,7 @@ class stc_quomv:
         
     def process(self,bt,symbol,param,ohlc_px,spy_px):
         # parameter
-        k1 = 0.9
+        k1 = 0.7
         k2 = 0.4
         cl = 25
         win = 200        
@@ -46,7 +46,7 @@ class stc_quomv:
     def processAllPriceData(self,ohlc):
         self.tradesup.setup(ohlc,10000)
         close_px = ohlc['Adj Close']  
-        self.mvg.processAllPriceData(self,ohlc)
+        self.mvg.processAllPriceData(ohlc)
 
 
         for index in range(0, len(close_px)):

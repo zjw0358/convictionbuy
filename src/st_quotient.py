@@ -52,7 +52,7 @@ class st_quotient:
 
     def process(self,bt,symbol,param,ohlc_px,spy_px):
         # parameter
-        k1 = 0.9
+        k1 = 0.7
         k2 = 0.4
         cl = 25
         if 'k1' in param:

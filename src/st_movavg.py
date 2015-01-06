@@ -15,6 +15,8 @@ class st_movavg:
         print "window",self.win
         print "================================================================"
 
+    def getStrategyName(self):
+        return self.stname
         
     def process(self,bt,symbol,param,ohlc_px,spy_px):        
         #different approach        
@@ -34,7 +36,8 @@ class st_movavg:
             self.tradesup.buyorder(self.stname)
             print "mvg buy@",index,price
         elif price < mvg:
-            self.support.sellorder(self.stname)
+            self.tradesup.sellorder(self.stname)
+            #self.tradesup.holdorder(self.stname)
             print "mvg sell@",index,price
         return
         
