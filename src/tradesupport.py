@@ -2,6 +2,8 @@ import numpy as np
 import pandas
 
 class Trade:
+    def __init__(self):
+        self.stgyorder={} # strategy order matrix
     def setup(self,ohlc_px,deposit):
         self.ohlc_px=ohlc_px
         self.deposit = deposit
@@ -16,8 +18,9 @@ class Trade:
         self.loss_order = 0
         self.trancost = 0
         self.dailyvalue=[]
-        self.buyFlag=False
-        self.order=0
+        self.buyopen = False
+        #self.buyFlag=False
+        #self.order=0
         self.offset=0
         self.verbose = True
         if self.verbose==True:
@@ -38,7 +41,76 @@ class Trade:
         return comm
     
     def processData(self,index):
-        if self.order==1:
+        buyFlag = True
+        for strategy in self.stgyorder:
+            if self.stgyorder[strategy]!='b':
+                buyFlag=False
+                break
+                
+        sellFlag=True
+
+        #check sell flag
+        for strategy in self.stgyorder:
+            if self.stgyorder[strategy]!='s':
+                sellFlag=False
+                break
+
+                                      
+        if buyFlag==True and self.buyopen==False:
+            #buy
+            #find a tradable price 
+            meanpx = self.getMeanpx(index)
+            buypower = self.getBuyPower()
+            
+            self.shares = int(buypower/meanpx)
+            self.trancost = self.shares*meanpx + self.getBuyComm(self.shares*meanpx)
+            self.deposit = self.deposit-self.trancost
+            if self.offset==0:
+                self.offset = index
+                
+            datelb = self.ohlc_px.index[index].to_pydatetime()
+
+            self.ser_orders.append('buy')
+            self.ser_orderdate.append(self.ohlc_px.index[index])
+            self.ser_pnl.append(0)
+            self.ser_price.append(meanpx)
+            if self.verbose==True:
+                print datelb," buy ",self.shares,"@",meanpx,(",commission=%.3f"%self.getBuyComm(self.shares*meanpx)),",remain=%.3f"%(self.deposit)
+                #str = datelb," buy ",self.shares,"@",meanpx,",commission=%.3f",self.getBuyComm(self.shares*meanpx),",remain=%.3f",self.deposit
+            
+            # open an order
+            self.buyopen=True
+            
+        elif sellFlag==True and self.buyopen==True:
+            meanpx = self.getMeanpx(index)
+            sellcomm = self.getSellComm(self.shares*meanpx)
+            trancost = self.shares*meanpx-sellcomm
+            self.deposit = self.deposit+trancost  #pricelst[index]
+            shares = self.shares
+            self.shares = 0
+            #self.sellorder.append(index)
+            #self.buyFlag = False
+
+            datelb = self.ohlc_px.index[index].to_pydatetime()
+            
+            self.ser_orders.append('sell')
+            self.ser_orderdate.append(self.ohlc_px.index[index])
+            
+            pnl = trancost - self.trancost
+            self.ser_pnl.append(pnl)
+            self.ser_price.append(meanpx)
+            
+            if pnl>=0:
+                self.profit_order+=1
+            else:
+                self.loss_order+=1
+            if self.verbose==True:
+                print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit
+                
+            #close the order
+            self.buyopen=False
+            
+        '''if self.order==1:
             self.order=0            
             self.buyFlag = True
 
@@ -86,19 +158,22 @@ class Trade:
             else:
                 self.loss_order+=1
             if self.verbose==True:
-                print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit
-        return
+                print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit'''
         
-    def buyorder(self):
-        if self.buyFlag==False:
-            self.order=1
+        
+    def buyorder(self,stname):
+        self.stgyorder[stname]='b'
+        #if self.buyFlag==False:
+            #self.order=1
             #self.buyFlag=True
         return
     
-    def sellorder(self):
-        if self.buyFlag==True:
-            self.order=2
-            #self.buyFlag=False
+    def sellorder(self,stname):
+        self.stgyorder[stname]='s'
+        
+        #if self.buyFlag==True:
+        #    self.order=2
+        #    #self.buyFlag=False
         return
  
     def setDailyValue(self,index):
@@ -160,8 +235,11 @@ class Trade:
         volatility = volatility*np.sqrt(prd) 
         #print beta,alpha, r_squared, volatility, momentum      
         return dict({'alpha':alpha,'beta':beta,'volatility':volatility,'momentum':momentum})
-    
 
+    #register strategy name
+    def addStrategy(self,stname):  
+        self.stgyorder[stname]='' #''-default,'b'-buy,'s'-sell
+        
 
 
         

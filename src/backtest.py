@@ -214,7 +214,7 @@ class BackTest:
         module_meta = __import__(filename, globals(), locals(), [filename])
         print module_meta
         c = getattr(module_meta, filename) 
-        myobject = c()
+        myobject = c(self)
         
         #strategy name
         self.simutable.setName(filename)

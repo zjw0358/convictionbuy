@@ -2,38 +2,49 @@ import math
 import pandas as pd
 
 class st_movavg:
-    #for optimization test        
+    def __init__(self,bt):
+        self.stname = "movavg" #strategy name
+        #setup component
+        self.tradesup = bt.getTradeSupport()
+        self.simutable = bt.getSimuTable()
+
+
     def setup(self,win):
         self.win = win        
         print "========ST_MOVAVG SETUP ========================================"
         print "window",self.win
         print "================================================================"
+
         
-    def process(self,bt,symbol,param,ohlc_px,spy_px):
-        # parameter
-        win = 200
-        
-        if 'win' in param:
-            win = float(param['win'])
-        
-        #setup component
-        self.support = bt.getTradeSupport()
-        self.simutable = bt.getSimuTable()
-        
+    def process(self,bt,symbol,param,ohlc_px,spy_px):        
         #different approach        
         if param['mode']=='1':
             #self.processOptimization(symbol,ohlc_px,spy_px)
             return None
         elif param['mode']==None or param['mode']=='0':            
-            self.setup(win)
+            #self.setup(win)
             dv = self.processAllPriceData(ohlc_px)
             print dv
             return dv
         return None
+
+    def procSingleData(self,index,price):
+        mvg = self.dfmv[200].iloc[index]
+        if price>=mvg:
+            self.tradesup.buyorder(self.stname)
+            print "mvg buy@",index,price
+        elif price < mvg:
+            self.support.sellorder(self.stname)
+            print "mvg sell@",index,price
+        return
         
     def processAllPriceData(self,ohlc):
-        self.support.setup(ohlc,10000)
+        self.tradesup.setup(ohlc,10000)
+        self.dfmv = pd.DataFrame(index=ohlc.index)
+        mvlst=[5,10,20,50,100,200]
         close_px = ohlc['Adj Close']  
-        ohlc['dayvalue'] = pd.rolling_mean(close_px, self.win)
-        return ohlc
+        for idx in mvlst:
+            self.dfmv[idx] = pd.rolling_mean(close_px, idx)
+        
+        return self.dfmv
         

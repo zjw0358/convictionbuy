@@ -9,21 +9,32 @@ import operator
 
 
 class st_quotient:
-    #for optimization test        
+    def __init__(self,bt):
+        self.stname = "quotient" #strategy name
+        #setup component
+        self.support = bt.getTradeSupport()
+        self.simutable = bt.getSimuTable()
+
     def setup(self,k1,k2,cl):
         self.k1=k1
         self.k2=k2
-        self.cutoffLength = cl
-        #self.deposit = 10000
-        #self.shares = 0
-        #self.offset = 0   
+        self.cutoffLength = cl  
         self.alpha1 = (math.cos(math.radians(0.707*360 / 100)) + math.sin (math.radians(0.707*360 / 100)) - 1) / math.cos(math.radians(0.707*360 / 100))
         self.a1 = math.exp(-1.414 * math.pi / self.cutoffLength);
         self.b1 = 2 * self.a1 * math.cos(math.radians(1.414 * 180 / self.cutoffLength));
         self.c2 = self.b1
         self.c3 = - self.a1**2
         self.c1 = 1 - self.c2 - self.c3;
-        print "================================================================"
+
+        self.hplst=[]
+        self.filtlst=[]
+        self.nrflst=[]
+        self.quolst=[]
+        self.shortquolst=[]
+        self.peaklst=[]
+        self.pricelst=[]
+
+        print "=== ST_QUOTIENT ==============================================="
         print "k1",self.k1
         print "k2",self.k2
         print "cutoff length",self.cutoffLength
@@ -35,6 +46,9 @@ class st_quotient:
         print "c2,",self.c2
         print "c3,",self.c3  
         print "================================================================"
+
+    def getStrategyName(self):
+        return self.stname
 
     def process(self,bt,symbol,param,ohlc_px,spy_px):
         # parameter
@@ -48,9 +62,6 @@ class st_quotient:
         if 'cl' in param:
             cl = int(param['cl'])
         
-        #setup component
-        self.support = bt.getTradeSupport()
-        self.simutable = bt.getSimuTable()
         
         #different approach
         
@@ -62,9 +73,72 @@ class st_quotient:
             dv = self.processAllPriceData(ohlc_px)
             return dv
         return None
+
+    # process single data        
+    def procSingleData(self,index,price):
+        self.hplst.append(0.)
+        self.filtlst.append(0.)
+        self.peaklst.append(0.)
+        self.quolst.append(0.)
+        self.shortquolst.append(0.)
+        self.nrflst.append(0.)
+        self.pricelst.append(price)
+        price1=0.
+        price2=0.
+        hp1=0.
+        hp2=0.
+        filt1=0.
+        filt2=0.
+        peak1=0.
         
-    def procSingleData(self,price):
-        return
+        if index >=1:
+            price1= self.pricelst[index-1]
+            hp1 = self.hplst[index-1]
+            filt1 = self.filtlst[index-1]
+            peak1 = self.peaklst[index-1]
+            if index >= 2:
+                price2= self.pricelst[index-2]
+                hp2 = self.hplst[index-2]
+                filt2 = self.filtlst[index-2]                
+    
+        hp0 = (1 - self.alpha1 / 2)*(1 - self.alpha1 / 2) * (price - 2 * price1 + price2) + 2 * (1 - self.alpha1) * hp1 - (1 - self.alpha1)*(1 - self.alpha1) * hp2;
+        self.hplst[index]=hp0
+                
+        filt = self.EhlersSuperSmootherFilter(hp0,hp1,filt1,filt2);
+        self.filtlst[index]=filt
+        
+        #fast attack            
+        peak0 = peak1*0.991
+        
+        af = abs(filt)
+        if af > peak0:
+            peak0 = af
+        self.peaklst[index] = peak0
+        
+        NormRoofingFilter = filt / peak0;
+        Quotient1 = (NormRoofingFilter + self.k1) / (self.k1 * NormRoofingFilter + 1);
+        Quotient2 = (NormRoofingFilter + self.k2) / (self.k2 * NormRoofingFilter + 1);
+        
+        self.quolst[index]=Quotient1
+        self.shortquolst[index]=Quotient2
+        
+        self.nrflst[index]=NormRoofingFilter
+        
+        #must be placed before trigger signal(to avoid buying ahead)
+        #self.support.processData(index)            
+
+        prevQuotient = self.quolst[index-1]
+        prevShortQuo = self.shortquolst[index-1]
+        
+        if prevQuotient<0 and Quotient1>=0:
+            self.support.buyorder(self.stname)
+                
+        if prevShortQuo>0 and Quotient2<=0:
+            self.support.sellorder(self.stname)
+        
+        # day to day value
+        #self.support.setDailyValue(index)
+
         
     def processAllPriceData(self,ohlc):
         self.support.setup(ohlc,10000)
