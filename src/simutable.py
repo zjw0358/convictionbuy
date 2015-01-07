@@ -8,6 +8,9 @@ class SimuTable:
         self.besttable = pandas.DataFrame(columns=columns) 
         self.firstBestResultAdded = False
         self.support = support
+        self.outputpath="../result/"
+        self.bestperf=0
+        #self.bestdv# = pandas.DataFrame(columns='dayvalue')
         print "SimuTable initialized"
 
         return
@@ -38,9 +41,11 @@ class SimuTable:
 
         tradereport = self.support.getTradeReport()
         lastTrade = tradereport.tail(1).to_string(header=False)
-        
+        print tradereport
         perfdata = tradereport['pnl'].sum()
-        #param = "k1=%.1f,k2=%.1f,cf=%d"%(k1,k2,cl)
+        if perfdata>self.bestperf:
+            self.bestperf = perfdata
+            self.bestdv=df #this is best day value data frame
         
         d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
         'max_drawdown':self.support.getMaxdd(),'profit_order':self.support.getProfitOrderNum(),\
@@ -51,50 +56,30 @@ class SimuTable:
         
     def makeSymbolReport(self):
         sortTable = self.symtable.sort_index(by='perf')
-        filename=self.symbol+'_'+self.name+time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
-        sortTable.to_csv(filename,sep=',')
+        filename=self.outputpath+self.symbol+'_'+self.name+time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
+        try:
+            sortTable.to_csv(filename,sep=',')
+        except:
+            print "exception when write to csv ",filename
         
         print "================================================================"
         print self.symbol + " all simulation results:"
         print sortTable
         print "================================================================"
         
-        # add best result to best table,index = 1
-        #print sortTable.tail(1)
-        bestrow = sortTable.tail(1).iloc[0]
-        #bestrow['symbol']=self.symbol
-        #print bestrow,type(bestrow)
-        #if self.firstBestResultAdded==True:
-        #    print self.besttable
-        
-        '''if self.firstBestResultAdded==False:
-            self.besttable = bestrow
-            self.firstBestResultAdded = True
-        else:
-            self.besttable.loc[len(self.besttable)+1]=bestrow'''
+
+        bestrow = sortTable.tail(1).iloc[0]        
         self.besttable.loc[len(self.besttable)+1]=bestrow
-        
-        #bestrow = bestrow[['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade']]
-        #print bestrow,type(bestrow)
-        #print self.besttable.add(bestrow,fill_value="")
-        #self.besttable.loc[len(self.besttable)+1]=bestrow
-        #print self.besttable
-         
-        '''print dftbl
-        idx = dftbl['perf'].argmax()
-        drow = dftbl.loc[idx]
-        drow['symbol']='aapl'
-        print drow
-        dftbl.to_excel(writer,'Sheet1')
-        writer.save()''' 
         
     def makeBestReport(self):
         sortTable = self.besttable.sort_index(by='perf')
-        filename=self.name+"_best_"+time.strftime('%Y-%m-%d.csv',time.localtime(time.time()))
+        filename=self.outputpath+self.name+"_best_"+time.strftime('%Y-%m-%d.csv',time.localtime(time.time()))
         sortTable.to_csv(filename,sep=',')
         print "================================================================"
         print self.name + " portfolio best performance:"
         print sortTable
         print "================================================================"
             
-        
+    def getBestDv(self):
+        #print "bestdv=",self.bestdv
+        return self.bestdv

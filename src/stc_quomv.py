@@ -8,7 +8,7 @@ class stc_quomv:
         #setup component
         self.tradesup = bt.getTradeSupport()
         self.simutable = bt.getSimuTable()
-        #this strategy is combined by two strateges
+        #this strategy is consist of two strateges
         self.quo = st_quotient.st_quotient(bt)
         self.mvg = st_movavg.st_movavg(bt)
             
@@ -23,9 +23,6 @@ class stc_quomv:
         k1 = 0.7
         k2 = 0.4
         cl = 25
-        win = 200        
-        if 'win' in param:
-            win = float(param['win'])
         
         #setup component
         self.tradesup.addStrategy(self.quo.getStrategyName())
@@ -36,8 +33,12 @@ class stc_quomv:
             #self.processOptimization(symbol,ohlc_px,spy_px)
             return None
         elif param['mode']==None or param['mode']=='0':            
+            self.mvg.cleanup()
             #self.setup(win)
             self.quo.setup(k1,k2,cl)
+            #self.mvg.addMApair(200,50)            
+            self.mvg.addPxCrossMa(200)
+            self.mvg.setup()
             dv = self.processAllPriceData(ohlc_px)
             print dv
             return dv

@@ -3,8 +3,12 @@ import pandas
 
 class Trade:
     def __init__(self):
-        self.stgyorder={} # strategy order matrix
+        self.stgyorder={}
     def setup(self,ohlc_px,deposit):
+        self.verbose = True
+        if self.verbose==True:
+            print "========== T R A D I N G L O G ====================="
+
         self.ohlc_px=ohlc_px
         self.deposit = deposit
         self.shares = 0
@@ -19,12 +23,10 @@ class Trade:
         self.trancost = 0
         self.dailyvalue=[]
         self.buyopen = False
-        #self.buyFlag=False
-        #self.order=0
         self.offset=0
-        self.verbose = True
-        if self.verbose==True:
-            print "========== S E T U P ====================="
+        for strategy in self.stgyorder:
+            self.stgyorder[strategy]=''
+
   
     def getMeanpx(self,index):
         return (self.ohlc_px['Open'][index]+self.ohlc_px['Close'][index]+self.ohlc_px['High'][index]+self.ohlc_px['Low'][index])/4
@@ -48,7 +50,6 @@ class Trade:
                 break
                 
         sellFlag=False
-
         #check sell flag
         for strategy in self.stgyorder:
             if self.stgyorder[strategy]=='s':

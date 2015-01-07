@@ -13,103 +13,10 @@ import simutable
 import tradesupport
 import matplotlib.pyplot as plt
 import pandas.io.data as web
+import pandas
 import datetime
 
 
-
-'''def startTest(strategy,symlst,startdate,enddate):
-    #prepare data
-    all_data = {}
-    initialDeposit = 100000
-    
-    for ticker in symlst:
-        all_data[ticker] = web.get_data_yahoo(ticker, startdate, enddate)
-        all_data[ticker] = self.convert2AdjPrice(all_data[ticker])
-        #print all_data[ticker]
-
-
-    spy_px = web.get_data_yahoo("spy", startdate, enddate)['Adj Close']
-    
-    
-    for ticker in symlst:
-        #print all_data[ticker]
-        close_px = all_data[ticker]['Adj Close']
-        ohlc_px = all_data[ticker]
-        sdate = all_data[ticker].index        
-        sdatelabel = sdate.to_pydatetime()
-        #strategy.setup(10000)
-        
-        df = strategy.processOptimization(ticker,ohlc_px,spy_px)
-
-        df = strategy.procMultiData(ohlc_px)#close_px
-    
-        offset = strategy.getOffset()
-        drawChart(sdatelabel,spy_px,close_px,df['dayvalue'],offset)
-        strategy.drawChart(ax1,sdatelabel)
-        
-        #calculation
-        bm_returns = spy_px[offset:].pct_change()
-        bmret_index = (1+bm_returns).cumprod()
-        bmret_index[offset] = 1
-        
-        sgy_returns = df['dayvalue'][offset:].pct_change()
-        sgyret_index = (1+sgy_returns).cumprod()
-        sgyret_index[offset] = 1  
-        
-        px_returns = close_px[offset:].pct_change()
-        pxret_index = (1+px_returns).cumprod()
-        pxret_index[offset] = 1
-        
-        #print ohlc_px.index.values
-        #print df
-        #print spy_px[offset:]
-        rtbm = spy_px[offset:].resample('M',how='last')
-        rtsgy = df['dayvalue'][offset:].resample('M',how='last')
-        
-        bm_returns = rtbm.pct_change()
-        sgy_returns = rtsgy.pct_change()
-        bm_returns=bm_returns.dropna()
-        sgy_returns=sgy_returns.dropna()
-        
-        #print rts.pct_change()
-        #print rbts.pct_change()
-        #beta2 = getBeta2(bmret_index[offset:],sgyret_index[offset:])
-        #beta2 = getBeta2(rts,rbts)
-        #beta2 = getBeta2(bmret_index[offset:],pxret_index[offset:])
-        #beta = getBeta(bm_returns,sgy_returns)
-        #alpha = getAlpha(beta,bm_returns,sgy_returns)
-        #print "Beta %.2f " % (beta)
-        #print "Alpha %.2f " % (alpha)        
-        #print "Beta2 %.2f " % (beta2)
-        basefacts(bm_returns,sgy_returns)
-        print "Max draw down %.2f %%" % (maxdd(df['dayvalue'][offset:])*100)
-        print "Sharpe %.2f " % (getSharpe(df['dayvalue'][offset:])) #,sdatelabel[offset:]'''
-
-# beta
-'''def getBeta2(sra,srm):
-    bm_returns = srm.pct_change()
-    sgy_returns = sra.pct_change()
-    bm_returns=bm_returns.dropna()
-    sgy_returns=sgy_returns.dropna()
-    
-    covariances = np.cov(sgy_returns, bm_returns)
-    print "beta2",covariances
-    return np.mean(covariances) / np.var(srm) wrong'''
-
-'''def getBeta(bm_returns,sgy_returns):
-    bm_returns = srm.pct_change()
-    sgy_returns = sra.pct_change()
-    bm_returns=bm_returns.dropna()
-    sgy_returns=sgy_returns.dropna()
-    #print type(bm_returns)
-    #print bm_returns
-    #print sgy_returns
-    
-    covmat = np.cov(bm_returns,sgy_returns)
-    print "beta1",covmat
-    beta = covmat[0,1]/covmat[1,1]
-    return beta'''
-    
 
    
 # sharpe
@@ -122,22 +29,6 @@ import datetime
      #   print index,sdatelabel[index],daily_rets.iloc[index],dayvalue.iloc[index]
      #returns = daily_rets.resample('1B',how=compound)
      return daily_sr(daily_rets)*np.sqrt(252)'''
-     
-     
-# max drawdown    
-'''def maxdd(ser):
-    # only compare each point to the previous running peak
-    # O(N)
-    running_max = pd.expanding_max(ser)
-    #cur_dd = ser - running_max
-    ddpct =  (ser - running_max)/running_max
-    #print ser
-    #for item in running_max.values:
-    #for index in range(0, len(running_max)):
-    #    print ser[index],running_max[index],ddpct[index]
-    return abs(ddpct.min())
-    #return min(0, cur_dd.min()'''
-    
 
 
 
@@ -151,22 +42,35 @@ class BackTest:
         self.parameter={}
         #default log to file, unless specified in parameter
         #sys.stdout = open("cbdaylog.txt", "w")
+        pandas.set_option('display.max_columns', 50)
+        pandas.set_option('display.precision', 3)
+        pandas.set_option('display.expand_frame_repr', False)
 
 
-        
+    # google style portfolio file
     def loadPortfolioFile(self,fileName):
+        #print "open file:",fileName
         fp = open(fileName,'r',-1)
         pf = fp.read()
-        stocklist = pf.split(',')    
+        stocklist=[]
+        #print pf
+        for item in pf.split():            
+            market,symbol = item.split(':')
+            print symbol
+            stocklist.append(symbol)
+                    
         return stocklist
 
     def getTradeSupport(self):
         return self.support
+
     def getSimuTable(self):
         return self.simutable
+        
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
         print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cf=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cf=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
 
                     
     def parseOption(self):
@@ -181,7 +85,7 @@ class BackTest:
             return False
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
-                self.ticklst = self.loadPortfolioFile(arg)
+                self.ticklist = self.loadPortfolioFile(arg)
             elif opt in ("-t", "--ticklist"):
                 newstr = arg.replace("'", "")                
                 self.ticklist = newstr.split()
@@ -242,19 +146,20 @@ class BackTest:
         all_data = {}
         #initialDeposit = 100000
         
-        try:
-            saveDate=False
-            for ticker in self.ticklist:
+
+        saveDate=False
+        for ticker in self.ticklist:
+            try:
                 all_data[ticker] = web.get_data_yahoo(ticker, self.startdate, self.enddate)
-                all_data[ticker] = self.convert2AdjPrice(all_data[ticker])
-                if saveDate==False:
-                    sdate = all_data[ticker].index        
-                    self.sdatelabel = sdate.to_pydatetime()
-                    saveDate = True
-        except:
-            # IO error
-            print "System/Network Error,exit"
-            sys.exit()
+            except:
+                # IO error
+                print "System/Network Error when retrieving ",ticker," skip it"
+                continue
+            all_data[ticker] = self.convert2AdjPrice(all_data[ticker])
+            if saveDate==False:
+                sdate = all_data[ticker].index        
+                self.sdatelabel = sdate.to_pydatetime()
+                saveDate = True
                 
 
         #benchmark_px is series?
@@ -269,11 +174,13 @@ class BackTest:
             ohlc_px = all_data[ticker]
             
             dv = strategy.process(self,ticker,self.parameter,ohlc_px,benchmark_px)
-            
             firstTradeIdx = self.support.getFirstTradeIdx()            
             if bm_offset==0 or firstTradeIdx<bm_offset:
                 bm_offset = firstTradeIdx
-                
+          
+            #print self.strategyName
+            #print dv['dayvalue']
+            #print firstTradeIdx  
             if self.hasChart==True:
                 self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx)
             
@@ -282,15 +189,18 @@ class BackTest:
         if self.hasChart==True:
             self.drawBenchMark(benchmark_px,bm_offset)         
 
+    def closeChart(self):
+        plt.close(self.fig)
+        
     def setupChart(self):
         left, width = 0.1, 0.8
         rect1 = [left, 0.75, width, 0.2]
         rect2 = [left, 0.1, width, 0.65]  #lower left = 0.1,0.1, upper right = 0.9,0.75
         #rect3 = [left, 0.1, width, 0.2]
-        fig = plt.figure(facecolor='white')
+        self.fig = plt.figure(facecolor='white')
         axescolor  = '#f6f6f6'  # the axes background color
-        self.ax1 = fig.add_axes(rect1, axisbg=axescolor)  #left, bottom, width, height
-        self.ax2 = fig.add_axes(rect2, axisbg=axescolor, sharex=self.ax1)
+        self.ax1 = self.fig.add_axes(rect1, axisbg=axescolor)  #left, bottom, width, height
+        self.ax2 = self.fig.add_axes(rect2, axisbg=axescolor, sharex=self.ax1)
         plt.rc('axes', grid=True)
         plt.rc('grid', color='0.75', linestyle='-', linewidth=0.5)        
         plt.setp(self.ax1.get_xticklabels(), visible=False)
