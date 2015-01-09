@@ -41,8 +41,14 @@ class Trade:
     def getSellComm(self,trancost):
         comm = trancost*(0.0025+0.0000174)*1.07
         return comm
-    
+
+    def getLastSellPrice(self):
+        return self.ser_price[-1]
+                
+    #TODO, each strategy has different weight
+    #some strategy are dominant
     def processData(self,index):
+        #require all strategy give 'buy' signal
         buyFlag = True
         for strategy in self.stgyorder:
             if self.stgyorder[strategy]!='b':
@@ -50,10 +56,11 @@ class Trade:
                 break
                 
         sellFlag=False
-        #check sell flag
+        
+        #as long as one strategy ask for selling.
         for strategy in self.stgyorder:
             if self.stgyorder[strategy]=='s':
-                sellFlag=True
+                sellFlag=True 
                 break
 
                                       
@@ -91,8 +98,6 @@ class Trade:
             self.deposit = self.deposit+trancost  #pricelst[index]
             shares = self.shares
             self.shares = 0
-            #self.sellorder.append(index)
-            #self.buyFlag = False
 
             datelb = self.ohlc_px.index[index].to_pydatetime()
             
@@ -102,6 +107,7 @@ class Trade:
             pnl = trancost - self.trancost
             self.ser_pnl.append(pnl)
             self.ser_price.append(meanpx)
+
             
             if pnl>=0:
                 self.profit_order+=1
@@ -167,9 +173,6 @@ class Trade:
     def buyorder(self,stname):
         if stname in self.stgyorder:
             self.stgyorder[stname]='b'
-        #if self.buyFlag==False:
-            #self.order=1
-            #self.buyFlag=True
         return
     
     def sellorder(self,stname):
@@ -180,21 +183,30 @@ class Trade:
         if stname in self.stgyorder:
             self.stgyorder[stname]='h'
         
-    def setDailyValue(self,index):
+    def calcDailyValue(self,index):
         # day to day value
         self.dailyvalue.append(self.deposit+self.shares*self.ohlc_px['Adj Close'][index])
         
     def getDailyValue(self):
-        self.dy = pandas.DataFrame({'dayvalue':self.dailyvalue},index=self.ohlc_px.index.values)
-        #print self.dy
         return self.dy
-  
+        
+    def createDailyValueDf(self):
+        self.dy = pandas.DataFrame({'dayvalue':self.dailyvalue},index=self.ohlc_px.index.values)        
+        
+    def setDailyValueDf(self,dy):
+        self.dy=dy
+          
     def getTradeReport(self):
         return pandas.DataFrame({'order':self.ser_orders,'price':self.ser_price,'pnl':self.ser_pnl},index=self.ser_orderdate)
 
     def getFirstTradeIdx(self):
         return self.offset
     
+    def getBHprofit(self):
+        buypx = self.ohlc_px['Close'][self.offset]
+        lastpx = self.ohlc_px['Close'][-1]        
+        return lastpx-buypx
+        
     def getProfitOrderNum(self):
         return self.profit_order
 
@@ -218,7 +230,12 @@ class Trade:
         #    print ser[index],running_max[index],ddpct[index]
         #return min(0, cur_dd.min()) 
         
-    def basefacts(self,bm_returns,sgy_returns):
+    def getBasefacts(self,bmr,sgyr): #bm_returns,sgy_returns):
+        #print bm_returns,sgy_returns
+        minidx=min(len(bmr),len(sgyr))
+        bm_returns=bmr[-minidx:]
+        sgy_returns=sgyr[-minidx:]
+        print bm_returns,sgy_returns        
         covmat = np.cov(bm_returns,sgy_returns)
     
         beta = covmat[0,1]/covmat[1,1]

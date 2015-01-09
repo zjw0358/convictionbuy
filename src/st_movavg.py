@@ -45,14 +45,14 @@ class st_movavg:
                 
         if mvBuyFlag and pcmaBuyFlag:
             self.tradesup.buyorder(self.stname)
-            print "mvg buy@",index,price
+            #print "mvg buy@",index,price
         elif mvSellFlag and pcmaSellFlag:
             self.tradesup.sellorder(self.stname)
-            print "mvg sell@",index,price        
+            #print "mvg sell@",index,price        
         return
         
         
-    def runStrategy(self,ohlc):
+    def runStrategy(self,symbol,ohlc):
         self.tradesup.setup(ohlc,10000)
         self.dfmv = pd.DataFrame(index=ohlc.index)
         close_px = ohlc['Adj Close']  

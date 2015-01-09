@@ -10,13 +10,12 @@ import operator
 
 class st_quotient:
     def __init__(self,bt):
+        self.cleanup()
         self.stname = "quotient" #strategy name
         #setup component
         self.tradesup = bt.getTradeSupport()
         self.simutable = bt.getSimuTable()
-        #add strategy to trade order decision matrix
-        self.tradesup.addStrategy(self.stname)
-        self.cleanup()
+
 
     def getStrategyName(self):
         return self.stname
@@ -54,11 +53,7 @@ class st_quotient:
         print "c2,",self.c2
         print "c3,",self.c3  
         print "================================================================"
-
-    def getStrategyName(self):
-        return self.stname
-
-    def process(self,bt,symbol,param,ohlc_px,spy_px):
+    def setupParam(self,param):
         # default parameter
         k1 = 0.7
         k2 = 0.4
@@ -69,21 +64,60 @@ class st_quotient:
             k2 = float(param['k2'])
         if 'cl' in param:
             cl = int(param['cl'])
-        
-
-        
+        self.setup(k1,k2,cl)
+                
+    def process(self,bt,symbol,param,ohlc_px,spy_px):
         #different approach
-        
         if param['mode']=='1':
-            dv = self.processOptimization(symbol,ohlc_px,spy_px)
-            return dv
+            self.processOptimization(symbol,ohlc_px,spy_px)
+            return True
         elif param['mode']==None or param['mode']=='0':            
-            self.setup(k1,k2,cl)
-            dv = self.runStrategy(ohlc_px)
-            return dv
-        return None
+            self.setupParam(param)
+            self.runStrategy(ohlc_px)
+            return True
+        return False
 
-    
+        # strategy, find the buy&sell signal
+    def runStrategy(self,ohlc):
+        #initialize tradesupport
+        self.tradesup.setup(ohlc,10000)        
+        close_px = ohlc['Adj Close']
+        
+        # loop checking close price
+        for index in range(0, len(close_px)):
+            self.tradesup.processData(index)  # must be places at first          
+            self.procSingleData(index,close_px[index]) # the algorithm
+            self.tradesup.calcDailyValue(index) # update daily value
+            
+        #call this to create daily value data frame
+        self.tradesup.createDailyValueDf()
+
+    # automation optimization test
+    def processOptimization(self,symbol,ohlc,bm):
+        length = range(10, 60, 5)
+        k1set = [x * 0.1 for x in range(6, 10)]
+        k2set = [x * 0.1 for x in range(1, 5)]
+        
+        #must setup report tool before simulation test
+        self.simutable.setupSymbol(symbol,bm)
+
+        for k2 in k2set:
+            for k1 in k1set: 
+                for cl in length:
+                    self.cleanup() # in automation optimization must call cleanup before test
+                    self.setup(k1,k2,cl)
+                    #self.tradesup.setup(ohlc,10000)
+                    self.runStrategy(ohlc)
+                    
+                    param = "k1=%.1f,k2=%.1f,cl=%d"%(k1,k2,cl)
+                    self.simutable.addSymbolResult(param,self.tradesup.getDailyValue())
+        
+        #add results to report
+        self.simutable.makeSymbolReport()
+        self.tradesup.setDailyValueDf(self.simutable.getBestDv())
+
+
+                
     def EhlersSuperSmootherFilter(self,hp0,hp1,filt1,filt2):
         filt =  self.c1 * (hp0 + hp1) / 2 + self.c2 * filt1 + self.c3 * filt2;
         return filt
@@ -153,45 +187,7 @@ class st_quotient:
         if prevShortQuo>0 and Quotient2<=0:
             #print "quotient sell@",index
             self.tradesup.sellorder(self.stname)
-        
-
-
-    # strategy, find the buy&sell signal
-    def runStrategy(self,ohlc):
-        #initialize tradesupport
-        self.tradesup.setup(ohlc,10000)        
-        close_px = ohlc['Adj Close']
-        
-        # loop checking close price
-        for index in range(0, len(close_px)):
-            self.tradesup.processData(index)  # must be places at first          
-            self.procSingleData(index,close_px[index]) # the algorithm
-            self.tradesup.setDailyValue(index) # update daily value
-        
-        return self.tradesup.getDailyValue()
-
-    # automation optimization test
-    def processOptimization(self,symbol,ohlc,bm):
-        length = range(10, 60, 5)
-        k1set = [x * 0.1 for x in range(6, 10)]
-        k2set = [x * 0.1 for x in range(1, 5)]
-        
-        #must setup report tool before simulation test
-        self.simutable.setupSymbol(symbol,bm)
-
-        for k2 in k2set:
-            for k1 in k1set: 
-                for cl in length:
-                    self.cleanup() # in automation optimization must call cleanup before test
-                    self.setup(k1,k2,cl)
-                    #self.tradesup.setup(ohlc,10000)
-                    df = self.runStrategy(ohlc)                    
-                    param = "k1=%.1f,k2=%.1f,cl=%d"%(k1,k2,cl)
-                    self.simutable.addSymbolResult(param,df)
-        
-        #add results to report
-        self.simutable.makeSymbolReport()
-        return self.simutable.getBestDv()
+      
   
     #draw curve            
     def drawChart(self,ax,sdatelabel):

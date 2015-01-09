@@ -37,15 +37,17 @@ import datetime
 
 class BackTest:
     def __init__(self):
-        self.support = tradesupport.Trade()
-        self.simutable = simutable.SimuTable(self.support)
+        self.tradesup = tradesupport.Trade()
+        self.simutable = simutable.SimuTable(self.tradesup)
         self.parameter={}
         #default log to file, unless specified in parameter
         #sys.stdout = open("cbdaylog.txt", "w")
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
-
+        pandas.set_option('display.height', 1500)
+        pandas.set_option('display.max_rows', 1500)
+        self.dataPath="../data/"
 
     # google style portfolio file
     def loadPortfolioFile(self,fileName):
@@ -62,15 +64,19 @@ class BackTest:
         return stocklist
 
     def getTradeSupport(self):
-        return self.support
+        return self.tradesup
 
     def getSimuTable(self):
         return self.simutable
         
+    def getDataPath(self):
+        return self.dataPath
+        
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
-        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cf=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
-        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cf=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
+        print "optimization:run backtest.py -t aapl -p 'chart=1,mode=1' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cl=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
 
                     
     def parseOption(self):
@@ -120,6 +126,9 @@ class BackTest:
         c = getattr(module_meta, filename) 
         myobject = c(self)
         
+        #add strategy to trade order decision matrix
+        self.tradesup.addStrategy(myobject.getStrategyName())
+        
         #strategy name
         self.simutable.setName(filename)
         return myobject
@@ -147,8 +156,11 @@ class BackTest:
         #initialDeposit = 100000
         
 
-        saveDate=False
-        for ticker in self.ticklist:
+        firstTick=False
+        bm_offset = 0
+        stRet = True
+        
+        '''for ticker in self.ticklist:
             try:
                 all_data[ticker] = web.get_data_yahoo(ticker, self.startdate, self.enddate)
             except:
@@ -159,35 +171,66 @@ class BackTest:
             if saveDate==False:
                 sdate = all_data[ticker].index        
                 self.sdatelabel = sdate.to_pydatetime()
-                saveDate = True
+                saveDate = True'''
                 
 
         #benchmark_px is series?
-        benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
+        try:
+            benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
+            '''sdate = benchmark_px.index
+            self.sdatelabel = sdate.to_pydatetime()'''
+
+        except:
+            # IO error
+            print "System/Network Error when retrieving benchmark price, skip it"
+        
         if self.hasChart==True:
             self.setupChart()
             
-        bm_offset = 0
+        
         for ticker in self.ticklist:
-            #print all_data[ticker]
-            #close_px = all_data[ticker]['Adj Close']
-            ohlc_px = all_data[ticker]
-            
-            dv = strategy.process(self,ticker,self.parameter,ohlc_px,benchmark_px)
-            firstTradeIdx = self.support.getFirstTradeIdx()            
+            # retrieve data
+            try:
+                all_data[ticker] = web.get_data_yahoo(ticker, self.startdate, self.enddate)
+            except:
+                # IO error
+                print "System/Network Error when retrieving ",ticker," skip it"
+                continue
+            all_data[ticker] = self.convert2AdjPrice(all_data[ticker])
+            if firstTick==False:
+                sdate = all_data[ticker].index        
+                self.sdatelabel = sdate.to_pydatetime()
+
+                
+            # run strategy
+            ohlc_px = all_data[ticker]            
+            ret = strategy.process(self,ticker,self.parameter,ohlc_px,benchmark_px)
+            if ret==False:
+                stRet=False
+                continue
+            else:
+                dv = self.tradesup.getDailyValue()
+
+            '''firstTradeIdx = self.tradesup.getFirstTradeIdx()            
             if bm_offset==0 or firstTradeIdx<bm_offset:
-                bm_offset = firstTradeIdx
+                bm_offset = firstTradeIdx'''
           
             #print self.strategyName
             #print dv['dayvalue']
             #print firstTradeIdx  
-            if self.hasChart==True:
-                self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx)
-            
-        self.simutable.makeBestReport()
+            if firstTick==False:
+                if self.hasChart==True:
+                    firstTradeIdx = self.tradesup.getFirstTradeIdx()
+                    self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx)
+                firstTick=True
 
-        if self.hasChart==True:
-            self.drawBenchMark(benchmark_px,bm_offset)         
+        if stRet==True:  
+            self.simutable.makeBestReport()
+            if self.hasChart==True:
+                self.drawBenchMark(benchmark_px,bm_offset)
+        else:
+            if self.hasChart==True:
+                self.closeChart()
 
     def closeChart(self):
         plt.close(self.fig)
@@ -212,13 +255,13 @@ class BackTest:
         self.ax2.spines['right'].set_color("#5998ff")
         
 
-    #draw benchmark curve
+    #draw benchmark curve,offset=firstTradeIdx
     def drawBenchMark(self,benchmark_px,offset):
         textsize = 9
         bm_returns = benchmark_px[offset:].pct_change()
         bmret_index = (1+bm_returns).cumprod()
         bmret_index[offset] = 1
-        
+        print offset,len(self.sdatelabel[offset:]),len(bmret_index),len(bm_returns),len(benchmark_px)
         self.ax2.plot(self.sdatelabel[offset:],bmret_index,label='benchmark')        
         self.ax2.text(0.55, 0.95, self.perftxt, horizontalalignment='left',transform=self.ax2.transAxes, fontsize=textsize)
         
@@ -235,7 +278,7 @@ class BackTest:
         plt.show()
         return
     
-    # draw pnl vs benchmark curve 
+    # draw pnl vs benchmark curve ,offset=
     def drawChart(self,symbol,close_px,stgy_name,strgy_ret,offset):
         #plt.rc('axes', grid=True)
         #plt.rc('grid', color='0.75', linestyle='-', linewidth=0.5)
@@ -282,7 +325,7 @@ class BackTest:
         self.ax2.yaxis.label.set_color("b")
         
         # buy / sell orders annotation
-        dforders = self.support.getTradeReport()
+        dforders = self.tradesup.getTradeReport()
         if len(dforders.index)==0:
             return
         prevbuyyxis = 0

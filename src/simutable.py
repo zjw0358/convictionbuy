@@ -4,8 +4,8 @@ import time
 
 class SimuTable:
     def __init__(self,support):
-        columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade'] #,
-        self.besttable = pandas.DataFrame(columns=columns) 
+        self.columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade','bh_profit'] #,
+        self.besttable = pandas.DataFrame(columns=self.columns) 
         self.firstBestResultAdded = False
         self.support = support
         self.outputpath="../result/"
@@ -16,13 +16,14 @@ class SimuTable:
         return
     def setName(self,name):
         self.name = name
-          
+         
+  #bm=benchmark px 
     def setupSymbol(self,symbol,bm):
         self.symbol=symbol
         self.bm=bm
-        columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade'] #,
+        #columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade'] #,
         #dftbl = pandas.DataFrame(columns=columns,index=length) 
-        self.symtable = pandas.DataFrame(columns=columns) 
+        self.symtable = pandas.DataFrame(columns=self.columns) 
     
     #param - strategy parameter    
     #df - day value
@@ -35,8 +36,9 @@ class SimuTable:
         sgy_returns = rtsgy.pct_change()
         sgy_returns=sgy_returns.dropna()
         
+        bhprofit = self.support.getBHprofit() #buy&hold profit
         # get base facts,alpha,beta,volatility,etc
-        dct = self.support.basefacts(bm_returns,sgy_returns)
+        dct = self.support.getBasefacts(bm_returns,sgy_returns)
         
 
         tradereport = self.support.getTradeReport()
@@ -49,13 +51,13 @@ class SimuTable:
         
         d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
         'max_drawdown':self.support.getMaxdd(),'profit_order':self.support.getProfitOrderNum(),\
-        'loss_order':self.support.getLossOrderNum(),'last_trade':lastTrade}
+        'loss_order':self.support.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit}
         
         # add new row with external index start from 1,2,3
         self.symtable.loc[len(self.symtable)+1]=d0
         
     def makeSymbolReport(self):
-        sortTable = self.symtable.sort_index(by='perf')
+        sortTable = self.symtable.sort_index(by='perf',ascending=False)
         filename=self.outputpath+self.symbol+'_'+self.name+time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
         try:
             sortTable.to_csv(filename,sep=',')
@@ -68,17 +70,18 @@ class SimuTable:
         print "================================================================"
         
 
-        bestrow = sortTable.tail(1).iloc[0]        
+        bestrow = sortTable.head(1).iloc[0]        
         self.besttable.loc[len(self.besttable)+1]=bestrow
         
     def makeBestReport(self):
         sortTable = self.besttable.sort_index(by='perf')
         filename=self.outputpath+self.name+"_best_"+time.strftime('%Y-%m-%d.csv',time.localtime(time.time()))
         sortTable.to_csv(filename,sep=',')
-        print "================================================================"
-        print self.name + " portfolio best performance:"
-        print sortTable
-        print "================================================================"
+        if not sortTable.empty:
+            print "================================================================"
+            print self.name + " portfolio best performance:"
+            print sortTable
+            print "================================================================"
             
     def getBestDv(self):
         #print "bestdv=",self.bestdv
