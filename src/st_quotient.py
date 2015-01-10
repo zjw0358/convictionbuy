@@ -106,9 +106,10 @@ class st_quotient:
                 for cl in length:
                     self.cleanup() # in automation optimization must call cleanup before test
                     self.setup(k1,k2,cl)
-                    #self.tradesup.setup(ohlc,10000)
+                    
                     self.runStrategy(ohlc)
                     
+                    # to generate simulation report
                     param = "k1=%.1f,k2=%.1f,cl=%d"%(k1,k2,cl)
                     self.simutable.addSymbolResult(param,self.tradesup.getDailyValue())
         

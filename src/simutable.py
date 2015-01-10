@@ -10,6 +10,7 @@ class SimuTable:
         self.support = support
         self.outputpath="../result/"
         self.bestperf=0
+        self.bestperfFirstTradeIdx=0
         #self.bestdv# = pandas.DataFrame(columns='dayvalue')
         print "SimuTable initialized"
 
@@ -43,11 +44,15 @@ class SimuTable:
 
         tradereport = self.support.getTradeReport()
         lastTrade = tradereport.tail(1).to_string(header=False)
-        print tradereport
+        
+        #find the best performance
         perfdata = tradereport['pnl'].sum()
+        print tradereport,"PnL=",perfdata,"B/H profit=",bhprofit
         if perfdata>self.bestperf:
             self.bestperf = perfdata
-            self.bestdv=df #this is best day value data frame
+            self.bestdv = df #this is best day value data frame
+            self.bestperfFirstTradeIdx = firstTradeIdx
+            
         
         d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
         'max_drawdown':self.support.getMaxdd(),'profit_order':self.support.getProfitOrderNum(),\
@@ -72,6 +77,10 @@ class SimuTable:
 
         bestrow = sortTable.head(1).iloc[0]        
         self.besttable.loc[len(self.besttable)+1]=bestrow
+        
+        #
+        print "set first trade index as set its first tradeidx=",self.bestperfFirstTradeIdx
+        self.support.setFirstTradeIdxWithBestPerf(self.bestperfFirstTradeIdx)
         
     def makeBestReport(self):
         sortTable = self.besttable.sort_index(by='perf')

@@ -3,14 +3,18 @@ import pandas
 
 class Trade:
     def __init__(self):
-        self.stgyorder={}
+        self.stgyorder = {}
+
+    # call this when run a new strategy      
     def setup(self,ohlc_px,deposit):
         self.verbose = True
-        if self.verbose==True:
+        if self.verbose == True:
             print "========== T R A D I N G L O G ====================="
 
-        self.ohlc_px=ohlc_px
+        self.ohlc_px = ohlc_px
         self.deposit = deposit
+        self.initialdeposit = deposit
+        
         self.shares = 0
         self.ser_orders = []
         self.ser_orderdate = []
@@ -21,11 +25,11 @@ class Trade:
         self.profit_order = 0
         self.loss_order = 0
         self.trancost = 0
-        self.dailyvalue=[]
+        self.dailyvalue = []
         self.buyopen = False
-        self.offset=0
+        self.firstTradeIdx = 0  #reset first trade index
         for strategy in self.stgyorder:
-            self.stgyorder[strategy]=''
+            self.stgyorder[strategy] = ''
 
   
     def getMeanpx(self,index):
@@ -73,8 +77,8 @@ class Trade:
             self.shares = int(buypower/meanpx)
             self.trancost = self.shares*meanpx + self.getBuyComm(self.shares*meanpx)
             self.deposit = self.deposit-self.trancost
-            if self.offset==0:
-                self.offset = index
+            if self.firstTradeIdx==0:
+                self.firstTradeIdx = index
                 
             datelb = self.ohlc_px.index[index].to_pydatetime()
 
@@ -198,14 +202,25 @@ class Trade:
           
     def getTradeReport(self):
         return pandas.DataFrame({'order':self.ser_orders,'price':self.ser_price,'pnl':self.ser_pnl},index=self.ser_orderdate)
-
-    def getFirstTradeIdx(self):
-        return self.offset
     
+    #this is set by simutable, replace the current first trade idx with best performance first trade idx
+    def setFirstTradeIdxWithBestPerf(self,idx):
+        self.firstTradeIdx = idx
+        
+    def getFirstTradeIdx(self):
+        return self.firstTradeIdx
+
+    def getFirstTradeDate(self):
+        d = self.ohlc_px.index[self.firstTradeIdx]
+        return d
+        
     def getBHprofit(self):
-        buypx = self.ohlc_px['Close'][self.offset]
-        lastpx = self.ohlc_px['Close'][-1]        
-        return lastpx-buypx
+        buypx = self.ohlc_px['Close'][self.firstTradeIdx]
+        lastpx = self.ohlc_px['Close'][-1]
+
+        bhp = round(self.initialdeposit/buypx*lastpx - self.initialdeposit,2)
+        #print "buy=",buypx,"sell=",lastpx,"profit=",bhp
+        return bhp
         
     def getProfitOrderNum(self):
         return self.profit_order
@@ -216,7 +231,7 @@ class Trade:
     # max drawdown    
     #print "Max draw down %.2f %%" % (maxdd(df['dayvalue'][offset:])*100)            
     def getMaxdd(self):
-        ser = self.dy['dayvalue'][self.offset:]
+        ser = self.dy['dayvalue'][self.firstTradeIdx:]
         # only compare each point to the previous running peak
         # O(N)
         running_max = pandas.expanding_max(ser)
@@ -235,7 +250,7 @@ class Trade:
         minidx=min(len(bmr),len(sgyr))
         bm_returns=bmr[-minidx:]
         sgy_returns=sgyr[-minidx:]
-        print bm_returns,sgy_returns        
+        #print bm_returns,sgy_returns        
         covmat = np.cov(bm_returns,sgy_returns)
     
         beta = covmat[0,1]/covmat[1,1]

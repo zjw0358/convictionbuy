@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import pandas.io.data as web
 import pandas
 import datetime
-
+import glob #list files
 
 
    
@@ -30,16 +30,12 @@ import datetime
      #returns = daily_rets.resample('1B',how=compound)
      return daily_sr(daily_rets)*np.sqrt(252)'''
 
-
-
-    
-
-
 class BackTest:
     def __init__(self):
         self.tradesup = tradesupport.Trade()
         self.simutable = simutable.SimuTable(self.tradesup)
-        self.parameter={}
+        self.parameter = {}
+        self.stgyBatch = []
         #default log to file, unless specified in parameter
         #sys.stdout = open("cbdaylog.txt", "w")
         pandas.set_option('display.max_columns', 50)
@@ -47,7 +43,8 @@ class BackTest:
         pandas.set_option('display.expand_frame_repr', False)
         pandas.set_option('display.height', 1500)
         pandas.set_option('display.max_rows', 1500)
-        self.dataPath="../data/"
+        self.dataPath = "../data/"
+        self.resultPath = "../result/"
 
     # google style portfolio file
     def loadPortfolioFile(self,fileName):
@@ -61,6 +58,7 @@ class BackTest:
             print symbol
             stocklist.append(symbol)
                     
+        fp.close()
         return stocklist
 
     def getTradeSupport(self):
@@ -75,6 +73,7 @@ class BackTest:
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
         print "optimization:run backtest.py -t aapl -p 'chart=1,mode=1' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "strategy batch:run backtest.py -b st_quotient"
         print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
         print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cl=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
 
@@ -84,9 +83,9 @@ class BackTest:
         self.enddate= datetime.datetime.now().strftime("%Y-%m-%d")
         self.ticklist=[]
         self.strategy=""
-        
+        ret=False
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:g:s:e:p:", ["filename", "ticklist","strategy","startdate","enddate","parameter"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:g:s:e:p:b:", ["filename", "ticklist","strategy","startdate","enddate","parameter"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
@@ -95,7 +94,8 @@ class BackTest:
             elif opt in ("-t", "--ticklist"):
                 newstr = arg.replace("'", "")                
                 self.ticklist = newstr.split()
-                
+            elif opt in ("-b", "--strategybatch"):
+                ret = self.loadStrategyBatchCfg(arg)                
             elif opt in ("-g", "--strategy"):
                 self.strategyName  = arg
             elif opt in ("-s", "--startdate"):
@@ -113,11 +113,14 @@ class BackTest:
             if self.parameter['chart']=='1':
                 self.hasChart = True
                 print "enable chart"
-                            
-        if (not self.ticklist) or (self.strategyName==""):
-            self.usage()
-            sys.exit()
+                
+        if not ret:            
+            if (not self.ticklist) or (self.strategyName==""):
+                self.usage()
+                sys.exit()
             
+   
+        
     def createStrategy(self,filename):
         #__import__(filename)
         #strategy = getattr(sys.modules[filename], filename)
@@ -133,11 +136,40 @@ class BackTest:
         self.simutable.setName(filename)
         return myobject
                 
+    def loadStrategyBatchCfg(self,fileName):
+        fileName=self.dataPath+fileName
+        fp = open(fileName,'r',-1)
+        for line in fp:         
+            name,file = line.split('=')
+            self.stgyBatch.append({name,file})
+        fp.close()
+        return True
+    
+    #file name format:st_quotient_best_2015-01-10.csv  
+    def parseStrategyResult(self):
+        for stname,stfileprefix in self.stgyBatch:
+            pattern = self.resultPath+stfileprefix+'*'
+            datePattern = self.resultPath+stfileprefix+'_%Y-%m-%d.csv'
+            latest = datetime.datetime(1990,1,1)
+            newestFile = ""
+            for fn in glob.glob(pattern):
+                # extract date
+                d = datetime.datetime.strptime(fn, datePattern)
+                if d>latest:
+                    latest=d
+                    newestFile = fn
+            print latest,fn
+            
+        
+        return  
     #[backtest] strategy protfolio startdate enddate
     def process(self):
-        self.parseOption()          
-        strategy = self.createStrategy(self.strategyName)
-        self.startTest(strategy)
+        self.parseOption() 
+        if len(self.stgyBatch)>0:
+           self.parseStrategyResult()
+        else:   
+            strategy = self.createStrategy(self.strategyName)
+            self.startTest(strategy)
 
     def convert2AdjPrice(self,df):
         ratio=1.
@@ -205,7 +237,7 @@ class BackTest:
             # run strategy
             ohlc_px = all_data[ticker]            
             ret = strategy.process(self,ticker,self.parameter,ohlc_px,benchmark_px)
-            if ret==False:
+            if ret==False: # e.g. parameter mode is not reconginzed
                 stRet=False
                 continue
             else:
@@ -221,13 +253,15 @@ class BackTest:
             if firstTick==False:
                 if self.hasChart==True:
                     firstTradeIdx = self.tradesup.getFirstTradeIdx()
+                    firstTradeDate = self.tradesup.getFirstTradeDate()
+                    print "first trade info=",firstTradeIdx,firstTradeDate
                     self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx)
                 firstTick=True
 
         if stRet==True:  
             self.simutable.makeBestReport()
             if self.hasChart==True:
-                self.drawBenchMark(benchmark_px,bm_offset)
+                self.drawBenchMark(benchmark_px,firstTradeIdx,firstTradeDate)
         else:
             if self.hasChart==True:
                 self.closeChart()
@@ -256,13 +290,16 @@ class BackTest:
         
 
     #draw benchmark curve,offset=firstTradeIdx
-    def drawBenchMark(self,benchmark_px,offset):
+    def drawBenchMark(self,benchmark_px,firstDateOffset,firstTradeDate):
         textsize = 9
-        bm_returns = benchmark_px[offset:].pct_change()
+        bm_offset=benchmark_px.index.get_loc(firstTradeDate)
+        print firstTradeDate,bm_offset
+        bm_returns = benchmark_px[bm_offset:].pct_change()
         bmret_index = (1+bm_returns).cumprod()
-        bmret_index[offset] = 1
-        print offset,len(self.sdatelabel[offset:]),len(bmret_index),len(bm_returns),len(benchmark_px)
-        self.ax2.plot(self.sdatelabel[offset:],bmret_index,label='benchmark')        
+        bmret_index[bm_offset] = 1
+        #print offset,len(self.sdatelabel[offset:]),len(bmret_index),len(bm_returns),len(benchmark_px)
+        
+        self.ax2.plot(self.sdatelabel[firstDateOffset:],bmret_index,label='benchmark')        
         self.ax2.text(0.55, 0.95, self.perftxt, horizontalalignment='left',transform=self.ax2.transAxes, fontsize=textsize)
         
         #draw legend at upper left
@@ -311,10 +348,7 @@ class BackTest:
         #ax2.text(0.55, 0.95, lastPctStr, horizontalalignment='left',transform=ax2.transAxes, fontsize=textsize) 
         perftxt = " %s:%.2f %s:%.2f" %(symbol,pxret_index.iloc[-1],stgy_name,sgyret_index.iloc[-1])
         self.perftxt += perftxt
-        
-        #ax2.text(0.025, 0.95, lastPctStr, verticalalignment='top',transform=ax2.transAxes, fontsize=textsize)
-    
-        #ax2.plot(sdatelabel[offset:],bmret_index,label='benchmark')
+        print "chart start at", self.sdatelabel[offset] 
         self.ax2.plot(self.sdatelabel[offset:],pxret_index,label=symbol)
         self.ax2.plot(self.sdatelabel[offset:],sgyret_index,label=stgy_name)
         self.ax2.grid(True, color='w')
