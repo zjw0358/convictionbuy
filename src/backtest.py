@@ -11,12 +11,13 @@ import getopt
 #from datetime import datetime
 import simutable
 import tradesupport
+import testreport
 import matplotlib.pyplot as plt
 import pandas.io.data as web
 import pandas
 import datetime
 import glob #list files
-
+import re   # replace char 
 
    
 # sharpe
@@ -35,7 +36,7 @@ class BackTest:
         self.tradesup = tradesupport.Trade()
         self.simutable = simutable.SimuTable(self.tradesup)
         self.parameter = {}
-        self.stgyBatch = []
+        self.stgyBatchCfg = []
         #default log to file, unless specified in parameter
         #sys.stdout = open("cbdaylog.txt", "w")
         pandas.set_option('display.max_columns', 50)
@@ -69,13 +70,16 @@ class BackTest:
         
     def getDataPath(self):
         return self.dataPath
+
+    def getResultPath(self):
+        return self.resultPath
         
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
-        print "optimization:run backtest.py -t aapl -p 'chart=1,mode=1' -g st_quotient -s 2010-01-01 -e 2015-01-05"
-        print "strategy batch:run backtest.py -b st_quotient"
-        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
-        print "example:run backtest.py -t aapl -p 'chart=1,mode=0,k1=0.7,k2=0.4,cl=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
+        print "optimization:run backtest.py -t aapl -p 'chart=1&mode=1' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "strategy batch:run backtest.py -b strategylist.txt"
+        print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
 
                     
     def parseOption(self):
@@ -103,10 +107,8 @@ class BackTest:
             elif opt in ("-e", "--enddate"):
                 self.enddate = arg
             elif opt in ("-p", "--parameter"):
-                newstr = arg.replace("'", "")   
-                for item in newstr.split(','):
-                    key,value = item.split('=')
-                    self.parameter[key]=value
+                self.parameter = self.parseParam(arg)
+                
         self.hasChart = False
         
         if 'chart' in self.parameter:
@@ -119,8 +121,17 @@ class BackTest:
                 self.usage()
                 sys.exit()
             
-   
-        
+    #parse parameter str: k1=0.9,k2=0.4,cl=30
+    # return param dict
+    def parseParam(self,arg):
+        param = {}
+        #newstr = arg.replace("'", "")   
+        newstr=re.sub('[ \'"]','',arg)
+        for item in newstr.split('&'):
+            key,value = item.split('=')
+            param[key] = value  
+        return param
+            
     def createStrategy(self,filename):
         #__import__(filename)
         #strategy = getattr(sys.modules[filename], filename)
@@ -128,26 +139,31 @@ class BackTest:
         print module_meta
         c = getattr(module_meta, filename) 
         myobject = c(self)
-        
+        print "created strategy=",filename
         #add strategy to trade order decision matrix
         self.tradesup.addStrategy(myobject.getStrategyName())
         
         #strategy name
         self.simutable.setName(filename)
         return myobject
-                
+        
+    ############################################################################
+    # strategy batch
+    ############################################################################
+    # load into strategy, strategy_result_file
     def loadStrategyBatchCfg(self,fileName):
-        fileName=self.dataPath+fileName
+        fileName = self.dataPath + fileName
         fp = open(fileName,'r',-1)
         for line in fp:         
             name,file = line.split('=')
-            self.stgyBatch.append({name,file})
+            self.stgyBatchCfg.append({name,file})
         fp.close()
         return True
     
     #file name format:st_quotient_best_2015-01-10.csv  
     def parseStrategyResult(self):
-        for stname,stfileprefix in self.stgyBatch:
+        self.stgyBatch={} # [{name,file},{}]
+        for stname,stfileprefix in self.stgyBatchCfg:
             pattern = self.resultPath+stfileprefix+'*'
             datePattern = self.resultPath+stfileprefix+'_%Y-%m-%d.csv'
             latest = datetime.datetime(1990,1,1)
@@ -158,15 +174,88 @@ class BackTest:
                 if d>latest:
                     latest=d
                     newestFile = fn
-            print latest,fn
+            self.stgyBatch[stname] = newestFile
+            
+        #print self.stgyBatch
+        return 
+        
+    def runStrategyBatch(self):
+        self.hasChart = False
+        
+            
+        tick2StgyBatch = {}
+        
+        batchrept = testreport.TestReport(self)
+        batchrept.setup(self.getBenchmarkPx())
+        
+
+        
+                
+        for stkey in self.stgyBatch:           
+            fileName = self.stgyBatch[stkey]
+            fp = open(fileName,'r',-1)
+            fp.readline() # skip first line
+            for line in fp:         
+                items = line.split(',')
+                symbol = items[1] #symbol
+                param = items[2]
+                if not symbol in tick2StgyBatch:
+                    stgyParam = {}
+                    tick2StgyBatch[symbol] = stgyParam
+                else:
+                    stgyParam = tick2StgyBatch[symbol]
+                stgyParam[stkey] = param
+                    
+            fp.close()
+            
+        stgySet = ["%s\n" % item  for item in self.stgyBatch]
+        print "strategy = ", stgySet 
             
         
-        return  
+        
+        # strategy instance mapping
+        print self.startdate, self.enddate
+        stgyInstx = {}
+        for tick in tick2StgyBatch:            
+            stgyParam =  tick2StgyBatch[tick]
+            # download
+            try:
+                tickOhlcPx = web.get_data_yahoo(tick, self.startdate, self.enddate) #startdate
+            except:
+                # IO error
+                print "System/Network Error when retrieving ",tick," skip it"
+                continue
+            tickOhlcPx = self.convert2AdjPrice(tickOhlcPx)
+            
+            for stgyName in stgyParam:
+                if not stgyName in stgyInstx:
+                    #create strategy
+                    stgy = self.createStrategy(stgyName)
+                    stgyInstx[stgyName] = stgy
+                else:
+                    stgy = stgyInstx[stgyName]
+                    
+                paramstr = stgyParam[stgyName]
+                #print stgy,param
+                param = self.parseParam(paramstr)
+                
+                stgy.setupParam(param)
+                stgy.runStrategy(tick, tickOhlcPx)                
+                batchrept.addTestResult(tick, stgyName, paramstr, self.tradesup.getDailyValue())
+                    
+        batchrept.createTestReport()
+        return 
+    
+    
+    ###########################################################################
+    # main routine
+    ###########################################################################        
     #[backtest] strategy protfolio startdate enddate
     def process(self):
         self.parseOption() 
-        if len(self.stgyBatch)>0:
+        if len(self.stgyBatchCfg)>0:
            self.parseStrategyResult()
+           self.runStrategyBatch()
         else:   
             strategy = self.createStrategy(self.strategyName)
             self.startTest(strategy)
@@ -182,30 +271,21 @@ class BackTest:
                 df.loc[index,'Low']=df.loc[index,'Low']*ratio
         return df
         
+    def getBenchmarkPx(self):
+        try:
+            benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
+        except:
+            # IO error
+            print "System/Network Error when retrieving benchmark price, skip it"
+        return benchmark_px
+        
     def startTest(self,strategy):
         #prepare data
         all_data = {}
-        #initialDeposit = 100000
-        
-
         firstTick=False
-        bm_offset = 0
         stRet = True
         
-        '''for ticker in self.ticklist:
-            try:
-                all_data[ticker] = web.get_data_yahoo(ticker, self.startdate, self.enddate)
-            except:
-                # IO error
-                print "System/Network Error when retrieving ",ticker," skip it"
-                continue
-            all_data[ticker] = self.convert2AdjPrice(all_data[ticker])
-            if saveDate==False:
-                sdate = all_data[ticker].index        
-                self.sdatelabel = sdate.to_pydatetime()
-                saveDate = True'''
-                
-
+      
         #benchmark_px is series?
         try:
             benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
@@ -261,7 +341,8 @@ class BackTest:
         if stRet==True:  
             self.simutable.makeBestReport()
             if self.hasChart==True:
-                self.drawBenchMark(benchmark_px,firstTradeIdx,firstTradeDate)
+                print
+                #self.drawBenchMark(benchmark_px,firstTradeIdx,firstTradeDate)
         else:
             if self.hasChart==True:
                 self.closeChart()
@@ -317,18 +398,6 @@ class BackTest:
     
     # draw pnl vs benchmark curve ,offset=
     def drawChart(self,symbol,close_px,stgy_name,strgy_ret,offset):
-        #plt.rc('axes', grid=True)
-        #plt.rc('grid', color='0.75', linestyle='-', linewidth=0.5)
-        
-        #textsize = 9
-    
-        #ax2t = ax2.twinx()
-        #ax3  = fig.add_axes(rect3, axisbg=axescolor, sharex=ax1)
-        #plt.setp(ax1.get_xticklabels(), visible=False)
-        #plt.setp(ax3.get_xticklabels(), visible=False)
-        #plt.setp(ax2t.get_xticklabels(), visible=False)
-            
-        #ax1
         px_returns = close_px[offset:].pct_change()
         pxret_index = (1+px_returns).cumprod()
         pxret_index[offset] = 1
@@ -338,14 +407,11 @@ class BackTest:
         
         sgy_returns = strgy_ret[offset:].pct_change()
         sgyret_index = (1+sgy_returns).cumprod()
-        sgyret_index[offset] = 1
+        sgyret_index[0] = 1
         
         stgy_name = stgy_name+"_"+symbol
         
 
-        
-        #lastPctStr = "benchmark:%.2f,portfolio:%.2f,strategy:%.2f" %(bmret_index.iloc[-1],pxret_index.iloc[-1],sgyret_index.iloc[-1])
-        #ax2.text(0.55, 0.95, lastPctStr, horizontalalignment='left',transform=ax2.transAxes, fontsize=textsize) 
         perftxt = " %s:%.2f %s:%.2f" %(symbol,pxret_index.iloc[-1],stgy_name,sgyret_index.iloc[-1])
         self.perftxt += perftxt
         print "chart start at", self.sdatelabel[offset] 
@@ -358,8 +424,12 @@ class BackTest:
         self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.ax2.yaxis.label.set_color("b")
         
+        ########################################################################
         # buy / sell orders annotation
         dforders = self.tradesup.getTradeReport()
+        print "\n"
+        print "== BEST TRADE REPORT ==========================================="
+        print dforders
         if len(dforders.index)==0:
             return
         prevbuyyxis = 0
@@ -395,6 +465,8 @@ class BackTest:
                 xytext=(date, newyxis),                
                 arrowprops=dict(facecolor='black'),
                 horizontalalignment='left', verticalalignment='top')
+                # debug
+                # print ordertxt,oriyxis,newyxis
             else:
                 datedelta = (date-prevselldate).days
                 prevselldate = date

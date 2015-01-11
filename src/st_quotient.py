@@ -31,6 +31,7 @@ class st_quotient:
         self.pricelst=[]
         
     def setup(self,k1,k2,cl):
+        self.cleanup() #must call cleanup before test
         self.k1=k1
         self.k2=k2
         self.cutoffLength = cl  
@@ -73,14 +74,14 @@ class st_quotient:
             return True
         elif param['mode']==None or param['mode']=='0':            
             self.setupParam(param)
-            self.runStrategy(ohlc_px)
+            self.runStrategy(symbol, ohlc_px)
             return True
         return False
 
         # strategy, find the buy&sell signal
-    def runStrategy(self,ohlc):
+    def runStrategy(self,symbol,ohlc):
         #initialize tradesupport
-        self.tradesup.setup(ohlc,10000)        
+        self.tradesup.setup(symbol, ohlc)        
         close_px = ohlc['Adj Close']
         
         # loop checking close price
@@ -104,21 +105,21 @@ class st_quotient:
         for k2 in k2set:
             for k1 in k1set: 
                 for cl in length:
-                    self.cleanup() # in automation optimization must call cleanup before test
+                    #self.cleanup() # in automation optimization must call cleanup before test
                     self.setup(k1,k2,cl)
-                    
-                    self.runStrategy(ohlc)
+                    self.runStrategy(symbol,ohlc)
                     
                     # to generate simulation report
-                    param = "k1=%.1f,k2=%.1f,cl=%d"%(k1,k2,cl)
-                    self.simutable.addSymbolResult(param,self.tradesup.getDailyValue())
+                    param = "k1=%.1f&k2=%.1f&cl=%d"%(k1,k2,cl)
+                    self.simutable.addOneTestResult(param,self.tradesup.getDailyValue())
         
         #add results to report
-        self.simutable.makeSymbolReport()
+        self.simutable.makeSimuReport()
         self.tradesup.setDailyValueDf(self.simutable.getBestDv())
 
-
-                
+    ############################################################################
+    # ALGORITHM
+    ############################################################################            
     def EhlersSuperSmootherFilter(self,hp0,hp1,filt1,filt2):
         filt =  self.c1 * (hp0 + hp1) / 2 + self.c2 * filt1 + self.c3 * filt2;
         return filt

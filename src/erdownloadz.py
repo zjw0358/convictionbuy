@@ -72,7 +72,7 @@ class EarningdateZack:
         fp.close()    
 
     def loadErdFile(self,symbol):
-        fileName=self.path+symbol+"_erdate.erd"
+        fileName = self.path+symbol+"_erdate.erd"
         fp = open(fileName,'r',-1)
         erlst = pickle.load(fp)
         print erlst

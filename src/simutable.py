@@ -7,7 +7,7 @@ class SimuTable:
         self.columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade','bh_profit'] #,
         self.besttable = pandas.DataFrame(columns=self.columns) 
         self.firstBestResultAdded = False
-        self.support = support
+        self.tradesup = support
         self.outputpath="../result/"
         self.bestperf=0
         self.bestperfFirstTradeIdx=0
@@ -28,8 +28,8 @@ class SimuTable:
     
     #param - strategy parameter    
     #df - day value
-    def addSymbolResult(self,param,df):
-        firstTradeIdx = self.support.getFirstTradeIdx()
+    def addOneTestResult(self,param,df):
+        firstTradeIdx = self.tradesup.getFirstTradeIdx()
         rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
         bm_returns = rtbm.pct_change()        
         bm_returns = bm_returns.dropna()
@@ -37,12 +37,12 @@ class SimuTable:
         sgy_returns = rtsgy.pct_change()
         sgy_returns=sgy_returns.dropna()
         
-        bhprofit = self.support.getBHprofit() #buy&hold profit
+        bhprofit = self.tradesup.getBHprofit() #buy&hold profit
         # get base facts,alpha,beta,volatility,etc
-        dct = self.support.getBasefacts(bm_returns,sgy_returns)
+        dct = self.tradesup.getBasefacts(bm_returns,sgy_returns)
         
 
-        tradereport = self.support.getTradeReport()
+        tradereport = self.tradesup.getTradeReport()
         lastTrade = tradereport.tail(1).to_string(header=False)
         
         #find the best performance
@@ -52,16 +52,16 @@ class SimuTable:
             self.bestperf = perfdata
             self.bestdv = df #this is best day value data frame
             self.bestperfFirstTradeIdx = firstTradeIdx
-            
+            self.bestperfRept = self.tradesup.getTradeReport()
         
         d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
-        'max_drawdown':self.support.getMaxdd(),'profit_order':self.support.getProfitOrderNum(),\
-        'loss_order':self.support.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit}
+        'max_drawdown':self.tradesup.getMaxdd(),'profit_order':self.tradesup.getProfitOrderNum(),\
+        'loss_order':self.tradesup.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit}
         
         # add new row with external index start from 1,2,3
         self.symtable.loc[len(self.symtable)+1]=d0
         
-    def makeSymbolReport(self):
+    def makeSimuReport(self):
         sortTable = self.symtable.sort_index(by='perf',ascending=False)
         filename=self.outputpath+self.symbol+'_'+self.name+time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
         try:
@@ -78,9 +78,10 @@ class SimuTable:
         bestrow = sortTable.head(1).iloc[0]        
         self.besttable.loc[len(self.besttable)+1]=bestrow
         
-        #
+        # reset tradesup data, because we are running optimization test
         print "set first trade index as set its first tradeidx=",self.bestperfFirstTradeIdx
-        self.support.setFirstTradeIdxWithBestPerf(self.bestperfFirstTradeIdx)
+        self.tradesup.setFirstTradeIdxWithBestPerf(self.bestperfFirstTradeIdx)
+        self.tradesup.setTradeReportWithBestPerf(self.bestperfRept)
         
     def makeBestReport(self):
         sortTable = self.besttable.sort_index(by='perf')

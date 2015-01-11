@@ -6,10 +6,10 @@ class Trade:
         self.stgyorder = {}
 
     # call this when run a new strategy      
-    def setup(self,ohlc_px,deposit):
+    def setup(self,symbol, ohlc_px,deposit = 10000):
         self.verbose = True
         if self.verbose == True:
-            print "========== T R A D I N G L O G ====================="
+            print "========== T R A D I N G L O G @",symbol, "====================="
 
         self.ohlc_px = ohlc_px
         self.deposit = deposit
@@ -196,12 +196,16 @@ class Trade:
         
     def createDailyValueDf(self):
         self.dy = pandas.DataFrame({'dayvalue':self.dailyvalue},index=self.ohlc_px.index.values)        
+        self.tradeRept = pandas.DataFrame({'order':self.ser_orders,'price':self.ser_price,'pnl':self.ser_pnl},index=self.ser_orderdate)
         
     def setDailyValueDf(self,dy):
         self.dy=dy
-          
+
+    def setTradeReportWithBestPerf(self, rept):
+        self.tradeRept = rept
+        
     def getTradeReport(self):
-        return pandas.DataFrame({'order':self.ser_orders,'price':self.ser_price,'pnl':self.ser_pnl},index=self.ser_orderdate)
+        return self.tradeRept
     
     #this is set by simutable, replace the current first trade idx with best performance first trade idx
     def setFirstTradeIdxWithBestPerf(self,idx):
