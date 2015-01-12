@@ -219,6 +219,7 @@ class Trade:
         return d
         
     def getBHprofit(self):
+        #print "first trade date=",self.getFirstTradeDate()
         buypx = self.ohlc_px['Close'][self.firstTradeIdx]
         lastpx = self.ohlc_px['Close'][-1]
 

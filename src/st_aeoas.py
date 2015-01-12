@@ -30,8 +30,8 @@ class st_aeoas:
         self.hacema1 = 2.0/(hacWin+1)
         self.hacema2 = 1 - self.hacema1
         print "=== A EXPERT OF A SYSTEM SETUP==========================================="
-        print "typical period=",typWin
-        print "heikin-ashi period=",hacWin
+        print "typical period=",typWin,self.typema1,self.typema2
+        print "heikin-ashi period=",hacWin,self.hacema1,self.hacema2
         print "================================================================"
         return
         
@@ -53,19 +53,20 @@ class st_aeoas:
     
     # process single date data        
     def procSingleData(self, index, ohlc):
-        avg4 = (ohlc['High'] + ohlc['Low'] + ohlc['Close'] + ohlc['Open'])/4
+        avg0 = (ohlc['High'] + ohlc['Low'] + ohlc['Close'] + ohlc['Open'])/4
+        avg1 = (self.ohlc['High'].iloc[index-1] + self.ohlc['Low'].iloc[index-1] + self.ohlc['Close'].iloc[index-1] + self.ohlc['Open'].iloc[index-1])/4
         typical = (ohlc['High'] + ohlc['Low'] + ohlc['Close']) / 3
 
         if index > 0:
-            haOpen = avg4 + (self.haopenLst[index-1]/2)
+            haOpen = (avg1 + self.haopenLst[index-1])/2
             avgTyp = typical*self.typema1 + self.typema2*self.avgTypEmaLst[index-1]
         else:
             haOpen = 0
             avgTyp = typical
-        haC = (avg4 + haOpen + max(ohlc['High'],haOpen) + min(ohlc['Low'], haOpen)) / 4
+        haC = (avg0 + haOpen + max(ohlc['High'],haOpen) + min(ohlc['Low'], haOpen)) / 4
         
         if index > 0:
-            avgHac = haC*self.hacema1 + self.typema2*self.avgHacEmaLst[index-1]
+            avgHac = haC*self.hacema1 + self.hacema2*self.avgHacEmaLst[index-1]
         else:
             avgHac = haC
 
@@ -76,14 +77,16 @@ class st_aeoas:
         self.avgHacEmaLst.append(avgHac)
         
         # trading signal
-        
+        #debug
+        #ohlc['High'] , ohlc['Low'] , ohlc['Close'] , ohlc['Open']
+        #print self.ohlc.index[index],haOpen,haC,avgTyp,avgHac
         if (avgTyp > avgHac) and (ohlc['Close'] > ohlc['Open']):          
             self.tradesup.buyorder(self.stname)
-            print "aeoas buy@",index
+            #print "aeoas buy@",index
                 
         if (avgTyp < avgHac) and (ohlc['Close'] < ohlc['Open']):
             self.tradesup.sellorder(self.stname)
-            print "aeoas sell@",index,avgTyp,avgHac,ohlc['Close'],ohlc['Open']
+            #print "aeoas sell@",index,avgTyp,avgHac,ohlc['Close'],ohlc['Open']
         return 
        
   
@@ -108,7 +111,8 @@ class st_aeoas:
 
     def runStrategy(self,symbol,ohlc):
         #initialize tradesupport
-        self.tradesup.setup(symbol, ohlc)                    
+        self.tradesup.setup(symbol, ohlc) 
+        self.ohlc = ohlc                   
         # loop checking close price
         for index in range(0, len(ohlc)):
             self.tradesup.processData(index)  # must be places at first          
@@ -118,8 +122,33 @@ class st_aeoas:
         #call this to create daily value data frame
         self.tradesup.createDailyValueDf()
 
-                
+    def processOptimization(self,symbol,ohlc,bm):
+        tset = range(4, 9, 1)
+        hset = range(8, 16, 1)
+        
+        #must setup report tool before simulation test
+        self.simutable.setupSymbol(symbol,bm)
+
+        for t in tset:
+            for h in hset: 
+                self.setup(t, h)
+                self.runStrategy(symbol,ohlc)
+                # to generate simulation report
+                param = "t=%d&h=%d"%(t, h)
+                self.simutable.addOneTestResult(param,self.tradesup.getDailyValue())
+        
+        #add results to report
+        self.simutable.makeSimuReport()
+        self.tradesup.setDailyValueDf(self.simutable.getBestDv())
+        return            
+        
     def process(self,bt,symbol,param,ohlc_px,spy_px):
-        self.setupParam(param)
-        self.runStrategy(symbol, ohlc_px)
-        return True
+        #different approach
+        if param['mode']=='1':
+            self.processOptimization(symbol,ohlc_px,spy_px)
+            return True
+        elif param['mode']==None or param['mode']=='0':            
+            self.setupParam(param)
+            self.runStrategy(symbol, ohlc_px)
+            return True
+        return False

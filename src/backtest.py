@@ -323,26 +323,23 @@ class BackTest:
             else:
                 dv = self.tradesup.getDailyValue()
 
-            '''firstTradeIdx = self.tradesup.getFirstTradeIdx()            
-            if bm_offset==0 or firstTradeIdx<bm_offset:
-                bm_offset = firstTradeIdx'''
           
             #print self.strategyName
             #print dv['dayvalue']
             #print firstTradeIdx  
+            #print "firstTick=",firstTick,self.hasChart
             if firstTick==False:
                 if self.hasChart==True:
                     firstTradeIdx = self.tradesup.getFirstTradeIdx()
                     firstTradeDate = self.tradesup.getFirstTradeDate()
-                    print "first trade info=",firstTradeIdx,firstTradeDate
+                    print "first trade info idx=",firstTradeIdx," date=",firstTradeDate
                     self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx)
                 firstTick=True
 
         if stRet==True:  
             self.simutable.makeBestReport()
             if self.hasChart==True:
-                print
-                #self.drawBenchMark(benchmark_px,firstTradeIdx,firstTradeDate)
+                self.drawBenchMark(benchmark_px,firstTradeIdx,firstTradeDate)
         else:
             if self.hasChart==True:
                 self.closeChart()
@@ -429,57 +426,53 @@ class BackTest:
         dforders = self.tradesup.getTradeReport()
         print "\n"
         print "== BEST TRADE REPORT ==========================================="
-        print dforders
+        perfdata = dforders['pnl'].sum()
+        bhprofit = self.tradesup.getBHprofit() #buy&hold profit
+        print dforders,"PnL=",perfdata,"B/H profit=",bhprofit
         if len(dforders.index)==0:
             return
-        prevbuyyxis = 0
+            
+        '''prevbuyyxis = 0
         prevsellyxis = 0
         prevselldate = dforders.index[0]
-        prevbuydate = dforders.index[0]
+        prevbuydate = dforders.index[0]'''
         
         #saveOldDate=False
         for row_index, row in dforders.iterrows():
             date = row_index
 
             #away = 0.2 # make text not overlapped
-            ordertxt = "%s@%.2f"%(row['order'],row['price'])
+            ordertxt = "%s@\n%.2f"%(row['order'],row['price'])
             if row['order']!="buy":
-                ordertxt+=('\np/l=%.2f'%row['pnl'])            
+                ordertxt+=('\np/l=\n%.2f'%row['pnl'])            
             
             oriyxis = sgyret_index.asof(date)
             
-
-                
             if row['order']=='buy':
-                '''buycount+=1
-                if (buycount%2)==0:
-                    away=0.'''
-
-                newyxis = oriyxis + 0.3;
+                #newyxis = oriyxis + 0.3;
                 
                 '''if abs(newyxis - prevbuyyxis)<0.2:
                     newyxis = oriyxis+0.2
                 prevbuyyxis = newyxis'''
                 
                 self.ax2.annotate(ordertxt, xy=(date, oriyxis + 0.1),
-                xytext=(date, newyxis),                
+                xytext=(date, oriyxis+0.3),                
                 arrowprops=dict(facecolor='black'),
                 horizontalalignment='left', verticalalignment='top')
                 # debug
-                # print ordertxt,oriyxis,newyxis
+                #print ordertxt,oriyxis
             else:
-                datedelta = (date-prevselldate).days
-                prevselldate = date
-
-                newyxis = oriyxis - 0.3;
+                #datedelta = (date-prevselldate).days
+                #prevselldate = date
+                #newyxis = oriyxis - 0.3;
                 
-                if datedelta<30:
+                '''if datedelta<30:
                     if prevbuyyxis!=0:
-                        newyxis = prevbuyyxis-0.2
-                prevbuyyxis = newyxis
+                        newyxis = prevbuyyxis-0.2'''
+                #prevbuyyxis = newyxis
                 
                 self.ax2.annotate(ordertxt, xy=(date, oriyxis - 0.1),
-                xytext=(date, newyxis),
+                xytext=(date, oriyxis - 0.3),
                 arrowprops=dict(facecolor='green'),
                 horizontalalignment='left', verticalalignment='top')
 

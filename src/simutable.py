@@ -9,7 +9,7 @@ class SimuTable:
         self.firstBestResultAdded = False
         self.tradesup = support
         self.outputpath="../result/"
-        self.bestperf=0
+        self.bestperf=-10000000
         self.bestperfFirstTradeIdx=0
         #self.bestdv# = pandas.DataFrame(columns='dayvalue')
         print "SimuTable initialized"
