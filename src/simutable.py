@@ -43,7 +43,10 @@ class SimuTable:
         
 
         tradereport = self.tradesup.getTradeReport()
-        lastTrade = tradereport.tail(1).to_string(header=False)
+        if tradereport.empty:
+            lastTrade = "empty"
+        else:
+            lastTrade = tradereport.tail(1).to_string(header=False)
         
         #find the best performance
         perfdata = tradereport['pnl'].sum()

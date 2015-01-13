@@ -4,7 +4,7 @@ import time
 
 class TestReport:
     def __init__(self,bt):
-        self.columns = ['symbol','strategy','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade','bh_profit'] #,
+        self.columns = ['symbol','strategy','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade','bh_profit','mark'] #,
         self.besttable = pandas.DataFrame(columns=self.columns) 
         self.firstBestResultAdded = False
         self.tradesup = bt.getTradeSupport()
@@ -24,7 +24,7 @@ class TestReport:
     
     #param - strategy parameter    
     #df - day value
-    def addTestResult(self,symbol,stgyName,param,df):
+    def addTestResult(self, symbol, stgyName, param, df, minfo=""):
         firstTradeIdx = self.tradesup.getFirstTradeIdx()
         rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
         bm_returns = rtbm.pct_change()        
@@ -39,7 +39,10 @@ class TestReport:
         
 
         tradereport = self.tradesup.getTradeReport()
-        lastTrade = tradereport.tail(1).to_string(header=False)
+        if tradereport.empty:
+            lastTrade = "empty"
+        else:
+            lastTrade = tradereport.tail(1).to_string(header=False)
         
         #find the best performance
         perfdata = tradereport['pnl'].sum()
@@ -57,9 +60,10 @@ class TestReport:
         # add new row with external index start from 1,2,3
         self.reptTable.loc[len(self.reptTable)+1]=d0
         
-    def createTestReport(self):
+    def createTestReport(self, startdate, enddate):
         sortTable = self.reptTable.sort_index(by='perf',ascending=False)
-        filename = self.outputpath + self.reptName+'_' + time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
+        #filename = self.outputpath + self.reptName+'_' + time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
+        filename = self.outputpath + self.reptName + '_' + startdate + '_' + enddate + '.csv'
         try:
             sortTable.to_csv(filename,sep=',')
         except:

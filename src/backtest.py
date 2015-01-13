@@ -38,7 +38,7 @@ class BackTest:
         self.parameter = {}
         self.stgyBatchCfg = []
         #default log to file, unless specified in parameter
-        #sys.stdout = open("cbdaylog.txt", "w")
+        sys.stdout = open("cbdaylog.txt", "w")
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
@@ -85,7 +85,7 @@ class BackTest:
 
                     
     def parseOption(self):
-        self.startdate="1990-1-1"
+        self.startdate="2010-1-1"
         self.enddate= datetime.datetime.now().strftime("%Y-%m-%d")
         self.ticklist=[]
         self.strategy=""
@@ -158,12 +158,15 @@ class BackTest:
         fp = open(fileName,'r',-1)
         for line in fp:         
             name,file = line.split('=')
-            self.stgyBatchCfg.append({name,file})
+            if name[0]!='#':
+                self.stgyBatchCfg.append({name,file})
+                print "add strategy=",name
         fp.close()
         return True
     
     #file name format:st_quotient_best_2015-01-10.csv  
     def parseStrategyResult(self):
+        '''
         self.stgyBatch={} # [{name,file},{}]
         for stname,stfileprefix in self.stgyBatchCfg:
             pattern = self.resultPath+stfileprefix+'*'
@@ -177,22 +180,19 @@ class BackTest:
                     latest=d
                     newestFile = fn
             self.stgyBatch[stname] = newestFile
-            
-        #print self.stgyBatch
+        '''
+        # match the exact file name
+        self.stgyBatch={} # [{name,file},{}]
+        for stname,stfilename in self.stgyBatchCfg:
+            fn = self.dataPath + stfilename
+            self.stgyBatch[stname] = fn
         return 
         
     def runStrategyBatch(self):
         self.hasChart = False
-        
-            
         tick2StgyBatch = {}
-        
         batchrept = testreport.TestReport(self)
         batchrept.setup(self.getBenchmarkPx())
-        
-
-        
-                
         for stkey in self.stgyBatch:           
             fileName = self.stgyBatch[stkey]
             fp = open(fileName,'r',-1)
@@ -243,9 +243,9 @@ class BackTest:
                 
                 stgy.setupParam(param)
                 stgy.runStrategy(tick, tickOhlcPx)                
-                batchrept.addTestResult(tick, stgyName, paramstr, self.tradesup.getDailyValue())
+                batchrept.addTestResult(tick, stgyName, paramstr, self.tradesup.getDailyValue(), stgy.getMoreInfo())
                     
-        batchrept.createTestReport()
+        batchrept.createTestReport(self.startdate, self.enddate)
         return 
     
     

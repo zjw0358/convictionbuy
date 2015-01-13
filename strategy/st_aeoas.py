@@ -108,6 +108,7 @@ class st_aeoas:
         a[:n] = a[n]        
         return a
     
+    
 
     def runStrategy(self,symbol,ohlc):
         #initialize tradesupport
@@ -143,14 +144,14 @@ class st_aeoas:
                 self.runStrategy(symbol,ohlc)
                 # to generate simulation report
                 param = "t=%d&h=%d"%(t, h)
-                self.simutable.addOneTestResult(param,self.tradesup.getDailyValue(), self.getTypnHac())
+                self.simutable.addOneTestResult(param,self.tradesup.getDailyValue(), self.getMoreInfo())
         
         #add results to report
         self.simutable.makeSimuReport()
         self.tradesup.setDailyValueDf(self.simutable.getBestDv())
         return
                     
-    def getTypnHac(self):
+    def getMoreInfo(self):
         info = "avgTyp=%.2f,avgHac=%.2f" %(self.avgTypEmaLst[-1], self.avgHacEmaLst[-1])        
         return info
         
