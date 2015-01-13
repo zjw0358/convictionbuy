@@ -28,6 +28,9 @@ class Trade:
         self.dailyvalue = []
         self.buyopen = False
         self.firstTradeIdx = 0  #reset first trade index
+        self.stopLimit = 0
+        self.wait4sell = False
+        self.stopLoss = 0
         for strategy in self.stgyorder:
             self.stgyorder[strategy] = ''
 
@@ -48,7 +51,13 @@ class Trade:
 
     def getLastSellPrice(self):
         return self.ser_price[-1]
-                
+        
+    def setStopLimit(self, sl):
+        self.stopLimit = sl
+        
+    def setStopLoss(self, loss):   
+        self.stopLoss = loss
+        
     #TODO, each strategy has different weight
     #some strategy are dominant
     def processData(self,index):
@@ -64,11 +73,33 @@ class Trade:
         #as long as one strategy ask for selling.
         for strategy in self.stgyorder:
             if self.stgyorder[strategy]=='s':
-                sellFlag=True 
+                sellFlag=True
+                self.wait4sell = False
                 break
-
-                                      
-        if buyFlag==True and self.buyopen==False:
+                
+        # stopLimit & stopLoss
+        if self.buyopen==True:
+            if self.stopLimit > 0:
+                buyPx = self.ser_price[-1]
+                sellPx = (self.ohlc_px['Open'][index]+self.ohlc_px['High'][index])/2
+                prof = (sellPx/buyPx-1)*100
+                if prof > self.stopLimit:
+                    print "trigger stoplimit@",index,"px=",sellPx
+                    sellFlag=True
+                    # TODO reset the strategy to disable buy
+                    self.wait4sell = True 
+            if self.stopLoss > 0:
+                buyPx = self.ser_price[-1]
+                prof = (self.ohlc_px['Open'][index]/buyPx-1)*100
+                if (prof + self.stopLoss) < 0:
+                    print "trigger stoploss@",index,"px=",self.ohlc_px['Open'][index]
+                    sellFlag=True
+                    # TODO reset the strategy to disable buy
+                    self.wait4sell = True 
+                    
+                       
+        # actual buy & sell                              
+        if buyFlag==True and self.buyopen==False and self.wait4sell==False:
             #buy
             #find a tradable price 
             meanpx = self.getMeanpx(index)
@@ -122,6 +153,7 @@ class Trade:
                 
             #close the order
             self.buyopen=False
+
             
         '''if self.order==1:
             self.order=0            

@@ -14,8 +14,8 @@ class st_aeoas:
         
     def setupParam(self,param):
         # default parameter
-        typWin = 4
-        hacWin = 6
+        typWin = 5
+        hacWin = 8
 
         if 't' in param:
             typWin = float(param['t'])
@@ -25,10 +25,13 @@ class st_aeoas:
         self.setup(typWin, hacWin)
            
     def setup(self, typWin, hacWin):
+        self.cleanup()
         self.typema1 = 2.0/(typWin+1)
         self.typema2 = 1 - self.typema1
         self.hacema1 = 2.0/(hacWin+1)
         self.hacema2 = 1 - self.hacema1
+        self.typWin = typWin
+        self.hacWin = hacWin
         print "=== A EXPERT OF A SYSTEM SETUP==========================================="
         print "typical period=",typWin,self.typema1,self.typema2
         print "heikin-ashi period=",hacWin,self.hacema1,self.hacema2
@@ -77,9 +80,6 @@ class st_aeoas:
         self.avgHacEmaLst.append(avgHac)
         
         # trading signal
-        #debug
-        #ohlc['High'] , ohlc['Low'] , ohlc['Close'] , ohlc['Open']
-        #print self.ohlc.index[index],haOpen,haC,avgTyp,avgHac
         if (avgTyp > avgHac) and (ohlc['Close'] > ohlc['Open']):          
             self.tradesup.buyorder(self.stname)
             #print "aeoas buy@",index
@@ -112,7 +112,9 @@ class st_aeoas:
     def runStrategy(self,symbol,ohlc):
         #initialize tradesupport
         self.tradesup.setup(symbol, ohlc) 
-        self.ohlc = ohlc                   
+        self.ohlc = ohlc
+        #self.tradesup.setStopLimit(1)
+        #self.tradesup.setStopLoss(2)
         # loop checking close price
         for index in range(0, len(ohlc)):
             self.tradesup.processData(index)  # must be places at first          
@@ -121,26 +123,36 @@ class st_aeoas:
             
         #call this to create daily value data frame
         self.tradesup.createDailyValueDf()
+        
+        #paramstr = "t=%d&h=%d"%(self.typWin,self.hacWin)
+        #self.simutable.addOneTestResult(paramstr,self.tradesup.getDailyValue())
+
 
     def processOptimization(self,symbol,ohlc,bm):
-        tset = range(4, 9, 1)
-        hset = range(8, 16, 1)
+        tset = range(4, 10, 1)
+        hset = range(6, 16, 1)
         
         #must setup report tool before simulation test
         self.simutable.setupSymbol(symbol,bm)
 
         for t in tset:
-            for h in hset: 
+            for h in hset:
+                if t >= h:
+                    continue
                 self.setup(t, h)
                 self.runStrategy(symbol,ohlc)
                 # to generate simulation report
                 param = "t=%d&h=%d"%(t, h)
-                self.simutable.addOneTestResult(param,self.tradesup.getDailyValue())
+                self.simutable.addOneTestResult(param,self.tradesup.getDailyValue(), self.getTypnHac())
         
         #add results to report
         self.simutable.makeSimuReport()
         self.tradesup.setDailyValueDf(self.simutable.getBestDv())
-        return            
+        return
+                    
+    def getTypnHac(self):
+        info = "avgTyp=%.2f,avgHac=%.2f" %(self.avgTypEmaLst[-1], self.avgHacEmaLst[-1])        
+        return info
         
     def process(self,bt,symbol,param,ohlc_px,spy_px):
         #different approach

@@ -4,7 +4,7 @@ import time
 
 class SimuTable:
     def __init__(self,support):
-        self.columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade','bh_profit'] #,
+        self.columns = ['symbol','param','alpha', 'beta','perf','max_drawdown','profit_order','loss_order','last_trade','bh_profit','mark'] #,
         self.besttable = pandas.DataFrame(columns=self.columns) 
         self.firstBestResultAdded = False
         self.tradesup = support
@@ -28,7 +28,7 @@ class SimuTable:
     
     #param - strategy parameter    
     #df - day value
-    def addOneTestResult(self,param,df):
+    def addOneTestResult(self,param,df,minfo=""):
         firstTradeIdx = self.tradesup.getFirstTradeIdx()
         rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
         bm_returns = rtbm.pct_change()        
@@ -56,7 +56,7 @@ class SimuTable:
         
         d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
         'max_drawdown':self.tradesup.getMaxdd(),'profit_order':self.tradesup.getProfitOrderNum(),\
-        'loss_order':self.tradesup.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit}
+        'loss_order':self.tradesup.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit,'mark':minfo}
         
         # add new row with external index start from 1,2,3
         self.symtable.loc[len(self.symtable)+1]=d0

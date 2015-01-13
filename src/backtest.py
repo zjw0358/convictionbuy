@@ -46,6 +46,7 @@ class BackTest:
         pandas.set_option('display.max_rows', 1500)
         self.dataPath = "../data/"
         self.resultPath = "../result/"
+        self.strategyPath = "../strategy/"
 
     # google style portfolio file
     def loadPortfolioFile(self,fileName):
@@ -77,6 +78,7 @@ class BackTest:
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
         print "optimization:run backtest.py -t aapl -p 'chart=1&mode=1' -g st_quotient -s 2010-01-01 -e 2015-01-05"
+        print "run backtest.py -t xom -p 'chart=1&mode=0' -g st_aeoas -s 2010-01-01 -e 2015-01-05"
         print "strategy batch:run backtest.py -b strategylist.txt"
         print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
         print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
@@ -252,6 +254,7 @@ class BackTest:
     ###########################################################################        
     #[backtest] strategy protfolio startdate enddate
     def process(self):
+        sys.path.insert(0, self.strategyPath)
         self.parseOption() 
         if len(self.stgyBatchCfg)>0:
            self.parseStrategyResult()
@@ -332,14 +335,23 @@ class BackTest:
                 if self.hasChart==True:
                     firstTradeIdx = self.tradesup.getFirstTradeIdx()
                     firstTradeDate = self.tradesup.getFirstTradeDate()
+                    dforders = self.tradesup.getTradeReport()
                     print "first trade info idx=",firstTradeIdx," date=",firstTradeDate
-                    self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx)
+                    self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx,dforders)
                 firstTick=True
 
         if stRet==True:  
             self.simutable.makeBestReport()
+            # print trade report
+            dforders = self.tradesup.getTradeReport()
+            print "\n"
+            print "== BEST TRADE REPORT ==========================================="
+            perfdata = dforders['pnl'].sum()
+            bhprofit = self.tradesup.getBHprofit() #buy&hold profit
+            print dforders,"PnL=",perfdata,"B/H profit=",bhprofit
+            
             if self.hasChart==True:
-                self.drawBenchMark(benchmark_px,firstTradeIdx,firstTradeDate)
+                self.drawBenchMark(benchmark_px, firstTradeIdx, firstTradeDate)
         else:
             if self.hasChart==True:
                 self.closeChart()
@@ -371,7 +383,7 @@ class BackTest:
     def drawBenchMark(self,benchmark_px,firstDateOffset,firstTradeDate):
         textsize = 9
         bm_offset=benchmark_px.index.get_loc(firstTradeDate)
-        print firstTradeDate,bm_offset
+        #print firstTradeDate,bm_offset
         bm_returns = benchmark_px[bm_offset:].pct_change()
         bmret_index = (1+bm_returns).cumprod()
         bmret_index[bm_offset] = 1
@@ -394,20 +406,14 @@ class BackTest:
         return
     
     # draw pnl vs benchmark curve ,offset=
-    def drawChart(self,symbol,close_px,stgy_name,strgy_ret,offset):
+    def drawChart(self,symbol,close_px,stgy_name,strgy_ret,offset,dforders):
         px_returns = close_px[offset:].pct_change()
         pxret_index = (1+px_returns).cumprod()
-        pxret_index[offset] = 1
-        
-        #print type(pxret_index.iloc[-1])
-        #print pxret_index
-        
+        pxret_index[0] = 1
         sgy_returns = strgy_ret[offset:].pct_change()
         sgyret_index = (1+sgy_returns).cumprod()
-        sgyret_index[0] = 1
-        
-        stgy_name = stgy_name+"_"+symbol
-        
+        sgyret_index[0] = 1        
+        stgy_name = stgy_name+"_"+symbol        
 
         perftxt = " %s:%.2f %s:%.2f" %(symbol,pxret_index.iloc[-1],stgy_name,sgyret_index.iloc[-1])
         self.perftxt += perftxt
@@ -423,60 +429,35 @@ class BackTest:
         
         ########################################################################
         # buy / sell orders annotation
-        dforders = self.tradesup.getTradeReport()
+        '''dforders = self.tradesup.getTradeReport()
         print "\n"
         print "== BEST TRADE REPORT ==========================================="
         perfdata = dforders['pnl'].sum()
         bhprofit = self.tradesup.getBHprofit() #buy&hold profit
-        print dforders,"PnL=",perfdata,"B/H profit=",bhprofit
+        print dforders,"PnL=",perfdata,"B/H profit=",bhprofit'''
         if len(dforders.index)==0:
             return
-            
-        '''prevbuyyxis = 0
-        prevsellyxis = 0
-        prevselldate = dforders.index[0]
-        prevbuydate = dforders.index[0]'''
         
-        #saveOldDate=False
         for row_index, row in dforders.iterrows():
             date = row_index
 
-            #away = 0.2 # make text not overlapped
             ordertxt = "%s@\n%.2f"%(row['order'],row['price'])
             if row['order']!="buy":
                 ordertxt+=('\np/l=\n%.2f'%row['pnl'])            
             
             oriyxis = sgyret_index.asof(date)
             
-            if row['order']=='buy':
-                #newyxis = oriyxis + 0.3;
-                
-                '''if abs(newyxis - prevbuyyxis)<0.2:
-                    newyxis = oriyxis+0.2
-                prevbuyyxis = newyxis'''
-                
+            if row['order']=='buy':                
                 self.ax2.annotate(ordertxt, xy=(date, oriyxis + 0.1),
                 xytext=(date, oriyxis+0.3),                
                 arrowprops=dict(facecolor='black'),
                 horizontalalignment='left', verticalalignment='top')
-                # debug
-                #print ordertxt,oriyxis
-            else:
-                #datedelta = (date-prevselldate).days
-                #prevselldate = date
-                #newyxis = oriyxis - 0.3;
-                
-                '''if datedelta<30:
-                    if prevbuyyxis!=0:
-                        newyxis = prevbuyyxis-0.2'''
-                #prevbuyyxis = newyxis
-                
+            else:                
                 self.ax2.annotate(ordertxt, xy=(date, oriyxis - 0.1),
                 xytext=(date, oriyxis - 0.3),
                 arrowprops=dict(facecolor='green'),
                 horizontalalignment='left', verticalalignment='top')
-
-        #bottom left = 0,0; upper right = 1,1
+        return
         
 ################################################################################        
 # main routine
