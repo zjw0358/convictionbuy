@@ -7,7 +7,7 @@ technical analysis of stock and commodity
 class st_aeoas:
     def __init__(self, bt):
         self.cleanup()
-        self.stname = "aeoas" #strategy name
+        self.stname = "st_aeoas" #strategy name
         #setup component
         self.tradesup = bt.getTradeSupport()
         self.simutable = bt.getSimuTable()
@@ -32,10 +32,12 @@ class st_aeoas:
         self.hacema2 = 1 - self.hacema1
         self.typWin = typWin
         self.hacWin = hacWin
-        print "=== A EXPERT OF A SYSTEM SETUP==========================================="
-        print "typical period=",typWin,self.typema1,self.typema2
-        print "heikin-ashi period=",hacWin,self.hacema1,self.hacema2
-        print "================================================================"
+        self.setupInfo = \
+        "=== A EXPERT OF A SYSTEM SETUP==================================\n" + \
+        "typical period=%d,%.3f,%.3f\n" % (typWin,self.typema1,self.typema2) + \
+        "heikin-ashi period=%d,%.3f,%.3f\n" % (hacWin,self.hacema1,self.hacema2) + \
+        "================================================================\n"
+        #print self.setupInfo
         return
         
     def getStrategyName(self):
@@ -110,9 +112,11 @@ class st_aeoas:
     
     
 
-    def runStrategy(self,symbol,ohlc):
+    def runStrategy(self, symbol, ohlc, param={}):
         #initialize tradesupport
-        self.tradesup.setup(symbol, ohlc) 
+        if len(param) != 0:
+            self.setupParam(param)
+        self.tradesup.beginTrade(self.setupInfo, symbol, ohlc) 
         self.ohlc = ohlc
         #self.tradesup.setStopLimit(1)
         #self.tradesup.setStopLoss(2)
@@ -123,13 +127,11 @@ class st_aeoas:
             self.tradesup.calcDailyValue(index) # update daily value
             
         #call this to create daily value data frame
-        self.tradesup.createDailyValueDf()
-        
-        #paramstr = "t=%d&h=%d"%(self.typWin,self.hacWin)
-        #self.simutable.addOneTestResult(paramstr,self.tradesup.getDailyValue())
+        #self.tradesup.createDailyValueDf()
+        #self.tradesup.writeTradeLog(self.setupInfo)
+        self.tradesup.endTrade(self.setupInfo)
 
-
-    def processOptimization(self,symbol,ohlc,bm):
+    def runOptimization(self,symbol,ohlc,bm):
         tset = range(4, 10, 1)
         hset = range(6, 16, 1)
         
@@ -144,7 +146,7 @@ class st_aeoas:
                 self.runStrategy(symbol,ohlc)
                 # to generate simulation report
                 param = "t=%d&h=%d"%(t, h)
-                self.simutable.addOneTestResult(param,self.tradesup.getDailyValue(), self.getMoreInfo())
+                self.simutable.addOneTestResult(self.setupInfo, param,self.tradesup.getDailyValue(), self.getMoreInfo())
         
         #add results to report
         self.simutable.makeSimuReport()
@@ -152,11 +154,13 @@ class st_aeoas:
         return
                     
     def getMoreInfo(self):
-        info = "avgTyp=%.2f,avgHac=%.2f" %(self.avgTypEmaLst[-1], self.avgHacEmaLst[-1])        
+        #print self.ohlc
+        info = "px=%.2f,avgTyp=%.2f,avgHac=%.2f" %(self.ohlc['Adj Close'][-1],self.avgTypEmaLst[-1], self.avgHacEmaLst[-1])        
         return info
         
-    def process(self,bt,symbol,param,ohlc_px,spy_px):
+    '''def process(self,bt,symbol,param,ohlc_px,spy_px):
         #different approach
+        self.ohlc = ohlc_px
         if param['mode']=='1':
             self.processOptimization(symbol,ohlc_px,spy_px)
             return True
@@ -165,3 +169,4 @@ class st_aeoas:
             self.runStrategy(symbol, ohlc_px)
             return True
         return False
+    '''

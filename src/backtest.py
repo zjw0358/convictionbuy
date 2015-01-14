@@ -32,13 +32,11 @@ import re   # replace char
      return daily_sr(daily_rets)*np.sqrt(252)'''
 
 class BackTest:
-    def __init__(self):
-        self.tradesup = tradesupport.Trade()
-        self.simutable = simutable.SimuTable(self.tradesup)
+    def __init__(self):       
         self.parameter = {}
         self.stgyBatchCfg = []
         #default log to file, unless specified in parameter
-        sys.stdout = open("cbdaylog.txt", "w")
+        #sys.stdout = open("cbdaylog.txt", "w")
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
@@ -47,7 +45,10 @@ class BackTest:
         self.dataPath = "../data/"
         self.resultPath = "../result/"
         self.strategyPath = "../strategy/"
-
+        self.nmuBest = 3 # 3 best result
+        self.tradesup = tradesupport.Trade(self)
+        self.simutable = simutable.SimuTable(self)
+        
     # google style portfolio file
     def loadPortfolioFile(self,fileName):
         #print "open file:",fileName
@@ -74,11 +75,20 @@ class BackTest:
 
     def getResultPath(self):
         return self.resultPath
+
+    def getNumBest(self):
+        return self.nmuBest        
         
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -p <chart=1,mode=1> -g <strategy> -s 2010-01-01 -e 2014-12-30"
         print "optimization:run backtest.py -t aapl -p 'chart=1&mode=1' -g st_quotient -s 2010-01-01 -e 2015-01-05"
         print "run backtest.py -t xom -p 'chart=1&mode=0' -g st_aeoas -s 2010-01-01 -e 2015-01-05"
+        print "= Optimization ================================================="
+        print "optimize single stock:"
+        print "run backtest.py -t intc -p 'chart=0&mode=1' -g st_aeoas -s 2014-01-01 -e 2015-01-15"
+        print "optimize portfolio:"        
+        print "run backtest.py -f '..\data\portfolio2015.txt' -p 'chart=0&mode=1' -g st_aeoas -s 2013-12-20 -e 2015-01-15"
+        
         print "strategy batch:run backtest.py -b strategylist.txt"
         print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"
         print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g stc_quomv -s 2010-01-01 -e 2015-01-05"
@@ -286,9 +296,13 @@ class BackTest:
         #prepare data
         all_data = {}
         firstTick=False
-        stRet = True
+        #stRet = True
+        if self.parameter['mode']=='1':
+            mode = 1 #optimizer
+        else:
+            mode = 0 #normal
+        self.tradesup.setMode(mode)
         
-      
         #benchmark_px is series?
         try:
             benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
@@ -316,46 +330,62 @@ class BackTest:
                 sdate = all_data[ticker].index        
                 self.sdatelabel = sdate.to_pydatetime()
 
-                
+            self.tradesup.beginStrategy(ticker, strategy.getStrategyName())
             # run strategy
-            ohlc_px = all_data[ticker]            
-            ret = strategy.process(self,ticker,self.parameter,ohlc_px,benchmark_px)
-            if ret==False: # e.g. parameter mode is not reconginzed
+            ohlc_px = all_data[ticker]
+            if mode == 1: #optimizer
+                strategy.runOptimization(ticker, ohlc_px, benchmark_px)
+            else: #normal
+                strategy.runStrategy(ticker, ohlc_px, self.parameter)
+                
+            self.tradesup.endStrategy()
+
+            '''if ret==False: # e.g. parameter mode is not reconginzed
                 stRet=False
                 continue
             else:
-                dv = self.tradesup.getDailyValue()
-
-          
-            #print self.strategyName
-            #print dv['dayvalue']
-            #print firstTradeIdx  
-            #print "firstTick=",firstTick,self.hasChart
+                dv = self.tradesup.getDailyValue()'''
+                
+            dv = self.tradesup.getDailyValue()
             if firstTick==False:
                 if self.hasChart==True:
                     firstTradeIdx = self.tradesup.getFirstTradeIdx()
                     firstTradeDate = self.tradesup.getFirstTradeDate()
                     dforders = self.tradesup.getTradeReport()
-                    print "first trade info idx=",firstTradeIdx," date=",firstTradeDate
+                    #print "first trade info idx=",firstTradeIdx," date=",firstTradeDate
                     self.drawChart(ticker,ohlc_px['Adj Close'],self.strategyName,dv['dayvalue'],firstTradeIdx,dforders)
                 firstTick=True
-
-        if stRet==True:  
-            self.simutable.makeBestReport()
-            # print trade report
-            dforders = self.tradesup.getTradeReport()
-            print "\n"
-            print "== BEST TRADE REPORT ==========================================="
-            perfdata = dforders['pnl'].sum()
-            bhprofit = self.tradesup.getBHprofit() #buy&hold profit
-            print dforders,"PnL=",perfdata,"B/H profit=",bhprofit
+                
+        ####################################################
+        # end of for loop 
+        ####################################################
+        if mode == 1:  
+            self.simutable.makeBestReport()            
             
-            if self.hasChart==True:
-                self.drawBenchMark(benchmark_px, firstTradeIdx, firstTradeDate)
-        else:
+        if self.hasChart==True:
+            self.drawBenchMark(benchmark_px, firstTradeIdx, firstTradeDate)
+            
+        '''else:
             if self.hasChart==True:
                 self.closeChart()
-
+        '''
+                
+        #only print trade log when only one tick                 
+        if len(self.ticklist) == 1:
+            #print "\n"
+            #print "== BEST TRADE REPORT ==========================================="
+            print self.tradesup.getTradeLogDetail()
+            #self.printTradeReport()
+                
+    '''def printTradeReport(self):
+        # print trade report
+        dforders = self.tradesup.getTradeReport()
+        print "\n"
+        print "== BEST TRADE REPORT ==========================================="
+        perfdata = dforders['pnl'].sum()
+        bhprofit = self.tradesup.getBHprofit() #buy&hold profit
+        print dforders,"PnL=",perfdata,"B/H profit=",bhprofit
+    '''            
     def closeChart(self):
         plt.close(self.fig)
         
