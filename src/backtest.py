@@ -86,8 +86,8 @@ class BackTest:
         print "= Optimization ================================================="
         print "optimize single stock:"
         print "run backtest.py -t intc -p 'chart=0&mode=1' -g st_aeoas -s 2014-01-01 -e 2015-01-15"
-        print "optimize portfolio:"        
-        print "run backtest.py -f '..\data\portfolio2015.txt' -p 'chart=0&mode=1' -g st_aeoas -s 2013-12-20 -e 2015-01-15"
+        print "optimize portfolio:"
+        print "run backtest.py -f ..\data\portfolio2015.txt -p 'chart=0&mode=1' -g st_aeoas -s 2013-12-20 -e 2015-01-15"
         
         print "strategy batch:run backtest.py -b strategylist.txt"
         print "example:run backtest.py -t aapl -p 'chart=1&mode=0&k1=0.7&k2=0.4&cl=25' -g st_quotient -s 2010-01-01 -e 2015-01-05"

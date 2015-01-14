@@ -41,12 +41,12 @@ class st_quotient:
         self.c2 = self.b1
         self.c3 = - self.a1**2
         self.c1 = 1 - self.c2 - self.c3;
-
-        print "=== ST_QUOTIENT SETUP==========================================="
-        print "k1",self.k1
-        print "k2",self.k2
-        print "cutoff length",self.cutoffLength
-        print "alpha1,",self.alpha1
+        self.setupInfo = \
+        "=== ST_QUOTIENT SETUP===========================================\n" + \
+        "k1=%.2f\n" % self.k1 + \
+        "k2=%.2f\n" % self.k2 + \
+        "cutoff length=%d\n" % self.cutoffLength + \
+        "alpha1=,",self.alpha1
         print "(1 - alpha1 / 2)*(1 - alpha1 / 2),",(1 - self.alpha1 / 2)*(1 - self.alpha1 / 2) 
         print "a1,",self.a1
         print "b1,",self.b1
@@ -79,9 +79,12 @@ class st_quotient:
         return False
 
         # strategy, find the buy&sell signal
-    def runStrategy(self,symbol,ohlc):
+    def runStrategy(self,symbol,ohlc,param={}):
         #initialize tradesupport
-        self.tradesup.setup(symbol, ohlc)        
+        if len(param) != 0:
+            self.setupParam(param)
+        self.tradesup.beginTrade(self.setupInfo, symbol, ohlc) 
+        
         close_px = ohlc['Adj Close']
         
         # loop checking close price
@@ -94,7 +97,7 @@ class st_quotient:
         self.tradesup.createDailyValueDf()
 
     # automation optimization test
-    def processOptimization(self,symbol,ohlc,bm):
+    def runOptimization(self,symbol,ohlc,bm):
         length = range(10, 60, 5)
         k1set = [x * 0.1 for x in range(6, 10)]
         k2set = [x * 0.1 for x in range(1, 5)]
