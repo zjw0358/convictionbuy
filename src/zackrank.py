@@ -9,15 +9,28 @@ import getopt
 class ZackRank:
     def __init__(self):
         #self.earning_exp = '^window.app_data_earnings[\d\D]*\\"data\\"[ :\\[]*(.*)]'
-        self.pattern = '[\d\D]*Zacks Rank : (\d)-[\d\D]*'
-        self.path="../data/"
+        self.pattern = '[\d\D]*Zacks Rank : (.*) <sup class=[\d\D]*'
+        self.outputpath="../result/"
         
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' "
-        print "example:run erdownloadz.py -t aapl"
-        print "example:run erdownloadz.py -p portfolio.txt"
+        print "example:run zackrank.py -t aapl"
+        print "example:run zackrank.py -p portfolio.txt"
 
-
+    # google style portfolio file
+    def loadPortfolioFile(self,fileName):     
+        fp = open(fileName,'r',-1)
+        pf = fp.read()
+        stocklist=[]
+        #print pf
+        for item in pf.split():            
+            market,symbol = item.split(':')
+            print symbol
+            stocklist.append(symbol)
+                    
+        fp.close()
+        return stocklist
+        
     def parseOption(self):
         self.ticklist=[]
         try:
@@ -37,53 +50,45 @@ class ZackRank:
         return
         
     def download(self):
+        zackranks = {}
         for symbol in self.ticklist:
             url = "http://www.zacks.com/stock/quote/"+symbol
-            page =urllib2.urlopen(url)
-            soup = BeautifulSoup(page.read())
-            allitems = soup.findAll('script')
-            for index,item in enumerate(allitems):
-                txt = item.string
-                if txt==None:
-                    continue
-                '''else:
-                    print index,"=",txt'''
-                an = re.match(self.earning_exp,txt)
-                if an!=None:
-                    str1=an.group(1)
-                    erlst=[]
-                    for pairstr in str1.split(','):
-                        name,value = pairstr.split(':')
-                        name=re.sub('[{} "]','',name)
-                        #print name,value
-                        if name=='Date':
-                            value=re.sub('[ "]','',value)
-                            #d = datetime.datetime.strptime(value, '%m/%d/%Y')
-                            erlst.append(value)
-                    self.write2File(symbol,erlst)
-                    break
-                    #print erlst 
+            htmltxt =urllib2.urlopen(url).read()
+            an = re.match(self.pattern, htmltxt)
+            if an!=None:
+                str1=an.group(1)
+                if str1=='NA':
+                    zrank = 0
+                else:
+                    zrank = int(str1[0])
+                print symbol, zrank
+                zackranks[symbol] = zrank
 
-    def write2File(self,symbol,erlst):
-        fileName=self.path+symbol+"_erdate.erd"
+        if len(zackranks) > 1:
+            self.write2File(zackranks)
+            
+    def getBrokerRecom(self):
+        url = "http://www.zacks.com/stock/research/NOC/brokerage-recommendations"
+        
+        
+    def write2File(self,zackranks):
+        fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         fp = open(fileName,'w',-1)
-        #pickle.dump(erlst, fp)
-        #fp.writelines(erlst)
-        fp.writelines(["%s\n" % item  for item in erlst])
-        fp.close()    
+        fp.writelines(["%s,%d\n" % (item,zackranks[item])  for item in zackranks])
+        fp.close()
 
-
-          
-    def process(self):
-        txt= '<div class="zr_rankbox">\n<p>Zacks Rank : 2-Buy <sup class='
+    def test(self):
+        #txt= '<div class="zr_rankbox">\n<p>Zacks Rank : 2-Buy <sup class=xxx\nmmk\n'
+        txt = 'Zacks Rank : NA <sup class=xxx\nmmk'
         an = re.match(self.pattern,txt)
         if an!=None:
             str1=an.group(1)
             print str1
         print an
-        #self.parseOption()          
-        #self.download()
-        #self.loadErdFile('msft')
+          
+    def process(self):
+        self.parseOption()          
+        self.download()
         print "Done,exit..."
 
 ################################################################################        
