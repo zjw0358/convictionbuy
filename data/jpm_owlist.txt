@@ -1,0 +1,489 @@
+﻿Company Name,Ticker,Focus,Industry 
+21st Century Fox,FOXA.N,,Movies &amp; Entertainment 
+A10 Networks,ATEN.N,,Systems Software 
+AbbVie,ABBV.N,,Pharmaceuticals 
+Acacia Research Corp.,ACTG.O,,Research &amp; Consulting Services 
+ACADIA Pharmaceuticals,ACAD.O,,Biotechnology 
+Accenture plc,ACN.N,Yes,IT Consulting &amp; Other Services 
+Accuray,ARAY.O,,Health Care Equipment 
+"Advance Auto Parts, Inc.",AAP.N,Yes,Automotive Retail 
+Aetna,AET.N,,Managed Health Care 
+Agilent Technologies,A.N,,Life Sciences Tools &amp; Services 
+Air Lease Corp.,AL.N,,Trading Companies &amp; Distributors 
+"Akamai Technologies, Inc.",AKAM.O,,Internet Software &amp; Services 
+Albany Molecular Research,AMRI.O,,Life Sciences Tools &amp; Services 
+Alcoa,AA.N,,Aluminum 
+Alexion Pharmaceuticals,ALXN.O,,Biotechnology 
+"Alkermes, Inc.",ALKS.O,Yes,Biotechnology 
+Alliance Resource Partners,ARLP.N,,Coal &amp; Consumable Fuels 
+Alliant Techsystems Inc.,ATK.N,,Aerospace &amp; Defense 
+Allison Transmission Holdings,ALSN.N,Yes,Auto Parts &amp; Equipment 
+Allscripts,MDRX.O,,Health Care Technology 
+Allstate,ALL.N,,Property &amp; Casualty Insurance 
+Ally Financial,ALLY.N,Yes,Consumer Finance 
+Alnylam Pharmaceuticals,ALNY.O,,Biotechnology 
+American Airlines,AAL.O,Yes,Airlines 
+American Capital,ACAS.O,,Asset Management &amp; Custody Banks 
+American Capital Agency Corp.,AGNC.O,,Mortgage REIT's 
+American Homes 4 Rent,AMH.N,,Residential REIT's 
+American Tower,AMT.N,,Specialized REIT's 
+Amicus Therapeutics,FOLD.O,,Biotechnology 
+Anadarko Petroleum,APC.N,,Oil &amp; Gas Exploration &amp; Production 
+AngloGold Ashanti Ltd-ADR,AU.N,,Gold 
+Antero Midstream Partners LP,AM.N,,Oil &amp; Gas Storage &amp; Transportation 
+Antero Resources Corporation,AR.N,,Oil &amp; Gas Exploration &amp; Production 
+Apollo Global Management,APO.N,,Asset Management &amp; Custody Banks 
+Apollo Investment,AINV.O,,Asset Management &amp; Custody Banks 
+Apollo Residential Mortgage,AMTG.N,,Mortgage REIT's 
+"Apple Inc.",AAPL.O,Yes,"Technology Hardware, Storage &amp; Peripherals" 
+Applied Materials,AMAT.O,,Semiconductor Equipment 
+Aramark,ARMK.N,,Restaurants 
+Ares Capital,ARCC.O,,Asset Management &amp; Custody Banks 
+Ares Commercial Real Estate Corp.,ACRE.O,,Mortgage REIT's 
+Ares Management,ARES.N,,Asset Management &amp; Custody Banks 
+Array BioPharma,ARRY.O,,Biotechnology 
+athenahealth,ATHN.O,,Health Care Technology 
+Atmos Energy,ATO.N,,Gas Utilities 
+Audience,ADNC.O,,Electronic Components 
+Autodesk,ADSK.O,,Application Software 
+AvalonBay Communities,AVB.N,,Residential REIT's 
+"Avis Budget Group, Inc.",CAR.N,Yes,Trucking 
+Axalta Coating Systems Ltd.,AXTA.N,,Specialty Chemicals 
+B/E Aerospace,BEAV.O,,Aerospace &amp; Defense 
+Bank of America,BAC.N,,Diversified Banks 
+Barracuda Networks,CUDA.N,,Systems Software 
+BB&amp;T Corporation,BBT.N,Yes,Regional Banks 
+"Becton, Dickinson &amp; Co",BDX.N,,Health Care Equipment 
+Best Buy,BBY.N,,Computer &amp; Electronics Retail 
+BioCryst Pharmaceuticals,BCRX.O,,Biotechnology 
+Biogen Idec,BIIB.O,Yes,Biotechnology 
+BioMarin Pharmaceuticals,BMRN.O,,Biotechnology 
+BlackRock,BLK.N,,Asset Management &amp; Custody Banks 
+Blackstone Mortgage Trust,BXMT.N,,Mortgage REIT's 
+Bloomin' Brands,BLMN.O,,Restaurants 
+bluebird bio,BLUE.O,Yes,Biotechnology 
+"Boardwalk Pipeline Partners, LP",BWP.N,Yes,Oil &amp; Gas Storage &amp; Transportation 
+Boeing Company,BA.N,Yes,Aerospace &amp; Defense 
+Boot Barn,BOOT.N,,Apparel Retail 
+Booz Allen Hamilton,BAH.N,,IT Consulting &amp; Other Services 
+BorgWarner Inc.,BWA.N,,Auto Parts &amp; Equipment 
+Boston Scientific Corporation,BSX.N,Yes,Health Care Equipment 
+Brandywine Realty Trust,BDN.N,,Office REIT's 
+Brinker International,EAT.N,,Restaurants 
+Bristol-Myers Squibb Company,BMY.N,Yes,Pharmaceuticals 
+Brixmor Property Group,BRX.N,,Retail REIT's 
+Broadcom Corporation,BRCM.O,Yes,Semiconductors 
+Brocade,BRCD.O,Yes, 
+Burlington Stores,BURL.N,,General Merchandise Stores 
+Cabot Corporation,CBT.N,,Commodity Chemicals 
+Cabot Oil &amp; Gas,COG.N,,Oil &amp; Gas Exploration &amp; Production 
+Capital One,COF.N,,Consumer Finance 
+"Cardtronics, Inc",CATM.O,,Data Processing &amp; Outsourced Services 
+Care.com,CRCM.N,,Internet Software &amp; Services 
+Carpenter Technology,CRS.N,,Steel 
+Catalent,CTLT.N,,Pharmaceuticals 
+Catamaran Corp,CTRX.O,,Health Care          Services 
+Cavium Inc,CAVM.O,,Semiconductors 
+"CBRE Group, Inc",CBG.N,,Real Estate Services 
+CBS Corporation,CBS.N,,Broadcasting 
+CDW,CDW.O,,Technology Distributors 
+Cellular Dynamics,ICEL.O,,Biotechnology 
+"CenterPoint Energy, Inc.",CNP.N,,Multi-Utilities 
+Century Aluminum Company,CENX.O,,Aluminum 
+Century Communities,CCS.N,,Homebuilding 
+CenturyLink,CTL.N,,Integrated Telecommunication Services 
+Cerner,CERN.O,,Health Care Technology 
+Charles River Laboratories,CRL.N,,Life Sciences Tools &amp; Services 
+"Chegg, Inc.",CHGG.N,,Internet Software &amp; Services 
+"Chico's FAS, Inc.",CHS.N,,Apparel Retail 
+"Chipotle Mexican Grill, Inc.",CMG.N,Yes,Restaurants 
+Ciena Corp.,CIEN.O,Yes, 
+Cigna,CI.N,,Managed Health Care 
+Cimarex Energy Co.,XEC.N,Yes,Oil &amp; Gas Exploration &amp; Production 
+Cinemark,CNK.N,,Movies &amp; Entertainment 
+Cintas,CTAS.O,,Diversified Support Services 
+Citizens Financial Group,CFG.N,,Regional Banks 
+City National Corp,CYN.N,,Regional Banks 
+Clovis Oncology,CLVS.O,,Biotechnology 
+"Coach, Inc",COH.N,,"Apparel, Accessories &amp; Luxury Goods" 
+Cobalt International Energy,CIE.N,,Oil &amp; Gas Exploration &amp; Production 
+Cogent Communications,CCOI.O,,Alternative Carriers 
+Cognizant,CTSH.O,,IT Consulting &amp; Other Services 
+Coherus,CHRS.O,,Biotechnology 
+Comerica Incorporated,CMA.N,,Diversified Banks 
+CommScope,COMM.O,, 
+Community Health Systems,CYH.N,,Health Care Facilities 
+"Compass Minerals International, Inc.",CMP.N,,Diversified Metals &amp; Mining 
+Comtech Telecommunications,CMTL.O,, 
+CONSOL Energy,CNX.N,,Coal &amp; Consumable Fuels 
+"Continental Resources, Inc.",CLR.N,,Oil &amp; Gas Exploration &amp; Production 
+Cornerstone OnDemand,CSOD.O,,Internet Software &amp; Services 
+Corning,GLW.N,,Electronic Components 
+CoStar Group,CSGP.O,,Internet Software &amp; Services 
+Costco Wholesale Corporation,COST.O,,Hypermarkets &amp; Super Centers 
+Coty Inc.,COTY.N,,Personal Products 
+Covidien,COV.N,,Health Care Equipment 
+Cree,CREE.O,,Semiconductors 
+Crestwood Equity Partners LP,CEQP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Crestwood Midstream Partners LP,CMLP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Crown Holdings,CCK.N,Yes,Metal &amp; Glass Containers 
+CSI Compressco LP,CCLP.O,,Oil &amp; Gas Equipment &amp; Services 
+CVS Health,CVS.N,,Drug Retail 
+Danaher,DHR.N,Yes,Industrial Conglomerates 
+DaVita HealthCare Partners Inc,DVA.N,,Health Care              Services 
+DCT Industrial Trust,DCT.N,,Industrial REIT's 
+Dealertrack Technologies,TRAK.O,Yes,Internet Software &amp; Services 
+"Delta Air Lines, Inc.",DAL.N,,Airlines 
+Denbury Resources Inc.,DNR.N,,Oil &amp; Gas Exploration &amp; Production 
+Dexcom,DXCM.O,,Health Care Equipment 
+Diamond Resorts International,DRII.N,,"Hotels, Resorts &amp; Cruise Lines" 
+"DigitalGlobe, Inc.",DGI.N,,Aerospace &amp; Defense 
+DineEquity Inc.,DIN.N,,Restaurants 
+"Diplomat Pharmacy, Inc.",DPLO.O,,Drug Retail 
+DISH Network,DISH.O,,Cable &amp; Satellite 
+Disney,DIS.N,Yes,Movies &amp; Entertainment 
+Dominion Midstream Partners,DM.N,,Oil &amp; Gas Storage &amp; Transportation 
+Dominion Resources,D.N,Yes,Multi-Utilities 
+Dorian LPG,LPG.N,,Oil &amp; Gas Storage &amp; Transportation 
+"Douglas Emmett, Inc.",DEI.N,,Office REIT's 
+Duke Energy Corp.,DUK.N,,Electric Utilities 
+DuPont,DD.N,,Diversified Chemicals 
+Ecolab Inc.,ECL.N,,Specialty Chemicals 
+Emergent BioSolutions,EBS.N,,Biotechnology 
+Enanta Pharmaceuticals,ENTA.O,,Biotechnology 
+Endo International PLC,ENDP.O,Yes,Pharmaceuticals 
+Energizer Holdings,ENR.N,,Household Products 
+"Energy Transfer Partners, L.P.",ETP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Enterprise Products Partners L.P.,EPD.N,,Oil &amp; Gas Storage &amp; Transportation 
+"EOG Resources, Inc.",EOG.N,Yes,Oil &amp; Gas Exploration &amp; Production 
+EP Energy Corporation,EPE.N,,Oil &amp; Gas Exploration &amp; Production 
+EPR Properties,EPR.N,Yes,Specialized REIT's 
+EQT Corporation,EQT.N,,Oil &amp; Gas Exploration &amp; Production 
+"EQT Midstream Partners, LP",EQM.N,,Oil &amp; Gas Storage &amp; Transportation 
+Equifax,EFX.N,,Research &amp; Consulting Services 
+Essent,ESNT.N,Yes,Thrifts &amp; Mortgage Finance 
+Essex Property Trust,ESS.N,,Residential REIT's 
+Experian plc,EXPN.L,,Research &amp; Consulting Services 
+"Express Scripts, Inc.",ESRX.O,Yes,Health Care             Services 
+Facebook,FB.O,Yes,Internet Software &amp; Services 
+Federal Realty Investment Trust,FRT.N,,Retail REIT's 
+FEI Company,FEIC.O,,Electronic Equipment &amp; Instruments 
+Fifth Street Finance Corp.,FSC.O,,Asset Management &amp; Custody Banks 
+FireEye,FEYE.O,Yes,Systems Software 
+First Cash Financial,FCFS.O,,Consumer Finance 
+First Republic,FRC.N,,Regional Banks 
+"First Solar, Inc",FSLR.O,,Semiconductors 
+Five9,FIVN.O,,Internet Software &amp; Services 
+Florida Community Bank,FCB.N,,Regional Banks 
+Foot Locker,FL.N,Yes,Apparel Retail 
+Ford Motor,F.N,,Automobile Manufacturers 
+Foresight Energy,FELP.N,,Coal &amp; Consumable Fuels 
+Freeport-McMoRan,FCX.N,,Diversified Metals &amp; Mining 
+FXCM,FXCM.N,,Investment Banking &amp; Brokerage 
+G&amp;K Services,GK.O,,Diversified Support Services 
+"Gaming and Leisure Properties, Inc.",GLPI.O,,Specialized REIT's 
+GasLog,GLOG.N,Yes,Oil &amp; Gas Storage &amp; Transportation 
+General Dynamics Corp.,GD.N,,Aerospace &amp; Defense 
+General Growth Properties,GGP.N,,Retail REIT's 
+General Motors,GM.N,Yes,Automobile Manufacturers 
+GenMark Diagnostics,GNMK.O,,Health Care Equipment 
+Gentherm,THRM.O,,Auto Parts &amp; Equipment 
+Genuine Parts Company,GPC.N,,Distributors 
+Gilead Sciences,GILD.O,,Biotechnology 
+Global Payments,GPN.N,,Data Processing &amp; Outsourced Services 
+Gogo,GOGO.O,,Internet Software &amp; Services 
+Gold Fields Ltd-ADR,GFI.N,,Gold 
+Goldcorp Inc,GG.N,,Gold 
+Goodyear,GT.O,,Tires &amp; Rubber 
+Google,GOOG.O,,Internet Software &amp; Services 
+"GoPro, Inc.",GPRO.O,,Consumer Electronics 
+Guidewire Software,GWRE.N,,Application Software 
+Hain Celestial Group,HAIN.O,,Packaged Foods &amp; Meats 
+Halozyme Therapeutics,HALO.O,,Biotechnology 
+Harley-Davidson,HOG.N,,Motorcycle Manufacturers 
+Harman International,HAR.N,Yes,Consumer Electronics 
+Haynes International,HAYN.O,,Steel 
+HCA,HCA.N,,Health Care Facilities 
+Health Care REIT,HCN.N,,Health Care REIT's 
+HealthEquity,HQY.O,,Managed Health Care 
+Heartware International,HTWR.O,,Health Care Equipment 
+Hershey,HSY.N,,Packaged Foods &amp; Meats 
+Hewlett-Packard,HPQ.N,,"Technology Hardware, Storage &amp; Peripherals" 
+Hilton Worldwide,HLT.N,Yes,"Hotels, Resorts &amp; Cruise Lines" 
+Hologic,HOLX.O,,Health Care Equipment 
+Honeywell,HON.N,Yes,Aerospace &amp; Defense 
+Hubbell Inc.,HUBB.N,,Electrical Components &amp; Equipment 
+Humana,HUM.N,Yes,Managed Health Care 
+Hyatt Hotels Corporation,H.N,,"Hotels, Resorts &amp; Cruise Lines" 
+"Illumina, Inc.",ILMN.O,Yes,Life Sciences Tools &amp; Services 
+Imprivata,IMPR.N,,Health Care Technology 
+IMS Health,IMS.N,,Health Care Technology 
+Incyte Corporation,INCY.O,,Biotechnology 
+Infinera,INFN.O,, 
+Infinity Pharmaceuticals,INFI.O,,Biotechnology 
+Ingersoll Rand,IR.N,Yes,Industrial Machinery 
+Inogen Inc,INGN.O,,Health Care Equipment 
+Intel,INTC.O,,Semiconductors 
+Interpublic Group of Companies,IPG.N,,Advertising 
+Intersect ENT,XENT.O,Yes,Pharmaceuticals 
+Intrexon,XON.N,,Biotechnology 
+"Intuitive Surgical, Inc.",ISRG.O,,Health Care Equipment 
+Invesco Ltd.,IVZ.N,,Asset Management &amp; Custody Banks 
+Iron Mountain,IRM.N,Yes,Specialized REIT's 
+Ironwood Pharmaceuticals,IRWD.O,,Biotechnology 
+Janus Capital Group,JNS.N,,Asset Management &amp; Custody Banks 
+Jarden Corp.,JAH.N,Yes,Housewares &amp; Specialties 
+Jones Lang LaSalle Inc,JLL.N,,Real Estate Services 
+Juniper Networks,JNPR.N,, 
+Juno Therapeutics,JUNO.O,,Biotechnology 
+"KAR Auction Services, Inc.",KAR.N,,Diversified Support Services 
+Keryx Biopharmaceuticals,KERX.O,,Biotechnology 
+KeyCorp,KEY.N,Yes,Regional Banks 
+Kilroy Realty,KRC.N,Yes,Office REIT's 
+Kimco Realty Corporation,KIM.N,,Retail REIT's 
+"Kinder Morgan, Inc.",KMI.N,Yes,Oil &amp; Gas Storage &amp; Transportation 
+KKR &amp; Co L.P.,KKR.N,,Investment Companies 
+KLA-Tencor,KLAC.O,Yes,Semiconductor Equipment 
+Kroger,KR.N,,Food Retail 
+Kythera Biopharmaceuticals,KYTH.O,,Biotechnology 
+L-3 Communications,LLL.N,,Aerospace &amp; Defense 
+La Quinta Holdings,LQ.N,Yes,"Hotels, Resorts &amp; Cruise Lines" 
+LabCorp,LH.N,,Health Care        Services 
+Lam Research,LRCX.O,,Semiconductor Equipment 
+Laredo Petroleum,LPI.N,,Oil &amp; Gas Exploration &amp; Production 
+Las Vegas Sands Corp.,LVS.N,,Casinos &amp; Gaming 
+Lennar,LEN.N,,Homebuilding 
+Lennox International,LII.N,,Building Products 
+Level 3 Communications,LVLT.N,,Alternative Carriers 
+Lexicon Pharmaceuticals,LXRX.O,,Biotechnology 
+LGI Homes,LGIH.O,,Homebuilding 
+Liberty Global,LBTYA.O,,Cable &amp; Satellite 
+LifePoint,LPNT.O,,Health Care Facilities 
+"Limited Brands, Inc.",LB.N,,Apparel Retail 
+LinkedIn Corp,LNKD.N,Yes,Internet Software &amp; Services 
+Lionsgate Entertainment,LGF.N,,Movies &amp; Entertainment 
+"Lowe's Companies, Inc.",LOW.N,Yes,Home Improvement Retail 
+LPL Financial Holdings Inc.,LPLA.O,,Investment Banking &amp; Brokerage 
+M/A-COM,MTSI.O,,Semiconductors 
+Macquarie Infrastructure Co LLC,MIC.N,,Airport Services 
+"Macy's, Inc.",M.N,,Department Stores 
+ManpowerGroup,MAN.N,Yes,Human Resource &amp; Employment Services 
+Marketo,MKTO.O,,Internet Software &amp; Services 
+Marriott International,MAR.O,,"Hotels, Resorts &amp; Cruise Lines" 
+Marsh &amp; McLennan,MMC.N,,Insurance Brokers 
+Marvell Technology Group,MRVL.O,,Semiconductors 
+Masco Corp.,MAS.N,,Building Products 
+MasterCard,MA.N,,Data Processing &amp; Outsourced Services 
+Maxim Integrated Products,MXIM.O,,Semiconductors 
+McDonald's,MCD.N,Yes,Restaurants 
+McKesson Corporation,MCK.N,Yes,Health Care Distributors 
+Mead Johnson Nutrition,MJN.N,Yes,Packaged Foods &amp; Meats 
+Medidata Solutions,MDSO.O,,Health Care Technology 
+Medivation,MDVN.O,,Biotechnology 
+Medtronic,MDT.N,,Health Care Equipment 
+"MercadoLibre, Inc.",MELI.O,,Internet Software &amp; Services 
+"Merck &amp; Co., Inc.",MRK.N,,Pharmaceuticals 
+Merrimack Pharmaceuticals,MACK.O,,Biotechnology 
+"MetLife, Inc.",MET.N,,Life &amp; Health Insurance 
+MGM Resorts International,MGM.N,,Casinos &amp; Gaming 
+Michaels,MIK.O,Yes,Specialty Stores 
+Micron Technology,MU.O,Yes,Semiconductors 
+Microsoft,MSFT.O,,Systems Software 
+Minerals Technologies,MTX.N,Yes,Specialty Chemicals 
+Moelis,MC.N,,Investment Banking &amp; Brokerage 
+Mohawk Industries,MHK.N,Yes,Home Furnishings 
+"Mondel&#275;z International, Inc.",MDLZ.O,,Packaged Foods &amp; Meats 
+MoneyGram,MGI.N,,Data Processing &amp; Outsourced Services 
+Monsanto,MON.N,,Fertilizers &amp; Agricultural Chemicals 
+Monster Beverage Corp.,MNST.O,,Soft Drinks 
+MPLX LP,MPLX.N,,Oil &amp; Gas Storage &amp; Transportation 
+Mylan Inc.,MYL.O,,Pharmaceuticals 
+NanoString,NSTG.O,,Life Sciences Tools &amp; Services 
+Navistar Int'l,NAV.N,,Construction Machinery &amp; Heavy Trucks 
+NCR Corporation,NCR.N,,"Technology Hardware, Storage &amp; Peripherals" 
+Nektar Therapeutics,NKTR.O,,Pharmaceuticals 
+Netflix Inc,NFLX.O,,Internet Retail 
+NetSuite,N.N,,Systems Software 
+Nevro,NVRO.O,,Health Care Equipment 
+New Relic,NEWR.N,,Internet Software &amp; Services 
+Newell Rubbermaid Inc.,NWL.N,,Housewares &amp; Specialties 
+Newfield Exploration Company,NFX.N,,Oil &amp; Gas Exploration &amp; Production 
+"NIKE, Inc.",NKE.N,Yes,Footwear 
+Noble Energy,NBL.N,,Oil &amp; Gas Exploration &amp; Production 
+Nord Anglia Education,NORD.N,,Education Services 
+Novavax,NVAX.O,,Biotechnology 
+Nucor Corp.,NUE.N,,Steel 
+Nustar Energy L.P.,NS.N,Yes,Oil &amp; Gas Refining &amp; Marketing 
+Och-Ziff Capital Management,OZM.N,Yes,Asset Management &amp; Custody Banks 
+Omnicare Inc.,OCR.N,,Health Care          Services 
+Omnicom Group,OMC.N,Yes,Advertising 
+Ophthotech,OPHT.O,,Biotechnology 
+Opus Bank,OPB.O,,Regional Banks 
+Orexigen Therapeutics,OREX.O,,Biotechnology 
+Otonomy,OTIC.O,,Biotechnology 
+Outfront Media Inc,OUT.N,,Specialized REIT's 
+Pandora Media Inc,P.N,,Internet Software &amp; Services 
+Paycom,PAYC.N,,Application Software 
+PDC Energy,PDCE.O,Yes,Oil &amp; Gas Exploration &amp; Production 
+Peabody Energy,BTU.N,,Coal &amp; Consumable Fuels 
+Pentair,PNR.N,,Industrial Machinery 
+PepsiCo,PEP.N,,Soft Drinks 
+Perrigo Company,PRGO.O,,Pharmaceuticals 
+Pfizer Inc.,PFE.N,,Pharmaceuticals 
+PG&amp;E Corp.,PCG.N,,Multi-Utilities 
+"Pharmacyclics, Inc.",PCYC.O,,Biotechnology 
+Phillips 66,PSX.N,,Oil &amp; Gas Refining &amp; Marketing 
+Phillips 66 Partners LP,PSXP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Pinnacle Entertainment,PNK.N,,Casinos &amp; Gaming 
+Pioneer Natural Resources,PXD.N,,Oil &amp; Gas Exploration &amp; Production 
+"Plains All American Pipeline, L.P.",PAA.N,,Oil &amp; Gas Storage &amp; Transportation 
+"Plains GP Holdings, L.P.",PAGP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Plantronics Inc,PLT.N,, 
+Plum Creek Timber,PCL.N,,Specialized REIT's 
+PNC Financial,PNC.N,,Regional Banks 
+Portland General Electric Co.,POR.N,,Electric Utilities 
+PPG Industries,PPG.N,,Specialty Chemicals 
+"Premier, Inc.",PINC.O,,Health Care           Services 
+Priceline.com,PCLN.O,,Internet Retail 
+"PrivateBancorp, Inc.",PVTB.O,,Regional Banks 
+Procter &amp; Gamble,PG.N,,Household Products 
+Prologis,PLD.N,Yes,Industrial REIT's 
+Prosensa,RNA.O,,Biotechnology 
+Prudential Financial,PRU.N,Yes,Life &amp; Health Insurance 
+PS Business Parks,PSB.N,,Diversified REIT's 
+PTC Inc,PTC.O,,Application Software 
+PTC Therapeutics,PTCT.O,,Biotechnology 
+Public Storage,PSA.N,,Specialized REIT's 
+Pzena Investment Management,PZN.N,,Asset Management &amp; Custody Banks 
+Q2 Holdings Inc.,QTWO.N,,Internet Software &amp; Services 
+Quintiles Transnational,Q.N,,Biotechnology 
+Range Resources Corp,RRC.N,,Oil &amp; Gas Exploration &amp; Production 
+Realogy Holdings Corp.,RLGY.N,,Real Estate Services 
+Red Hat,RHT.N,,Systems Software 
+Regency Centers,REG.N,Yes,Retail REIT's 
+Regency Energy Partners LP,RGP.N,,Oil &amp; Gas Refining &amp; Marketing 
+Reinsurance Group of America,RGA.N,,Reinsurance 
+Rexford Industrial Realty,REXR.N,,Industrial REIT's 
+Rite Aid,RAD.N,,Drug Retail 
+Robert Half International,RHI.N,,Human Resource &amp; Employment Services 
+Rockwell Collins,COL.N,,Aerospace &amp; Defense 
+RSP Permian Inc.,RSPP.N,,Oil &amp; Gas Exploration &amp; Production 
+RTI International Metals,RTI.N,,Diversified Metals &amp; Mining 
+Ryerson,RYI.N,,Steel 
+Sage Therapeutics,SAGE.O,,Biotechnology 
+SAIC,SAIC.N,,IT Consulting &amp; Other Services 
+salesforce.com,CRM.N,,Application Software 
+Sangamo BioSciences,SGMO.O,,Biotechnology 
+Santander Consumer (SC),SC.N,,Consumer Finance 
+SBA Communications,SBAC.O,,Wireless Telecommunication Services 
+Scotts Miracle-Gro Co.,SMG.N,,Fertilizers &amp; Agricultural Chemicals 
+ServiceMaster,SERV.N,,Specialized Consumer Services 
+Signature Bank,SBNY.O,,Regional Banks 
+Signet Jewelers,SIG.N,,Specialty Stores 
+Silver Bay Realty Trust,SBY.N,Yes,Residential REIT's 
+Simon Property Group,SPG.N,,Retail REIT's 
+SL Green Realty Corp.,SLG.N,,Office REIT's 
+Solar Capital,SLRC.O,Yes,Asset Management &amp; Custody Banks 
+SolarCity,SCTY.O,,Electrical Components &amp; Equipment 
+Solera Holdings,SLH.N,,Application Software 
+Spectranetics,SPNC.O,Yes,Health Care Supplies 
+Spirit AeroSystems,SPR.N,,Aerospace &amp; Defense 
+St Jude Medical,STJ.N,,Health Care Equipment 
+Starbucks,SBUX.O,Yes,Restaurants 
+"Steel Dynamics, Inc.",STLD.O,,Steel 
+"Stratasys, Ltd.",SSYS.O,,"Technology Hardware, Storage &amp; Peripherals" 
+SunPower Corporation,SPWR.O,,Semiconductors 
+"SunTrust Banks, Inc.",STI.N,,Regional Banks 
+Surgical Care Affiliates,SCAI.O,,Health Care Facilities 
+SVB Financial Group,SIVB.O,Yes,Regional Banks 
+Synageva BioPharma,GEVA.O,,Biotechnology 
+Synaptics Inc.,SYNA.O,Yes,Semiconductors 
+Synchronoss Technologies,SNCR.O,,Application Software 
+Synchrony Financial,SYF.N,,Consumer Finance 
+T-Mobile US Inc.,TMUS.N,Yes,Wireless Telecommunication Services 
+"T. Rowe Price Group, Inc",TROW.O,,Asset Management &amp; Custody Banks 
+Tableau,DATA.N,,Systems Software 
+TAL International,TAL.N,,Trading Companies &amp; Distributors 
+Talmer Bancorp,TLMR.O,,Regional Banks 
+Targa Resources Corp.,TRGP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Taylor Morrison Home Corp.,TMHC.N,,Homebuilding 
+Telephone &amp; Data Systems,TDS.N,Yes,Wireless Telecommunication Services 
+Tenet,THC.N,,Health Care Facilities 
+Tenneco Inc.,TEN.N,,Auto Parts &amp; Equipment 
+"TerraForm Power, Inc.",TERP.O,,Renewable Electricity 
+Tesoro Logistics LP,TLLP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Texas Instruments,TXN.N,,Semiconductors 
+Textron,TXT.N,,Aerospace &amp; Defense 
+The Carlyle Group,CG.O,Yes,Asset Management &amp; Custody Banks 
+The Container Store,TCS.N,,Specialty Stores 
+"The Cooper Companies, Inc.",COO.N,,Health Care Supplies 
+The Fresh Market,TFM.O,,Food Retail 
+The Home Depot,HD.N,,Home Improvement Retail 
+The Intercontinental Exchange,ICE.N,,Specialized Finance 
+The Medicines Company,MDCO.O,,Pharmaceuticals 
+The Mosaic Company,MOS.N,,Fertilizers &amp; Agricultural Chemicals 
+The New Home Company,NWHM.N,,Homebuilding 
+The Ryland Group,RYL.N,,Homebuilding 
+"The Williams Companies, Inc.",WMB.N,,Oil &amp; Gas Storage &amp; Transportation 
+Thermo Fisher Scientific,TMO.N,,Life Sciences Tools &amp; Services 
+Time Warner,TWX.N,Yes,Movies &amp; Entertainment 
+TJX Companies,TJX.N,,Apparel Retail 
+Towers Watson,TW.N,,Human Resource &amp; Employment Services 
+Tractor Supply,TSCO.O,,Specialty Stores 
+TriMas,TRS.O,,Industrial Machinery 
+Trimble Navigation,TRMB.O,,Electronic Manufacturing Services 
+TriNet,TNET.N,,Human Resource &amp; Employment Services 
+Triumph Group,TGI.N,,Aerospace &amp; Defense 
+TriVascular Technologies,TRIV.O,,Health Care Equipment 
+TrueCar Inc.,TRUE.O,,Internet Software &amp; Services 
+"Twitter, Inc.",TWTR.N,,Internet Software &amp; Services 
+Two Harbors,TWO.N,,Mortgage REIT's 
+Tyson Foods,TSN.N,Yes,Packaged Foods &amp; Meats 
+"UDR, Inc.",UDR.N,,Residential REIT's 
+"Ulta Salon Cosmetics &amp; Fragrance Inc.",ULTA.O,,Specialty Stores 
+Ultimate Software,ULTI.O,,Application Software 
+Ultragenyx,RARE.O,,Biotechnology 
+"United Continental Holdings, Inc.",UAL.N,,Airlines 
+United Technologies,UTX.N,,Aerospace &amp; Defense 
+UnitedHealth,UNH.N,,Managed Health Care 
+Universal Health Services Inc.,UHS.N,,Health Care Facilities 
+Urban Outfitters,URBN.O,,Apparel Retail 
+US Cellular,USM.N,,Wireless Telecommunication Services 
+"USA Compression Partners, LP",USAC.N,,Oil &amp; Gas Equipment &amp; Services 
+V.F. Corporation,VFC.N,Yes,"Apparel, Accessories &amp; Luxury Goods" 
+Valero Energy,VLO.N,,Oil &amp; Gas Refining &amp; Marketing 
+"Valero Energy Partners, LP",VLP.N,,Oil &amp; Gas Storage &amp; Transportation 
+Valspar Corp,VAL.N,,Specialty Chemicals 
+Vantiv,VNTV.N,,Data Processing &amp; Outsourced Services 
+Varian Medical,VAR.N,,Health Care Equipment 
+Veeco Instruments,VECO.O,,Semiconductor Equipment 
+Veeva Systems,VEEV.N,,Health Care Technology 
+VeriFone,PAY.N,Yes,Data Processing &amp; Outsourced Services 
+"Verint Systems, Inc.",VRNT.O,,Application Software 
+Verisk Analytics,VRSK.O,Yes,Research &amp; Consulting Services 
+Verizon Communications,VZ.N,Yes,Integrated Telecommunication Services 
+Vertex Pharmaceuticals,VRTX.O,,Biotechnology 
+Viacom,VIAB.N,,Movies &amp; Entertainment 
+Virtusa Corp.,VRTU.O,,IT Consulting &amp; Other Services 
+Visa Inc.,V.N,,Data Processing &amp; Outsourced Services 
+Visteon Corporation,VC.N,,Auto Parts &amp; Equipment 
+"Vitamin Shoppe, Inc",VSI.N,,Specialty Stores 
+Vornado Realty Trust,VNO.N,,Diversified REIT's 
+VTTI Energy Partners LP,VTTI.N,,Oil &amp; Gas Storage &amp; Transportation 
+VWR,VWR.O,,Life Sciences Tools &amp; Services 
+Walgreens Boots Alliance Inc,WBA.O,,Drug Retail 
+Wesco International,WCC.N,,Trading Companies &amp; Distributors 
+Western Digital,WDC.O,,"Technology Hardware, Storage &amp; Peripherals" 
+Westlake Chemical Corp.,WLK.N,,Commodity Chemicals 
+WhiteWave Foods,WWAV.N,,Packaged Foods &amp; Meats 
+William Lyon Homes,WLH.N,,Homebuilding 
+Williams Partners L.P.,WPZ.N,,Oil &amp; Gas Storage &amp; Transportation 
+WuXi PharmaTech,WX.N,,Life Sciences Tools &amp; Services 
+Wyndham Worldwide,WYN.N,,"Hotels, Resorts &amp; Cruise Lines" 
+Wynn Resorts,WYNN.O,,Casinos &amp; Gaming 
+Yahoo Inc,YHOO.O,Yes,Internet Software &amp; Services 
+Yelp Inc.,YELP.N,,Internet Software &amp; Services 
+Zebra Technologies,ZBRA.O,,Electronic Equipment &amp; Instruments 
+Zimmer Holdings,ZMH.N,,Health Care Equipment 
+Zoetis,ZTS.N,,Pharmaceuticals 
+ZS Pharma,ZSPH.O,,Pharmaceuticals 
