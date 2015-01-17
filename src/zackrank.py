@@ -1,9 +1,8 @@
 #from bs4 import BeautifulSoup
 import urllib2
 import re
-import datetime
-import sys
-import getopt
+
+
 
 from bs4 import BeautifulSoup
 
@@ -13,65 +12,20 @@ class ZackRank:
     def __init__(self):
         #self.earning_exp = '^window.app_data_earnings[\d\D]*\\"data\\"[ :\\[]*(.*)]'
         self.rankPattern = '[\d\D]*Zacks Rank : (.*) <sup class=[\d\D]*'
-        self.outputpath="../result/"
-        columns = ['symbol','rank','cq','cq7','cq30','cq60', 'cq90', 'abr','abr1w','abr1m','abr2m', \
-                        'abr3m']
-
+        
+        
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' "
         print "example:run zackrank.py -t aapl"
         print "example:run zackrank.py -p portfolio.txt"
 
-    # google style portfolio file
-    def loadPortfolioFile(self,fileName):     
-        fp = open(fileName,'r',-1)
-        pf = fp.read()
-        stocklist=[]
-        #print pf
-        for item in pf.split():            
-            market,symbol = item.split(':')
-            print symbol
-            stocklist.append(symbol)
-                    
-        fp.close()
-        return stocklist
-    
-    # common style symbol list
-    # symbol, source(1/2/3),
-    def loadSymbolLstFile(self,fileName):
-        fp = open(fileName,'r',-1)
-        stocklist = []
-        for line in fp:            
-            items = line.split(',')
-            stocklist.append(items[0])
-        fp.close()
-        return stocklist
-
         
-    def parseOption(self):
-        self.ticklist=[]
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:", ["filename", "ticklist"])
-        except getopt.GetoptError:
-            return False
-        for opt, arg in opts:
-            if opt in ("-f", "--filename"):
-                self.ticklist = self.loadPortfolioFile(arg)
-            elif opt in ("-t", "--ticklist"):
-                newstr = arg.replace("'", "")                
-                self.ticklist = newstr.split()
-                
-        if (not self.ticklist):
-            self.usage()
-            sys.exit()
-        return
-        
-    def getRank(self):
+    def getRank(self,ticklist):
         zackranks = {}
-        for symbol in self.ticklist:
+        for symbol in ticklist:
             url = "http://www.zacks.com/stock/quote/"+symbol
             htmltxt =urllib2.urlopen(url).read()
-            an = re.match(self.pattern, htmltxt)
+            an = re.match(self.rankPattern, htmltxt)
             if an!=None:
                 str1=an.group(1)
                 if str1=='NA':
@@ -80,9 +34,8 @@ class ZackRank:
                     zrank = int(str1[0])
                 print symbol, zrank
                 zackranks[symbol] = zrank
-
-        if len(zackranks) > 1:
-            self.write2File(zackranks)
+        return zackranks
+        
     '''
     Brokerage Recommendations
 
@@ -94,36 +47,60 @@ class ZackRank:
     Strong Sell	0	0	0	0	0
     ABR	1.50	1.50	1.50	1.50	1.52
     '''        
-    def getBrokerRecom(self):
-        url = "http://www.zacks.com/stock/research/NOC/brokerage-recommendations"
-    '''
-    Magnitude - Consensus Estimate Trend
+    def getBrokerRecom(self, symbol):
+        url = "http://www.zacks.com/stock/research/" + symbol + "/brokerage-recommendations"
+        page = urllib2.urlopen(url).read()
+        soup = BeautifulSoup(page)
 
-    Current Qtr     (12/2014)	Next Qtr     (3/2015)	Current Year     (12/2014)	Next Year(12/2015)
-    Current	0.66	0.51	2.25	2.40
-    7 Days Ago	0.66	0.51	2.25	2.40
-    30 Days Ago	0.66	0.51	2.25	2.40
-    60 Days Ago	0.66	0.52	2.25	2.38
-    90 Days Ago	0.66	0.52	2.24	2.39
-    '''
+        magntable = soup.find("section", {'id':'quote_brokerage_recomm'})
+        tdLst = magntable.findAll('td')
+        #print tdLst
+        abr = {}
+        tdlen = len(tdLst)
+        idAbrLst = {'abrt':-5,'abr1w':-4,'abr1m':-3,'abr2m':-2,'abr3m':-1}
+       
+        for key in idAbrLst:
+            abr[key] = float(tdLst[idAbrLst[key]].string)
+        print abr
+        
+        
     def getEstimate(self, symbol):
         url = "http://www.zacks.com/stock/quote/" + symbol + "/detailed-estimates"
         page = urllib2.urlopen(url).read()
         soup = BeautifulSoup(page)
-        print page
-        allitems = soup.findAll("section") #,id='magnitude_estimate'
-        for index,item in enumerate(allitems):
-            txt = item.string
-            if txt==None:
-                continue
-            print txt
-            
+        #print page
+        magntable = soup.find("section", {'id':'magnitude_estimate'})
+        tdLst = magntable.findAll('td')
+        cqEstm = []
+        nqEstm = []
+        tdlen = len(tdLst)
+        '''
+        [<td class="alpha">Current</td>, <td>0.51</td>, <td>0.56</td>, <td>2.40</td>, <td>2.59</td>, 
+        <td class="alpha">7 Days Ago</td>, <td>0.51</td>, <td>0.56</td>, <td>2.40</td>, <td>2.59</td>, 
+        <td class="alpha">30 Days Ago</td>, <td>0.51</td>, <td>0.56</td>, <td>2.40</td>, <td>2.59</td>, 
+        <td class="alpha">60 Days Ago</td>, <td>0.52</td>, <td>0.56</td>, <td>2.38</td>, <td>2.53</td>, 
+        <td class="alpha">90 Days Ago</td>, <td>0.52</td>, <td>0.56</td>, <td>2.39</td>, <td>2.54</td>]
+
+        '''
+        idcqLst = [1,6,11,16,21]
+        idnqLst = [2,7,12,17,22]
         
+        for id in idcqLst:
+            if id < tdlen:
+                cqEstm.append(tdLst[id].string)
+        for id in idnqLst:
+            if id < tdlen:
+                cqEstm.append(tdLst[id].string)
+        
+        
+        
+    '''    
     def write2File(self,zackranks):
         fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         fp = open(fileName,'w',-1)
         fp.writelines(["%s,%d\n" % (item,zackranks[item])  for item in zackranks])
         fp.close()
+    '''
 
     def test(self):
         #txt= '<div class="zr_rankbox">\n<p>Zacks Rank : 2-Buy <sup class=xxx\nmmk\n'
@@ -144,7 +121,8 @@ class ZackRank:
 ################################################################################            
 if __name__ == "__main__":
     zr = ZackRank()
-    zr.getEstimate('msft')
+    #zr.getEstimate('intc')
+    zr.getBrokerRecom('intc')
     #process(sys.argv[1:],None)
 
 
