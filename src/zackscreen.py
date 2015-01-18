@@ -10,9 +10,13 @@ class ZackScreen:
         columns = ['symbol','rank','cq','cq7','cq30','cq60', 'cq90', 'abr','abr1w','abr1m','abr2m', \
                         'abr3m']
         return
+    def usage(self):
+        print "program -f portfolio"
+        
     def process(self):
         self.parseOption()
-        self.getZackRank()
+        #self.getZackRank()
+        self.getPriceSale()
         return
         
     def parseOption(self):
@@ -58,6 +62,11 @@ class ZackScreen:
         fp.close()
         return stocklist
     
+    # yahoo
+    def getPriceSale(self):       
+        stockps = self.zack.getPriceSale(self.ticklist)
+        
+        
         
     def getZackRank(self):
         rankdict = self.zack.getRank(self.ticklist)
