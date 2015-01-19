@@ -1,0 +1,73 @@
+import pandas.io.data as web
+import datetime
+import urllib2
+import csv
+
+class FundaData:
+    def __init__(self):       
+        self.startdate = ""
+        self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
+        startday = datetime.date.today() - datetime.timedelta(days=365)
+        self.startdate = startday.strftime("%Y-%m-%d")
+
+    def getPerf(self,symbol):
+        ret = {}
+        try:
+            ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+        except:
+            # IO error
+            print "System/Network Error when retrieving ",symbol," skip it"
+            return ret
+        # calculate perf
+        px = ohlc['Adj Close']
+        p4w = 0
+        p12w = 0
+        p24w = 0
+        pmax = 0
+        if len(px) >= 4*7:
+            p4w = round((px[-1]/px[-4*7] - 1)*100,2)
+        if len(px) >= 12*7:
+            p12w = round((px[-1]/px[-12*7] - 1)*100,2)
+        if len(px) >= 24*7:
+            p24w = round((px[-1]/px[-24*7] - 1)*100,2)
+        pmax = round((px[-1]/px[0] - 1) * 100,2)
+        
+        return
+        
+    #limit=200               
+    def getPriceSale(self, ticklist):
+        symstr = ""
+        limit = 199 #yahoo limit is 200
+        lenlist = len(ticklist)
+        stockps = []
+        retidx= 0 
+        for idx, symbol in enumerate(ticklist):
+            symstr += symbol
+            if idx<(lenlist-1) and (idx%limit!=0):
+                symstr +="+"
+            if idx%limit==0:
+                print idx,symstr
+                url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + "&f=p5"
+                #page = urllib2.urlopen(url).read()
+                response = urllib2.urlopen(url)
+                cr = csv.reader(response)
+                for row in cr:
+                    stockps.append((ticklist[retidx],row)) 
+                    retidx +=1
+                symstr=""
+        
+        return stockps
+        '''url = "http://finance.yahoo.com/d/quotes.csv?s=" + symbol + "&f=p5"
+        page = urllib2.urlopen(url).read()
+        #ps = float(page)
+        #print symbol,"ps=",ps
+        #return ps
+        print page
+        '''
+         
+    def process(self):
+        return
+        
+if __name__ == "__main__":
+    obj = FundaData()
+    obj.process()

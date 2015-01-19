@@ -1,21 +1,25 @@
-import zackrank
+#import zackrank
 import sys
 import getopt
 import datetime
+import fundata
+import csv
+import pandas
 
 class ZackScreen:
     def __init__(self):
-        self.zack = zackrank.ZackRank()
+        #self.zack = zackrank.ZackRank()
+        self.funda = fundata.FundaData()
         self.outputpath="../result/"
-        columns = ['symbol','rank','cq','cq7','cq30','cq60', 'cq90', 'abr','abr1w','abr1m','abr2m', \
-                        'abr3m']
+        self.symtable=pandas.DataFrame()
+        #columns = ['symbol','rank','cq','cq7','cq30','cq60', 'cq90', 'abr','abr1w','abr1m','abr2m', \
+        #                'abr3m']
         return
     def usage(self):
-        print "program -f portfolio"
+        print "program -f portfolio.txt"
         
     def process(self):
         self.parseOption()
-        #self.getZackRank()
         self.getPriceSale()
         return
         
@@ -27,44 +31,75 @@ class ZackScreen:
             return False
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
-                self.ticklist = self.loadSymbolLstFile(arg)
-            elif opt in ("-t", "--ticklist"):
-                newstr = arg.replace("'", "")                
-                self.ticklist = newstr.split()
+                self.loadSymbolLstFile(arg)
                 
-        if (not self.ticklist):
+        if (self.symtable.empty):
             self.usage()
             sys.exit()
         return
            
-    # common style symbol list
-    # symbol, source(1/2/3), 1-JPM,2-my portfolio,3-both
+    # ABR update file
+    # symbol,rank,indurank,indutotal,etf,abrt,abr1w,abr1m,abr2m,abr3m,numbr
     def loadSymbolLstFile(self,fileName):
         fp = open(fileName,'r',-1)
-        stocklist = []
-        for line in fp:            
-            items = line.split(',')
-            stocklist.append(items[0])
-        fp.close()
-        return stocklist
+        header=[]
+        #header = 'symbol,rank,indurank,indutotal,etf,abrt,abr1w,abr1m,abr2m,abr3m,numbr\n'
+        reader = csv.reader(fp)  # creates the reader object
+        symbolLst=[]
+        rankLst=[]
+        indurankLst=[]
+        indutotalLst=[]
+        eftLst=[]
+        abrtLst=[]
+        abr1wLst=[]
+        abr1mLst=[]
+        abr2mLst=[]
+        abr3mLst=[]
+        numbrLst=[]
+
+        idx = 0
+        for row in reader:
+            if idx == 0:
+                header = row
+            else:
+                symbolLst.append(row[0])
+                rankLst.append(int(row[1]))
+                indurankLst.append(row[2])
+                indutotalLst.append(row[3])
+                eftLst.append(row[4])
+                #print row[0],row[5]
+                if row[5]=="" or row[5]=="NA":
+                    abrtLst.append(0)
+                else:
+                    abrtLst.append(float(row[5]))
+                abr1wLst.append(row[6])
+                abr1mLst.append(row[7])
+                abr2mLst.append(row[8])
+                abr3mLst.append(row[9])
+                numbrLst.append(row[10])
+            idx += 1            
+        fp.close() 
+        #load into pandas data frame
+        self.symtable=pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,\
+            'industry_rank':indurankLst,'industry_total':indutotalLst,'etf':eftLst,\
+            'abr_today':abrtLst,'abr_1week':abr1wLst,'abr_1month':abr1mLst,\
+            'abr_2month':abr2mLst,'abr_3month':abr3mLst,'num_of_br':numbrLst},\
+            columns=['symbol','rank','industry_rank','industry_total','etf','abr_today',\
+            'abr_1week','abr_1month','abr_2month','abr_3month'])
+        #
+        return
         
-    # google style portfolio file
-    def loadPortfolioFile(self,fileName):     
-        fp = open(fileName,'r',-1)
-        pf = fp.read()
-        stocklist=[]
-        #print pf
-        for item in pf.split():            
-            market,symbol = item.split(':')
-            print symbol
-            stocklist.append(symbol)
-                    
-        fp.close()
-        return stocklist
+   
     
     # yahoo
-    def getPriceSale(self):       
-        stockps = self.zack.getPriceSale(self.ticklist)
+    def getPriceSale(self): 
+        ticklist = self.symtable[(self.symtable['rank']<=3) & (self.symtable['rank']>0) & \
+            (self.symtable['abr_today'] < 2) & (self.symtable['abr_today'] > 0)]
+        #& self.symtable['rank']>0 & self.symtable['abr_today']<2
+        print ticklist
+        print len(ticklist)
+        #self.funda.getPriceSale(ticklist)
+
         
         
         

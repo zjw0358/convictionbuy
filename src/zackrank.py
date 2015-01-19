@@ -66,22 +66,62 @@ class ZackRank:
     Sell	0	0	0	0	0
     Strong Sell	0	0	0	0	0
     ABR	1.50	1.50	1.50	1.50	1.52
-    '''        
+    ''' 
+    #return 'indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m','abr3m'
+    # can combine with rank
     def getBrokerRecom(self, symbol):
+        #http://www.zacks.com/stock/research/aapl/brokerage-recommendations
         url = "http://www.zacks.com/stock/research/" + symbol + "/brokerage-recommendations"
-        page = urllib2.urlopen(url).read()
-        soup = BeautifulSoup(page)
-
-        magntable = soup.find("section", {'id':'quote_brokerage_recomm'})
-        tdLst = magntable.findAll('td')
-        #print tdLst
         abr = {}
-        tdlen = len(tdLst)
-        idAbrLst = {'abrt':-5,'abr1w':-4,'abr1m':-3,'abr2m':-2,'abr3m':-1}
-       
-        for key in idAbrLst:
-            abr[key] = float(tdLst[idAbrLst[key]].string)
-        print abr
+        abr['etf'] = "0"
+        try:            
+            page = urllib2.urlopen(url).read()
+        except:
+            print symbol," ABR Not found"
+            return abr
+   
+        soup = BeautifulSoup(page)
+        #is ETF?
+        isetf = soup.find("sup",attrs={'title':"Zacks ETF Rank Explained"})
+        if isetf!=None:
+            abr['etf'] = "1"
+        else:
+            magntable = soup.find("section", {'id':'quote_brokerage_recomm'})
+            tdLst = magntable.findAll('td')
+    
+            tdlen = len(tdLst)
+            idAbrLst = {'abrt':-5,'abr1w':-4,'abr1m':-3,'abr2m':-2,'abr3m':-1}
+        
+            for key in idAbrLst:
+                abr[key] = tdLst[idAbrLst[key]].string
+            #industry rank by abr
+            irba = soup.find("td",attrs={'class':"alpha"},text="Industry Rank by ABR") 
+            irbatxt = irba.nextSibling.nextSibling.string
+            pattern = "([\d]+)[\s]*of[\s]*([\d]+)"
+            an = re.match(pattern,irbatxt)
+            indurank = ""
+            indutotal = ""
+            try:
+                if an!=None:
+                    indurank = an.group(1)
+                    indutotal = an.group(2)
+            except:
+                pass                
+            abr['indurank'] = indurank
+            abr['indutotal'] = indutotal
+            
+            '''
+            <td class="alpha"># of Recs in ABR</td>
+            <td><span>1</span></td>            
+            '''
+            nrabr = soup.find("td",attrs={'class':"alpha"},text="# of Recs in ABR") 
+            nrabrtxt = ""
+            if nrabr!=None:
+                nrabrtxt = nrabr.nextSibling.nextSibling.string
+            abr['numbr'] = nrabrtxt
+
+        print symbol,abr
+        return abr
         
         
     def getEstimate(self, symbol):
@@ -163,14 +203,20 @@ class ZackRank:
             str1=an.group(1)
             print str1
         print an
-          
-    def process(self):
-        #self.parseOption()          
+        
+    def testRank(self):
         self.getSymbolRank('QQQ')   # 2 ETF
         self.getSymbolRank('AAPL')  # 2 Buy
         self.getSymbolRank('HUSA')  # 0 NR
         self.getSymbolRank('GNMA')  # 0 NR ETF        
         
+    def testAbr(self):
+        print self.getBrokerRecom('AAPL')
+        print self.getBrokerRecom('spy')
+        
+    def process(self):
+        #self.parseOption()          
+        self.testAbr()
         #self.test()
         print "Done,exit..."
 

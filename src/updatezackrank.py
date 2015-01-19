@@ -3,6 +3,11 @@ import datetime
 import zackrank
 import sys
 
+'''
+used to update zack rank periodly
+updatezackrank.py ../data/zrupdate_2015-01-18.csv
+output - ../data/zrupdate_[time].csv
+'''
 class UpdateZackRank:
     def __init__(self):
         self.outputpath = "../data/"
@@ -20,11 +25,11 @@ class UpdateZackRank:
         for row in reader:
             symbol = row[0]
             rank = row[1]
-            #self.stocklist[symbol] = row
-            #print symbol
+            '''
             if '^' in symbol or rank=="-1":
                 continue
-            if rank == "":
+            '''
+            if rank == "-1":
                 ret = self.zack.getSymbolRank(symbol)
                 row[1] = str(ret)
             line = "%s,%s,%s,%s,%s\n" % (row[0],row[1],row[2],row[3],row[4])
