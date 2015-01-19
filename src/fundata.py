@@ -12,6 +12,7 @@ class FundaData:
 
     def getPerf(self,symbol):
         ret = {}
+
         try:
             ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
         except:
@@ -19,6 +20,7 @@ class FundaData:
             print "System/Network Error when retrieving ",symbol," skip it"
             return ret
         # calculate perf
+        print symbol
         px = ohlc['Adj Close']
         p4w = 0
         p12w = 0
@@ -32,7 +34,10 @@ class FundaData:
             p24w = round((px[-1]/px[-24*7] - 1)*100,2)
         pmax = round((px[-1]/px[0] - 1) * 100,2)
         
-        return
+        ret['p4w'] = p4w
+        ret['p12w'] = p12w
+        ret['p24w'] = p24w
+        return ret
         
     #limit=200               
     def getPriceSale(self, ticklist):
@@ -45,17 +50,26 @@ class FundaData:
             symstr += symbol
             if idx<(lenlist-1) and (idx%limit!=0):
                 symstr +="+"
+                
             if idx%limit==0:
                 print idx,symstr
                 url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + "&f=p5"
-                #page = urllib2.urlopen(url).read()
                 response = urllib2.urlopen(url)
                 cr = csv.reader(response)
                 for row in cr:
-                    stockps.append((ticklist[retidx],row)) 
+                    stockps.append(row[0]) 
                     retidx +=1
                 symstr=""
-        
+                
+        if symstr!="":
+            print "last get",symstr
+            url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + "&f=p5"
+            response = urllib2.urlopen(url)
+            cr = csv.reader(response)
+            for row in cr:
+                stockps.append(row[0])
+                retidx +=1
+                
         return stockps
         '''url = "http://finance.yahoo.com/d/quotes.csv?s=" + symbol + "&f=p5"
         page = urllib2.urlopen(url).read()
@@ -64,7 +78,8 @@ class FundaData:
         #return ps
         print page
         '''
-         
+    
+          
     def process(self):
         return
         

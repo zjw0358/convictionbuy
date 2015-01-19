@@ -1,8 +1,9 @@
 import csv
 import datetime
-import zackrank
+import fundata
 import sys
 import getopt
+import pandas
 
 '''
 used to update fundamental data periodly
@@ -16,7 +17,8 @@ class UpdateFunda:
         self.sufname = "fundaupdate_"
         self.fileName = ""
         self.rc = [1,2,3] # rank criteria <=3
-
+        self.funda = fundata.FundaData()
+        
     def checkCriteria(self, rankstr):
         try:
             rank = int(rankstr)
@@ -27,31 +29,10 @@ class UpdateFunda:
         except:
             return False
             
-    def getOutputLine(self,symbol,rank,abr):
-        idur = ""
-        idutotal = ""
-        etf = ""
-        abrt = ""
-        abr1w = ""
-        abr1m = ""
-        abr2m = ""
-        abr3m = ""
-        column=['indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m','abr3m','numbr']
-        colval=[]
-        for colname in column:
-            if colname in abr:
-                colval.append(abr[colname])
-            else:
-                colval.append("")
-                
-        line = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % \
-                (symbol,rank,colval[0],colval[1],colval[2],\
-                colval[3],colval[4],colval[5],colval[6],colval[7],colval[8])
-        return line
         
     def usage(self):
         print "program -f symbollist.txt [-c 3]"
-        print "update symbol abr for rank <=3"
+        print "update symbol fundamental data for rank <=3"
 
         
     def parseOption(self):
@@ -69,6 +50,7 @@ class UpdateFunda:
         if (self.fileName == ""):
             self.usage()
             sys.exit()
+            
         print self.fileName,"rank criteria<=",self.rc
         return
 
@@ -77,33 +59,28 @@ class UpdateFunda:
         self.loadZackRankCsv()
         
     def loadZackRankCsv(self):
-        # symbol,rank,sector,industry
+        # symbol,rank
         fp = open(self.fileName,'r',-1)
-        outputfn = self.outputpath + self.sufname + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
-        outputfp = open(outputfn,'w',-1)
-        header = 'symbol,rank,p/s\n'
-        outputfp.write(header)
         ticklist=[]
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         for row in reader:
-            symbol = row[0]
-            rankstr = row[1]
-            retabr = {}
-            if self.checkCriteria(rankstr):                
-                retabr = self.zack.getBrokerRecom(symbol)
-            
-            line = self.getOutputLine(symbol,rankstr,retabr)
-            print idx,line
+            ticklist.append(row[0]) #symbol
             idx += 1
-            outputfp.write(line)
-            if idx%10 == 0:
-                outputfp.flush()
         fp.close()      # closing
-        outputfp.close()
-        return
+        psLst = self.funda.getPriceSale(ticklist)
+        print ticklist
+        print "======"
+        print psLst
+        #output
+        self.fundatable=pandas.DataFrame({'symbol':ticklist,'pricesale':psLst},\
+            columns=['symbol','pricesale'])
+        outputfn = self.outputpath + self.sufname + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'       
+        self.fundatable.to_csv(outputfn,sep=',',index=False)
         
+        
+    
 if __name__ == "__main__":
-    obj = UpdateZackAbr()
+    obj = UpdateFunda()
     obj.process()
         
