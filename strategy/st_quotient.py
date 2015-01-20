@@ -114,7 +114,7 @@ class st_quotient:
                     
                     # to generate simulation report
                     param = "k1=%.1f&k2=%.1f&cl=%d"%(k1,k2,cl)
-                    self.simutable.addOneTestResult(param,self.tradesup.getDailyValue())
+                    self.simutable.addOneTestResult(self.setupInfo,param,self.tradesup.getDailyValue())
         
         #add results to report
         self.simutable.makeSimuReport()

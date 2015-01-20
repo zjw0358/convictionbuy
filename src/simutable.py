@@ -12,7 +12,7 @@ class SimuTable:
         self.bestNum = bt.getNumBest()
         self.bestperf = -10000000  # the worse case
         self.bestperfFirstTradeIdx = 0
-        
+        self.bestperfRept = pandas.DataFrame()
         #self.bestdv# = pandas.DataFrame(columns='dayvalue')
         print "SimuTable initialized"
 
@@ -28,7 +28,9 @@ class SimuTable:
     
     #param - strategy parameter    
     #df - day value
+    #stinfo - setupinfo
     def addOneTestResult(self, stinfo, param, df, minfo=""):
+        '''
         firstTradeIdx = self.tradesup.getFirstTradeIdx()
         rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
         bm_returns = rtbm.pct_change()        
@@ -36,34 +38,49 @@ class SimuTable:
         rtsgy = df['dayvalue'][firstTradeIdx:].resample('M',how='last')
         sgy_returns = rtsgy.pct_change()
         sgy_returns=sgy_returns.dropna()
-        
+        '''
         bhprofit = self.tradesup.getBHprofit() #buy&hold profit
-        # get base facts,alpha,beta,volatility,etc
-        dct = self.tradesup.getBasefacts(bm_returns,sgy_returns)
+        perfdata = 0
         
 
         tradereport = self.tradesup.getTradeReport()
         if tradereport.empty:
             lastTrade = "empty"
+            # TODO move this to tradesupport?
+            d0 = {'symbol':self.symbol,'param':param,'alpha':0,'beta':0,'perf':0,\
+            'max_drawdown':0,'profit_order':0,'loss_order':0,'last_trade':lastTrade,'bh_profit':bhprofit,'mark':minfo}
+            
+            if perfdata>self.bestperf:
+                self.bestperf = perfdata
+                self.bestdv = df #this is best day value data frame
         else:
             lastTrade = tradereport.tail(1).to_string(header=False)
-        
-        #find the best performance
-        perfdata = tradereport['pnl'].sum()
-        #not printing any more
-        #print tradereport,"PnL=",perfdata,"B/H profit=",bhprofit
-
-        if perfdata>self.bestperf:
-            self.bestperf = perfdata
-            self.bestdv = df #this is best day value data frame
-            self.bestperfFirstTradeIdx = firstTradeIdx
-            self.bestperfRept = self.tradesup.getTradeReport()
-            self.bestperfstInfo = stinfo
+            firstTradeIdx = self.tradesup.getFirstTradeIdx()
+            rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
+            bm_returns = rtbm.pct_change()        
+            bm_returns = bm_returns.dropna()
+            rtsgy = df['dayvalue'][firstTradeIdx:].resample('M',how='last')
+            sgy_returns = rtsgy.pct_change()
+            sgy_returns=sgy_returns.dropna()
+            # get base facts,alpha,beta,volatility,etc
+            dct = self.tradesup.getBasefacts(bm_returns,sgy_returns)
             
-        # TODO move this to tradesupport?
-        d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
-        'max_drawdown':self.tradesup.getMaxdd(),'profit_order':self.tradesup.getProfitOrderNum(),\
-        'loss_order':self.tradesup.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit,'mark':minfo}
+            #find the best performance
+            perfdata = tradereport['pnl'].sum()
+            #not printing any more
+            #print tradereport,"PnL=",perfdata,"B/H profit=",bhprofit
+    
+            if perfdata>self.bestperf:
+                self.bestperf = perfdata
+                self.bestdv = df #this is best day value data frame
+                self.bestperfFirstTradeIdx = firstTradeIdx
+                self.bestperfRept = self.tradesup.getTradeReport()
+                self.bestperfstInfo = stinfo
+            
+            # TODO move this to tradesupport?
+            d0 = {'symbol':self.symbol,'param':param,'alpha':dct['alpha'],'beta':dct['beta'],'perf':perfdata,\
+            'max_drawdown':self.tradesup.getMaxdd(),'profit_order':self.tradesup.getProfitOrderNum(),\
+            'loss_order':self.tradesup.getLossOrderNum(),'last_trade':lastTrade,'bh_profit':bhprofit,'mark':minfo}
         
         # add new row with external index start from 1,2,3
         self.symtable.loc[len(self.symtable)+1]=d0
@@ -91,9 +108,10 @@ class SimuTable:
         # reset tradesup data, because we are running optimization test
         # print "set first trade index as set its first tradeidx=",self.bestperfFirstTradeIdx
         
-        self.tradesup.setFirstTradeIdxWithBestPerf(self.bestperfFirstTradeIdx)
-        self.tradesup.setTradeReportWithBestPerf(self.bestperfRept)
-        self.tradesup.setStrategyInfoWithBestPerf(self.bestperfstInfo)
+        if not self.bestperfRept.empty:
+            self.tradesup.setFirstTradeIdxWithBestPerf(self.bestperfFirstTradeIdx)
+            self.tradesup.setTradeReportWithBestPerf(self.bestperfRept)
+            self.tradesup.setStrategyInfoWithBestPerf(self.bestperfstInfo)
             
         
     def makeBestReport(self):
