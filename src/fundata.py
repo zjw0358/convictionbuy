@@ -1,18 +1,31 @@
 import pandas.io.data as web
+import pandas
 import datetime
 import urllib2
 import csv
 
 class FundaData:
     def __init__(self):       
+        '''
         self.startdate = ""
         self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
         startday = datetime.date.today() - datetime.timedelta(days=365)
         self.startdate = startday.strftime("%Y-%m-%d")
+        '''
 
-    def getPerf(self,symbol):
+    def setDateRange(self,enddatestr):
+        if enddatestr=="":
+            enddate = datetime.datetime.now()
+        else:
+            enddate = datetime.datetime.strptime(enddatestr,'%Y-%m-%d')
+            
+        startday = enddate - datetime.timedelta(days=365)
+        self.enddate = enddatestr
+        self.startdate = startday.strftime("%Y-%m-%d")
+            
+    def getPerf(self,symbol, enddatestr=""):
         ret = {}
-
+        self.setDateRange(enddatestr)
         try:
             ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
         except:
@@ -34,9 +47,11 @@ class FundaData:
             p24w = round((px[-1]/px[-24*7] - 1)*100,2)
         pmax = round((px[-1]/px[0] - 1) * 100,2)
         
+        sma20vol = pandas.stats.moments.rolling_mean(ohlc['Volume'],20)
         ret['p4w'] = p4w
         ret['p12w'] = p12w
         ret['p24w'] = p24w
+        ret['vol20'] = sma20vol[-1]
         return ret
         
     #limit=200               

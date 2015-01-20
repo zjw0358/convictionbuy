@@ -14,6 +14,7 @@ class ZackScreen:
         self.symtable = pandas.DataFrame()
         self.fundafile = ""
         self.zackfile = ""
+        self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
@@ -31,7 +32,7 @@ class ZackScreen:
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:z:", ["fundafile", "zackfile"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:z:e:", ["fundafile", "zackfile","enddate"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
@@ -39,7 +40,8 @@ class ZackScreen:
                 self.zackfile = arg
             elif  opt in ("-f", "--fundafile"):
                 self.fundafile = arg
-                
+            elif opt in ("-e", "--enddate"):
+                self.enddate = arg    
         if (self.zackfile=="" or self.fundafile==""):
             self.usage()
             sys.exit()
@@ -92,7 +94,7 @@ class ZackScreen:
             'abr_today':abrtLst,'abr_1week':abr1wLst,'abr_1month':abr1mLst,\
             'abr_2month':abr2mLst,'abr_3month':abr3mLst,'num_of_br':numbrLst},\
             columns=['symbol','rank','industry_rank','industry_total','etf','abr_today',\
-            'abr_1week','abr_1month','abr_2month','abr_3month'])
+            'abr_1week','abr_1month','abr_2month','abr_3month','num_of_br'])
      
         
     def loadFundaFile(self,fileName):
@@ -114,7 +116,15 @@ class ZackScreen:
         fp.close()      # closing
         return psLst
     
-    #BMZ screener
+    '''
+    BMZ screener
+    rank <=3
+    abr < 2
+    p/s < 0.5
+    price change 4,12,24 week top 3,10,20
+    average 20 day volume > 50000
+    bad thing is will select thoes retail store company which has low p/s
+    '''
     def screenBMZ(self): 
         df = self.loadSymbolLstFile(self.zackfile)
         df['ps'] = 0.0
@@ -132,22 +142,36 @@ class ZackScreen:
         f1['p4w'] = 0.0
         f1['p12w'] = 0.0
         f1['p24w'] = 0.0
+        f1['vol20'] = 0.0
         for index, row in f1.iterrows():
             symbol = row['symbol']
-            ret = self.funda.getPerf(symbol)
+            ret = self.funda.getPerf(symbol, self.enddate)
             print symbol,ret
             f1.loc[index,'p4w'] = ret['p4w']
             f1.loc[index,'p12w'] = ret['p12w']
             f1.loc[index,'p24w'] = ret['p24w']
+            f1.loc[index,'vol20'] = ret['vol20']
         
-        print f1.sort_index(by='p4w')
+        f1 = f1[(f1['vol20'] > 50000)]
+        print f1
+        #meet top3-4week,top10-12week,top20-24week together
+        top4w = f1.sort_index(by='p4w',ascending=False).head(3)['symbol']
+        top12w = f1.sort_index(by='p12w',ascending=False).head(10)['symbol']
+        top24w = f1.sort_index(by='p24w',ascending=False).head(24)['symbol']
         
-        bmzFn = self.outputpath + 'bmz_'+ datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        bmz1 = f1[(f1['symbol'].isin(top4w)) & (f1['symbol'].isin(top12w)) & (f1['symbol'].isin(top24w))]
+        bmz2 = f1.sort_index(by='p24w',ascending=False).head(24).sort_index(by='p12w',ascending=False).head(10).sort_index(by='p4w',ascending=False).head(3)
+        #print bmz1,bmz2
+                
+        
+        bmzFn1 = self.outputpath + 'bmz1_'+ self.enddate + '.csv'
+        bmzFn2 = self.outputpath + 'bmz2_'+ self.enddate + '.csv'
         try:
-            f1.sort_index(by='p24w').to_csv(bmzFn,sep=',')
+            bmz1.to_csv(bmzFn1,sep=',',index=False)
+            bmz2.to_csv(bmzFn2,sep=',',index=False)
         except:
-            print "exception when write to csv ",bmzFn
-            
+            print "exception when write to csv ",bmzFn1,bmzFn2
+        
         
         
         
