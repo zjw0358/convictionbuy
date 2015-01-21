@@ -34,7 +34,7 @@ class MarketData:
         
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' -s 2010-01-01 -e 2014-12-30"
-  
+    '''
     # google style portfolio file
     def loadPortfolioFile(self,fileName):
         #print "open file:",fileName
@@ -49,7 +49,7 @@ class MarketData:
                     
         fp.close()
         return stocklist
-        
+    '''    
     def parseOption(self):
         self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
         startday = datetime.date.today() - datetime.timedelta(days=365)

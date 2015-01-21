@@ -69,7 +69,49 @@ class CompanyList:
         return
         
 
+    def loadDow30Lst(self,fileName):
+        self.dow30Lst = {}
+        self.dow30id = 1
+        fp = open(fileName,'r',-1)        
+        reader = csv.reader(fp)  # creates the reader object
+        idx = 0
+        for row in reader:
+            if idx==0:
+                idx += 1
+                continue
+            if row[0]!="":
+                self.dow30Lst[row[0]] = row[0]
+            idx += 1
+        fp.close()      # closing
+        return self.dow30Lst
         
+    def loadAllSymbolLst(self,fileName):
+        # symbol,rank,name,sector,industry,portfolio_id
+        fp = open(fileName,'r',-1)
+        #print fp
+        outputfn = self.outputpath + "allsymbollst_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        outputfp = open(outputfn,'w',-1)
+         
+        reader = csv.reader(fp)  # creates the reader object
+        idx = 0
+        for row in reader:
+            symbol = row[0]
+            pid = 0
+            if symbol in self.dow30Lst:
+                pid = pid|self.dow30id
+            if symbol in self.focusLst:
+                pid = pid|self.focusid
+                
+            line = "%s,%s,%s,%s,%s\n" % (row[0],row[1],row[2],row[3],row[4])
+            print idx,line
+            idx += 1
+            outputfp.write(line)
+            if idx%10 == 0:
+                outputfp.flush()
+        fp.close()      # closing
+        outputfp.close()
+        return
+           
     def saveStockList(self):
         fileName = self.outputpath + "allstock_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         fp = open(fileName,'w',-1)
@@ -81,14 +123,20 @@ class CompanyList:
             fp.write(str)
         fp.close()
         
-   
+        
+    def addNewCol(self):
+        dow30Lst = {}
+        self.loadSymbolLstFile(dow30Lst)
         
     def process(self):
+        '''
         self.loadCompFile(self.nasdaqcsv)
         self.loadCompFile(self.nysecsv)
         self.loadCompFile(self.amexcsv)
         self.mergeZack()
         self.saveStockList()
+        '''
+
         
         
 if __name__ == "__main__":
