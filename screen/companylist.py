@@ -26,7 +26,6 @@ class CompanyList:
     '''    
     def loadCompFile(self,filename):
         f = open(filename, 'r', -1)
-
         reader = csv.reader(f)  # creates the reader object
         rownum = 0
         for row in reader:
@@ -68,7 +67,7 @@ class CompanyList:
         fp.close()      # closing
         return
         
-
+    # symbol
     def loadDow30Lst(self,fileName):
         self.dow30Lst = {}
         self.dow30id = 1
@@ -84,34 +83,41 @@ class CompanyList:
             idx += 1
         fp.close()      # closing
         return self.dow30Lst
-        
+
+    # google style portfolio file, NYSE:DOW NASDAQ:GOOG
+    def loadGoogFocusLst(self,fileName):        
+        fp = open(fileName,'r',-1)
+        pf = fp.read()
+        self.foucsLst = {}
+        self.focusid = 2        
+
+        for item in pf.split():            
+            market,symbol = item.split(':')
+            self.foucsLst[symbol] = symbol
+        fp.close()
+        return self.foucsLst
+
+    # all symbols list with zack rank
     def loadAllSymbolLst(self,fileName):
         # symbol,rank,name,sector,industry,portfolio_id
         fp = open(fileName,'r',-1)
-        #print fp
-        outputfn = self.outputpath + "allsymbollst_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
-        outputfp = open(outputfn,'w',-1)
-         
+        self.allsymbol = {}         
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         for row in reader:
+            if idx==0:
+                idx +=1
+                continue            
             symbol = row[0]
-            pid = 0
-            if symbol in self.dow30Lst:
-                pid = pid|self.dow30id
-            if symbol in self.focusLst:
-                pid = pid|self.focusid
-                
-            line = "%s,%s,%s,%s,%s\n" % (row[0],row[1],row[2],row[3],row[4])
-            print idx,line
+            # temp
+            row.append(0)
+            # temp
+            self.allsymbol[symbol] = row
             idx += 1
-            outputfp.write(line)
-            if idx%10 == 0:
-                outputfp.flush()
         fp.close()      # closing
-        outputfp.close()
-        return
+        return self.allsymbol
            
+    '''
     def saveStockList(self):
         fileName = self.outputpath + "allstock_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         fp = open(fileName,'w',-1)
@@ -122,12 +128,46 @@ class CompanyList:
             #symbol,rank,name,sector,industry
             fp.write(str)
         fp.close()
-        
-        
-    def addNewCol(self):
-        dow30Lst = {}
-        self.loadSymbolLstFile(dow30Lst)
-        
+    ''' 
+    # merge dow30,focus and allsymbol into one (with portfolio id)
+    def mergeAllFiles(self):
+        self.loadDow30Lst("../data/dow30.txt")
+        self.loadGoogFocusLst("../data/googfocuslist.txt")
+        self.loadAllSymbolLst("../data/allsymbolhaverank.csv")
+        for symbol in self.dow30Lst:
+            if not symbol in self.allsymbol:
+                #symbol,rank,name,sector,industry,portfolio_id
+                row = [symbol,"-2","","",""]
+                self.allsymbol[symbol] = row
+                print "Add DOW30",symbol
+        #merge
+        for symbol in self.dow30Lst:
+            if not symbol in self.allsymbol:
+                #symbol,rank,name,sector,industry
+                row = [symbol,"-2","","","",0]
+                self.allsymbol[symbol] = row
+                print "Add DOW30",symbol
+                
+        for symbol in self.foucsLst:
+            if not symbol in self.allsymbol:
+                #symbol,rank,name,sector,industry
+                row = [symbol,"-2",symbol,symbol,symbol,0]
+                self.allsymbol[symbol] = row
+                print "Add Focus",symbol
+        # update portfolio id and write to file
+        outputfn = self.outputpath + "allsymbollist_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        outputfp = open(outputfn,'w',-1)
+        outputfp.write("symbol,rank,name,sector,industry,pid")
+        for symbol in self.allsymbol:
+            row = self.allsymbol[symbol]
+            if symbol in self.dow30Lst:
+                row[-1] = row[-1]|self.dow30id
+            if symbol in self.foucsLst:
+                row[-1] = row[-1]|self.focusid
+            line = "%s,%s,%s,%s,%s,%d\n" % (row[0],row[1],row[2],row[3],row[4],row[5])   
+            outputfp.write(line)
+        outputfp.close()
+         
     def process(self):
         '''
         self.loadCompFile(self.nasdaqcsv)
@@ -136,7 +176,8 @@ class CompanyList:
         self.mergeZack()
         self.saveStockList()
         '''
-
+        self.mergeAllFiles()
+        print "Done,Exit..."
         
         
 if __name__ == "__main__":

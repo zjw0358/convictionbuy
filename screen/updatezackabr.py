@@ -13,11 +13,14 @@ output - ../data/zrupdate_[time].csv
 class UpdateZackAbr:
     def __init__(self):
         self.outputpath = "../data/"
-        self.abrname = "zrabr_"
+        self.sufname = "zrupdate_"
         self.zack = zackrank.ZackRank()
         self.fileName = ""
         self.rc = 3 # rank criteria <=3
-
+        self.abr = 1 # update abr
+        self.estm = 1 # update estimate
+        self.abrcolumn=['indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m','abr3m','numbr']
+        self.estmcolumn=['cqtoday','cq7day','cq30day','cq60day','cq90day','erdate']
     def checkCriteria(self, rankstr):
         try:
             rank = int(rankstr)
@@ -28,28 +31,31 @@ class UpdateZackAbr:
         except:
             return False
             
-    def getOutputLine(self,symbol,rank,abr):
-        idur = ""
-        idutotal = ""
-        etf = ""
-        abrt = ""
-        abr1w = ""
-        abr1m = ""
-        abr2m = ""
-        abr3m = ""
-        column=['indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m','abr3m','numbr']
+    def getOutputLineAbr(self,abr):
         colval=[]
-        for colname in column:
+        for colname in self.abrcolumn:
             if colname in abr:
                 colval.append(abr[colname])
             else:
                 colval.append("")
                 
-        line = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % \
-                (symbol,rank,colval[0],colval[1],colval[2],\
-                colval[3],colval[4],colval[5],colval[6],colval[7],colval[8])
+        line = ",%s,%s,%s,%s,%s,%s,%s,%s,%s" % \
+                (colval[0],colval[1],colval[2],colval[3],colval[4],colval[5],\
+                colval[6],colval[7],colval[8])
         return line
         
+    def getOutputLineEstm(self,estm):
+        colval=[]
+        for colname in self.estmcolumn:
+            if colname in estm:
+                colval.append(estm[colname])
+            else:
+                colval.append("")
+                
+        line = ",%s,%s,%s,%s,%s" % \
+                (colval[0],colval[1],colval[2],colval[3],colval[4])
+        return line
+            
     def usage(self):
         print "program -f symbollist.txt [-c 3]"
         print "update symbol abr for rank <=3"
@@ -58,7 +64,7 @@ class UpdateZackAbr:
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:c:", ["filename", "ticklist"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:c:re", ["filename", "ticklist"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
@@ -66,11 +72,16 @@ class UpdateZackAbr:
                 self.fileName = arg
             elif opt in ("-c", "--criteria"):
                 self.rc = int(arg)
-                
+            elif opt in ("-r"):
+                self.abr = 1
+            elif opt in ("-e"):
+                self.estm = 1
+
+
         if (self.fileName == ""):
             self.usage()
             sys.exit()
-        print self.fileName,"rank criteria<=",self.rc
+        print self.fileName,"rank criteria<=",self.rc,",abr=",self.abr,",earning est.=",self.estm
         return
 
     def process(self):
@@ -90,19 +101,33 @@ class UpdateZackAbr:
             symbol = row[0]
             rankstr = row[1]
             retabr = {}
-            if self.checkCriteria(rankstr):                
-                retabr = self.zack.getBrokerRecom(symbol)
+            retest = {}
+            line = "%s," % (symbol)
             
-            line = self.getOutputLine(symbol,rankstr,retabr)
+            if self.checkCriteria(rankstr):
+                if self.abr==1:
+                    retabr = self.zack.getBrokerRecom(symbol)
+                    rankstr = retabr['rank']
+                if self.estm == 1:
+                    retest = self.zack.getEstimate(symbol)
+                    rankstr = retest['rank']
+                    
+            line = "%s,%s" % (line,rankstr)
+            if self.abr==1:
+                line = line + self.getOutputLineAbr(retabr)
+            if self.estm == 1:
+                line = line + self.getOutputLineEstm(retest)
+            line = line + "\n"
             print idx,line
             idx += 1
             outputfp.write(line)
             if idx%10 == 0:
                 outputfp.flush()
-        fp.close()      # closing
+        fp.close()
         outputfp.close()
         return
-        
+    
+            
 if __name__ == "__main__":
     obj = UpdateZackAbr()
     obj.process()

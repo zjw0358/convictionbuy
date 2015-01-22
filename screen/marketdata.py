@@ -143,58 +143,132 @@ class MarketData:
         print "================================================================" 
   
     def loadSymbolLstFile(self,fileName):
-        # symbol,pricesale
+        #symbol,rank,name,sector,industry,pid
         fp = open(fileName,'r',-1)
-        stockLst = []
+        #stockLst = []
+        symbolLst = []
+        rankLst = []
+        nameLst = []
+        sectorLst = []
+        industryLst = []
+        pidLst = []
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         for row in reader:
             if idx==0:
                 idx += 1
                 continue
-            print row[0]
-            if row[0]!="":
-                stockLst.append(row[0])
+            symbolLst.append(row[0])
+            rankLst.append(row[1])
+            nameLst.append(row[2])
+            sectorLst.append(row[3])
+            industryLst.append(row[4])
+            pidLst.append(row[5])
             idx += 1
         fp.close()      # closing
-        return stockLst
+        table = pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,'name':nameLst,\
+            'sector':sectorLst,'industry':industryLst,'pid':pidLst},\
+            columns=['symbol','rank','name','sector','industry','pid'])
+        return table
+
+
         
     def procMarketData(self):
+        '''
         # dow30
         lst = self.loadSymbolLstFile(self.dow30fn)
         dow30Dct = {}
         for symbol in lst:
             dow30Dct[symbol]=symbol
-        self.getMarketData(dow30Dct)    
-        self.getMarketData(self.spdretf)            
+        '''
+        df = self.loadSymbolLstFile("./marketdata.csv")
+        criterion = df['pid'].map(lambda x: (int(x)&1==1))
+        dow30Lst = df[criterion]['symbol']
+        dow30Dct = {}
+        for symbol in dow30Lst:
+            dow30Dct[symbol]=symbol    
+        param = {'vol20':0,'vol':0,'ma10':0,'ma50':0,'ma200':0,'px':0}        
+        #print dow30Dct
+        self.getMarketData(dow30Dct,param)
+        
+        #dow30Lst = df[(df['pid']==3)]
+        #print dow30Lst
+        #self.getMarketData(dow30Dct)
+        #self.getMarketData(self.spdretf)            
         
         return
         
-    def getMarketData(self,tickLst):
-        param = {'vol20':0,'ma':0,'p1w':1}        
+    def getMarketData(self,tickLst,param):
         nameLst = []
         symbolLst = []
+        p1d = []
         p1w = []
         p4w = []
         p12w = []
         p24w = []
+        ma10 = []
+        ma50 = []
+        ma200 = []
+        vol20 = []
+        voltd = []
+        px = []
         for name in tickLst:
             tick = tickLst[name]
             ret = self.funda.getPerf(tick,param)
             nameLst.append(name)
             symbolLst.append(tick)
+            p1d.append(ret['p1d'])
             p1w.append(ret['p1w'])
             p4w.append(ret['p4w'])
             p12w.append(ret['p12w'])
             p24w.append(ret['p24w'])
-            
-        table = pandas.DataFrame({'name':nameLst,'symbol':symbolLst,\
-            '1week_perf':p1w,'4week_perf':p4w,'12week_perf':p12w,'24week_perf':p24w},\
-            columns=['name','symbol','1week_perf','4week_perf','12week_perf','24week_perf'])
-            
+            if 'ma10' in param:
+                ma10.append(ret['ma10'])
+            if 'ma50' in param:
+                ma50.append(ret['ma50'])
+            if 'ma200' in param:
+                ma200.append(ret['ma200'])
+            if 'vol20' in param:
+                vol20.append(ret['vol20'])
+            if 'vol' in param:
+                voltd.append(ret['vol'])
+            if 'px' in param:
+                px.append(ret['px'])
+      
+        datadct = {'name':nameLst,'symbol':symbolLst,'day_perf':p1d,'1week_perf':p1w,'4week_perf':p4w,'12week_perf':p12w,'24week_perf':p24w}
+        datacolumns=['name','symbol','day_perf','1week_perf','4week_perf','12week_perf','24week_perf']
+        if 'px' in param:
+            datadct['px'] = px
+            datacolumns.append('px')
+        if 'ma10' in param: 
+            datadct['ma10'] = ma10
+            datacolumns.append('ma10')
+        if 'ma50' in param: 
+            datadct['ma50'] = ma50
+            datacolumns.append('ma50')
+        if 'ma200' in param: 
+            datadct['ma200'] = ma200
+            datacolumns.append('ma200')
+        if 'vol20' in param:
+            datadct['vol20'] = vol20
+            datacolumns.append('vol20')
+        if 'vol' in param:
+            datadct['vol'] = voltd
+            datacolumns.append('vol')
+                
+        table = pandas.DataFrame(datadct, columns=datacolumns)
+        print "\n=== sort by 24week,12week,4week,1week===========================\n"
+                
         print table.sort_index(by=['24week_perf','12week_perf','4week_perf','1week_perf'],\
             ascending=[False,False,False,False])
-
+            
+        print "\n=== best in 1week,4week,12week together=========================\n"
+        #meet top3-4week,top10-12week,top20-24week together
+        top1w = table.sort_index(by='1week_perf',ascending=False).head(3)['symbol']
+        top4w = table.sort_index(by='4week_perf',ascending=False).head(10)['symbol']
+        top12w = table.sort_index(by='12week_perf',ascending=False).head(20)['symbol']
+        bmz1 = table[(table['symbol'].isin(top1w)) & (table['symbol'].isin(top4w)) & (table['symbol'].isin(top12w))]
+        print bmz1      
         
     def process(self):
         self.parseOption()

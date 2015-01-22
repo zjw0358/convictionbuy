@@ -37,34 +37,55 @@ class FundaData:
             print "System/Network Error when retrieving ",symbol," skip it"
             return ret
         # calculate perf
-        print symbol
+        # print symbol
         px = ohlc['Adj Close']
+        p1d = 0
         p4w = 0
         p12w = 0
         p24w = 0
         pmax = 0
-        if len(px) >= 4*7:
+        plen = len(px)
+        if plen >= 2:
+            p1d = round((px[-1]/px[-2] - 1)*100,2)    
+        if plen >= 4*7:
             p4w = round((px[-1]/px[-4*7] - 1)*100,2)
-        if len(px) >= 12*7:
+        if plen >= 12*7:
             p12w = round((px[-1]/px[-12*7] - 1)*100,2)
-        if len(px) >= 24*7:
+        if plen >= 24*7:
             p24w = round((px[-1]/px[-24*7] - 1)*100,2)
+        if len(px) >= 1*7:
+            p1w = round((px[-1]/px[-1*7] - 1)*100,2)
+
         pmax = round((px[-1]/px[0] - 1) * 100,2)
 
         if 'vol20' in param:
-            if param['vol20'] == 1:
-                sma20vol = pandas.stats.moments.rolling_mean(ohlc['Volume'],20)
-                ret['vol20'] = sma20vol[-1]
+            sma20vol = pandas.stats.moments.rolling_mean(ohlc['Volume'],20)
+            ret['vol20'] = sma20vol[-1]
+            
+        if 'vol' in param:            
+            ret['vol'] = ohlc['Volume'][-1]
+            
+        if 'px' in param:            
+            ret['px'] = ohlc['Adj Close'][-1]
+                      
+        if 'ma10' in param:
+            sma10s = pandas.stats.moments.rolling_mean(px,10)
+            ret['ma10'] = round(sma10s[-1],2)
+        
+        if 'ma50' in param:            
+            sma50s = pandas.stats.moments.rolling_mean(px,50)            
+            ret['ma50'] = round(sma50s[-1],2)
+            
+        if 'ma200' in param:                        
+            sma200s = pandas.stats.moments.rolling_mean(px,200)
+            ret['ma200'] = round(sma200s[-1],2) 
 
-        if 'p1w' in param:
-            if param['p1w'] == 1:
-                if len(px) >= 1*7:
-                    p1w = round((px[-1]/px[-1*7] - 1)*100,2)
-                    ret['p1w'] = p1w
-
+        ret['p1d'] = p1d
+        ret['p1w'] = p1w  
         ret['p4w'] = p4w
         ret['p12w'] = p12w
         ret['p24w'] = p24w
+        
 
 
         return ret

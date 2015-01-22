@@ -151,6 +151,7 @@ class ZackRank:
         for id in idnqLst:
             if id < tdlen:
                 cqEstm.append(tdLst[id].string)
+    '''
     #limit=200               
     def getPriceSale(self, ticklist):
         symstr = ""
@@ -174,15 +175,8 @@ class ZackRank:
                 symstr=""
         
         return stockps
-        '''url = "http://finance.yahoo.com/d/quotes.csv?s=" + symbol + "&f=p5"
-        page = urllib2.urlopen(url).read()
-        #ps = float(page)
-        #print symbol,"ps=",ps
-        #return ps
-        print page
-        '''
-        
     '''    
+    
     def write2File(self,zackranks):
         fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         fp = open(fileName,'w',-1)
