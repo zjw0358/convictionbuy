@@ -24,32 +24,24 @@ class CompanyList:
     Summary Quote: http://www.nasdaq.com/symbol/zumz
 
     '''    
-    def loadCompFile(self,filename):
+    def loadNasdaqFile(self,filename):
         f = open(filename, 'r', -1)
         reader = csv.reader(f)  # creates the reader object
         rownum = 0
+        symbolLst = {}
         for row in reader:
             if rownum == 0:
                 self.header = row
-            else:
-                '''colnum = 0
-                for col in row:
-                    print '%-8s: %s' % (header[colnum], col)
-                    colnum += 1
-                '''
-                
+            else:                
                 row[0] = row[0].replace(" ","")
                 row[1] = row[1].replace(",","")
                 row[6] = row[6].replace(",","")
                 row[7] = row[7].replace(",","")
                 symbol = row[0]
-                #print type(row)
-                row.append("") #rank
-                self.stocklist[symbol] = row
-            rownum += 1
-       
+                symbolLst[symbol] = row
+            rownum += 1       
         f.close()      # closing
-   
+        return symbolLst
 
     def mergeZack(self):
         # common style symbol list
@@ -97,25 +89,21 @@ class CompanyList:
         fp.close()
         return self.foucsLst
 
-    # all symbols list with zack rank
     def loadAllSymbolLst(self,fileName):
         # symbol,rank,name,sector,industry,portfolio_id
         fp = open(fileName,'r',-1)
-        self.allsymbol = {}         
+        allsymbol = {}         
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         for row in reader:
             if idx==0:
                 idx +=1
                 continue            
-            symbol = row[0]
-            # temp
-            row.append(0)
-            # temp
-            self.allsymbol[symbol] = row
+            symbol = row[0]            
+            allsymbol[symbol] = row
             idx += 1
         fp.close()      # closing
-        return self.allsymbol
+        return allsymbol
            
     '''
     def saveStockList(self):
@@ -157,7 +145,7 @@ class CompanyList:
         # update portfolio id and write to file
         outputfn = self.outputpath + "allsymbollist_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         outputfp = open(outputfn,'w',-1)
-        outputfp.write("symbol,rank,name,sector,industry,pid")
+        outputfp.write("symbol,rank,name,sector,industry,pid\n")
         for symbol in self.allsymbol:
             row = self.allsymbol[symbol]
             if symbol in self.dow30Lst:
@@ -167,16 +155,40 @@ class CompanyList:
             line = "%s,%s,%s,%s,%s,%d\n" % (row[0],row[1],row[2],row[3],row[4],row[5])   
             outputfp.write(line)
         outputfp.close()
-         
+
+    def addExch(self):
+        nasdaq = self.loadNasdaqFile(self.nasdaqcsv)
+        nyse = self.loadNasdaqFile(self.nysecsv)
+        amex = self.loadNasdaqFile(self.amexcsv)
+        allsymbol = self.loadAllSymbolLst("../data/marketdata.csv")
+        # update portfolio id and write to file
+        outputfn = self.outputpath + "marketdata_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        outputfp = open(outputfn,'w',-1)
+        outputfp.write("symbol,rank,name,sector,industry,pid,exg\n")
+
+        for symbol in allsymbol:
+            row = allsymbol[symbol]
+            if symbol in nasdaq:
+                row.append("O")
+            elif symbol in nyse:
+                row.append("N")                
+            elif symbol in amex:
+                row.append("A")                
+            else:
+                row.append("U")
+                print symbol," exchange not found!"
+                
+            line = "%s,%s,%s,%s,%s,%s,%s\n" % (row[0],row[1],row[2],row[3],row[4],row[5],row[6])   
+            outputfp.write(line)
+        outputfp.close()
+        
     def process(self):
         '''
-        self.loadCompFile(self.nasdaqcsv)
-        self.loadCompFile(self.nysecsv)
-        self.loadCompFile(self.amexcsv)
         self.mergeZack()
         self.saveStockList()
         '''
-        self.mergeAllFiles()
+        #self.mergeAllFiles()
+        self.addExch()
         print "Done,Exit..."
         
         

@@ -151,32 +151,9 @@ class ZackRank:
         for id in idnqLst:
             if id < tdlen:
                 cqEstm.append(tdLst[id].string)
-    '''
-    #limit=200               
-    def getPriceSale(self, ticklist):
-        symstr = ""
-        limit = 199 #yahoo limit is 200
-        lenlist = len(ticklist)
-        stockps = []
-        retidx= 0 
-        for idx, symbol in enumerate(ticklist):
-            symstr += symbol
-            if idx<(lenlist-1) and (idx%limit!=0):
-                symstr +="+"
-            if idx%limit==0:
-                print idx,symstr
-                url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + "&f=p5"
-                #page = urllib2.urlopen(url).read()
-                response = urllib2.urlopen(url)
-                cr = csv.reader(response)
-                for row in cr:
-                    stockps.append((ticklist[retidx],row)) 
-                    retidx +=1
-                symstr=""
-        
-        return stockps
-    '''    
     
+        
+    '''    
     def write2File(self,zackranks):
         fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
         fp = open(fileName,'w',-1)

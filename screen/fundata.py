@@ -85,12 +85,9 @@ class FundaData:
         ret['p4w'] = p4w
         ret['p12w'] = p12w
         ret['p24w'] = p24w
-        
-
-
         return ret
         
-    #limit=200               
+    #data from yahoo,limit=200               
     def getPriceSale(self, ticklist):
         symstr = ""
         limit = 199 #yahoo limit is 200
@@ -129,8 +126,8 @@ class FundaData:
         #return ps
         print page
         '''
-    
-          
+
+
     def process(self):
         return
         
