@@ -152,6 +152,7 @@ class MarketData:
         sectorLst = []
         industryLst = []
         pidLst = []
+        exgLst = []
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         for row in reader:
@@ -159,16 +160,17 @@ class MarketData:
                 idx += 1
                 continue
             symbolLst.append(row[0])
-            rankLst.append(row[1])
+            rankLst.append(int(row[1]))
             nameLst.append(row[2])
             sectorLst.append(row[3])
             industryLst.append(row[4])
             pidLst.append(row[5])
+            exgLst.append(row[6])
             idx += 1
         fp.close()      # closing
         table = pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,'name':nameLst,\
-            'sector':sectorLst,'industry':industryLst,'pid':pidLst},\
-            columns=['symbol','rank','name','sector','industry','pid'])
+            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst},\
+            columns=['symbol','rank','name','sector','industry','pid','exg'])
         return table
 
 
@@ -182,6 +184,7 @@ class MarketData:
             dow30Dct[symbol]=symbol
         '''
         df = self.loadSymbolLstFile("./marketdata.csv")
+        #criteria setting
         criterion = df['pid'].map(lambda x: (int(x)&1==1))
         dow30Lst = df[criterion]['symbol']
         dow30Dct = {}
