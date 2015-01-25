@@ -21,7 +21,8 @@ class ReuterFunda:
         self.mtd = marketdata.MarketData()
         self.outputpath = "../data/"
         self.fileName = ""
-        self.ticklist = ""
+        self.starttick = ""
+        #self.ticklist = ""
 
         
         
@@ -40,27 +41,25 @@ class ReuterFunda:
         #symbol found?
         if 'not found' in page:
             print symbol," reuter fundata Not found"
-            return False
+            return fundadct
             
         soup = BeautifulSoup(page)
 
         #earning pasr quarter
         dataTableLst = soup.findAll("table",attrs={'class':"dataTable"})
-        retmx={'er':0,'estm':0,'vr':0,'gr':0,'me':0,'mrg':0}
-        
-        
+        retmx={'er':0,'estm':0,'vr':0,'div':0,'gr':0,'fins':0,'mrg':0,'me':0}
             
         #retdct = {}
         for table in dataTableLst:
             if retmx['er'] == 0:
                 ret=self.parsePastQEarning(table)
-                if ret!=None:
+                if ret!=None and len(ret)>0:
                     retmx['er'] = 1
                     fundadct.update(ret)
                     continue
             if retmx['estm'] == 0:
                 ret=self.parseEstimate(table)
-                if ret!=None:
+                if ret!=None and len(ret)>0:
                     retmx['estm'] = 1
                     fundadct.update(ret)
                     continue
@@ -68,37 +67,64 @@ class ReuterFunda:
                        
             if retmx['vr'] == 0:
                 ret=self.parseValuationRatio(table)
-                if ret!=None:
+                if ret!=None and len(ret)>0:
                     retmx['vr'] = 1
-                    fundadct.update(ret)
-                    print fundadct
-                    print "=========================================="
-                    continue
-                                        
-            if retmx['gr'] == 0:
-                ret = self.parseGrowth(table)
-                if ret!=None:
-                    retmx['gr'] = 1
                     fundadct.update(ret)
                     continue
                     
+            if retmx['div'] == 0:
+                ret=self.parseDividend(table)
+                if ret!=None and len(ret)>0:
+                    retmx['div'] = 1
+                    fundadct.update(ret)
+                    continue
+                                                
+            if retmx['gr'] == 0:
+                ret = self.parseGrowth(table)
+                if ret!=None and len(ret)>0:
+                    retmx['gr'] = 1
+                    fundadct.update(ret)
+                    continue
+            if retmx['fins'] == 0:
+                ret = self.parseFinanStrength(table)
+                if ret!=None and len(ret)>0:
+                    retmx['fins'] = 1
+                    fundadct.update(ret)
+                    continue
+                     
             if retmx['mrg'] == 0:
                 ret=self.parseProfitRatio(table)
-                if ret!=None:
+                if ret!=None and len(ret)>0:
                     retmx['mrg'] = 1
                     fundadct.update(ret)
                     continue
                                         
             if retmx['me'] == 0:
                 ret = self.parseMangEffect(table)
-                if ret!=None:
+                if ret!=None and len(ret)>0:
                     retmx['me'] = 1
                     fundadct.update(ret)
                     continue
                    
-                    
-        #print fundadct             
+        #for seg in retmx:
+        #    if retmx[seg]==0:
+        #        return None
+                         
         return fundadct
+    def verifyCol(self,dct):
+        missLst = []
+        if 'cppettm' not in dct:
+            missLst.append("P/E TTM")
+        if 'cpdebt2equity' not in dct:
+            missLst.append("Total Debt to Equity (MRQ)")
+        if 'saleqtr0' not in dct:
+            missLst.append("Earning")
+        if 'cpgm' not in dct:
+            missLst.append("Gross Margin (TTM)")
+        if 'saleq1e' not in dct:
+            missLst.append("Estimate")
+        if len(missLst)>0:
+            print "Missing list:",missLst
         
     def updateData(self):        
         symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
@@ -108,14 +134,30 @@ class ReuterFunda:
         columns = ['saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
             'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
             'epsqtr-7','epsqtr-8','epsqtr-9',\
+            \
             'numest','saleq1e','saleq1ey','saleq2e','saleq2ey','saley1e','saley1ey','saley2e','saley2ey','epsq1e',\
             'epsq1ey','epsq2e','epsq2ey','epsy1e','epsy1ey','epsy2e','epsy2ey','numltgr','ltgre','ltgrey',\
+            \
             'cppettm','indupettm','sectorpettm','cppehigh5y','indupehigh5y','sectorpehigh5y','cppelow5y','indupelow5y',\
             'sectorpelow5y','cpbeta','indubeta','sectorbeta','cppsttm','indupsttm','sectorpsttm','cppbmrq','indupbmrq',\
             'sectorpbmrq','cppcfttm','indupcfttm','sectorpcfttm','cppfcfttm','indupfcfttm','sectorpfcfttm',\
-            
+            \
+            'divyield','div5y','div5ygr','payoutratio',\
+            \
+            'cpsalemrqyoy','indusalemrqyoy','sectorsalemrqyoy','cppsalettmyoy','indusalettmyoy','sectorsalettmyoy','cpsale5ygr',\
+            'indusale5ygr','sectorsale5ygr','cpepsmrqyoy','induepsmrqyoy','sectorepsmrqyoy','cpepsttmyoy','induepsttmyoy',\
+            'sectorepsttmyoy','cpeps5ygr','indueps5ygr','sectoreps5ygr','cpcap5ygr','inducap5ygr','sectorcap5ygr',\
+            \
+            'cpdebt2equity','indudebt2equity','secdebt2equity','cpquira','induquira','secquira','cpcurra','inducura','seccurra',\
+            \
+            'cpgm','indugm','sectorgm','cpgm5y','indugm5y','sectorgm5y','cpom','induom','sectorom','cpom5y','induom5y','sectorom5y',\
+            'cpnm','indunm','sectornm','cpnm5y','indunm5y','sectornm5y',\
+            \
+            'cproa','induroa','sectorroa','cproa5y','induroa5y','sectorroa5y','cproi','induroi','sectorroi','cproi5y','induroi5y','sectorroi5y','cproe','induroe',\
+            'sectorroe','cproe5y','induroe5y','sectorroe5y'
             ]
-        header = ', '.join(columns) + "\n"
+             
+        header = 'symbol,exg,' + ', '.join(columns) + "\n"
         outputfp.write(header)
         # prepare the table
         allData = {}
@@ -123,24 +165,36 @@ class ReuterFunda:
             lst = []
             allData[key] = lst
                 
-
+        startFlag = True
+        if self.starttick!="":
+            startFlag = False
+            print "wait for ",self.starttick
+        
         for index, row in symbolTable.iterrows():
-            rowdct = {}
+            if startFlag==False and row['symbol']!=self.starttick:
+                continue
+            else:
+                startFlag=True
             rowLst = []
             if row['rank'] > 0:
                 #print index,row['symbol'],row['rank'],row['name']
-                print "downloading ",row['symbol']
-                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
-            
-            print rowdct
-            for key in columns:
-                if key in rowdct:
-                    rowLst.append(rowdct[key])
+                print "downloading ",row['symbol'],row['exg']
+                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])            
+                
+                if len(rowdct)>0:
+                    self.verifyCol(rowdct)
+                    for key in columns:
+                        if key in rowdct:
+                            rowLst.append(rowdct[key])
+                        else:
+                            rowLst.append("")                
+                    line = row['symbol'] + ',' + row['exg'] + ','  + ', '.join(rowLst) + "\n"
+                    outputfp.write(line)
+                    if index%10 == 0:
+                        outputfp.flush()
                 else:
-                    rowLst.append("")
-            
-            line = ', '.join(rowLst) + "\n"
-            outputfp.write(line)
+                    print "No financials information,skip ",row['symbol'],row['exg']
+                    #sys.exit()
             
         outputfp.close()
         '''
@@ -185,6 +239,7 @@ class ReuterFunda:
             mangeff['induroa'] = self.tofloat(induroatag.string)
             mangeff['sectorroa'] = self.tofloat(sectorroatag.string)
         else:
+            #print "Return on Assets (TTM) not found"
             return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Return on Assets - 5 Yr\. Avg\.[\d\D]*'))        
@@ -196,7 +251,8 @@ class ReuterFunda:
             mangeff['induroa5y'] = self.tofloat(induroatag.string)
             mangeff['sectorroa5y'] = self.tofloat(sectorroatag.string)
         else:
-            return None
+            print "Return on Assets - 5 Yr. Avg. not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Return on Investment \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -207,7 +263,8 @@ class ReuterFunda:
             mangeff['induroi'] = self.tofloat(indutag.string)
             mangeff['sectorroi'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Return on Investment (TTM) not found"
+            #return None
             
         tag = table.find("td",text=re.compile('[\d\D]*Return on Investment - 5 Yr\. Avg\.[\d\D]*'))        
         if tag!=None:
@@ -218,7 +275,8 @@ class ReuterFunda:
             mangeff['induroi5y'] = self.tofloat(indutag.string)
             mangeff['sectorroi5y'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Return on Investment - 5 Yr. Avg. not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Return on Equity \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -229,7 +287,8 @@ class ReuterFunda:
             mangeff['induroe'] = self.tofloat(indutag.string)
             mangeff['sectorroe'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Return on Equity (TTM) not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Return on Equity - 5 Yr\. Avg\.[\d\D]*'))        
         if tag!=None:
@@ -240,7 +299,8 @@ class ReuterFunda:
             mangeff['induroe5y'] = self.tofloat(indutag.string)
             mangeff['sectorroe5y'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Return on Equity - 5 Yr. Avg. not found"
+            #return None
         
         return mangeff
         
@@ -257,14 +317,18 @@ class ReuterFunda:
                    #txt = data.string.replace(",","")
                    salekey = "saleqtr%d" % -(idx/2)
                    epskey = "epsqtr%d" % -(idx/2)
+                   #print idx,data
                    if idx%2 == 0:
                        reveps[salekey] = self.tofloat(data.string)
                    else:
                        reveps[epskey] = self.tofloat(data.string)
                    idx += 1                
                 return reveps
-            return None
+            else:
+                print "PastQ earning not found"
+                return None
         else:
+            #print "PastQ earning not found"
             return None
 
     '''
@@ -282,6 +346,7 @@ class ReuterFunda:
             profitratio['indugm'] = self.tofloat(indutag.string)
             profitratio['sectorgm'] = self.tofloat(sectortag.string)
         else:
+            #print "Gross Margin (TTM) not found"
             return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Gross Margin - 5 Yr\. Avg\.[\d\D]*'))        
@@ -293,7 +358,8 @@ class ReuterFunda:
             profitratio['indugm5y'] = self.tofloat(indutag.string)
             profitratio['sectorgm5y'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Gross Margin - 5 Yr. Avg. not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Operating Margin \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -304,7 +370,8 @@ class ReuterFunda:
             profitratio['induom'] = self.tofloat(indutag.string)
             profitratio['sectorom'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Operating Margin (TTM) not found"
+            #return None
             
         tag = table.find("td",text=re.compile('[\d\D]*Operating Margin - 5 Yr\. Avg\.[\d\D]*'))        
         if tag!=None:
@@ -315,7 +382,8 @@ class ReuterFunda:
             profitratio['induom5y'] = self.tofloat(indutag.string)
             profitratio['sectorom5y'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Operating Margin - 5 Yr. Avg. not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Net Profit Margin \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -326,7 +394,8 @@ class ReuterFunda:
             profitratio['indunm'] = self.tofloat(indutag.string)
             profitratio['sectornm'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Net Profit Margin (TTM) not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Net Profit Margin - 5 Yr\. Avg\.[\d\D]*'))        
         if tag!=None:
@@ -337,7 +406,8 @@ class ReuterFunda:
             profitratio['indunm5y'] = self.tofloat(indutag.string)
             profitratio['sectornm5y'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Net Profit Margin - 5 Yr. Avg. not found"
+            #return None
         
         return profitratio
 
@@ -353,7 +423,7 @@ class ReuterFunda:
             valratio['indupettm'] = self.tofloat(indutag.string)
             valratio['sectorpettm'] = self.tofloat(sectortag.string)           
         else:
-            print "P/E Ratio (TTM) not found"
+            #print "P/E Ratio (TTM) not found"
             return None
         
         tag = table.find("td",text=re.compile('[\d\D]*P/E High - Last 5 Yrs\.[\d\D]*'))        
@@ -366,7 +436,7 @@ class ReuterFunda:
             valratio['sectorpehigh5y'] = self.tofloat(sectortag.string)
         else:
             print "P/E High - Last 5 Yrs. not found"
-            return None
+            #return None
       
         tag = table.find("td",text=re.compile('[\d\D]*P/E Low - Last 5 Yrs\.[\d\D]*'))        
         if tag!=None:
@@ -378,7 +448,7 @@ class ReuterFunda:
             valratio['sectorpelow5y'] = self.tofloat(sectortag.string)
         else:
             print "P/E Low - Last 5 Yrs. not found"
-            return None
+            #return None
        
         tag = table.find("td",text=re.compile('[\d\D]*Beta[\d\D]*'))        
         if tag!=None:
@@ -390,7 +460,7 @@ class ReuterFunda:
             valratio['sectorbeta'] = self.tofloat(sectortag.string)
         else:
             print "Beta not found"
-            return None
+            #return None
             
         tag = table.find("td",text=re.compile('[\d\D]*Price to Sales \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -402,7 +472,7 @@ class ReuterFunda:
             valratio['sectorpsttm'] = self.tofloat(sectortag.string)
         else:
             print "Beta not found"
-            return None
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Price to Book \(MRQ\)[\d\D]*'))        
         if tag!=None:
@@ -414,7 +484,7 @@ class ReuterFunda:
             valratio['sectorpbmrq'] = self.tofloat(sectortag.string)
         else:
             print "Price to Book (MRQ) not found"
-            return None
+            #return None
                       
         tag = table.find("td",text=re.compile('[\d\D]*Price to Cash Flow \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -426,7 +496,7 @@ class ReuterFunda:
             valratio['sectorpcfttm'] = self.tofloat(sectortag.string)
         else:
             print "Price to Cash Flow (TTM) not found"
-            return None
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Price to Free Cash Flow \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -438,7 +508,7 @@ class ReuterFunda:
             valratio['sectorpfcfttm'] = self.tofloat(sectortag.string)
         else:
             print "Price to Free Cash Flow (TTM) not found"
-            return None
+            #return None
         
         
         return valratio    
@@ -455,6 +525,7 @@ class ReuterFunda:
             gr['indusalemrqyoy'] = self.tofloat(indutag.string)
             gr['sectorsalemrqyoy'] = self.tofloat(sectortag.string)
         else:
+            #print "Sales (MRQ) vs Qtr. 1 Yr. Ago not found"
             return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Sales \(TTM\) vs TTM 1 Yr\. Ago[\d\D]*'))        
@@ -466,7 +537,8 @@ class ReuterFunda:
             gr['indusalettmyoy'] = self.tofloat(indutag.string)
             gr['sectorsalettmyoy'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Sales (TTM) vs TTM 1 Yr. Ago not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Sales - 5 Yr\. Growth Rate[\d\D]*'))        
         if tag!=None:
@@ -477,7 +549,8 @@ class ReuterFunda:
             gr['indusale5ygr'] = self.tofloat(indutag.string)
             gr['sectorsale5ygr'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Sales - 5 Yr. Growth Rate not found"
+            #return None
             
         tag = table.find("td",text=re.compile('[\d\D]*EPS \(MRQ\) vs Qtr\. 1 Yr\. Ago[\d\D]*'))        
         if tag!=None:
@@ -488,7 +561,8 @@ class ReuterFunda:
             gr['induepsmrqyoy'] = self.tofloat(indutag.string)
             gr['sectorepsmrqyoy'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "EPS (MRQ) vs Qtr. 1 Yr. Ago not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*EPS \(TTM\) vs TTM 1 Yr\. Ago[\d\D]*'))        
         if tag!=None:
@@ -499,7 +573,8 @@ class ReuterFunda:
             gr['induepsttmyoy'] = self.tofloat(indutag.string)
             gr['sectorepsttmyoy'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "EPS (TTM) vs TTM 1 Yr. Ago not found"
+            #return None
 
         tag = table.find("td",text=re.compile('[\d\D]*EPS - 5 Yr\. Growth Rate[\d\D]*'))        
         if tag!=None:
@@ -510,7 +585,8 @@ class ReuterFunda:
             gr['indueps5ygr'] = self.tofloat(indutag.string)
             gr['sectoreps5ygr'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "EPS - 5 Yr. Growth Rate not found"
+            #return None
             
         tag = table.find("td",text=re.compile('[\d\D]*Capital Spending - 5 Yr\. Growth Rate[\d\D]*'))        
         if tag!=None:
@@ -521,7 +597,8 @@ class ReuterFunda:
             gr['inducap5ygr'] = self.tofloat(indutag.string)
             gr['sectorcap5ygr'] = self.tofloat(sectortag.string)
         else:
-            return None
+            print "Capital Spending - 5 Yr. Growth Rate not found"
+            #return None
         return gr
      
     #parse sale and eps estimate   
@@ -553,10 +630,11 @@ class ReuterFunda:
         estm = {}
         tag = table.find("th",text=re.compile('[\d\D]*# of Estimates[\d\D]*')) 
         if tag == None:
-            print "Estimate not found"
+            #print "Estimate not found"
             return None
         
-        pattern="[\d\D]*SALES \(in millions\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*Earnings \(per share\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*LT Growth Rate[\d\D]*"
+        #pattern="[\d\D]*SALES \(in millions\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*Earnings \(per share\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*LT Growth Rate[\d\D]*"
+        pattern="[\d\D]*SALES \(in millions\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*Earnings \(per share\)[\d\D]*?</tr>?([\d\D]*)</tbody>[\d\D]*"
         txt = table.__str__()
       
         an = re.match(pattern,txt)
@@ -589,6 +667,7 @@ class ReuterFunda:
                 estm[key2] = self.tofloat(daesty.string)
                 estm['numest'] = numestmtag.string                 
             #print "=========================================="
+            #print an.group(2)
             soup1 = BeautifulSoup(an.group(2))
             tagLst = soup1.findAll("td",text=re.compile('[\d\D]*Quarter Ending[\d\D]*')) 
             for idx,data in enumerate(tagLst):
@@ -616,7 +695,8 @@ class ReuterFunda:
                 #estm['numest'] = numestmtag.string  
         else:
             print "Estimate not found"
-            return None
+            #return None
+            
         tag = table.find("td",text=re.compile('[\d\D]*LT Growth Rate[\d\D]*'))        
         if tag!=None:
             numltgrtag = tag.nextSibling.nextSibling
@@ -627,17 +707,90 @@ class ReuterFunda:
             estm['numltgr'] = self.tofloat(numltgrtag.string)
             estm['ltgre'] = self.tofloat(ltmtag.string)
             estm['ltgrey'] = self.tofloat(ltytag.string)
+        #else:
+        #    print "LT Growth Rate not found"
+        #    return None
+        # some don't have LT growth rate    
+        return estm 
+    
+    def parseDividend(self, table): 
+        div = {}       
+        tag = table.find("td",text=re.compile('[\d\D]*Dividend Yield'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            div['divyield'] = self.tofloat(cptag.string)
         else:
-            print "LT Growth Rate not found"
+            #print "Dividend Yield not found"
             return None
             
-        return estm 
-                
+        tag = table.find("td",text=re.compile('[\d\D]*Dividend Yield - 5 Year Avg\.[\d\D]*'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            div['div5y'] = self.tofloat(cptag.string)
+        else:
+            print "Dividend Yield - 5 Year Avg. not found"
+            #return None
+        
+        tag = table.find("td",text=re.compile('[\d\D]*Dividend 5 Year Growth Rate[\d\D]*'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            div['div5ygr'] = self.tofloat(cptag.string)
+        else:
+            print "Dividend 5 Year Growth Rat not found"
+            #return None
+            
+        tag = table.find("td",text=re.compile('[\d\D]*Payout Ratio\(TTM\)[\d\D]*'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            div['payoutratio'] = self.tofloat(cptag.string)
+        else:
+            print "Payout Ratio(TTM) not found"
+            #return None
+             
+        #print div  
+        return div
     
+    def parseFinanStrength(self,table):
+        fins = {}
+        tag = table.find("td",text=re.compile('[\d\D]*Total Debt to Equity \(MRQ\)[\d\D]*'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            indutag = cptag.nextSibling.nextSibling            
+            sectortag = indutag.nextSibling.nextSibling
+            fins['cpdebt2equity'] = self.tofloat(cptag.string)
+            fins['indudebt2equity'] = self.tofloat(indutag.string)
+            fins['secdebt2equity'] = self.tofloat(sectortag.string)
+        else:
+            return None
+        
+        tag = table.find("td",text=re.compile('[\d\D]*Quick Ratio \(MRQ\)[\d\D]*'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            indutag = cptag.nextSibling.nextSibling            
+            sectortag = indutag.nextSibling.nextSibling
+            fins['cpquira'] = self.tofloat(cptag.string)
+            fins['induquira'] = self.tofloat(indutag.string)
+            fins['secquira'] = self.tofloat(sectortag.string)
+        else:
+            print "Quick Ratio (MRQ) not found"
+            #return None
 
+        tag = table.find("td",text=re.compile('[\d\D]*Current Ratio \(MRQ\)[\d\D]*'))        
+        if tag!=None:
+            cptag = tag.nextSibling.nextSibling
+            indutag = cptag.nextSibling.nextSibling            
+            sectortag = indutag.nextSibling.nextSibling
+            fins['cpcurra'] = self.tofloat(cptag.string)
+            fins['inducura'] = self.tofloat(indutag.string)
+            fins['seccurra'] = self.tofloat(sectortag.string)
+        else:
+            print "Current Ratio (MRQ) not found"
+            #return None
+            
+        return fins
         
     def tofloat(self,txt):
-        if txt=="--":
+        if txt=="--" or txt==None:
             return ""
         else:
             return txt.replace(",","")
@@ -649,16 +802,16 @@ class ReuterFunda:
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t", ["filename", "ticklist"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:", ["filename", "start"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.fileName = arg
-            elif opt in ("-t", "--ticklist"):
-                self.ticklist = arg
+            elif opt in ("-t", "--start"):
+                self.starttick = arg
 
-        if (self.fileName == "" and len(self.ticklist)==0):
+        if (self.fileName == ""):
             self.usage()
             sys.exit()
             
