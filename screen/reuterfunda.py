@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import urllib2
 import re
 from bs4 import BeautifulSoup
@@ -70,6 +71,8 @@ class ReuterFunda:
                 if ret!=None:
                     retmx['vr'] = 1
                     fundadct.update(ret)
+                    print fundadct
+                    print "=========================================="
                     continue
                                         
             if retmx['gr'] == 0:
@@ -100,23 +103,48 @@ class ReuterFunda:
     def updateData(self):        
         symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
         outputfn = self.outputpath + "reuterfunda_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
-        #outputfp = open(outputfn,'w',-1)
-        
-        for index, row in symbolTable.iterrows():
-            if row['rank'] > 0:
-                print index,row['symbol'],row['rank'],row['name']
-        '''
+        outputfp = open(outputfn,'w',-1)
         
         columns = ['saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
             'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
             'epsqtr-7','epsqtr-8','epsqtr-9',\
             'numest','saleq1e','saleq1ey','saleq2e','saleq2ey','saley1e','saley1ey','saley2e','saley2ey','epsq1e',\
-            'epsq1ey','epsq2e','epsq2ey','epsy1e','epsy1ey','epsy2e','epsy2ey','ltgre','ltgrey',\
+            'epsq1ey','epsq2e','epsq2ey','epsy1e','epsy1ey','epsy2e','epsy2ey','numltgr','ltgre','ltgrey',\
             'cppettm','indupettm','sectorpettm','cppehigh5y','indupehigh5y','sectorpehigh5y','cppelow5y','indupelow5y',\
             'sectorpelow5y','cpbeta','indubeta','sectorbeta','cppsttm','indupsttm','sectorpsttm','cppbmrq','indupbmrq',\
             'sectorpbmrq','cppcfttm','indupcfttm','sectorpcfttm','cppfcfttm','indupfcfttm','sectorpfcfttm',\
             
             ]
+        header = ', '.join(columns) + "\n"
+        outputfp.write(header)
+        # prepare the table
+        allData = {}
+        for key in columns:
+            lst = []
+            allData[key] = lst
+                
+
+        for index, row in symbolTable.iterrows():
+            rowdct = {}
+            rowLst = []
+            if row['rank'] > 0:
+                #print index,row['symbol'],row['rank'],row['name']
+                print "downloading ",row['symbol']
+                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
+            
+            print rowdct
+            for key in columns:
+                if key in rowdct:
+                    rowLst.append(rowdct[key])
+                else:
+                    rowLst.append("")
+            
+            line = ', '.join(rowLst) + "\n"
+            outputfp.write(line)
+            
+        outputfp.close()
+        '''
+        
             
         dct = self.getEarningData('msft.o')
         allLst = {}
@@ -315,15 +343,17 @@ class ReuterFunda:
 
     def parseValuationRatio(self,table):
         valratio = {}
-        tag = table.find("td",text=re.compile('[\d\D]*P/E Ratio \(TTM\)[\d\D]*'))        
+        tag = table.find("td",text=re.compile('[\d\D]*P/E Ratio \(TTM\)[\d\D]*'))    
+        
         if tag!=None:
             cptag = tag.nextSibling.nextSibling
             indutag = cptag.nextSibling.nextSibling            
             sectortag = indutag.nextSibling.nextSibling
             valratio['cppettm'] = self.tofloat(cptag.string)
             valratio['indupettm'] = self.tofloat(indutag.string)
-            valratio['sectorpettm'] = self.tofloat(sectortag.string)
+            valratio['sectorpettm'] = self.tofloat(sectortag.string)           
         else:
+            print "P/E Ratio (TTM) not found"
             return None
         
         tag = table.find("td",text=re.compile('[\d\D]*P/E High - Last 5 Yrs\.[\d\D]*'))        
@@ -335,6 +365,7 @@ class ReuterFunda:
             valratio['indupehigh5y'] = self.tofloat(indutag.string)
             valratio['sectorpehigh5y'] = self.tofloat(sectortag.string)
         else:
+            print "P/E High - Last 5 Yrs. not found"
             return None
       
         tag = table.find("td",text=re.compile('[\d\D]*P/E Low - Last 5 Yrs\.[\d\D]*'))        
@@ -346,6 +377,7 @@ class ReuterFunda:
             valratio['indupelow5y'] = self.tofloat(indutag.string)
             valratio['sectorpelow5y'] = self.tofloat(sectortag.string)
         else:
+            print "P/E Low - Last 5 Yrs. not found"
             return None
        
         tag = table.find("td",text=re.compile('[\d\D]*Beta[\d\D]*'))        
@@ -357,6 +389,7 @@ class ReuterFunda:
             valratio['indubeta'] = self.tofloat(indutag.string)
             valratio['sectorbeta'] = self.tofloat(sectortag.string)
         else:
+            print "Beta not found"
             return None
             
         tag = table.find("td",text=re.compile('[\d\D]*Price to Sales \(TTM\)[\d\D]*'))        
@@ -368,9 +401,10 @@ class ReuterFunda:
             valratio['indupsttm'] = self.tofloat(indutag.string)
             valratio['sectorpsttm'] = self.tofloat(sectortag.string)
         else:
+            print "Beta not found"
             return None
 
-        tag = table.find("td",text=re.compile('[\d\D]*Price to Book (MRQ)[\d\D]*'))        
+        tag = table.find("td",text=re.compile('[\d\D]*Price to Book \(MRQ\)[\d\D]*'))        
         if tag!=None:
             cptag = tag.nextSibling.nextSibling
             indutag = cptag.nextSibling.nextSibling            
@@ -379,6 +413,7 @@ class ReuterFunda:
             valratio['indupbmrq'] = self.tofloat(indutag.string)
             valratio['sectorpbmrq'] = self.tofloat(sectortag.string)
         else:
+            print "Price to Book (MRQ) not found"
             return None
                       
         tag = table.find("td",text=re.compile('[\d\D]*Price to Cash Flow \(TTM\)[\d\D]*'))        
@@ -390,6 +425,7 @@ class ReuterFunda:
             valratio['indupcfttm'] = self.tofloat(indutag.string)
             valratio['sectorpcfttm'] = self.tofloat(sectortag.string)
         else:
+            print "Price to Cash Flow (TTM) not found"
             return None
 
         tag = table.find("td",text=re.compile('[\d\D]*Price to Free Cash Flow \(TTM\)[\d\D]*'))        
@@ -401,6 +437,7 @@ class ReuterFunda:
             valratio['indupfcfttm'] = self.tofloat(indutag.string)
             valratio['sectorpfcfttm'] = self.tofloat(sectortag.string)
         else:
+            print "Price to Free Cash Flow (TTM) not found"
             return None
         
         
@@ -488,6 +525,8 @@ class ReuterFunda:
         return gr
      
     #parse sale and eps estimate   
+    '''
+    #some symbol has q1,q2,y1 only, need to find a new way 
     def parseEstimate(self,table):
         estm = {}
         tag = table.find("th",text=re.compile('[\d\D]*# of Estimates[\d\D]*')) 
@@ -503,10 +542,99 @@ class ReuterFunda:
         dataLst = table.findAll("td",attrs={'class':"data"})
         
         if dataLst!=None:
+            print len(dataLst)
             for name in idset:
+                print name
                 estm[name] = self.tofloat(dataLst[idset[name]].string)
             return estm
         return None
+    '''
+    def parseEstimate(self,table):
+        estm = {}
+        tag = table.find("th",text=re.compile('[\d\D]*# of Estimates[\d\D]*')) 
+        if tag == None:
+            print "Estimate not found"
+            return None
+        
+        pattern="[\d\D]*SALES \(in millions\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*Earnings \(per share\)[\d\D]*?</tr>?([\d\D]*)<tr>[\d\D]*LT Growth Rate[\d\D]*"
+        txt = table.__str__()
+      
+        an = re.match(pattern,txt)
+        if an!=None:
+            #print an.group(1)
+            soup1 = BeautifulSoup(an.group(1))
+            tagLst = soup1.findAll("td",text=re.compile('[\d\D]*Quarter Ending[\d\D]*')) 
+            for idx,data in enumerate(tagLst):
+                key1="saleq%de" % (idx+1)
+                key2="saleq%dey" % (idx+1)
+                numestmtag = data.nextSibling.nextSibling
+                qestm = numestmtag.nextSibling.nextSibling
+                qesth = qestm.nextSibling.nextSibling
+                qestl = qesth.nextSibling.nextSibling                                                
+                qesty = qestl.nextSibling.nextSibling
+                estm[key1] = self.tofloat(qestm.string)
+                estm[key2] = self.tofloat(qesty.string)
+                
+                #print qestm.string,qesty.string
+            tagLst = soup1.findAll("td",text=re.compile('[\d\D]*Year Ending[\d\D]*')) 
+            for idx,data in enumerate(tagLst):
+                key1="saley%de" % (idx+1)
+                key2="saley%dey" % (idx+1)
+                numestmtag = data.nextSibling.nextSibling
+                daestm = numestmtag.nextSibling.nextSibling
+                daesth = daestm.nextSibling.nextSibling
+                daestl = daesth.nextSibling.nextSibling                                                
+                daesty = daestl.nextSibling.nextSibling
+                estm[key1] = self.tofloat(daestm.string)
+                estm[key2] = self.tofloat(daesty.string)
+                estm['numest'] = numestmtag.string                 
+            #print "=========================================="
+            soup1 = BeautifulSoup(an.group(2))
+            tagLst = soup1.findAll("td",text=re.compile('[\d\D]*Quarter Ending[\d\D]*')) 
+            for idx,data in enumerate(tagLst):
+                key1="epsq%de" % (idx+1)
+                key2="epsq%dey" % (idx+1)
+                numestmtag = data.nextSibling.nextSibling
+                qestm = numestmtag.nextSibling.nextSibling
+                qesth = qestm.nextSibling.nextSibling
+                qestl = qesth.nextSibling.nextSibling                                                
+                qesty = qestl.nextSibling.nextSibling
+                estm[key1] = self.tofloat(qestm.string)
+                estm[key2] = self.tofloat(qesty.string)
+                
+            tagLst = soup1.findAll("td",text=re.compile('[\d\D]*Year Ending[\d\D]*')) 
+            for idx,data in enumerate(tagLst):
+                key1="epsy%de" % (idx+1)
+                key2="epsy%dey" % (idx+1)
+                numestmtag = data.nextSibling.nextSibling
+                daestm = numestmtag.nextSibling.nextSibling
+                daesth = daestm.nextSibling.nextSibling
+                daestl = daesth.nextSibling.nextSibling                                                
+                daesty = daestl.nextSibling.nextSibling
+                estm[key1] = self.tofloat(daestm.string)
+                estm[key2] = self.tofloat(daesty.string)
+                #estm['numest'] = numestmtag.string  
+        else:
+            print "Estimate not found"
+            return None
+        tag = table.find("td",text=re.compile('[\d\D]*LT Growth Rate[\d\D]*'))        
+        if tag!=None:
+            numltgrtag = tag.nextSibling.nextSibling
+            ltmtag = numltgrtag.nextSibling.nextSibling            
+            lthtag = ltmtag.nextSibling.nextSibling
+            ltltag = lthtag.nextSibling.nextSibling
+            ltytag = ltltag.nextSibling.nextSibling
+            estm['numltgr'] = self.tofloat(numltgrtag.string)
+            estm['ltgre'] = self.tofloat(ltmtag.string)
+            estm['ltgrey'] = self.tofloat(ltytag.string)
+        else:
+            print "LT Growth Rate not found"
+            return None
+            
+        return estm 
+                
+    
+
         
     def tofloat(self,txt):
         if txt=="--":
