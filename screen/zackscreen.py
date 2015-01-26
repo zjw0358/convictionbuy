@@ -5,15 +5,19 @@ import datetime
 import fundata
 import csv
 import pandas
+import reuterfunda
 
 class ZackScreen:
     def __init__(self):
         #self.zack = zackrank.ZackRank()
         self.funda = fundata.FundaData()
+        self.reuter = reuterfunda.ReuterFunda()
         self.outputpath = "../result/"
         self.symtable = pandas.DataFrame()
         self.fundafile = ""
         self.zackfile = ""
+        self.reuterfile = ""
+        self.screen = ""
         self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
@@ -22,27 +26,28 @@ class ZackScreen:
         pandas.set_option('display.max_rows', 1500)
         return
     def usage(self):
-        print "program -z zackfile -f fundafile"
+        print "program -z zackfile -f fundafile -e enddate -r reuterfile -s screenname"
         
-    def process(self):
-        self.parseOption()
-        self.screenBMZ()
-        return
         
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:z:e:", ["fundafile", "zackfile","enddate"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:z:r:e:s:", ["fundafile", "zackfile","reuterfile","enddate","screen"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
             if opt in ("-z", "--zackfile"):
                 self.zackfile = arg
-            elif  opt in ("-f", "--fundafile"):
+            elif opt in ("-f", "--fundafile"):
                 self.fundafile = arg
+            elif opt in ("-r", "--reuterfile"):
+                self.reuterfile = arg
             elif opt in ("-e", "--enddate"):
-                self.enddate = arg    
-        if (self.zackfile=="" or self.fundafile==""):
+                self.enddate = arg
+            elif opt in ("-s", "--screen"):
+                self.screen = arg
+                
+        if (self.zackfile=="" and self.fundafile=="" and self.reuterfile==""):
             self.usage()
             sys.exit()
         return
@@ -174,7 +179,18 @@ class ZackScreen:
         
         
         
-        
+    def scrEarningAcc(self):
+        df = self.reuter.loadReuterCsvFile(self.reuterfile)
+        #(df['saleqtr0']>df['saleqtr-4'])
+        f0 = df[ (df['epsqtr0']>df['epsqtr-4']) & (df['epsqtr-1']>df['epsqtr-5']) \
+            & (df['epsqtr-2']>df['epsqtr-6']) & (df['epsqtr-4']>0) & (df['epsqtr-5']>0) \
+            &(df['epsqtr-6'] >0)]
+        f1 = pandas.DataFrame(f0,index=f0.index,columns=['symbol','epsqtr0','epsqtr-4','epsqtr-1','epsqtr-5','epsqtr-2','epsqtr-6'])
+        #print f1
+        #f2 = pandas.DataFrame(f1,index=f1.index,columns=['symbol','saleqtr0','saleqtr-4'])
+        print f1,len(f1)
+        #print f1['symbol'],f1['saleqtr0'],f1['saleqtr-4']
+        return 
         
     def getZackRank(self):
         rankdict = self.zack.getRank(self.ticklist)
@@ -186,7 +202,15 @@ class ZackScreen:
         else:
             print rankdict
         return rankdict
-    
+        
+    def process(self):
+        self.parseOption()
+        if self.screen=="":
+            self.screenBMZ()
+        elif self.screen=="er":
+            self.scrEarningAcc()
+            
+        return
 ################################################################################        
 # main routine
 ################################################################################            

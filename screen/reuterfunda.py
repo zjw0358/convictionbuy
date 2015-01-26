@@ -7,6 +7,7 @@ import marketdata
 import datetime
 import getopt
 import sys
+import csv
 
 class ReuterFunda:
     '''
@@ -22,7 +23,7 @@ class ReuterFunda:
         self.outputpath = "../data/"
         self.fileName = ""
         self.starttick = ""
-        #self.ticklist = ""
+        self.mode = 0 #load result csv
 
         
         
@@ -197,26 +198,7 @@ class ReuterFunda:
                     #sys.exit()
             
         outputfp.close()
-        '''
         
-            
-        dct = self.getEarningData('msft.o')
-        allLst = {}
-        for key in columns:
-            lst = []
-            allLst[key] = lst
-            if key in dct:
-                lst.append(dct[key])
-            else:
-                lst.append('')
-        table = pandas.DataFrame(allLst,columns=columns)
-        ercol = ['saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
-            'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
-            'epsqtr-7','epsqtr-8','epsqtr-9']
-        print table[ercol]
-        #print table
-        return
-        '''
 
     #ROA,ROI,ROE
     def parseMangEffect(self,table):
@@ -802,7 +784,7 @@ class ReuterFunda:
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:", ["filename", "start"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:u", ["filename", "start"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
@@ -810,7 +792,8 @@ class ReuterFunda:
                 self.fileName = arg
             elif opt in ("-t", "--start"):
                 self.starttick = arg
-
+            elif opt in ("u"):
+                self.mode = 1 #update mode
         if (self.fileName == ""):
             self.usage()
             sys.exit()
@@ -818,9 +801,80 @@ class ReuterFunda:
         print self.fileName,self.ticklist
         return
         
+    def loadReuterCsvFile(self,fileName):
+        print "Loading reuter csv file..."
+        columns = ['symbol','exg',\
+            \
+            'saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
+            'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
+            'epsqtr-7','epsqtr-8','epsqtr-9',\
+            \
+            'numest','saleq1e','saleq1ey','saleq2e','saleq2ey','saley1e','saley1ey','saley2e','saley2ey','epsq1e',\
+            'epsq1ey','epsq2e','epsq2ey','epsy1e','epsy1ey','epsy2e','epsy2ey','numltgr','ltgre','ltgrey',\
+            \
+            'cppettm','indupettm','sectorpettm','cppehigh5y','indupehigh5y','sectorpehigh5y','cppelow5y','indupelow5y',\
+            'sectorpelow5y','cpbeta','indubeta','sectorbeta','cppsttm','indupsttm','sectorpsttm','cppbmrq','indupbmrq',\
+            'sectorpbmrq','cppcfttm','indupcfttm','sectorpcfttm','cppfcfttm','indupfcfttm','sectorpfcfttm',\
+            \
+            'divyield','div5y','div5ygr','payoutratio',\
+            \
+            'cpsalemrqyoy','indusalemrqyoy','sectorsalemrqyoy','cppsalettmyoy','indusalettmyoy','sectorsalettmyoy','cpsale5ygr',\
+            'indusale5ygr','sectorsale5ygr','cpepsmrqyoy','induepsmrqyoy','sectorepsmrqyoy','cpepsttmyoy','induepsttmyoy',\
+            'sectorepsttmyoy','cpeps5ygr','indueps5ygr','sectoreps5ygr','cpcap5ygr','inducap5ygr','sectorcap5ygr',\
+            \
+            'cpdebt2equity','indudebt2equity','secdebt2equity','cpquira','induquira','secquira','cpcurra','inducura','seccurra',\
+            \
+            'cpgm','indugm','sectorgm','cpgm5y','indugm5y','sectorgm5y','cpom','induom','sectorom','cpom5y','induom5y','sectorom5y',\
+            'cpnm','indunm','sectornm','cpnm5y','indunm5y','sectornm5y',\
+            \
+            'cproa','induroa','sectorroa','cproa5y','induroa5y','sectorroa5y','cproi','induroi','sectorroi','cproi5y','induroi5y','sectorroi5y','cproe','induroe',\
+            'sectorroe','cproe5y','induroe5y','sectorroe5y'
+            ]
+    
+        
+        allLst = {}
+        for key in columns:
+            lst = []
+            allLst[key] = lst
+        print "len of allLst",len(allLst) 
+                
+        table = pandas.DataFrame(allLst,columns=columns)
+        
+        fp = open(fileName,'r',-1)
+
+      
+        reader = csv.reader(fp)  # creates the reader object
+        idx = 0
+        for row in reader:
+            if idx==0:
+                idx += 1
+                continue
+            #rowidset = [0,len(row)]
+            for rowid, item in enumerate(row):            
+                #print rowid
+                #print columns[rowid]
+                lst = allLst[columns[rowid]]
+                if rowid>1:
+                    item=item.replace(" ","")
+                    if item=="":
+                        item=0
+                    #print item
+                    lst.append(float(item))
+                else:
+                    lst.append(item)
+            idx += 1
+        fp.close()
+        
+        
+        table = pandas.DataFrame(allLst,columns=columns)
+        return table
+        
     def process(self):
         self.parseOption()
-        self.updateData()
+        if self.mode == 1:
+            self.updateData()
+        else:
+            self.loadReuterCsvFile(self.fileName)
         print "Done,exit..."
 ################################################################################        
 # main routine
