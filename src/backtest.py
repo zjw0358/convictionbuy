@@ -49,7 +49,7 @@ class BackTest:
         self.tradesup = tradesupport.Trade(self)
         self.simutable = simutable.SimuTable(self)
         
-    # google style portfolio file
+    # google style portfolio file    
     def loadPortfolioFile(self,fileName):
         #print "open file:",fileName
         fp = open(fileName,'r',-1)
@@ -340,11 +340,6 @@ class BackTest:
                 
             self.tradesup.endStrategy()
 
-            '''if ret==False: # e.g. parameter mode is not reconginzed
-                stRet=False
-                continue
-            else:
-                dv = self.tradesup.getDailyValue()'''
                 
             dv = self.tradesup.getDailyValue()
             if firstTick==False:

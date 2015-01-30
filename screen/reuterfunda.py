@@ -23,8 +23,32 @@ class ReuterFunda:
         self.outputpath = "../data/"
         self.fileName = ""
         self.starttick = ""
-        self.mode = 0 #load result csv
-
+        self.ticklist = []
+        self.columns = ['saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
+            'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
+            'epsqtr-7','epsqtr-8','epsqtr-9',\
+            \
+            'numest','saleq1e','saleq1ey','saleq2e','saleq2ey','saley1e','saley1ey','saley2e','saley2ey','epsq1e',\
+            'epsq1ey','epsq2e','epsq2ey','epsy1e','epsy1ey','epsy2e','epsy2ey','numltgr','ltgre','ltgrey',\
+            \
+            'cppettm','indupettm','sectorpettm','cppehigh5y','indupehigh5y','sectorpehigh5y','cppelow5y','indupelow5y',\
+            'sectorpelow5y','cpbeta','indubeta','sectorbeta','cppsttm','indupsttm','sectorpsttm','cppbmrq','indupbmrq',\
+            'sectorpbmrq','cppcfttm','indupcfttm','sectorpcfttm','cppfcfttm','indupfcfttm','sectorpfcfttm',\
+            \
+            'divyield','div5y','div5ygr','payoutratio',\
+            \
+            'cpsalemrqyoy','indusalemrqyoy','sectorsalemrqyoy','cppsalettmyoy','indusalettmyoy','sectorsalettmyoy','cpsale5ygr',\
+            'indusale5ygr','sectorsale5ygr','cpepsmrqyoy','induepsmrqyoy','sectorepsmrqyoy','cpepsttmyoy','induepsttmyoy',\
+            'sectorepsttmyoy','cpeps5ygr','indueps5ygr','sectoreps5ygr','cpcap5ygr','inducap5ygr','sectorcap5ygr',\
+            \
+            'cpdebt2equity','indudebt2equity','secdebt2equity','cpquira','induquira','secquira','cpcurra','inducura','seccurra',\
+            \
+            'cpgm','indugm','sectorgm','cpgm5y','indugm5y','sectorgm5y','cpom','induom','sectorom','cpom5y','induom5y','sectorom5y',\
+            'cpnm','indunm','sectornm','cpnm5y','indunm5y','sectornm5y',\
+            \
+            'cproa','induroa','sectorroa','cproa5y','induroa5y','sectorroa5y','cproi','induroi','sectorroi','cproi5y','induroi5y','sectorroi5y','cproe','induroe',\
+            'sectorroe','cproe5y','induroe5y','sectorroe5y'
+            ]
         
         
         
@@ -127,64 +151,39 @@ class ReuterFunda:
         if len(missLst)>0:
             print "Missing list:",missLst
         
-    def updateData(self):        
+    def updateData(self): 
+        lenticklst = len(self.ticklist)       
         symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+        reuterTable = pandas.DataFrame()
+        if self.reuterfile!="" and lenticklst>0:
+            reuterTable = self.loadReuterCsvFile(self.reuterfile)
         outputfn = self.outputpath + "reuterfunda_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
-        outputfp = open(outputfn,'w',-1)
-        
-        columns = ['saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
-            'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
-            'epsqtr-7','epsqtr-8','epsqtr-9',\
-            \
-            'numest','saleq1e','saleq1ey','saleq2e','saleq2ey','saley1e','saley1ey','saley2e','saley2ey','epsq1e',\
-            'epsq1ey','epsq2e','epsq2ey','epsy1e','epsy1ey','epsy2e','epsy2ey','numltgr','ltgre','ltgrey',\
-            \
-            'cppettm','indupettm','sectorpettm','cppehigh5y','indupehigh5y','sectorpehigh5y','cppelow5y','indupelow5y',\
-            'sectorpelow5y','cpbeta','indubeta','sectorbeta','cppsttm','indupsttm','sectorpsttm','cppbmrq','indupbmrq',\
-            'sectorpbmrq','cppcfttm','indupcfttm','sectorpcfttm','cppfcfttm','indupfcfttm','sectorpfcfttm',\
-            \
-            'divyield','div5y','div5ygr','payoutratio',\
-            \
-            'cpsalemrqyoy','indusalemrqyoy','sectorsalemrqyoy','cppsalettmyoy','indusalettmyoy','sectorsalettmyoy','cpsale5ygr',\
-            'indusale5ygr','sectorsale5ygr','cpepsmrqyoy','induepsmrqyoy','sectorepsmrqyoy','cpepsttmyoy','induepsttmyoy',\
-            'sectorepsttmyoy','cpeps5ygr','indueps5ygr','sectoreps5ygr','cpcap5ygr','inducap5ygr','sectorcap5ygr',\
-            \
-            'cpdebt2equity','indudebt2equity','secdebt2equity','cpquira','induquira','secquira','cpcurra','inducura','seccurra',\
-            \
-            'cpgm','indugm','sectorgm','cpgm5y','indugm5y','sectorgm5y','cpom','induom','sectorom','cpom5y','induom5y','sectorom5y',\
-            'cpnm','indunm','sectornm','cpnm5y','indunm5y','sectornm5y',\
-            \
-            'cproa','induroa','sectorroa','cproa5y','induroa5y','sectorroa5y','cproi','induroi','sectorroi','cproi5y','induroi5y','sectorroi5y','cproe','induroe',\
-            'sectorroe','cproe5y','induroe5y','sectorroe5y'
-            ]
-             
-        header = 'symbol,exg,' + ', '.join(columns) + "\n"
+        outputfp = open(outputfn,'w',-1)        
+         
+        header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
         outputfp.write(header)
-        # prepare the table
-        allData = {}
-        for key in columns:
-            lst = []
-            allData[key] = lst
-                
+          
         startFlag = True
         if self.starttick!="":
             startFlag = False
             print "wait for ",self.starttick
         
+        print lenticklst
         for index, row in symbolTable.iterrows():
             if startFlag==False and row['symbol']!=self.starttick:
                 continue
             else:
                 startFlag=True
+
             rowLst = []
-            if row['rank'] > 0:
-                #print index,row['symbol'],row['rank'],row['name']
+            #if row['symbol'] in self.ticklist:
+            #    print row['symbol']
+            if row['rank'] > 0 and ((lenticklst>0 and row['symbol'] in self.ticklist) or (lenticklst==0)):                
                 print "downloading ",row['symbol'],row['exg']
-                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])            
-                
+                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])                
                 if len(rowdct)>0:
                     self.verifyCol(rowdct)
-                    for key in columns:
+                    for key in self.columns:
                         if key in rowdct:
                             rowLst.append(rowdct[key])
                         else:
@@ -197,9 +196,26 @@ class ReuterFunda:
                     print "No financials information,skip ",row['symbol'],row['exg']
                     #sys.exit()
             
+
+        #merge with old reuter csv file
+        #print reuterTable
+        if not reuterTable.empty:
+            for index, rowdct in reuterTable.iterrows():
+                rowLst = []
+                if rowdct['symbol'] in self.ticklist:
+                    print "skip merge ",rowdct['symbol']
+                    continue
+                for key in self.columns:
+                    if key in rowdct:
+                        rowLst.append(str(rowdct[key]))
+                    else:
+                        rowLst.append("") 
+                #print rowLst               
+                line = rowdct['symbol'] + ',' + rowdct['exg'] + ','  + ', '.join(rowLst) + "\n"
+                outputfp.write(line)
+                
         outputfp.close()
         
-
     #ROA,ROI,ROE
     def parseMangEffect(self,table):
         '''
@@ -773,18 +789,18 @@ class ReuterFunda:
         
     def tofloat(self,txt):
         if txt=="--" or txt==None:
-            return ""
+            return "0"
         else:
             return txt.replace(",","")
             
     def usage(self):
-        print "program -f symbollist.txt -t ticklist"
+        print "program -f symbollist.txt -t stattick -u update_tick_list -r reuter_result_csvfile"
 
               
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:u", ["filename", "start"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:u:r:", ["filename", "start","ticklist","reuterfile"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
@@ -792,13 +808,20 @@ class ReuterFunda:
                 self.fileName = arg
             elif opt in ("-t", "--start"):
                 self.starttick = arg
-            elif opt in ("u"):
-                self.mode = 1 #update mode
+            elif opt in ("-u","--ticklist"):
+                items = arg.split(",") #update ticklist only 
+                for t in items:
+                    self.ticklist.append(t.upper())
+            elif opt in ("-r","--reuterfile"):
+                self.reuterfile = arg
+                
         if (self.fileName == ""):
             self.usage()
             sys.exit()
             
-        print self.fileName,self.ticklist
+        print "symbolfile=",self.fileName
+        print "ticklist=",self.ticklist
+        print "reuterfile=",self.reuterfile
         return
         
     def loadReuterCsvFile(self,fileName):
@@ -841,8 +864,7 @@ class ReuterFunda:
         table = pandas.DataFrame(allLst,columns=columns)
         
         fp = open(fileName,'r',-1)
-
-      
+        
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         for row in reader:
@@ -863,18 +885,16 @@ class ReuterFunda:
                 else:
                     lst.append(item)
             idx += 1
-        fp.close()
-        
+        fp.close()        
         
         table = pandas.DataFrame(allLst,columns=columns)
         return table
         
     def process(self):
         self.parseOption()
-        if self.mode == 1:
-            self.updateData()
-        else:
-            self.loadReuterCsvFile(self.fileName)
+        self.updateData()        
+        #self.loadReuterCsvFile(self.fileName)
+            
         print "Done,exit..."
 ################################################################################        
 # main routine

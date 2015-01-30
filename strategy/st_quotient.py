@@ -78,7 +78,7 @@ class st_quotient:
             return True
         return False
 
-        # strategy, find the buy&sell signal
+    # strategy, find the buy&sell signal
     def runStrategy(self,symbol,ohlc,param={}):
         #initialize tradesupport
         if len(param) != 0:

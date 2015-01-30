@@ -156,17 +156,5 @@ class st_aeoas:
     def getMoreInfo(self):
         #print self.ohlc
         info = "px=%.2f,avgTyp=%.2f,avgHac=%.2f" %(self.ohlc['Adj Close'][-1],self.avgTypEmaLst[-1], self.avgHacEmaLst[-1])        
-        return info
-        
-    '''def process(self,bt,symbol,param,ohlc_px,spy_px):
-        #different approach
-        self.ohlc = ohlc_px
-        if param['mode']=='1':
-            self.processOptimization(symbol,ohlc_px,spy_px)
-            return True
-        elif param['mode']==None or param['mode']=='0':            
-            self.setupParam(param)
-            self.runStrategy(symbol, ohlc_px)
-            return True
-        return False
-    '''
+        return info        
+    

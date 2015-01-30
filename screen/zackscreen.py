@@ -6,10 +6,11 @@ import fundata
 import csv
 import pandas
 import reuterfunda
+import marketdata
 
 class ZackScreen:
     def __init__(self):
-        #self.zack = zackrank.ZackRank()
+        self.mkt = marketdata.MarketData()
         self.funda = fundata.FundaData()
         self.reuter = reuterfunda.ReuterFunda()
         self.outputpath = "../result/"
@@ -22,17 +23,18 @@ class ZackScreen:
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
-        pandas.set_option('display.height', 1500)
+        #pandas.set_option('display.height', 1500)
         pandas.set_option('display.max_rows', 1500)
         return
     def usage(self):
         print "program -z zackfile -f fundafile -e enddate -r reuterfile -s screenname"
-        
+        print "=== QoQ earning increase screen ================================"
+        print "run zackscreen.py -f ../data/fundaupdate_2015-01-27.csv -r ../data/reuterfunda_2015-01-27.csv -s er"
         
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:z:r:e:s:", ["fundafile", "zackfile","reuterfile","enddate","screen"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:z:r:e:m:s:", ["fundafile", "zackfile","reuterfile","marketdatafile","enddate","screen"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
@@ -42,18 +44,21 @@ class ZackScreen:
                 self.fundafile = arg
             elif opt in ("-r", "--reuterfile"):
                 self.reuterfile = arg
+            elif opt in ("-m", "--marketdatafile"):
+                self.mktfile = arg
             elif opt in ("-e", "--enddate"):
                 self.enddate = arg
             elif opt in ("-s", "--screen"):
                 self.screen = arg
                 
-        if (self.zackfile=="" and self.fundafile=="" and self.reuterfile==""):
+        if (self.zackfile=="" and self.fundafile=="" and self.reuterfile=="" and self.mktfile==""):
             self.usage()
             sys.exit()
         return
            
     # ABR update file
     # symbol,rank,indurank,indutotal,etf,abrt,abr1w,abr1m,abr2m,abr3m,numbr
+    # to use marketdata loadsymbollist()
     def loadSymbolLstFile(self,fileName):
         fp = open(fileName,'r',-1)
         header=[]
@@ -102,6 +107,7 @@ class ZackScreen:
             'abr_1week','abr_1month','abr_2month','abr_3month','num_of_br'])
      
         
+    '''
     def loadFundaFile(self,fileName):
         # symbol,pricesale
         fp = open(fileName,'r',-1)
@@ -120,7 +126,7 @@ class ZackScreen:
             idx += 1
         fp.close()      # closing
         return psLst
-    
+    '''
     '''
     BMZ screener
     rank <=3
@@ -178,18 +184,34 @@ class ZackScreen:
             print "exception when write to csv ",bmzFn1,bmzFn2
         
         
-        
+    def getTime(self):
+        return datetime.datetime.now()
+
+            
     def scrEarningAcc(self):
+        startTime = self.getTime()
         df = self.reuter.loadReuterCsvFile(self.reuterfile)
-        #(df['saleqtr0']>df['saleqtr-4'])
-        f0 = df[ (df['epsqtr0']>df['epsqtr-4']) & (df['epsqtr-1']>df['epsqtr-5']) \
-            & (df['epsqtr-2']>df['epsqtr-6']) & (df['epsqtr-4']>0) & (df['epsqtr-5']>0) \
-            &(df['epsqtr-6'] >0)]
-        f1 = pandas.DataFrame(f0,index=f0.index,columns=['symbol','epsqtr0','epsqtr-4','epsqtr-1','epsqtr-5','epsqtr-2','epsqtr-6'])
-        #print f1
-        #f2 = pandas.DataFrame(f1,index=f1.index,columns=['symbol','saleqtr0','saleqtr-4'])
-        print f1,len(f1)
-        #print f1['symbol'],f1['saleqtr0'],f1['saleqtr-4']
+        af = self.funda.loadFundaCsv(self.fundafile)
+        sf = self.mkt.loadSymbolLstFile(self.mktfile)
+        rf = pandas.merge(sf,df)
+        mf = pandas.merge(rf,af)
+        
+        # epsq increase for constructive 3 qtr,marketcap> 2B,avgvol > 500k
+        f0 = mf[ (mf['epsqtr0']>mf['epsqtr-4']) & (mf['epsqtr-1']>mf['epsqtr-5']) \
+            & (mf['epsqtr-2']>mf['epsqtr-6']) & (mf['epsqtr-4']>0) & (mf['epsqtr-5']>0) \
+            &(mf['epsqtr-6'] >0) \
+            &(mf['marketcap']>2000000000) & (mf['avgdailyvol']>500000)]
+        
+        
+        
+        
+        #f1 = self.mkt.perfReport(f0,outputcol)
+        f1 = pandas.DataFrame(f0,index=f0.index,columns=self.mkt.getSymbolLstCol())        
+        print f1,len(f1)        
+        self.mkt.saveTableFile(f1,"scr_eracc")
+        endTime = self.getTime()        
+        print "time elapse ",startTime,endTime
+
         return 
         
     def getZackRank(self):
