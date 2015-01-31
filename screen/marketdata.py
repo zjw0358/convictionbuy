@@ -18,7 +18,7 @@ class MarketData:
         self.outputpath = "../result/"
 
         self.dow30fn = "../data/dow30.txt"
-        self.funda = fundata.FundaData()
+        
         #pandas.options.display.float_format = '{:,.2f}%'.format
         self.spdretf = {'Consumer Discretionary':'XLY','Consumer Staples':'XLP','Energy':'XLE',\
                     'Financials':'XLF','Health Care':'XLV','Industrials':'XLI','Materials':'XLB',\
@@ -117,6 +117,14 @@ class MarketData:
             columns=['symbol','rank','name','sector','industry','pid','exg'])
         return table
 
+    def loadSymbolLstFilePid(self,fileName,pid):
+        table=self.loadSymbolLstFile(fileName)
+        bitid = 1<<pid
+        #print bitid
+        criterion = table['pid'].map(lambda x: (int(x)&bitid==1))
+        df = table[criterion]['symbol']
+        return df
+        
     def getSymbolLstCol(self):
         return self.symbolLstFileCol
         

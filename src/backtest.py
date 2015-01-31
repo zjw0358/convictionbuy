@@ -11,6 +11,8 @@ import getopt
 #from datetime import datetime
 import simutable
 import tradesupport
+sys.path.insert(0, "../strategy/")
+sys.path.insert(0, "../screen/")
 import marketdata
 
 import testreport
@@ -55,6 +57,7 @@ class BackTest:
         self.mkt = marketdata.MarketData()
         
     # google style portfolio file    
+    '''
     def loadPortfolioFile(self,fileName):
         #print "open file:",fileName
         fp = open(fileName,'r',-1)
@@ -68,10 +71,13 @@ class BackTest:
                     
         fp.close()
         return stocklist
+    '''
     def loadSymbolListFile(self,fileName, pid):
-        table = self.mkt.loadSymbolLstFile(fileName)
+        table = self.mkt.loadSymbolLstFilePid(fileName,pid)
+        #print table
+        stocklist = table.values.tolist()
+        return stocklist
         
-        return
     def getTradeSupport(self):
         return self.tradesup
 
@@ -138,7 +144,8 @@ class BackTest:
         
         if symbolFile!="":
             self.ticklist = self.loadSymbolListFile(symbolFile,self.pid)
-            
+            print "processing tick:",self.ticklist
+            #sys.exit()
         if 'chart' in self.parameter:
             if self.parameter['chart']=='1':
                 self.hasChart = True
@@ -279,9 +286,7 @@ class BackTest:
     # main routine
     ###########################################################################        
     #[backtest] strategy protfolio startdate enddate
-    def process(self):
-        sys.path.insert(0, self.strategyPath)
-        sys.path.insert(0, self.screenPath)
+    def process(self):       
         self.parseOption() 
         if len(self.stgyBatchCfg)>0:
            self.parseStrategyResult()
