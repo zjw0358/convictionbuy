@@ -40,7 +40,7 @@ class BackTest:
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
-        pandas.set_option('display.height', 1500)
+        #pandas.set_option('display.height', 1500)
         pandas.set_option('display.max_rows', 1500)
         self.dataPath = "../data/"
         self.resultPath = "../result/"
@@ -108,8 +108,8 @@ class BackTest:
             if opt in ("-f", "--filename"):
                 self.ticklist = self.loadPortfolioFile(arg)
             elif opt in ("-t", "--ticklist"):
-                newstr = arg.replace("'", "")                
-                self.ticklist = newstr.split()
+                #newstr = arg.replace("'", "")                
+                self.ticklist = arg.split(",")
             elif opt in ("-b", "--strategybatch"):
                 ret = self.loadStrategyBatchCfg(arg)                
             elif opt in ("-g", "--strategy"):
@@ -306,8 +306,7 @@ class BackTest:
         #benchmark_px is series?
         try:
             benchmark_px = web.get_data_yahoo("spy", self.startdate, self.enddate)['Adj Close']
-            '''sdate = benchmark_px.index
-            self.sdatelabel = sdate.to_pydatetime()'''
+            
 
         except:
             # IO error
@@ -320,6 +319,7 @@ class BackTest:
         for ticker in self.ticklist:
             # retrieve data
             try:
+                print "processing ",ticker
                 all_data[ticker] = web.get_data_yahoo(ticker, self.startdate, self.enddate)
             except:
                 # IO error
@@ -333,10 +333,15 @@ class BackTest:
             self.tradesup.beginStrategy(ticker, strategy.getStrategyName())
             # run strategy
             ohlc_px = all_data[ticker]
+            self.simutable.setupSymbol(ticker,benchmark_px)
             if mode == 1: #optimizer
                 strategy.runOptimization(ticker, ohlc_px, benchmark_px)
+                self.simutable.procSimuReportnAddBestReport()                
+                self.tradesup.setDailyValueDf(self.simutable.getBestDv())
+        
             else: #normal
                 strategy.runStrategy(ticker, ohlc_px, self.parameter)
+                self.simutable.procSimuReportnAddBestReport(False)  
                 
             self.tradesup.endStrategy()
 
@@ -354,8 +359,8 @@ class BackTest:
         ####################################################
         # end of for loop 
         ####################################################
-        if mode == 1:  
-            self.simutable.makeBestReport()            
+        #if mode == 1:  
+        self.simutable.makeBestReport()            
             
         if self.hasChart==True:
             self.drawBenchMark(benchmark_px, firstTradeIdx, firstTradeDate)
@@ -408,10 +413,11 @@ class BackTest:
     def drawBenchMark(self,benchmark_px,firstDateOffset,firstTradeDate):
         textsize = 9
         bm_offset=benchmark_px.index.get_loc(firstTradeDate)
-        #print firstTradeDate,bm_offset
+        
         bm_returns = benchmark_px[bm_offset:].pct_change()
         bmret_index = (1+bm_returns).cumprod()
-        bmret_index[bm_offset] = 1
+        #print "drawBenchMark,len(bm)",len(bmret_index) #firstTradeDate,bm_offset
+        bmret_index[0] = 1
         #print offset,len(self.sdatelabel[offset:]),len(bmret_index),len(bm_returns),len(benchmark_px)
         
         self.ax2.plot(self.sdatelabel[firstDateOffset:],bmret_index,label='benchmark')        

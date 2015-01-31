@@ -22,8 +22,8 @@ class st_rsi:
         self.setupInfo = \
         "=== ST_RSI SETUP===========================================\n" + \
         "cutoff length=%d\n" % self.cl + \
-        "================================================================"
-        print self.setupInfo
+        "===========================================================\n"
+        #print self.setupInfo
 
     def setupParam(self,param):
         # default parameter
@@ -76,24 +76,27 @@ class st_rsi:
             
         #call this to end trade 
         self.tradesup.endTrade(self.setupInfo)
+        paramstr = "cl=%d"%(self.cl)
+        self.simutable.addOneTestResult(self.setupInfo, paramstr,self.tradesup.getDailyValue(), self.getMoreInfo())
+            
         
     def runOptimization(self,symbol,ohlc,bm):
         tset = range(10, 30, 1)
 
         
         #must setup report tool before simulation test
-        self.simutable.setupSymbol(symbol,bm)
+        #self.simutable.setupSymbol(symbol,bm)
 
         for t in tset:        
             self.setup(t)
             self.runStrategy(symbol,ohlc)
             # to generate simulation report
-            param = "cl=%d"%(t)
-            self.simutable.addOneTestResult(self.setupInfo, param,self.tradesup.getDailyValue(), self.getMoreInfo())
+            #param = "cl=%d"%(t)
+            #self.simutable.addOneTestResult(self.setupInfo, param,self.tradesup.getDailyValue(), self.getMoreInfo())
         
         #add results to report
-        self.simutable.makeSimuReport()
-        self.tradesup.setDailyValueDf(self.simutable.getBestDv())
+        #self.simutable.makeSimuReport()
+        #self.tradesup.setDailyValueDf(self.simutable.getBestDv())
         return
         
     def getMoreInfo(self):

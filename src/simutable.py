@@ -85,23 +85,23 @@ class SimuTable:
         # add new row with external index start from 1,2,3
         self.symtable.loc[len(self.symtable)+1]=d0
         
-    def makeSimuReport(self):
+
+            
+    def procSimuReportnAddBestReport(self, pt = True):
         sortTable = self.symtable.sort_index(by='perf',ascending=False)
         filename = self.outputpath + self.symbol+'_'+self.name+time.strftime('_%Y-%m-%d.csv',time.localtime(time.time()))
         try:
             sortTable.to_csv(filename,sep=',')
         except:
             print "exception when write to csv ",filename
+            
+        if pt==True:
+            print "================================================================"
+            print self.symbol + " all simulation results:"
+            print sortTable
+            print "================================================================"
         
-        print "================================================================"
-        print self.symbol + " all simulation results:"
-        print sortTable
-        print "================================================================"
-        
-
-        #bestrow = sortTable.head(1).iloc[0]        
-        #self.besttable.loc[len(self.besttable)+1]=bestrow
-        #extract numBest row into best table
+        #add best num result into best report
         bestRows = sortTable[:self.bestNum]
         pieces = [bestRows, self.besttable]
         self.besttable = pandas.concat(pieces)
@@ -111,13 +111,12 @@ class SimuTable:
         if not self.bestperfRept.empty:
             self.tradesup.setFirstTradeIdxWithBestPerf(self.bestperfFirstTradeIdx)
             self.tradesup.setTradeReportWithBestPerf(self.bestperfRept)
-            self.tradesup.setStrategyInfoWithBestPerf(self.bestperfstInfo)
-            
+            self.tradesup.setStrategyInfoWithBestPerf(self.bestperfstInfo)        
         
     def makeBestReport(self):
         sortTable = self.besttable.sort_index(by='perf')
         filename=self.outputpath+self.name+"_best_"+time.strftime('%Y-%m-%d.csv',time.localtime(time.time()))
-        sortTable.to_csv(filename,sep=',')
+        sortTable.to_csv(filename,sep=',',index=False)
         if not sortTable.empty:
             print "================================================================"
             print self.name + " portfolio best performance:"
