@@ -11,6 +11,8 @@ import getopt
 #from datetime import datetime
 import simutable
 import tradesupport
+import marketdata
+
 import testreport
 import matplotlib.pyplot as plt
 import pandas.io.data as web
@@ -45,9 +47,12 @@ class BackTest:
         self.dataPath = "../data/"
         self.resultPath = "../result/"
         self.strategyPath = "../strategy/"
+        self.screenPath = "../screen/"
+        self.pid = 0 #dow30=0,focus=1
         self.nmuBest = 3 # 3 best result
         self.tradesup = tradesupport.Trade(self)
         self.simutable = simutable.SimuTable(self)
+        self.mkt = marketdata.MarketData()
         
     # google style portfolio file    
     def loadPortfolioFile(self,fileName):
@@ -63,7 +68,10 @@ class BackTest:
                     
         fp.close()
         return stocklist
-
+    def loadSymbolListFile(self,fileName, pid):
+        table = self.mkt.loadSymbolLstFile(fileName)
+        
+        return
     def getTradeSupport(self):
         return self.tradesup
 
@@ -100,13 +108,17 @@ class BackTest:
         self.ticklist=[]
         self.strategy=""
         ret=False
+        # symbol list file
+        symbolFile = ""
+        pid=0 # default = 0
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:g:s:e:p:b:", ["filename", "ticklist","strategy","startdate","enddate","parameter"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:g:s:e:p:b:i:", \
+                ["filename", "ticklist","strategy","startdate","enddate","parameter","pid"])
         except getopt.GetoptError:
             return False
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
-                self.ticklist = self.loadPortfolioFile(arg)
+                symbolFile = arg
             elif opt in ("-t", "--ticklist"):
                 #newstr = arg.replace("'", "")                
                 self.ticklist = arg.split(",")
@@ -120,9 +132,13 @@ class BackTest:
                 self.enddate = arg
             elif opt in ("-p", "--parameter"):
                 self.parameter = self.parseParam(arg)
-                
+            elif opt in ("-i", "--pid"):
+                pid = int(arg)    
         self.hasChart = False
         
+        if symbolFile!="":
+            self.ticklist = self.loadSymbolListFile(symbolFile,self.pid)
+            
         if 'chart' in self.parameter:
             if self.parameter['chart']=='1':
                 self.hasChart = True
@@ -265,6 +281,7 @@ class BackTest:
     #[backtest] strategy protfolio startdate enddate
     def process(self):
         sys.path.insert(0, self.strategyPath)
+        sys.path.insert(0, self.screenPath)
         self.parseOption() 
         if len(self.stgyBatchCfg)>0:
            self.parseStrategyResult()
