@@ -12,12 +12,16 @@ http://ichart.finance.yahoo.com/table.csv?s=xle&a=01&b=19&c=2014&d=01&e=19&f=201
 '''
 class MarketData:
     def __init__(self):
-        self.columns = ['symbol','5d','10d','20d', '50d', '100d','200d','max','px', \
-                        'sma10','sma50','sma200','sma10%','sma50%','sma200%']
-        self.perftable = pandas.DataFrame(columns=self.columns) 
+        pandas.set_option('display.max_columns', 50)
+        pandas.set_option('display.precision', 3)
+        pandas.set_option('display.expand_frame_repr', False)
+        
+        #self.columns = ['symbol','5d','10d','20d', '50d', '100d','200d','max','px', \
+        #                'sma10','sma50','sma200','sma10%','sma50%','sma200%']
+        #self.perftable = pandas.DataFrame(columns=self.columns) 
         self.outputpath = "../result/"
 
-        #self.dow30fn = "../data/dow30.txt"
+        
         
         #pandas.options.display.float_format = '{:,.2f}%'.format
         self.spdretf = {'Consumer Discretionary':'XLY','Consumer Staples':'XLP','Energy':'XLE',\
@@ -35,19 +39,19 @@ class MarketData:
         self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
         self.symbolLstFile = "./marketdata.csv"  #default marketdata file
         self.pid = 0 #0-dow30,1-focus list
-        #self.option = 0 # default market data, process according to portfolio id
+        
         return
         
     def usage(self):
-        print "program -f <portfolio_file> -t aapl,msft -i portfolioid -s 2010-01-01 -e 2014-12-30"
+        print "program -f <portfolio_file> -t aapl,msft -i portfolioid -g st_rsi&cl=14 [-s 2010-01-01 -e 2014-12-30]"
         print "=== show portfolio performance ================================="
         print "program -f <portfolio_file> "
  
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:", \
-                ["filename", "ticklist", "startdate","enddate","pid"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:", \
+                ["filename", "ticklist", "startdate","enddate","pid","strategy"])
         except getopt.GetoptError:
             print "parse option error"
             return False
@@ -65,7 +69,9 @@ class MarketData:
                 self.enddate = arg
             elif opt in ("-i", "--pid"):
                 self.pid = int(arg)
-                
+            elif opt in ("-g", "--strategy"):
+                self.parseStrategy(arg)
+                   
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
             startday = datetime.date.today() - datetime.timedelta(days=365)
@@ -73,22 +79,25 @@ class MarketData:
 
         self.funda = fundata.FundaData()
   
-      
-    
-    def makeReport(self):
-        sortTable = self.perftable.sort_index(by='5d',ascending=False)
-        #filename = self.outputpath + 'perfscreen_' + time.strftime('%Y-%m-%d.csv',time.localtime(time.time()))
-        filename = self.outputpath + 'perfscreen_' + self.enddate + '_' + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
-        try:
-            sortTable.to_csv(filename,sep=',')
-        except:
-            print "exception when write to csv ",filename
+    def parseStrategy(self,arg):
+        '''
+        st_rsi&cl=14,st_macd&f=10&s=5
+        '''
+        self.strategy = {}
+        for item in arg.split(","):
+            idx = 0
+            param = {}
+            for token in item.split("&"):
+                if idx == 0:                    
+                    self.strategy[token] = param
+                else:
+                    #param = self.strategy[token]
+                    k,v = token.split('=')
+                    param[k]=v
+                idx += 1
+        print self.strategy
+        return
         
-        print "================================================================"
-        print "Performance Screen  results:"
-        print sortTable
-        print "================================================================" 
-  
     def loadSymbolLstFile(self,fileName):
         #symbol,rank,name,sector,industry,pid,exg
         fp = open(fileName,'r',-1)
@@ -144,35 +153,16 @@ class MarketData:
         print "Finish wrote to ",outputFn
         
     def procMarketData(self):
-        '''
-        # dow30
-        lst = self.loadSymbolLstFile(self.dow30fn)
-        dow30Dct = {}
-        for symbol in lst:
-            dow30Dct[symbol]=symbol
-        '''
         df = self.loadSymbolLstFile(self.symbolLstFile)
         bitid = 1<<self.pid
         #criteria setting
         criterion = df['pid'].map(lambda x: (int(x)&bitid==1))
         df1 = df[criterion]
-        '''
-        dow30Dct = {}
-        for symbol in dow30Lst:
-            dow30Dct[symbol]=symbol    
-        else:
-            df0 = df
-        '''
             
         param = {'vol20':0,'vol':0,'ma10':0,'ma50':0,'ma200':0,'px':0}        
 
         table = self.getPerfReport(df1)
-        self.saveTableFile(table,self.symbolLstFile+"_perf")
-        
-        #dow30Lst = df[(df['pid']==3)]
-        #print dow30Lst
-        #self.getMarketData(dow30Dct)
-        #self.getMarketData(self.spdretf)            
+        #self.saveTableFile(table,self.symbolLstFile+"_perf")
         
         return
         
@@ -180,13 +170,13 @@ class MarketData:
     
     def getPerfReport(self, table):        
         param = {'vol20':0,'vol':0,'ma10':0,'ma50':0,'ma200':0,'px':0}
-        col0 = ['symbol','rank','sector','industry','pid','exg']
-        outputcol = col0 + ['vol20','vol','p1d','p1w','p4w','p12w','p24w','px',\
+        #col0 = ['symbol','rank','sector','industry','pid','exg']
+        outputcol = self.symbolLstFileCol + ['vol20','vol','p1d','p1w','p4w','p12w','p24w','px',\
             'ma10','ma50','ma200']
             
         for index, row in table.iterrows():
             print "processing ",row['symbol']
-            ret = self.funda.getPerf(row['symbol'],param,self.enddate)
+            ret = self.funda.getPerf(row['symbol'],param,self.strategy,self.enddate)
             table.loc[index,'p1d'] = ret['p1d']
             table.loc[index,'p1w'] = ret['p1w']
             table.loc[index,'p4w'] = ret['p4w']
@@ -214,7 +204,7 @@ class MarketData:
         print f2   
                  
         return f1
-        
+     
     def process(self):
         self.parseOption()
         self.procMarketData()
@@ -368,4 +358,17 @@ if __name__ == "__main__":
         top12w = table.sort_index(by='12week_perf',ascending=False).head(20)['symbol']
         bmz1 = table[(table['symbol'].isin(top1w)) & (table['symbol'].isin(top4w)) & (table['symbol'].isin(top12w))]
         print bmz1 
+            def makeReport(self):
+        sortTable = self.perftable.sort_index(by='5d',ascending=False)
+        #filename = self.outputpath + 'perfscreen_' + time.strftime('%Y-%m-%d.csv',time.localtime(time.time()))
+        filename = self.outputpath + 'perfscreen_' + self.enddate + '_' + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        try:
+            sortTable.to_csv(filename,sep=',')
+        except:
+            print "exception when write to csv ",filename
+        
+        print "================================================================"
+        print "Performance Screen  results:"
+        print sortTable
+        print "================================================================" 
     '''

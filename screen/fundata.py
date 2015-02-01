@@ -17,17 +17,12 @@ http://finance.yahoo.com/d/quotes.csv?s=msft&f=sp5j1a2l1
 
 class FundaData:
     def __init__(self):       
-        '''
-        self.startdate = ""
-        self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
-        startday = datetime.date.today() - datetime.timedelta(days=365)
-        self.startdate = startday.strftime("%Y-%m-%d")
-        '''
         self.columns = ['symbol','pricesale','marketcap','avgdailyvol','px']
         self.colcode = "&f=sp5j1a2l1"
         self.sufname = "fundaupdate_"
         self.outputpath = "../data/"
         self.mkt = marketdata.MarketData()
+        self.stgyInx = {}
 
     def setDateRange(self,enddatestr):
         if enddatestr=="":
@@ -38,8 +33,13 @@ class FundaData:
         startday = enddate - datetime.timedelta(days=365)
         self.enddate = enddatestr
         self.startdate = startday.strftime("%Y-%m-%d")
-            
-    def getPerf(self,symbol, param, enddatestr=""):
+    def loadStrategy(self,stgName):
+        print "create indicator ",stgName
+        return stgName
+   
+    def getPerf(self,symbol, param, strategy, enddatestr=""):
+       
+                
         ret = {}
         self.setDateRange(enddatestr)
         try:
@@ -48,9 +48,16 @@ class FundaData:
             # IO error
             print "System/Network Error when retrieving ",symbol," skip it"
             return ret
+            
         # calculate perf
-        # print symbol
+        
         px = ohlc['Adj Close']
+        
+        #additional indicator
+        for gy in strategy:
+            if gy not in self.stgyInx:
+                self.stgyInx[gy] = self.loadStrategy(gy)
+                self.stgyInx[gy].runIndicator(px,strategy[gy])
         p1d = 0
         p4w = 0
         p12w = 0
