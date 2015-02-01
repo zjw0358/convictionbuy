@@ -109,8 +109,15 @@ class BackTest:
 
                     
     def parseOption(self):
-        self.startdate="2010-1-1"
-        self.enddate= datetime.datetime.now().strftime("%Y-%m-%d")
+        #self.startdate="2010-1-1"
+        #self.enddate= datetime.datetime.now().strftime("%Y-%m-%d")
+
+        #default start and end date
+        today = datetime.datetime.now()
+        startday = datetime.datetime.now() - datetime.timedelta(days=365)
+        self.enddate = today.strftime("%Y-%m-%d")
+        self.startdate = startday.strftime("%Y-%m-%d")
+        
         self.ticklist=[]
         self.strategy=""
         ret=False
@@ -145,7 +152,7 @@ class BackTest:
         if symbolFile!="":
             self.ticklist = self.loadSymbolListFile(symbolFile,self.pid)
             print "processing tick:",self.ticklist
-            #sys.exit()
+            
         if 'chart' in self.parameter:
             if self.parameter['chart']=='1':
                 self.hasChart = True

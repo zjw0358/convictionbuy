@@ -17,7 +17,7 @@ class MarketData:
         self.perftable = pandas.DataFrame(columns=self.columns) 
         self.outputpath = "../result/"
 
-        self.dow30fn = "../data/dow30.txt"
+        #self.dow30fn = "../data/dow30.txt"
         
         #pandas.options.display.float_format = '{:,.2f}%'.format
         self.spdretf = {'Consumer Discretionary':'XLY','Consumer Staples':'XLP','Energy':'XLE',\
@@ -33,19 +33,21 @@ class MarketData:
         # new approcah
         self.enddate = ""
         self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
-        self.symbolLstFile = "./marketdata.csv"
-        self.option = 0 # default market data, process according to portfolio id
+        self.symbolLstFile = "./marketdata.csv"  #default marketdata file
+        self.pid = 0 #0-dow30,1-focus list
+        #self.option = 0 # default market data, process according to portfolio id
         return
         
     def usage(self):
-        print "program -f <portfolio_file> -t aapl,msft -s 2010-01-01 -e 2014-12-30"
+        print "program -f <portfolio_file> -t aapl,msft -i portfolioid -s 2010-01-01 -e 2014-12-30"
         print "=== show portfolio performance ================================="
         print "program -f <portfolio_file> "
  
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:", ["filename", "ticklist", "startdate","enddate"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:", \
+                ["filename", "ticklist", "startdate","enddate","pid"])
         except getopt.GetoptError:
             print "parse option error"
             return False
@@ -53,7 +55,7 @@ class MarketData:
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.symbolLstFile = arg
-                self.option = 1
+                #self.option = 1
             elif opt in ("-t", "--ticklist"):
                 newstr = arg #.replace("", "")                
                 self.ticklist = newstr.split()
@@ -61,17 +63,17 @@ class MarketData:
                 self.startdate = arg
             elif opt in ("-e", "--enddate"):
                 self.enddate = arg
+            elif opt in ("-i", "--pid"):
+                self.pid = int(arg)
                 
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
             startday = datetime.date.today() - datetime.timedelta(days=365)
             self.startdate = startday.strftime("%Y-%m-%d")
-           
-        #if (not self.ticklist):
-        #    self.option = "marketdata"
-        
-        #self.ticklist.append("^GSPC")
-    
+
+        self.funda = fundata.FundaData()
+  
+      
     
     def makeReport(self):
         sortTable = self.perftable.sort_index(by='5d',ascending=False)
@@ -99,18 +101,22 @@ class MarketData:
         exgLst = []
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
-        for row in reader:
-            if idx==0:
+        try:
+            for row in reader:
+                if idx==0:
+                    idx += 1
+                    continue
+                symbolLst.append(row[0])
+                rankLst.append(int(row[1]))
+                nameLst.append(row[2])
+                sectorLst.append(row[3])
+                industryLst.append(row[4])
+                pidLst.append(row[5])
+                exgLst.append(row[6])
                 idx += 1
-                continue
-            symbolLst.append(row[0])
-            rankLst.append(int(row[1]))
-            nameLst.append(row[2])
-            sectorLst.append(row[3])
-            industryLst.append(row[4])
-            pidLst.append(row[5])
-            exgLst.append(row[6])
-            idx += 1
+        except:
+            print "error when reading symbol list file, exit..."
+            sys.exit()
         fp.close()      # closing
         table = pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,'name':nameLst,\
             'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst},\
@@ -146,19 +152,22 @@ class MarketData:
             dow30Dct[symbol]=symbol
         '''
         df = self.loadSymbolLstFile(self.symbolLstFile)
-        if self.option==0:
-            #criteria setting
-            criterion = df['pid'].map(lambda x: (int(x)&1==1))
-            dow30Lst = df[criterion]['symbol']
-            dow30Dct = {}
-            for symbol in dow30Lst:
-                dow30Dct[symbol]=symbol    
+        bitid = 1<<self.pid
+        #criteria setting
+        criterion = df['pid'].map(lambda x: (int(x)&bitid==1))
+        df1 = df[criterion]
+        '''
+        dow30Dct = {}
+        for symbol in dow30Lst:
+            dow30Dct[symbol]=symbol    
         else:
             df0 = df
+        '''
+            
         param = {'vol20':0,'vol':0,'ma10':0,'ma50':0,'ma200':0,'px':0}        
 
-        df1 = self.getPerfReport(df0)
-        self.saveTableFile(df1,self.symbolLstFile+"_perf")
+        table = self.getPerfReport(df1)
+        self.saveTableFile(table,self.symbolLstFile+"_perf")
         
         #dow30Lst = df[(df['pid']==3)]
         #print dow30Lst
