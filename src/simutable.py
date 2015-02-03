@@ -13,10 +13,14 @@ class SimuTable:
         self.bestperf = -10000000  # the worse case
         self.bestperfFirstTradeIdx = 0
         self.bestperfRept = pandas.DataFrame()
-        #self.bestdv# = pandas.DataFrame(columns='dayvalue')
+        self.mode = 1 # optimizer mode, log into simutable
         print "SimuTable initialized"
-
         return
+
+
+    def setMode(self, mode):
+        self.mode = mode
+                
     def setName(self,name):
         self.name = name
          
@@ -29,21 +33,22 @@ class SimuTable:
     #param - strategy parameter    
     #df - day value
     #stinfo - setupinfo
-    def addOneTestResult(self, stinfo, param, df, minfo=""):
-        '''
-        firstTradeIdx = self.tradesup.getFirstTradeIdx()
-        rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
-        bm_returns = rtbm.pct_change()        
-        bm_returns = bm_returns.dropna()
-        rtsgy = df['dayvalue'][firstTradeIdx:].resample('M',how='last')
-        sgy_returns = rtsgy.pct_change()
-        sgy_returns=sgy_returns.dropna()
-        '''
-        bhprofit = self.tradesup.getBHprofit() #buy&hold profit
-        perfdata = 0
-        
-
+    def procStrategyResult(self, stinfo, param, df, minfo=""):
         tradereport = self.tradesup.getTradeReport()
+        
+        '''
+        if self.mode==2: #indicator
+            d0={}
+            if tradereport.empty:
+                d0['lastTrade'] = "empty"
+            else:
+                d0['lastTrade'] = tradereport.tail(1).to_string(header=False)                
+            return d0
+        '''    
+        bhprofit = self.tradesup.getBHprofit() #buy&hold profit
+        perfdata = 0        
+
+
         if tradereport.empty:
             lastTrade = "empty"
             # TODO move this to tradesupport?
@@ -55,6 +60,7 @@ class SimuTable:
                 self.bestdv = df #this is best day value data frame
         else:
             lastTrade = tradereport.tail(1).to_string(header=False)
+
             firstTradeIdx = self.tradesup.getFirstTradeIdx()
             rtbm = self.bm[firstTradeIdx:].resample('M',how='last')
             bm_returns = rtbm.pct_change()        
@@ -84,7 +90,7 @@ class SimuTable:
         
         # add new row with external index start from 1,2,3
         self.symtable.loc[len(self.symtable)+1]=d0
-        
+        return d0
 
             
     def procSimuReportnAddBestReport(self, pt = True):

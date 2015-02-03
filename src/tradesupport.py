@@ -12,7 +12,7 @@ class Trade:
         self.mode = mode
                 
     # call this when run a new strategy      
-    def beginTrade(self,stinfo, symbol, ohlc_px,deposit = 10000):
+    def beginTrade(self, symbol, ohlc_px,deposit = 10000):
         #self.verbose = True
         #if self.verbose == True:
         #    print "========== T R A D I N G L O G @",symbol, "====================="
@@ -34,7 +34,10 @@ class Trade:
         self.dailyvalue = []
         self.buyopen = False
         self.firstTradeIdx = 0  #reset first trade index
-        self.stinfo = stinfo
+        #self.stinfo = stinfo
+        self.tradeRept = pandas.DataFrame()
+        #self.signal=""
+        #self.signalstr=""
         # TODO
         self.stopLimit = 0
         self.wait4sell = False
@@ -69,6 +72,7 @@ class Trade:
     #TODO, each strategy has different weight
     #some strategy are dominant
     def processData(self,index):
+        datestr = self.ohlc_px.index[index].to_pydatetime().strftime("%Y-%m-%d")
         #require all strategy give 'buy' signal
         buyFlag = True
         for strategy in self.stgyorder:
@@ -126,10 +130,7 @@ class Trade:
             self.ser_pnl.append(0)
             self.ser_price.append(meanpx)
             
-            '''if self.verbose==True:
-                print datelb," buy ",self.shares,"@",meanpx,(",commission=%.3f"%self.getBuyComm(self.shares*meanpx)),",remain=%.3f"%(self.deposit)
-            '''    
-            # open an order
+            print datelb," buy ",self.shares,"@",meanpx,(",commission=%.3f"%self.getBuyComm(self.shares*meanpx)),",remain=%.3f"%(self.deposit)            # open an order
             self.buyopen=True
             # clean all 'buy' signal
             
@@ -157,12 +158,23 @@ class Trade:
             else:
                 self.loss_order+=1
             
-            '''if self.verbose==True:
-                print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit
-            '''   
-            #close the order
+            print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit            #close the order
             self.buyopen=False
+        #update signal only 
+
+        '''
+        if buyFlag==True:
+            if self.signal!='buy':
+                self.signal='buy' 
+                self.signalstr="buy@"+datestr
+        elif sellFlag==True:
+            if self.signal!='sell':
+                self.signal='sell' 
+                self.signalstr="sell@"+datestr
+        '''
             
+            
+
         
     def buyorder(self,stname):
         if stname in self.stgyorder:
@@ -172,11 +184,11 @@ class Trade:
     def sellorder(self,stname):
         if stname in self.stgyorder:
             self.stgyorder[stname]='s'
-        
+    '''    
     def holdorder(self,stname):
         if stname in self.stgyorder:
             self.stgyorder[stname]='h'
-        
+    '''    
     def calcDailyValue(self,index):
         # day to day value
         self.dailyvalue.append(self.deposit+self.shares*self.ohlc_px['Adj Close'][index])
@@ -201,9 +213,12 @@ class Trade:
     def setFirstTradeIdxWithBestPerf(self,idx):
         self.firstTradeIdx = idx
   
-    def setStrategyInfoWithBestPerf(self, stinfo):
-        self.stinfo = stinfo
-          
+    #def setStrategyInfoWithBestPerf(self, stinfo):
+    #    self.stinfo = stinfo
+
+    def setStInfo(self, stinfo):
+        self.stinfo = stinfo              
+        
     def getFirstTradeIdx(self):
         return self.firstTradeIdx
 
@@ -273,6 +288,7 @@ class Trade:
     #register strategy name
     def addStrategy(self,stname):  
         self.stgyorder[stname]='' #''-default,'b'-buy,'s'-sell
+        self.sgyName = stname
 
     def getTradeLogSummary(self):
         bhprofit = self.getBHprofit() #buy&hold profit
@@ -285,8 +301,10 @@ class Trade:
             filename = self.outputpath + symbol+'_' + strategyName + "_tradelog_" + time.strftime('_%Y-%m-%d.txt',time.localtime(time.time()))
             self.tradefp = open(filename,'w')
         
-    def writeTradeLog(self, setupInfo):
-        detailTradeLog = ("%s\n%s\n%s\n") % (setupInfo, self.tradeRept.to_string(),self.getTradeLogSummary())
+    def writeTradeLog(self):
+        header = "=== " + self.sgyName + " SETUP===========================================\n" + \
+            self.stinfo + "\n"
+        detailTradeLog = ("%s\n%s\n%s\n") % (header, self.tradeRept.to_string(),self.getTradeLogSummary())
         if self.mode == 1:
             self.tradefp.write(detailTradeLog)        
 
@@ -297,11 +315,22 @@ class Trade:
         if self.mode == 1:
             self.tradefp.close()
     
-    def endTrade(self, setupInfo):
+    def endTrade(self,stinfo):
+        self.setStInfo(stinfo)
         self.createDailyValueDf()
-        self.writeTradeLog(setupInfo)
+        self.writeTradeLog()
 
-        
+    def getLastTrade(self):
+        if self.tradeRept.empty:
+            return "empty"
+        else:            
+            row = self.tradeRept.tail(1).iloc[0]
+            tradestr = "%s@%s" % (row['order'],row['price'])
+            print "======"
+            #print row.index.values.to_pydatetime().strftime("%Y-%m-%d")
+            print row
+            #print row.index,tradestr
+            return tradestr
 
 
         

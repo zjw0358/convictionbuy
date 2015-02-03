@@ -15,14 +15,17 @@ class st_rsi:
         self.rsi = []
         return
         
+    def getSetupInfoStr(self):
+        return self.setupInfo
+        
     def setup(self,cl):
         self.cleanup() #must call cleanup before test
         self.cl = cl  
-        
-        self.setupInfo = \
-        "=== ST_RSI SETUP===========================================\n" + \
-        "cutoff length=%d\n" % self.cl + \
-        "===========================================================\n"
+        self.setupInfo = "cutoff length=%d" % self.cl 
+        #self.setupInfo = \
+        #"=== ST_RSI SETUP===========================================\n" + \
+        #"cutoff length=%d\n" % self.cl + \
+        #"===========================================================\n"
         #print self.setupInfo
 
     def setupParam(self,param):
@@ -57,15 +60,18 @@ class st_rsi:
             rs = up/down
             rsi[i] = 100. - 100./(1.+rs)    
         return rsi
-                
+        
+    def getIndicatorVal(self):
+        return self.rsi[-1]    
+
     # strategy, find the buy&sell signal
     def runStrategy(self,symbol,ohlc,param={}):
         #initialize tradesupport
-        if len(param) != 0:
-            self.setupParam(param)
+        self.setupParam(param)
 
-        self.tradesup.beginTrade(self.setupInfo, symbol, ohlc) 
-        
+        #self.tradesup.beginTrade(self.setupInfo, symbol, ohlc) 
+        #print self.tradesup.getTradeReport()
+                
         close_px = ohlc['Adj Close']
         self.rsi = self.rsiFunc(close_px)        
         # loop checking close price
@@ -74,11 +80,15 @@ class st_rsi:
             self.procSingleData(index,close_px[index]) # the algorithm
             self.tradesup.calcDailyValue(index) # update daily value
             
+
         #call this to end trade 
-        self.tradesup.endTrade(self.setupInfo)
-        paramstr = "cl=%d"%(self.cl)
-        self.simutable.addOneTestResult(self.setupInfo, paramstr,self.tradesup.getDailyValue(), self.getMoreInfo())
-            
+        #self.tradesup.endTrade(self.setupInfo)
+        
+        #print self.tradesup.getTradeReport()
+        #paramstr = "cl=%d"%(self.cl)
+        #d0 = self.simutable.procStrategyResult(self.setupInfo, paramstr,self.tradesup.getDailyValue(), self.getMoreInfo())
+        #d0['val'] = round(self.rsi[-1],2)
+        #return d0
         
     def runOptimization(self,symbol,ohlc,bm):
         tset = range(10, 30, 1)
@@ -109,9 +119,9 @@ class st_rsi:
         # trading signal
         if (self.rsi[index] < 30):          
             self.tradesup.buyorder(self.stname)
-            #print "rsi buy@",index
+            print "rsi buy@",index,self.rsi[index]
                 
         if (self.rsi[index] > 70):
             self.tradesup.sellorder(self.stname)
-            #print "rsi sell@",index
+            print "rsi sell@",index,self.rsi[index]
         return
