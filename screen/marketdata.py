@@ -35,10 +35,11 @@ class MarketData:
                 'Utilities':'Public Utilities'}              
                 
         # new approcah
+        self.strategy = {}
         self.enddate = ""
         self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
         self.symbolLstFile = "./marketdata.csv"  #default marketdata file
-        self.pid = 0 #0-dow30,1-focus list
+        self.pid = 0 #0-dow30,1-zr focus list;2-jpm/zack list
         
         return
         
@@ -83,7 +84,7 @@ class MarketData:
         '''
         st_rsi&cl=14,st_macd&f=10&s=5
         '''
-        self.strategy = {}
+        
         for item in arg.split(","):
             idx = 0
             param = {}
