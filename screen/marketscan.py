@@ -169,9 +169,7 @@ class MarketScan:
         bitid = 1<<self.pid
         #criteria setting
         criterion = df['pid'].map(lambda x: (int(x)&bitid==1))
-        df1 = df[criterion]
-            
-        param = {'vol20':0,'vol':0,'ma10':0,'ma50':0,'ma200':0,'px':0}        
+        df1 = df[criterion] 
 
         table = self.runScan(df1)
         #self.saveTableFile(table,self.symbolLstFile+"_perf")
@@ -183,9 +181,8 @@ class MarketScan:
     def runScan(self, table):  
         numError = 0            
         for index, row in table.iterrows():
-            symbol = 'msft'  #row['symbol']
+            symbol = row['symbol']
             print "processing ",symbol
-
             try:
                 ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
             except:
@@ -203,8 +200,8 @@ class MarketScan:
                 key1 = "%s_1" % sgy
                 key2 = "%s_2" % sgy                
                 table.loc[index,key1] = sgx.getIndicatorVal()
-                table.loc[index,key2] = self.tradesup.getLastTrade()                
-            break
+                table.loc[index,key2] = self.tradesup.getLastTrade() #getLastSignal()                
+            #break
         print table
     def process(self):
         self.parseOption()

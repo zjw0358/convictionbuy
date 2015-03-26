@@ -12,11 +12,7 @@ class Trade:
         self.mode = mode
                 
     # call this when run a new strategy      
-    def beginTrade(self, symbol, ohlc_px,deposit = 10000):
-        #self.verbose = True
-        #if self.verbose == True:
-        #    print "========== T R A D I N G L O G @",symbol, "====================="
-
+    def beginTrade(self, symbol, ohlc_px,deposit = 10000):        
         self.ohlc_px = ohlc_px
         self.deposit = deposit
         self.initialdeposit = deposit
@@ -36,8 +32,8 @@ class Trade:
         self.firstTradeIdx = 0  #reset first trade index
         #self.stinfo = stinfo
         self.tradeRept = pandas.DataFrame()
-        #self.signal=""
-        #self.signalstr=""
+        self.signal=""
+        self.signalstr=""
         # TODO
         self.stopLimit = 0
         self.wait4sell = False
@@ -47,7 +43,7 @@ class Trade:
 
   
     def getMeanpx(self,index):
-        return (self.ohlc_px['Open'][index]+self.ohlc_px['Close'][index]+self.ohlc_px['High'][index]+self.ohlc_px['Low'][index])/4
+        return round((self.ohlc_px['Open'][index]+self.ohlc_px['Close'][index]+self.ohlc_px['High'][index]+self.ohlc_px['Low'][index])/4,2)
 
     def getBuyPower(self):
         return self.deposit/(1+0.0025*1.07)
@@ -130,7 +126,7 @@ class Trade:
             self.ser_pnl.append(0)
             self.ser_price.append(meanpx)
             
-            print datelb," buy ",self.shares,"@",meanpx,(",commission=%.3f"%self.getBuyComm(self.shares*meanpx)),",remain=%.3f"%(self.deposit)            # open an order
+            #print datelb," buy ",self.shares,"@",meanpx,(",commission=%.3f"%self.getBuyComm(self.shares*meanpx)),",remain=%.3f"%(self.deposit)            # open an order
             self.buyopen=True
             # clean all 'buy' signal
             
@@ -158,22 +154,21 @@ class Trade:
             else:
                 self.loss_order+=1
             
-            print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit            #close the order
+            #print datelb," sell ",shares,"@",meanpx,",commission=%.3f"%sellcomm,",remain=%.3f"%self.deposit            #close the order
             self.buyopen=False
         #update signal only 
 
-        '''
+        
         if buyFlag==True:
             if self.signal!='buy':
+                meanpx = self.getMeanpx(index)
                 self.signal='buy' 
-                self.signalstr="buy@"+datestr
+                self.signalstr="buy@%f@%s" % (meanpx,datestr)                
         elif sellFlag==True:
             if self.signal!='sell':
+                meanpx = self.getMeanpx(index)
                 self.signal='sell' 
-                self.signalstr="sell@"+datestr
-        '''
-            
-            
+                self.signalstr="sell@%f@%s" % (meanpx,datestr)
 
         
     def buyorder(self,stname):
@@ -324,14 +319,16 @@ class Trade:
         if self.tradeRept.empty:
             return "empty"
         else:            
-            row = self.tradeRept.tail(1).iloc[0]
-            tradestr = "%s@%s" % (row['order'],row['price'])
-            print "======"
+            row = self.tradeRept.tail(1)            
+            #print "======"
             #print row.index.values.to_pydatetime().strftime("%Y-%m-%d")
-            print row
+            #print type(row.index[0])
             #print row.index,tradestr
+            datestr = row.index[0].to_pydatetime().strftime("%Y-%m-%d")
+            tradestr = "%s@%s@%s" % (row.iloc[0]['order'],row.iloc[0]['price'],datestr)
             return tradestr
 
-
+    def getLastSignal(self):
+        return self.signalstr
         
 

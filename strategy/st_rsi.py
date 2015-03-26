@@ -62,7 +62,8 @@ class st_rsi:
         return rsi
         
     def getIndicatorVal(self):
-        return self.rsi[-1]    
+        indStr = "%.2f,%.2f,%.2f" % (self.rsi[-15],self.rsi[-8],self.rsi[-1])
+        return indStr
 
     # strategy, find the buy&sell signal
     def runStrategy(self,symbol,ohlc,param={}):
@@ -119,9 +120,9 @@ class st_rsi:
         # trading signal
         if (self.rsi[index] < 30):          
             self.tradesup.buyorder(self.stname)
-            print "rsi buy@",index,self.rsi[index]
+            #print "rsi buy@",index,self.rsi[index]
                 
         if (self.rsi[index] > 70):
             self.tradesup.sellorder(self.stname)
-            print "rsi sell@",index,self.rsi[index]
+            #print "rsi sell@",index,self.rsi[index]
         return
