@@ -10,9 +10,6 @@ import sys
 import csv
 
 class ReuterFunda:
-    '''
-    get past 8 Quarter earning data from reuter
-    '''
     def __init__(self):
         pandas.set_option('display.max_columns', 100)
         pandas.set_option('display.precision', 3)
@@ -49,9 +46,16 @@ class ReuterFunda:
             'cproa','induroa','sectorroa','cproa5y','induroa5y','sectorroa5y','cproi','induroi','sectorroi','cproi5y','induroi5y','sectorroi5y','cproe','induroe',\
             'sectorroe','cproe5y','induroe5y','sectorroe5y'
             ]
+        # base set columns
+        self.colbase = ['symbol','cppettm','cppsttm','cppbmrq','cppcfttm',\
+                    'divyield','payoutratio',\
+                    'cpsalemrqyoy','cppsalettmyoy','cpsale5ygr','cpepsmrqyoy','cpepsttmyoy','cpeps5ygr',\
+                    'cpcurra','cpquira','cpdebt2equity',\
+                    'cpgm','cpom','cpnm','cpbeta']
         
-        
-        
+    '''
+    get past 8 Quarter earning data from reuter
+    '''    
     def getEarningData(self,symbol):
         #http://www.reuters.com/finance/stocks/financialHighlights?symbol=MSFT.O
         url = "http://www.reuters.com/finance/stocks/financialHighlights?symbol=" + symbol

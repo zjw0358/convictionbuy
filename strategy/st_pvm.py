@@ -1,63 +1,95 @@
-#import numpy as np
+'''
+download stock p/s,marketcap,avgvol
+'''
 import datetime
 import pandas
 
-'''
-param:st_bos&ckd=2015-03-12&r0=1&rc=1&rtd=1&rd=1
-'''
-class st_bos:
+class st_pvm:
     def __init__(self,bt):
+        self.columns = ['symbol','pricesale','marketcap','avgdailyvol','px']
+        self.colcode = "&f=sp5j1a2l1"
+        
         self.cleanup()
-        self.stname = "bos" #strategy name
+        self.stname = "pvm" #strategy name
         #setup component
-        self.tradesup = bt.getTradeSupport()
-        self.simutable = bt.getSimuTable()
+        #self.tradesup = bt.getTradeSupport()
+        #self.simutable = bt.getSimuTable()
+        
     def getStrategyName(self):
         return self.stname
     
     # called this when doing automation test
     def cleanup(self):
         self.ind = {}
-        self.chkdate = ""
-        self.crtd = 1
-        self.cr0 = 1
-        self.crc = 1
-        self.crd = 1
+        self.dl = 0
         return
         
     def getSetupInfoStr(self):
         return self.setupInfo
         
-    def setup(self,ckd,rtd,r0,rc,rd):
+    def setup(self,dl):
         self.cleanup() #must call cleanup before test
-        self.chkdate = ckd
-        self.crtd = rtd
-        self.cr0 = r0
-        self.crc = rc
-        self.crd = rd     
-        self.setupInfo = "check date=%s,rtd=%d,r0=%d,rd=%d,rc=%d" % \
-            (self.chkdate,self.crtd,self.cr0,self.crd,self.crc)
+        self.dl = dl
+        self.setupInfo = "download=%d" % (dl)
 
     def setupParam(self,param):
         # default parameter
-        chkdate = ""
-        rtd = 1
-        r0 = 1
-        rc = 1
-        rd = 1
-        if 'ckd' in param:
-            chkdate = param['ckd']
-        if 'rtd' in param:
-            rtd = int(param['rtd'])
-        if 'r0' in param:
-            r0 = int(param['r0'])
-        if 'rc' in param:
-            rc = int(param['rc'])
-        if 'rd' in param:
-            rd = int(param['rd'])
-            
-        self.setup(chkdate,rtd,r0,rc,rd)
+        dl = 0
+        if 'download' in param:
+            dl = int(param['dl'])
+        self.setup(dl)
 
+    #data from yahoo,limit=200               
+    def downloadData(self,ticklist):
+        symstr = ""
+        limit = 199 #yahoo limit is 200
+        lenlist = len(ticklist)
+        #stockps = []
+        dataDct = {}
+        dataLst = []
+        for idx,col in enumerate(self.columns):
+            lst=[]
+            dataDct[col]=lst
+            dataLst.append(lst)
+        
+        #retidx= 0 
+        for idx, symbol in enumerate(ticklist):
+            symstr += symbol
+            if idx<(lenlist-1) and (idx%limit!=0):
+                symstr +="+"
+                
+            if idx%limit==0:
+                print idx,symstr
+                url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
+                response = urllib2.urlopen(url)
+                cr = csv.reader(response)
+                for row in cr:
+                    print row
+                    for rowid,item in enumerate(row):
+                        if rowid==0:
+                            dataLst[rowid].append(item) 
+                        else:
+                            dataLst[rowid].append(self.format(item))
+                        
+                    #retidx +=1
+                symstr=""
+                
+        if symstr!="":
+            print "last get",symstr
+            url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
+            response = urllib2.urlopen(url)
+            cr = csv.reader(response)
+            for row in cr:
+                for rowid,item in enumerate(row):
+                    if rowid==0:
+                        dataLst[rowid].append(item)
+                    else:
+                        dataLst[rowid].append(self.format(item))
+            
+        table=pandas.DataFrame(dataDct,columns=self.columns)
+        return table
+        return
+        
     def algoFunc(self, prices):
         rtd = (prices[-1]/prices[0] - 1)*100
         self.ind['BOS_RTD'] = rtd
@@ -68,9 +100,7 @@ class st_bos:
             self.ind['BOS_R0'] = (prices[ex_ckdidx]/prices[0] - 1)*100
             self.ind['BOS_RC'] = (prices[-1]/prices[ckdidx] - 1)*100
             self.ind['BOS_RD'] = self.ind['BOS_RTD'] - self.ind['BOS_R0'] - self.ind['BOS_RC']
-        else:
-            print "Warning: No check date, only calculate return to date"
-            
+        
     def getIndicators(self):
         return self.ind
 
@@ -85,23 +115,14 @@ class st_bos:
         close_px = ohlc['Adj Close']
         self.algoFunc(close_px)        
         
-        # loop checking close price
-        '''
-        for index in range(0, len(close_px)):
-            self.tradesup.processData(index)  # must be places at first          
-            self.procSingleData(index,close_px[index]) # the algorithm
-            self.tradesup.calcDailyValue(index) # update daily value
-        '''
+      
          
 
   
 
     def filterOut(self,table,benchStr):
-        if not self.chkdate:
-            print "No filting was done because there is no check date, return"
-            return pandas.DataFrame(columns=table.columns) 
         df = table.loc[table['symbol'] == benchStr]
-        print df
+        #print df
         
         bmrtd = df.loc[0,'BOS_RTD']
         bmr0 = df.loc[0,'BOS_R0']
@@ -136,32 +157,7 @@ class st_bos:
         
         print filteTable
         return filteTable
-    '''        
-    def runOptimization(self,symbol,ohlc,bm):
-
-        tset = range(10, 30, 1)
-
-        
-        #must setup report tool before simulation test
-        #self.simutable.setupSymbol(symbol,bm)
-
-        for t in tset:        
-            self.setup(t)
-            self.runStrategy(symbol,ohlc)
-            # to generate simulation report
-            #param = "cl=%d"%(t)
-            #self.simutable.addOneTestResult(self.setupInfo, param,self.tradesup.getDailyValue(), self.getMoreInfo())
-        
-        #add results to report
-        #self.simutable.makeSimuReport()
-        #self.tradesup.setDailyValueDf(self.simutable.getBestDv())       
-        return
-        
-    def getMoreInfo(self):
-        #last rsi readout 
-        #info = "rsi=%.2f" %(self.rsi[-1])        
-        return ""
-    '''
+   
     # process single date data        
     def procSingleData(self, index, ohlc):
         return
