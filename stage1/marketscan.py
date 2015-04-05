@@ -2,17 +2,17 @@
 import getopt
 import datetime
 import sys
-sys.path.insert(0, "../strategy/")
-sys.path.insert(0, "../screen/")
+#sys.path.insert(0, "../strategy/")
+#sys.path.insert(0, "../screen/")
 
 import pandas.io.data as web
 import pandas
-import fundata
+#import fundata
 import csv
 
 #sys.path.insert(0, "../src/")
-import simutable
-import tradesupport
+#import simutable
+#import tradesupport
 '''
 historical price
 http://ichart.finance.yahoo.com/table.csv?s=xle&a=01&b=19&c=2014&d=01&e=19&f=2015&g=d&ignore=.csv
@@ -35,10 +35,10 @@ class MarketScan:
         self.mscfg = "./marketscan.cfg"
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
-        self.tradesup = tradesupport.Trade(self)
-        self.simutable = simutable.SimuTable(self)
-        self.tradesup.setMode(2) #no trade log
-        self.simutable.setMode(2) #no trade log
+        #self.tradesup = tradesupport.Trade(self)
+        #self.simutable = simutable.SimuTable(self)
+        #self.tradesup.setMode(2) #no trade log
+        #self.simutable.setMode(2) #no trade log
         self.sgyparam = {}
         self.ticklist = []
         
@@ -100,9 +100,11 @@ class MarketScan:
             self.sgyparam = self.loadCfg(self.mscfg)
         #load strategy
         self.loadStrategy(self.sgyparam)           
-        self.funda = fundata.FundaData()
+        #self.funda = fundata.FundaData()
         print "=========================="
         print "use ", self.symbolLstFile
+        print "start date", self.startdate
+        print "end date", self.enddate
         print "=========================="
     '''
     st_rsi&cl=14,st_macd&f=10&s=5
@@ -200,8 +202,8 @@ class MarketScan:
         return table
 
          
-    def getSymbolLstCol(self):
-        return self.symbolLstFileCol
+    #def getSymbolLstCol(self):
+    #    return self.symbolLstFileCol
         
     def saveTableFile(self,table,addstr=""):
         saveFileName = "scan_"
@@ -220,8 +222,8 @@ class MarketScan:
         except:
             print "exception when write to csv ",outputFn
             
-
-    def getTickLstFromFile(self):
+    # get symbol by pid
+    def getSymbolByPid(self):
         # load symbol list file
         df = self.loadSymbolLstFile(self.symbolLstFile)
         
@@ -233,9 +235,13 @@ class MarketScan:
             df1 = df
         return df1
         
+    def getSymbolByRank(self,table,rmin,rmax):
+        df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
+        return df
+        
     def procMarketData(self):
         if not self.ticklist:
-            df1 = self.getTickLstFromFile()[['symbol']]
+            df1 = self.getSymbolByPid()[['symbol']]
             ticklist = df1['symbol']
         else:
             df1 = pandas.DataFrame(self.ticklist,columns=['symbol'])
@@ -247,28 +253,33 @@ class MarketScan:
             if sgyname in self.sgyInfo:
                 if self.sgyInfo[sgyname]==0: # run before scan
                     sgx = self.sgyInx[sgyname]
-                    ticklist = sgx.process(ticklist,self.sgyparam[sgyname])
+                    df1 = sgx.process(df1,self.sgyparam[sgyname])
 
-        df = df1[(df1['symbol'].isin(ticklist)) | (df1['symbol']==self.sp500)]
+        #df = df1[(df1['symbol'].isin(ticklist)) | (df1['symbol']==self.sp500)]
+        # add S&P500 as benchmark
+        df1.loc[len(df1)+1,'symbol'] = self.sp500    
+            
         #TODO other filter module?       
-        table = self.runScan(df)
+        table = self.runIndicator(df1)
 
         #save raw csv file        
         self.saveTableFile(table,"raw")
         
-         #filter work
+        #filter work
+        print "=== screening ===="
         for sgyname in self.sgyInx:
             if not sgyname in self.sgyInfo:
+                print "screening ",sgyname
                 sgx = self.sgyInx[sgyname]
-                table = sgx.filterOut(table,self.sp500)
-
+                table = sgx.runScan(table)
+        print table
         #save filted csv file
         self.saveTableFile(table)
         
         return       
          
     
-    def runScan(self, table):
+    def runIndicator(self, table):
         #TODO if no post-module, should return immediately
         numError = 0            
         for index, row in table.iterrows():
@@ -295,9 +306,11 @@ class MarketScan:
                 if not sgyname in self.sgyInfo:
                     sgx = self.sgyInx[sgyname]
                     #self.tradesup.beginTrade(symbol, ohlc) 
-                    sgx.runStrategy(symbol,ohlc,self.sgyparam[sgyname]) #parameter
+                    sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname]) #parameter
                     #self.tradesup.endTrade(sgx.getSetupInfoStr())
                     indarr = sgx.getIndicators()
+                    
+                        
                     for cn in indarr:
                         table.loc[index,cn] = indarr[cn]
                
