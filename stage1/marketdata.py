@@ -67,5 +67,18 @@ class MarketData:
             columns=['symbol','rank','name','sector','industry','pid','exg'])
         return table
 
-   
+    def tofloat(self,item):
+        #print item
+        if item=="N/A" or item=="" or item=="NA":
+            return "0"
+        elif item[-1]=="K":
+            return float(item.replace("K",""))*1000
+        elif item[-1]=="M":
+            return float(item.replace("M",""))*1000000
+        elif item[-1]=="B":
+            return float(item.replace("B",""))*1000000000
+        elif item[-1]=="T":
+            return float(item.replace("T",""))*1000000000000
+        else:
+            return float(item)
   
