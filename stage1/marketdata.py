@@ -103,8 +103,8 @@ class MarketData:
         # filter by dynamic criteria string
         crstr = ""
         pattern1 = "([\w]+)([><])([-+]?[0-9]*\.?[0-9]+)"  #cppettm < 20.00 (float)
-        #pattern2 = "([\d\D]+)([><])([\d\D]+)"  #saleqtr0 > saleqtr1
         pattern2 = "([\d\D]+)([><])([^[A-Za-z0-9_]+$])"  #saleqtr0 > saleqtr1
+        #pattern3 = "([a-z][a-z0-9-]*)" # select column only
 
         for cr in criteria:            
             an = re.match(pattern1,cr)            
@@ -123,11 +123,16 @@ class MarketData:
                     crstr += cr0
                     coldict[an.group(1)] = 0
                     coldict[an.group(3)] = 0
+                else: #select column
+                    coldict[cr] = 0
                                                         
         crstr += "(1)"
         print "to evaluate criteria = ", crstr
         outputcol = coldict.keys()
-        df = df[eval(crstr)][outputcol]
+        if crstr == "(1)":
+            df = df[outputcol]
+        else:
+            df = df[eval(crstr)][outputcol]
         return df
 
     #save table

@@ -49,7 +49,7 @@ class ms_reuter:
         ticklist = tablein['symbol']
         col = self.reuter.colbase
         if self.sgy==1:
-            col = col + ['epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4']
+            col = col + ['epsq1e','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4']
             
         df = self.loadData(self.reuterFile)
         
@@ -72,7 +72,8 @@ class ms_reuter:
     def eracc(self,df):
           # epsq increase for constructive 3 qtr,marketcap> 2B,avgvol > 500k
         f0 = df[ (df['epsqtr0']/df['epsqtr-1'] > df['epsqtr-1']/df['epsqtr-2']) & \
-                (df['epsqtr-1']/df['epsqtr-2'] > df['epsqtr-2']/df['epsqtr-3']) ]
+                (df['epsqtr-1']/df['epsqtr-2'] > df['epsqtr-2']/df['epsqtr-3']) & \
+                (df['epsq1e']/df['epsqtr0'] > df['epsqtr0']/df['epsqtr-1'])]
         return f0
         
     def test(self):
