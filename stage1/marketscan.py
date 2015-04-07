@@ -31,7 +31,7 @@ class MarketScan:
         self.startdate = ""
         self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
         self.symbolLstFile = "./marketdata.csv"  #default marketdata file
-        self.pid = 0 #0-dow30,1-zr focus list,2-jpm/zack list
+        self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
@@ -45,7 +45,7 @@ class MarketScan:
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
         # TODO put this info in config file later
-        self.sgyInfo = {'ms_pvm':0,"ms_reuter":0}
+        #self.sgyInfo = {'ms_pvm':0,"ms_reuter":0,"zack_data":0}
         
         return
         
@@ -66,6 +66,7 @@ class MarketScan:
         print "program -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
  
     def parseOption(self):
+        print "=========================="
         self.ticklist=[]
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:", \
@@ -101,10 +102,11 @@ class MarketScan:
         #load strategy
         self.loadStrategy(self.sgyparam)           
         #self.funda = fundata.FundaData()
-        print "=========================="
+
         print "use ", self.symbolLstFile
         print "start date", self.startdate
         print "end date", self.enddate
+        print "portfolio id mask ",self.pid
         print "=========================="
     '''
     st_rsi&cl=14,st_macd&f=10&s=5
@@ -239,6 +241,16 @@ class MarketScan:
         df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
         return df
         
+    # iterate all modules to see if there is price data module
+    # return True - pricedata module
+    # return False - no pricedata module
+    def hasPriceDataModule(self):
+        for sgyname in self.sgyInx:
+            sgx = self.sgyInx[sgyname]
+            if sgx.needPriceData()==True:
+                return True
+        return False
+        
     def procMarketData(self):
         if not self.ticklist:
             df1 = self.getSymbolByPid()[['symbol']]
@@ -247,28 +259,42 @@ class MarketScan:
             df1 = pandas.DataFrame(self.ticklist,columns=['symbol'])
             ticklist = self.ticklist     
         
-
+        print "total", len(ticklist),"symbols selected to be processed"
+        
         #load prescan module
         for sgyname in self.sgyInx:
-            if sgyname in self.sgyInfo:
-                if self.sgyInfo[sgyname]==0: # run before scan
-                    sgx = self.sgyInx[sgyname]
-                    df1 = sgx.process(df1,self.sgyparam[sgyname])
-
+            #if sgyname in self.sgyInfo:
+            #    if self.sgyInfo[sgyname]==0: # run before scan
+            sgx = self.sgyInx[sgyname]
+            if sgx.needPriceData()==False:
+                tblout = sgx.process(df1,self.sgyparam[sgyname])
+                #merge tblout & df1
+                df1 = pandas.merge(tblout,df1,how='inner')
+                    
         #df = df1[(df1['symbol'].isin(ticklist)) | (df1['symbol']==self.sp500)]
         # add S&P500 as benchmark
         df1.loc[len(df1)+1,'symbol'] = self.sp500    
-            
-        #TODO other filter module?       
+                
+        print "==================================================="
+        print "start processing data"
+        if self.hasPriceDataModule()==False:
+            self.saveTableFile(df1,"raw")
+            print df1
+            print "No more pricedata module to be processed, exit..."
+            return
+
+        # process pricedata module    
+        print "total", len(df1.index),"symbols selected to be scaned with market price data"
         table = self.runIndicator(df1)
 
         #save raw csv file        
         self.saveTableFile(table,"raw")
-        
+        print table
         #filter work
         print "=== screening ===="
         for sgyname in self.sgyInx:
-            if not sgyname in self.sgyInfo:
+            sgx = self.sgyInx[sgyname]
+            if sgx.needPriceData()==True:
                 print "screening ",sgyname
                 sgx = self.sgyInx[sgyname]
                 table = sgx.runScan(table)
@@ -284,7 +310,7 @@ class MarketScan:
         numError = 0            
         for index, row in table.iterrows():
             symbol = row['symbol']
-            print "processing ",symbol
+            print "processing ",index, symbol
             try:
                 ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
                 '''
@@ -303,21 +329,18 @@ class MarketScan:
                     sys.exit()
             
             for sgyname in self.sgyInx:
-                if not sgyname in self.sgyInfo:
-                    sgx = self.sgyInx[sgyname]
-                    #self.tradesup.beginTrade(symbol, ohlc) 
+                #if not sgyname in self.sgyInfo:
+                sgx = self.sgyInx[sgyname]
+                if sgx.needPriceData()==True:
                     sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname]) #parameter
-                    #self.tradesup.endTrade(sgx.getSetupInfoStr())
                     indarr = sgx.getIndicators()
-                    
-                        
                     for cn in indarr:
                         table.loc[index,cn] = indarr[cn]
                
 
             
             #break
-        print table
+        #print table
         return table
         
     def process(self):

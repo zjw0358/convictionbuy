@@ -12,13 +12,15 @@ import urllib2
 import csv
 import pandas
 import re
+import marketdata
 
 # marketscan module price/volume/marketcap
 class ms_pvm:
-    def __init__(self,bt):
+    def __init__(self):
         self.columns = ['symbol','pricesale','marketcap','avgvol','px']
         self.colcode = "&f=sp5j1a2l1"
         self.outputFileName = "./msdata_pvm.csv"
+        self.mtd = marketdata.MarketData()
         return        
 
     #data from yahoo,limit=200               
@@ -26,50 +28,53 @@ class ms_pvm:
         symstr = ""
         limit = 199 #yahoo limit is 200
         lenlist = len(ticklist)
-        #stockps = []
+
         dataDct = {}
         dataLst = []
         for idx,col in enumerate(self.columns):
             lst=[]
             dataDct[col]=lst
             dataLst.append(lst)
-        
-        #retidx= 0 
-        for idx, symbol in enumerate(ticklist):
-            symstr += symbol
-            if idx<(lenlist-1) and (idx%limit!=0):
-                symstr +="+"
-                
-            if idx%limit==0:
-                print idx,symstr
+            
+        table=pandas.DataFrame()
+        try:
+            for idx, symbol in enumerate(ticklist):
+                symstr += symbol
+                if idx<(lenlist-1) and (idx%limit!=0):
+                    symstr +="+"
+                    
+                if idx%limit==0:
+                    print idx,symstr
+                    url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
+                    response = urllib2.urlopen(url)
+                    cr = csv.reader(response)
+                    for row in cr:
+                        print row
+                        for rowid,item in enumerate(row):
+                            if rowid==0:
+                                dataLst[rowid].append(item) 
+                            else:
+                                dataLst[rowid].append(self.format(item))
+                            
+                        #retidx +=1
+                    symstr=""
+                    
+            if symstr!="":
+                print "last get",symstr
                 url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
                 response = urllib2.urlopen(url)
                 cr = csv.reader(response)
                 for row in cr:
-                    print row
                     for rowid,item in enumerate(row):
                         if rowid==0:
-                            dataLst[rowid].append(item) 
+                            dataLst[rowid].append(item)
                         else:
                             dataLst[rowid].append(self.format(item))
-                        
-                    #retidx +=1
-                symstr=""
                 
-        if symstr!="":
-            print "last get",symstr
-            url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
-            response = urllib2.urlopen(url)
-            cr = csv.reader(response)
-            for row in cr:
-                for rowid,item in enumerate(row):
-                    if rowid==0:
-                        dataLst[rowid].append(item)
-                    else:
-                        dataLst[rowid].append(self.format(item))
-            
-        table=pandas.DataFrame(dataDct,columns=self.columns)
-        table.to_csv(self.outputFileName,sep=',',index=False)
+            table=pandas.DataFrame(dataDct,columns=self.columns)
+            table.to_csv(self.outputFileName,sep=',',index=False)
+        except:
+            print "System/Network Error when retrieving data, return..."
         return table
     
     def format(selv,item):
@@ -123,9 +128,42 @@ class ms_pvm:
         
         table = pandas.DataFrame(allLst,columns=self.columns)
         return table
+     
+    # no need real price data
+    def needPriceData(self):
+        return False
         
+    #main routine       
+    def process(self,tablein,param):
+        download = 1  #default = download
+        ticklist = tablein['symbol']
+        #extract 'download' option
+        param1={}
+        for op in param:
+            if op == 'download':
+                download = int(param['download'])
+            else:
+                param1[op]=""
+                
+        if (download == 1):
+            df = self.downloadData(ticklist)            
+        else:
+            df = self.loadData(self.outputFileName)                    
+
+        col = ['symbol']
+        df = self.mtd.evalCriteria(df,param1,col)        
+        #df1 = df[df['symbol'].isin(ticklist)]
+        #merge df1 & tablein
+        df1 = pandas.merge(tablein,df,how='inner')
+        return df1
+
+        
+
+    '''
     def process(self,ticklist,param):
         self.download = 1  #default = download
+
+
         self.criteria = []
         self.ticklist = ticklist
         for op in param:
@@ -156,15 +194,7 @@ class ms_pvm:
          
         crstr += "(1)"
         print "criteria = ", crstr
-        return df[eval(crstr)]['symbol']     
-        ''' test code
-        crstr = ""
-        pattern = "(\w)[><]([\d]+)"
-
-        for cr in self.criteria:
-            an = re.match(pattern,cr)            
-            print an.group(1),an.group(2)
-        #print df[df['marketcap']<86420000000]        
-        '''
-        return
+        return df[eval(crstr)]['symbol']  
+    '''    
+       
     

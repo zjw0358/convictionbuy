@@ -58,7 +58,9 @@ class st_perf:
         self.ind['p24w'] = p24w
         self.ind['pmax'] = pmax
         
-        #self.ind.append('p1d',p1d)
+    # it is price data module(need real price data)
+    def needPriceData(self):
+        return True
         
     def getIndicators(self):
         return self.ind    

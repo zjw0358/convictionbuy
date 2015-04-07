@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 
 
-class ZackRank:
+class zack_data:
     def __init__(self):
         #self.rankPattern = '[\d\D]*Zacks.*Rank[/s]*: (.*) <sup class=[\d\D]*'
         #self.rankPattern = '[\d\D]*Zacks.*Rank[/s]*: (.*)[\n]*<sup class=[\d\D]*'
@@ -191,14 +191,20 @@ class ZackRank:
     def testAbr(self):
         print self.getBrokerRecom('AAPL')
         print self.getBrokerRecom('spy')
-        
-    def process(self):
-        #self.parseOption()          
-        #self.testAbr()
-        #self.test()
-        df = self.loadZackCsvFile("msdata_zackabr_2015-01-19.csv")
-        print df
-        print "Done,exit..."
+    def test(self):
+        return
+                
+    def process(self,tablein,param):
+        ticklist = tablein['symbol']
+        col = ['symbol']
+        df = self.loadZackCsvFile("msdata_zackabr_2015-01-19.csv")     
+        df = self.mtd.evalCriteria(df,param,col)                
+        #df1 = df[df['symbol'].isin(ticklist)]
+        df1 = pandas.merge(tablein,df,how='inner')
+        return df1
+
+    def needPriceData(self):
+        return False
         
     def updateData(self):
         return
@@ -211,7 +217,7 @@ class ZackRank:
         for key in self.columns:
             lst = []
             allLst[key] = lst
-        print "len of allLst",len(allLst) 
+        print "number of columns =",len(allLst) 
         table = pandas.DataFrame(allLst,columns=self.columns)
         
         fp = open(fileName,'r',-1)
@@ -224,10 +230,8 @@ class ZackRank:
                 continue
             for rowid, item in enumerate(row):            
                 lst = allLst[self.columns[rowid]]
-                if rowid>1:
+                if rowid>0:
                     item=item.replace(" ","")
-                    
-                    #print type(item)
                     lst.append(self.mtd.tofloat(item))
                 else:
                     lst.append(item)
@@ -241,11 +245,11 @@ class ZackRank:
 # main routine
 ################################################################################            
 if __name__ == "__main__":
-    obj = ZackRank()
+    obj = zack_data()
     #zr.getEstimate('intc')
     #zr.getBrokerRecom('intc')
     #zr.getPriceSale('intc')
-    obj.process()
+    #obj.process()
 
 
 

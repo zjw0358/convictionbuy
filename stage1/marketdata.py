@@ -4,6 +4,9 @@ import sys
 import csv
 import pandas
 
+# evaluation criteria on the fly
+from collections import OrderedDict
+import re
 '''
 load market data
 
@@ -70,7 +73,7 @@ class MarketData:
     def tofloat(self,item):
         #print item
         if item=="N/A" or item=="" or item=="NA":
-            return "0"
+            return 0
         elif item[-1]=="K":
             return float(item.replace("K",""))*1000
         elif item[-1]=="M":
@@ -81,4 +84,66 @@ class MarketData:
             return float(item.replace("T",""))*1000000000000
         else:
             return float(item)
-  
+            
+    def evalCriteria(self, df, param, colsin):
+        criteria = []
+        outputcol = []
+        coldict = OrderedDict()
+            
+        for op in param:
+            criteria.append(op)
+            
+        if not criteria:
+            print "criteria is empty,...return original table"
+            return df
+        # construct unique column name    
+        for colnm in colsin:
+            coldict[colnm] = 0
+            
+        # filter by dynamic criteria string
+        crstr = ""
+        pattern1 = "([\w]+)([><])([-+]?[0-9]*\.?[0-9]+)"  #cppettm < 20.00 (float)
+        #pattern2 = "([\d\D]+)([><])([\d\D]+)"  #saleqtr0 > saleqtr1
+        pattern2 = "([\d\D]+)([><])([^[A-Za-z0-9_]+$])"  #saleqtr0 > saleqtr1
+
+        for cr in criteria:            
+            an = re.match(pattern1,cr)            
+            if an!=None:
+                print "criteria matched lvalue <> float"
+                cr0 = "(df['%s']%s%s) & " % (an.group(1),an.group(2),an.group(3))
+                crstr += cr0
+                coldict[an.group(1)] = 0
+            else:
+                an = re.match(pattern2,cr)
+                if an!=None:
+                    print "criteria matched lvalue <> string"
+                    rstr = an.group(3)
+                    print float(rstr)
+                    cr0 = "(df['%s']%sdf['%s']) & " % (an.group(1),an.group(2),an.group(3))
+                    crstr += cr0
+                    coldict[an.group(1)] = 0
+                    coldict[an.group(3)] = 0
+                                                        
+        crstr += "(1)"
+        print "to evaluate criteria = ", crstr
+        outputcol = coldict.keys()
+        df = df[eval(crstr)][outputcol]
+        return df
+
+    #save table
+    def saveTableFile(self,table,addstr=""):
+        saveFileName = "mdscan_"
+        for sgyname in self.sgyInx:
+            saveFileName += sgyname
+            saveFileName +="_"
+            
+        if addstr != "":
+            saveFileName = saveFileName + addstr + "_"
+            
+    
+        outputFn = self.outputpath + saveFileName + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        try:
+            table.to_csv(outputFn,sep=',',index=False)
+            print "Finish wrote to ",outputFn
+        except:
+            print "exception when write to csv ",outputFn
