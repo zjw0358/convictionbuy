@@ -11,9 +11,12 @@ import sys
 import datetime
 import pandas.io.data as web
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 class MasterChart:
     def __init__(self):
+        self.enddate = ""
+        self.startdate = ""
         return
         
     def parseOption(self):
@@ -48,16 +51,16 @@ class MasterChart:
                 startday = datetime.date.today() - datetime.timedelta(days=365)
                 self.startdate = startday.strftime("%Y-%m-%d")
 
-        if not self.sgyparam:
-            self.sgyparam = self.loadCfg(self.mscfg)
+        #if not self.sgyparam:
+        #    self.sgyparam = self.loadCfg(self.mscfg)
         #load strategy
-        self.loadStrategy(self.sgyparam)           
+        #self.loadStrategy(self.sgyparam)           
         #self.funda = fundata.FundaData()
 
-        print "use ", self.symbolLstFile
+        #print "use ", self.symbolLstFile
         print "start date", self.startdate
         print "end date", self.enddate
-        print "portfolio id mask ",self.pid
+        #print "portfolio id mask ",self.pid
         print "=========================="
         
     def setupChart(self):
@@ -78,35 +81,34 @@ class MasterChart:
         self.ax2.spines['top'].set_color("#5998ff")
         self.ax2.spines['left'].set_color("#5998ff")
         self.ax2.spines['right'].set_color("#5998ff")    
-        
+        plt.show()
     # draw pnl vs benchmark curve ,offset=
-    def drawChart(self,symbol,close_px,stgy_name,strgy_ret,offset,dforders):
-        px_returns = close_px[offset:].pct_change()
-        pxret_index = (1+px_returns).cumprod()
-        pxret_index[0] = 1
-        sgy_returns = strgy_ret[offset:].pct_change()
-        sgyret_index = (1+sgy_returns).cumprod()
-        sgyret_index[0] = 1        
-        stgy_name = stgy_name+"_"+symbol        
-
-        perftxt = " %s:%.2f %s:%.2f" %(symbol,pxret_index.iloc[-1],stgy_name,sgyret_index.iloc[-1])
-        self.perftxt += perftxt
-        print "chart start at", self.sdatelabel[offset] 
-        self.ax2.plot(self.sdatelabel[offset:],pxret_index,label=symbol)
-        self.ax2.plot(self.sdatelabel[offset:],sgyret_index,label=stgy_name)
+    def drawChart(self,symbol,ohlc):
+        sdate = ohlc.index        
+        sdatelabel = sdate.to_pydatetime()
+        print sdatelabel      
+        #perftxt = " %s:%.2f %s:%.2f" %(symbol,pxret_index.iloc[-1],stgy_name,sgyret_index.iloc[-1])
+        #self.perftxt += perftxt
+        #print "chart start at", self.sdatelabel[offset] 
+        
+        self.ax2.plot(sdatelabel,ohlc['Adj Close'],label=symbol)
+        #ohlc['Adj Close'].plot(ax=self.ax2,style='k-')
+        #self.ax2.plot(self.sdatelabel[offset:],sgyret_index,label=stgy_name)
         self.ax2.grid(True, color='w')
-        self.ax2.xaxis.set_major_locator(mticker.MaxNLocator(10))
-        self.ax2.yaxis.set_major_locator(mticker.MaxNLocator(10))
+        #self.ax2.xaxis.set_major_locator(mticker.MaxNLocator(10))
+        #self.ax2.yaxis.set_major_locator(mticker.MaxNLocator(10))
         
         self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.ax2.yaxis.label.set_color("b")
 
                 
     def process(self):
+        self.parseOption()
         self.setupChart()
         symbol="aapl"
         try:
             ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+            self.drawChart(symbol,ohlc)
         except:
             print "System/Network Error when retrieving ",symbol," skip it"
         return
