@@ -259,14 +259,11 @@ class MarketScan:
             df1 = pandas.DataFrame(self.ticklist,columns=['symbol'])
             ticklist = self.ticklist     
         
-        print "total", len(ticklist),"symbols selected to be processed"
-        
         #load prescan module
         for sgyname in self.sgyInx:
-            #if sgyname in self.sgyInfo:
-            #    if self.sgyInfo[sgyname]==0: # run before scan
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==False:
+                print "total", len(df1.index),"symbols selected to be processed by",sgyname
                 tblout = sgx.process(df1,self.sgyparam[sgyname])
                 #merge tblout & df1
                 df1 = pandas.merge(tblout,df1,how='inner')
@@ -276,15 +273,14 @@ class MarketScan:
         df1.loc[len(df1)+1,'symbol'] = self.sp500    
                 
         print "==================================================="
-        print "start processing data"
+        print "total", len(df1.index),"symbols selected"
         if self.hasPriceDataModule()==False:
             self.saveTableFile(df1,"raw")
             print df1
             print "No more pricedata module to be processed, exit..."
             return
 
-        # process pricedata module    
-        print "total", len(df1.index),"symbols selected to be scaned with market price data"
+        # process pricedata module 
         table = self.runIndicator(df1)
 
         #save raw csv file        

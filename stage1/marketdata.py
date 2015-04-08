@@ -84,8 +84,8 @@ class MarketData:
             return float(item.replace("T",""))*1000000000000
         else:
             return float(item)
-            
-    def evalCriteria(self, df, param, colsin):
+    #version1       
+    def evalCriteria1(self, df, param, colsin):
         criteria = []
         outputcol = []
         coldict = OrderedDict()
@@ -134,7 +134,54 @@ class MarketData:
         else:
             df = df[eval(crstr)][outputcol]
         return df
+        
+    #version2
+    def evalCriteria(self, df, param, colsin):
+        criteria = []
+        outputcol = []
+        coldict = OrderedDict()
+            
+        for op in param:
+            criteria.append(op)
+            
+        if not criteria:
+            print "criteria is empty,...return original table"
+            return df
+        # construct unique column name    
+        for colnm in colsin:
+            coldict[colnm] = 0
+            
+        # filter by dynamic criteria string
+        crstr = ""
+        pattern1 = "([a-z][a-z0-9-]*)"
+        pattern2 = "[></]"
+        #pattern1 = "([\w]+)([><])([-+]?[0-9]*\.?[0-9]+)"  #cppettm < 20.00 (float)
+        #pattern2 = "([\d\D]+)([><])([^[A-Za-z0-9_]+$])"  #saleqtr0 > saleqtr1
+        #pattern3 = "([a-z][a-z0-9-]*)" # select column only
 
+        for cr in criteria:
+            collst = re.findall(pattern1,cr)
+            ration = re.findall(pattern2,cr)
+            if len(ration)!=0:
+                cr0 = re.sub(pattern1,r"df['\1']",cr)
+                if crstr=="":
+                    crstr = crstr + "(" + cr0 + ") "
+                else:
+                    crstr = crstr + "& (" + cr0 + ") "
+            # add column to display
+            for col in collst:
+                coldict[col] = 0
+                
+                                                        
+        #crstr += "(1)"
+        print "to evaluate criteria = ", crstr
+        outputcol = coldict.keys()
+        if crstr == "":
+            df = df[outputcol]
+        else:
+            df = df[eval(crstr)][outputcol]
+        return df
+        
     #save table
     def saveTableFile(self,table,addstr=""):
         saveFileName = "mdscan_"

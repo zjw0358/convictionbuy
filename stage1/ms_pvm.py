@@ -38,29 +38,30 @@ class ms_pvm:
             
         table=pandas.DataFrame()
         try:
+            print "downloading yahoo data..."
             for idx, symbol in enumerate(ticklist):
                 symstr += symbol
                 if idx<(lenlist-1) and (idx%limit!=0):
                     symstr +="+"
                     
                 if idx%limit==0:
-                    print idx,symstr
+                    #print idx,symstr
                     url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
                     response = urllib2.urlopen(url)
                     cr = csv.reader(response)
                     for row in cr:
-                        print row
+                        #print row
                         for rowid,item in enumerate(row):
                             if rowid==0:
                                 dataLst[rowid].append(item) 
                             else:
-                                dataLst[rowid].append(self.format(item))
+                                dataLst[rowid].append(self.mtd.tofloat(item))
                             
                         #retidx +=1
                     symstr=""
                     
             if symstr!="":
-                print "last get",symstr
+                #print "last get",symstr
                 url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
                 response = urllib2.urlopen(url)
                 cr = csv.reader(response)
@@ -69,28 +70,13 @@ class ms_pvm:
                         if rowid==0:
                             dataLst[rowid].append(item)
                         else:
-                            dataLst[rowid].append(self.format(item))
+                            dataLst[rowid].append(self.mtd.tofloat(item))
                 
             table=pandas.DataFrame(dataDct,columns=self.columns)
             table.to_csv(self.outputFileName,sep=',',index=False)
         except:
             print "System/Network Error when retrieving data, return..."
         return table
-    
-    def format(selv,item):
-        #print item
-        if item=="N/A":
-            return "0"
-        elif item[-1]=="K":
-            return float(item.replace("K",""))*1000
-        elif item[-1]=="M":
-            return float(item.replace("M",""))*1000000
-        elif item[-1]=="B":
-            return float(item.replace("B",""))*1000000000
-        elif item[-1]=="T":
-            return float(item.replace("T",""))*1000000000000
-        else:
-            return float(item)
 
     def loadData(self,fileName):
         print "Loading PVM csv file..."         
@@ -150,6 +136,10 @@ class ms_pvm:
         else:
             df = self.loadData(self.outputFileName)                    
 
+        if df.empty:
+            print "error happened, unable to process ms_pvm, return original table"
+            return tablein
+            
         col = ['symbol']
         df = self.mtd.evalCriteria(df,param1,col)        
         #df1 = df[df['symbol'].isin(ticklist)]
