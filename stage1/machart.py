@@ -10,13 +10,18 @@ import getopt
 import sys
 import datetime
 import pandas.io.data as web
+import pandas
+import numpy
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from collections import OrderedDict
+import ms_reuter
 
 class MasterChart:
     def __init__(self):
         self.enddate = ""
         self.startdate = ""
+        self.reuter = ms_reuter.ms_reuter()
         return
         
     def parseOption(self):
@@ -104,11 +109,38 @@ class MasterChart:
                 
     def process(self):
         self.parseOption()
-        self.setupChart()
+        table = pandas.DataFrame(['AAPL'],columns=['symbol'])
+        param = OrderedDict()
+        param['$eps']=""
+        df = self.reuter.process(table,param)
+        #print df
+        df.drop('symbol', axis=1, inplace=True)
+        df = pandas.melt(df) 
+        df.drop('variable',axis=1,inplace=True)
+        df[df == 0.000] = numpy.nan 
+        #print df[df!=numpy.nan]
+        print "========"
+        df = pandas.rolling_sum(df.iloc[:-11:-1], 4, min_periods=4)#, center=True
+        df = df.dropna()
+        print df
+        #print df['value']
+        #df1 = df.reindex(['a', 'b', 'c', 'd', 'e'])
+        #print df1
+        #df = df.reindex(index=pandas.date_range('1/1/2000', periods=5, freq='BM'))
+        #print df
+        lst =df['value'].values.tolist()
+        frame = pandas.DataFrame(lst,index=pandas.date_range(end='4/10/2015', periods=5, freq='Q'),columns=['eps'])
+        print frame
+        print "========"
+        print frame.resample('D',fill_method='bfill')
+        return
+        #return
+        #self.setupChart()
         symbol="aapl"
         try:
             ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
-            self.drawChart(symbol,ohlc)
+            print ohlc
+            #self.drawChart(symbol,ohlc)
         except:
             print "System/Network Error when retrieving ",symbol," skip it"
         return

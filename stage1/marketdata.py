@@ -141,9 +141,10 @@ class MarketData:
         outputcol = []
         coldict = OrderedDict()
             
-        for op in param:
-            criteria.append(op)
-            
+        #for op in param:
+        #    criteria.append(op)
+        criteria = param.keys()
+    
         if not criteria:
             print "criteria is empty,...return original table"
             return df

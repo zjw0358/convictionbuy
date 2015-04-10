@@ -11,7 +11,7 @@ import pandas
 import datetime
 import re
 import marketdata
-from collections import OrderedDict
+#from collections import OrderedDict
 
 class ms_reuter:
     def __init__(self):
@@ -31,9 +31,9 @@ class ms_reuter:
     # no need real price data
     def needPriceData(self):
         return False
-    
+    '''
     def setupParam(self,param):
-        param1 = {}
+        param1 = OrderedDict()
         self.sgy = 0
         for pn in param:
             if pn=='sgy':
@@ -45,6 +45,7 @@ class ms_reuter:
             else:
                 param1[pn]=""
         return param1
+    '''
     '''    
     def process(self,tablein,param):
         param = self.setupParam(param)
@@ -76,7 +77,7 @@ class ms_reuter:
         return df1
     '''
     def process(self,tablein,param):
-        param = self.setupParam(param)
+        #param = self.setupParam(param)
         ticklist = tablein['symbol']
         macro = {
             "$eracc1":"epsqtr0/epsqtr-1>epsqtr-1/epsqtr-2&epsqtr-1/epsqtr-2>epsqtr-2/epsqtr-3&epsq1e/epsqtr0>epsqtr0/epsqtr-1",
@@ -107,6 +108,7 @@ class ms_reuter:
         
     #zack strategy earning acceleration p43, earning improve QoQ
     # epsq increase for constructive 3 qtr
+    '''
     def eracc(self,df):
         f0 = df[ (df['epsqtr0']/df['epsqtr-1'] > df['epsqtr-1']/df['epsqtr-2']) & \
                 (df['epsqtr-1']/df['epsqtr-2'] > df['epsqtr-2']/df['epsqtr-3']) & \
@@ -120,7 +122,7 @@ class ms_reuter:
                 (df['epsqtr-1']/df['epsqtr-5'] > df['epsqtr-2']/df['epsqtr-6'])
              ]
         return f0
-         
+    '''     
     def test(self):
         ticklist = ['LLY','BMY','ABBV','GILD','PFE','MRK','JNJ','GSK']
         self.process(ticklist,"")
