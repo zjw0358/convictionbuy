@@ -106,30 +106,71 @@ class MasterChart:
         self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.ax2.yaxis.label.set_color("b")
 
-                
+    # resample stock eps with date index
+    def resampleEps(self,symbol,endDate):
+        table = pandas.DataFrame([symbol.upper()],columns=['symbol'])
+        param = OrderedDict()
+        param['$eps']=""
+        df = self.reuter.process(table,param)
+        df.drop('symbol', axis=1, inplace=True) #drop symbol column
+        df = pandas.melt(df) 
+        df.drop('variable',axis=1,inplace=True) #drop variable column 'epsq1e,epsqtr0...'
+        df[df == 0.000] = numpy.nan 
+        start = -len(df.index)
+        df = pandas.rolling_sum(df.iloc[:start:-1], 4, min_periods=4) # rolling window = 4 (quarter)
+        df = df.dropna()
+        lst =df['value'].values.tolist()
+        lst.insert(0,lst[0])
+        frame = pandas.DataFrame(lst,index=pandas.date_range(end=endDate, periods=len(lst), freq='Q'),columns=['eps'])
+        frame = frame.resample('D',fill_method='bfill')  #backward filling
+        return frame
+                        
     def process(self):
         self.parseOption()
+        '''
         table = pandas.DataFrame(['AAPL'],columns=['symbol'])
         param = OrderedDict()
         param['$eps']=""
         df = self.reuter.process(table,param)
         #print df
-        df.drop('symbol', axis=1, inplace=True)
+        df.drop('symbol', axis=1, inplace=True) #drop symbol column
         df = pandas.melt(df) 
-        df.drop('variable',axis=1,inplace=True)
+
+        df.drop('variable',axis=1,inplace=True) #drop variable column 'epsq1e,epsqtr0...'
         df[df == 0.000] = numpy.nan 
         #print df[df!=numpy.nan]
-        print "========"
-        df = pandas.rolling_sum(df.iloc[:-11:-1], 4, min_periods=4)#, center=True
-        df = df.dropna()
         print df
+        print "========"
+        #df = pandas.rolling_sum(df.iloc[:-11:-1], 4, min_periods=4)#, center=True
+        df = pandas.rolling_sum(df, 4, min_periods=4,center=False)#, center=True
+        #df = df.dropna()
+        '''
+        symbol="AAPL"
+        #endDate = '2015-04-10'
+        lf = self.resampleEps(symbol,self.enddate)
+        startDate = lf.index[0].to_pydatetime().strftime("%Y-%m-%d")
+        #print type(startDate)
+        print startDate,self.enddate
+        #return
+        try:
+            ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+            rf = ohlc['Adj Close']
+            #self.drawChart(symbol,ohlc)
+        except:
+            print "System/Network Error when retrieving ",symbol," skip it"
+        mf = pandas.merge(lf,rf)
+        print mf
+
+
+        return
         #print df['value']
         #df1 = df.reindex(['a', 'b', 'c', 'd', 'e'])
         #print df1
         #df = df.reindex(index=pandas.date_range('1/1/2000', periods=5, freq='BM'))
         #print df
         lst =df['value'].values.tolist()
-        frame = pandas.DataFrame(lst,index=pandas.date_range(end='4/10/2015', periods=5, freq='Q'),columns=['eps'])
+        lst.insert(0,lst[0])
+        frame = pandas.DataFrame(lst,index=pandas.date_range(end='4/10/2015', periods=len(lst), freq='Q'),columns=['eps'])
         print frame
         print "========"
         print frame.resample('D',fill_method='bfill')

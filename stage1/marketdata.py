@@ -32,7 +32,7 @@ class MarketData:
         #        'Industrials':'Basic Industries','Industrials':'Transportation','Industrials':'Capital Goods',\
         #        'Materials':'Basic Industries','Capital Goods':'xlb','Health Care':'xlv','Consumer Services':'xly', \
         #        'Utilities':'Public Utilities'}              
-       
+
         return
         
         
@@ -84,7 +84,8 @@ class MarketData:
             return float(item.replace("T",""))*1000000000000
         else:
             return float(item)
-    #version1       
+
+    #old version1      
     def evalCriteria1(self, df, param, colsin):
         criteria = []
         outputcol = []
@@ -200,3 +201,4 @@ class MarketData:
             print "Finish wrote to ",outputFn
         except:
             print "exception when write to csv ",outputFn
+            
