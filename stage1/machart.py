@@ -117,6 +117,7 @@ class MasterChart:
         df.drop('variable',axis=1,inplace=True) #drop variable column 'epsq1e,epsqtr0...'
         df[df == 0.000] = numpy.nan 
         start = -len(df.index)
+        print df
         df = pandas.rolling_sum(df.iloc[:start:-1], 4, min_periods=4) # rolling window = 4 (quarter)
         df = df.dropna()
         lst =df['value'].values.tolist()
@@ -151,14 +152,21 @@ class MasterChart:
         startDate = lf.index[0].to_pydatetime().strftime("%Y-%m-%d")
         #print type(startDate)
         print startDate,self.enddate
-        #return
+        return
         try:
-            ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+            ohlc = web.get_data_yahoo(symbol, startDate, self.enddate)
             rf = ohlc['Adj Close']
+            #rf = ohlc
             #self.drawChart(symbol,ohlc)
         except:
             print "System/Network Error when retrieving ",symbol," skip it"
-        mf = pandas.merge(lf,rf)
+        #print lf
+        #print "========="
+        #print rf
+        #mf = pandas.merge(lf,rf,left_index=True,how='left')
+        mf = lf.join(rf)
+        mf = mf.dropna()
+        mf['pe'] = mf['Adj Close']/mf['eps']
         print mf
 
 
