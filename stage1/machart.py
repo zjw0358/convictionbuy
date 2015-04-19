@@ -56,18 +56,20 @@ class MasterChart:
                 startday = datetime.date.today() - datetime.timedelta(days=365)
                 self.startdate = startday.strftime("%Y-%m-%d")
 
-        #if not self.sgyparam:
-        #    self.sgyparam = self.loadCfg(self.mscfg)
-        #load strategy
-        #self.loadStrategy(self.sgyparam)           
-        #self.funda = fundata.FundaData()
-
-        #print "use ", self.symbolLstFile
+        if not self.ticklist:
+            print "ticklist is empty"
+            self.usage()
+            sys.exit()
         print "start date", self.startdate
         print "end date", self.enddate
         #print "portfolio id mask ",self.pid
         print "=========================="
-        
+
+    #usage
+    def usage(self):
+        print "run machart.py -t aapl.o"
+     
+    ''' 
     def setupChart(self):
         left, width = 0.1, 0.8
         rect1 = [left, 0.75, width, 0.2]
@@ -105,7 +107,13 @@ class MasterChart:
         
         self.ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         self.ax2.yaxis.label.set_color("b")
-
+    '''   
+    def drawCompChart(self,df):
+        fig = plt.figure(facecolor='white')
+        ax = fig.add_subplot(1, 1, 1)
+        df.plot(ax=ax,color=['r', 'g', 'b', 'r', 'g', 'b', 'r'])
+        plt.show()
+        return
     # resample stock eps with date index
     def resampleEps(self,symbol,endDate):
         table = pandas.DataFrame([symbol.upper()],columns=['symbol'])
@@ -116,83 +124,49 @@ class MasterChart:
         df = pandas.melt(df) 
         df.drop('variable',axis=1,inplace=True) #drop variable column 'epsq1e,epsqtr0...'
         df[df == 0.000] = numpy.nan 
-        start = -len(df.index)
-        print df
+        start = -len(df.index)-1
+        print start,df
         df = pandas.rolling_sum(df.iloc[:start:-1], 4, min_periods=4) # rolling window = 4 (quarter)
         df = df.dropna()
+        print df
         lst =df['value'].values.tolist()
         lst.insert(0,lst[0])
-        frame = pandas.DataFrame(lst,index=pandas.date_range(end=endDate, periods=len(lst), freq='Q'),columns=['eps'])
+        
+        frame = pandas.DataFrame(lst,index=pandas.date_range(end=endDate, periods=len(lst), freq='Q'),columns=['eps'])        
         frame = frame.resample('D',fill_method='bfill')  #backward filling
+        lasteps = lst[-1]
+        startday = frame.index[-1].to_pydatetime() + datetime.timedelta(days=1)
+        startDate = startday.strftime("%Y-%m-%d")
+        frame2 = pandas.DataFrame(lasteps,index=pandas.bdate_range(start=startDate,end=endDate, freq='D'),columns=['eps'])
+        #print frame2
+        #print frame
+        #frame = pandas.merge(frame,frame2,left_index=True,right_on=True,how='outer')
+        #frame = frame.join(frame2,how='outer')
+        #frame = frame.merge(frame2,left_index=True,right_index=True,on='eps')
+        frame = frame.append(frame2)
+        print frame
         return frame
                         
     def process(self):
         self.parseOption()
-        '''
-        table = pandas.DataFrame(['AAPL'],columns=['symbol'])
-        param = OrderedDict()
-        param['$eps']=""
-        df = self.reuter.process(table,param)
-        #print df
-        df.drop('symbol', axis=1, inplace=True) #drop symbol column
-        df = pandas.melt(df) 
-
-        df.drop('variable',axis=1,inplace=True) #drop variable column 'epsq1e,epsqtr0...'
-        df[df == 0.000] = numpy.nan 
-        #print df[df!=numpy.nan]
-        print df
-        print "========"
-        #df = pandas.rolling_sum(df.iloc[:-11:-1], 4, min_periods=4)#, center=True
-        df = pandas.rolling_sum(df, 4, min_periods=4,center=False)#, center=True
-        #df = df.dropna()
-        '''
-        symbol="AAPL"
-        #endDate = '2015-04-10'
-        lf = self.resampleEps(symbol,self.enddate)
-        startDate = lf.index[0].to_pydatetime().strftime("%Y-%m-%d")
-        #print type(startDate)
-        print startDate,self.enddate
-        return
-        try:
-            ohlc = web.get_data_yahoo(symbol, startDate, self.enddate)
-            rf = ohlc['Adj Close']
-            #rf = ohlc
-            #self.drawChart(symbol,ohlc)
-        except:
-            print "System/Network Error when retrieving ",symbol," skip it"
-        #print lf
-        #print "========="
-        #print rf
-        #mf = pandas.merge(lf,rf,left_index=True,how='left')
-        mf = lf.join(rf)
-        mf = mf.dropna()
-        mf['pe'] = mf['Adj Close']/mf['eps']
-        print mf
-
-
-        return
-        #print df['value']
-        #df1 = df.reindex(['a', 'b', 'c', 'd', 'e'])
-        #print df1
-        #df = df.reindex(index=pandas.date_range('1/1/2000', periods=5, freq='BM'))
-        #print df
-        lst =df['value'].values.tolist()
-        lst.insert(0,lst[0])
-        frame = pandas.DataFrame(lst,index=pandas.date_range(end='4/10/2015', periods=len(lst), freq='Q'),columns=['eps'])
-        print frame
-        print "========"
-        print frame.resample('D',fill_method='bfill')
-        return
-        #return
-        #self.setupChart()
-        symbol="aapl"
-        try:
-            ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
-            print ohlc
-            #self.drawChart(symbol,ohlc)
-        except:
-            print "System/Network Error when retrieving ",symbol," skip it"
-        return
+        for tick in self.ticklist:
+            symbol=tick.upper()
+            lf = self.resampleEps(symbol,self.enddate)
+            startDate = lf.index[0].to_pydatetime().strftime("%Y-%m-%d")
+            try:
+                ohlc = web.get_data_yahoo(symbol, startDate, self.enddate)
+                rf = ohlc['Adj Close']
+            except:
+                print "System/Network Error when retrieving ",symbol," skip it"
+       
+            mf = lf.join(rf)
+            mf = mf.dropna()
+            mf['pe'] = mf['Adj Close']/mf['eps']
+            mf = mf.pct_change()
+            mf = (1+mf).cumprod()
+            print mf
+            self.drawCompChart(mf)
+            
 if __name__ == "__main__":
     obj = MasterChart()
     obj.process()

@@ -16,7 +16,7 @@ import marketdata
 class ms_reuter:
     def __init__(self):
         self.reuter = reuterfunda.ReuterFunda()
-        self.reuterFile = "./msdata_reuter_2015-01-27.csv"
+        self.reuterFile = "./msdata_reuter_2015-04-19.csv"
         self.mtd = marketdata.MarketData()
         return        
 
@@ -82,7 +82,7 @@ class ms_reuter:
         macro = {
             "$eracc1":"epsqtr0/epsqtr-1>epsqtr-1/epsqtr-2&epsqtr-1/epsqtr-2>epsqtr-2/epsqtr-3&epsq1e/epsqtr0>epsqtr0/epsqtr-1",
             "$eracc2":"epsq1e/epsqtr-3>epsqtr0/epsqtr-4&epsqtr0/epsqtr-4>epsqtr-1/epsqtr-5&epsqtr-1/epsqtr-5>epsqtr-2/epsqtr-6",
-            "$eps":"epsq1e&epsqtr0&epsqtr-1&epsqtr-2&epsqtr-3&epsqtr-4&epsqtr-5&epsqtr-6&epsqtr-7&epsqtr-8&epsqtr-9"
+            "$eps":"epsqtr0&epsqtr-1&epsqtr-2&epsqtr-3&epsqtr-4&epsqtr-5&epsqtr-6&epsqtr-7&epsqtr-8&epsqtr-9"
         }
         #replace keyword in parameter
         for ma in macro:

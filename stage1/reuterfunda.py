@@ -9,6 +9,9 @@ import getopt
 import sys
 import csv
 
+'''
+run reuterfunda.py -f symbollist.txt -t stattick -u update_tick_list -r reuter_result_csvfile"
+'''
 class ReuterFunda:
     def __init__(self):
         pandas.set_option('display.max_columns', 100)
@@ -17,11 +20,14 @@ class ReuterFunda:
         #pandas.set_option('display.height', 1500)
         pandas.set_option('display.max_rows', 1500)
         self.mtd = marketdata.MarketData()
-        self.outputpath = "../data/"
+        self.outputpath = "./"
+        self.outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
         self.fileName = ""
         self.starttick = ""
-        self.ticklist = []
-        self.columns = ['saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
+        #self.ticklist = []
+        self.tickdf = pandas.DataFrame()
+        self.columns = [
+            'saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
             'saleqtr-8','saleqtr-9','epsqtr0','epsqtr-1','epsqtr-2','epsqtr-3','epsqtr-4','epsqtr-5','epsqtr-6',\
             'epsqtr-7','epsqtr-8','epsqtr-9',\
             \
@@ -52,9 +58,15 @@ class ReuterFunda:
                     'cpsalemrqyoy','cppsalettmyoy','cpsale5ygr','cpepsmrqyoy','cpepsttmyoy','cpeps5ygr',\
                     'cpcurra','cpquira','cpdebt2equity',\
                     'cpgm','cpom','cpnm','cpbeta']
-        
+
+    #usage
+    def usage(self):
+        print "program -f symbollist.txt -t stattick -u update_tick_list -r reuter_result_csvfile"
+       
+               
     '''
-    get past 8 Quarter earning data from reuter
+    main routine
+    get past all Quarters earning data from reuter
     '''    
     def getEarningData(self,symbol):
         #http://www.reuters.com/finance/stocks/financialHighlights?symbol=MSFT.O
@@ -134,12 +146,9 @@ class ReuterFunda:
                     retmx['me'] = 1
                     fundadct.update(ret)
                     continue
-                   
-        #for seg in retmx:
-        #    if retmx[seg]==0:
-        #        return None
-                         
+                                 
         return fundadct
+        
     def verifyCol(self,dct):
         missLst = []
         if 'cppettm' not in dct:
@@ -155,13 +164,13 @@ class ReuterFunda:
         if len(missLst)>0:
             print "Missing list:",missLst
         
-    def updateData(self): 
+    def updateData0(self): 
         lenticklst = len(self.ticklist)       
         symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
         reuterTable = pandas.DataFrame()
         if self.reuterfile!="" and lenticklst>0:
             reuterTable = self.loadReuterCsvFile(self.reuterfile)
-        outputfn = self.outputpath + "reuterfunda_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
+        outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
         outputfp = open(outputfn,'w',-1)        
          
         header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
@@ -797,10 +806,7 @@ class ReuterFunda:
         else:
             return txt.replace(",","")
             
-    def usage(self):
-        print "program -f symbollist.txt -t stattick -u update_tick_list -r reuter_result_csvfile"
-
-              
+       
     def parseOption(self):
         self.ticklist=[]
         try:
@@ -814,17 +820,21 @@ class ReuterFunda:
                 self.starttick = arg
             elif opt in ("-u","--ticklist"):
                 items = arg.split(",") #update ticklist only 
+                tdict = {}
                 for t in items:
-                    self.ticklist.append(t.upper())
+                    tick,exg = t.split(".")
+                    tdict[tick.upper()] = exg.upper()
+                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
             elif opt in ("-r","--reuterfile"):
                 self.reuterfile = arg
                 
-        if (self.fileName == ""):
-            self.usage()
-            sys.exit()
+        #if (self.fileName == ""):
+        #    self.usage()
+        #    sys.exit()
             
         print "symbolfile=",self.fileName
-        print "ticklist=",self.ticklist
+        print "ticklist==="
+        print self.tickdf
         print "reuterfile=",self.reuterfile
         return
         
@@ -893,6 +903,50 @@ class ReuterFunda:
         
         table = pandas.DataFrame(allLst,columns=columns)
         return table
+    
+    # update tick data    
+    def updateData(self): 
+        lenticklst = len(self.tickdf.index)       
+        #reuterTable = pandas.DataFrame()
+        if self.reuterfile!="" and lenticklst>0:
+            reuterTable = self.loadReuterCsvFile(self.reuterfile)
+        else:
+            return
+        #outputfn = self.outputpath + "reuterfunda_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
+        #outputfp = open(outputfn,'w',-1)        
+        updatelst = self.tickdf['symbol']
+        lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
+        
+        #to update table
+        allLst = {}
+        allCol = ['symbol','exg'] + self.columns
+        for key in allCol:
+            lst = []
+            allLst[key] = lst
+        print "len of allLst",len(allLst) 
+                
+        print "total",lenticklst,"ticks to be updated"
+        for index, row in self.tickdf.iterrows():
+            rowLst = []
+            print "downloading ",index,row['symbol'],row['exg']
+            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])                
+            if len(rowdct)>0:
+                self.verifyCol(rowdct)  
+                for key in self.columns:
+                    lst = allLst[key]
+                    if key in rowdct:
+                        lst.append(rowdct[key])
+                    else:
+                        lst.append("")   
+                                     
+                allLst['symbol'].append(row['symbol'])
+                allLst['exg'].append(row['exg'])               
+            else:
+                print "No financials information,skip ",row['symbol'],row['exg']
+                
+        rf = pandas.DataFrame(allLst,columns = allCol)
+        mf = lf.append(rf)
+        mf.to_csv(self.outputfn,sep=',',index=False)
         
     def process(self):
         self.parseOption()
