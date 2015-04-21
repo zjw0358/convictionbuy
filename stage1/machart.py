@@ -3,7 +3,7 @@ masterchart
 - display equity chart
 
 use case:    
-run masterchart -t "vmw"
+run machart.py -t "vmw"
 
 '''
 import getopt
@@ -144,7 +144,7 @@ class MasterChart:
         #frame = frame.join(frame2,how='outer')
         #frame = frame.merge(frame2,left_index=True,right_index=True,on='eps')
         frame = frame.append(frame2)
-        print frame
+        #print frame
         return frame
                         
     def process(self):
@@ -164,7 +164,7 @@ class MasterChart:
             mf['pe'] = mf['Adj Close']/mf['eps']
             mf = mf.pct_change()
             mf = (1+mf).cumprod()
-            print mf
+            #print mf
             self.drawCompChart(mf)
             
 if __name__ == "__main__":

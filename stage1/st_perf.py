@@ -1,10 +1,3 @@
-'''
-marketscan post scan module
-- display stock performance, 1day,1week,4week,12week,24week..
-- filter by performance
-- select top N
-'''
-
 from collections import OrderedDict
 
 class st_perf:
@@ -13,21 +6,28 @@ class st_perf:
         self.stname = "st_perf" #strategy name
         
     def cleanup(self):
-        #my_dictionary=OrderedDict()
         self.ind = OrderedDict()
-        self.sgy = 1 # default top perf 
+        self.sgy = 1 # default sort all symbols 
         return
 
+    def usage(self):
+        return "available parameter:topperf;topperf_is,sort24,sort12,sort4,sort1,help"
+
+        
     def setupParam(self,param):
         self.sgy = 1
-        sgystr = "topperf"
-        if 'sgy' in param:
-            sgystr = param['sgy']
-        if sgystr == "topperf":
+        if 'topperf' in param:
             self.sgy = 1
-        elif sgystr == "topperf_is": #intersection
+        if "topperf_is" in param:
             self.sgy = 2
-        
+        if "sort24" in param:
+            self.sgy = 3
+        if "sort12" in param:
+            self.sgy = 4
+        if "sort4" in param:
+            self.sgy = 5
+        if "sort1" in param:
+            self.sgy = 6
         return
           
     def algoFunc(self, px):
@@ -65,7 +65,7 @@ class st_perf:
     def getIndicators(self):
         return self.ind    
             
-    # strategy, find the buy&sell signal
+    #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         #initialize tradesupport
         self.setupParam(param)
@@ -93,6 +93,21 @@ class st_perf:
             top12w = table.sort_index(by='p12w',ascending=False).head(10)['symbol']
             top24w = table.sort_index(by='p24w',ascending=False).head(24)['symbol']
             df = table[(table['symbol'].isin(top4w)) & (table['symbol'].isin(top12w)) & (table['symbol'].isin(top24w))]
-        
+        elif self.sgy == 3:
+            '''
+            sort 24week
+            '''
+            df = table.sort_index(by='p24w',ascending=False)
+        elif self.sgy == 4:            
+            #sort 12 week
+            df = table.sort_index(by='p12w',ascending=False)
+        elif self.sgy == 5:            
+            #sort 4 week
+            df = table.sort_index(by='p4w',ascending=False)
+        elif self.sgy == 6:            
+            #sort 1 week
+            df = table.sort_index(by='p1w',ascending=False)
+
         return  df
+        
       

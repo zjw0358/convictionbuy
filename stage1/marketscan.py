@@ -35,10 +35,7 @@ class MarketScan:
         self.mscfg = "./marketscan.cfg"
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
-        #self.tradesup = tradesupport.Trade(self)
-        #self.simutable = simutable.SimuTable(self)
-        #self.tradesup.setMode(2) #no trade log
-        #self.simutable.setMode(2) #no trade log
+        self.help = False
         self.sgyparam = {}
         self.ticklist = []
         
@@ -69,8 +66,8 @@ class MarketScan:
         print "=========================="
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:h", \
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help"])
         except getopt.GetoptError:
             print "parse option error"
             return False
@@ -90,7 +87,9 @@ class MarketScan:
                 self.pid = int(arg)
             elif opt in ("-g", "--strategy"):
                 self.sgyparam = self.parseStrategy(arg)
-                                   
+            elif opt in ("-h", "--help"):
+                self.help=True                                   
+                
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
             if not self.startdate:
@@ -101,7 +100,8 @@ class MarketScan:
             self.sgyparam = self.loadCfg(self.mscfg)
         #load strategy
         self.loadStrategy(self.sgyparam)           
-        #self.funda = fundata.FundaData()
+        if self.help == True:
+            sys.exit()
 
         print "use ", self.symbolLstFile
         print "start date", self.startdate
@@ -121,11 +121,14 @@ class MarketScan:
                 if idx == 0:                    
                     l_sgy[token] = param
                 else:
+                    '''
                     k= token.split('=')
                     if (len(k)>1):
                         param[k[0]] = k[1]
                     else:
                         param[k[0]] = ""
+                    '''
+                    param[token] = ""
                 idx += 1
         print l_sgy
         return l_sgy
@@ -164,9 +167,9 @@ class MarketScan:
             myobject = c() # construct module
             print "created strategy=",sgy
             self.sgyInx[sgy] = myobject
-            #add strategy to trade order decision matrix
-            #self.tradesup.addStrategy(myobject.getStrategyName())
-
+            if self.help == True:
+                print sgy,myobject.usage()
+                
         return 
         
     def loadSymbolLstFile(self,fileName):
@@ -250,6 +253,16 @@ class MarketScan:
             if sgx.needPriceData()==True:
                 return True
         return False
+
+    def addSP500(self,df):
+        df1 = df[df['symbol'].isin(['^GSPC'])]
+        if df1.empty:
+            print "no sp500"
+            df.loc[len(df)+1,'symbol'] = self.sp500    
+        else:
+            print "sp500 in"
+
+        return
         
     def procMarketData(self):
         if not self.ticklist:
@@ -268,10 +281,8 @@ class MarketScan:
                 #merge tblout & df1
                 df1 = pandas.merge(tblout,df1,how='inner')
                     
-        #df = df1[(df1['symbol'].isin(ticklist)) | (df1['symbol']==self.sp500)]
-        # add S&P500 as benchmark
-        df1.loc[len(df1)+1,'symbol'] = self.sp500    
-                
+        self.addSP500(df1)
+                        
         print "==================================================="
         print "total", len(df1.index),"symbols selected"
         if self.hasPriceDataModule()==False:
