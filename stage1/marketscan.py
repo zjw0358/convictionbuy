@@ -7,7 +7,6 @@ import sys
 
 import pandas.io.data as web
 import pandas
-#import fundata
 import csv
 
 #sys.path.insert(0, "../src/")
@@ -23,6 +22,7 @@ class MarketScan:
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
+
         #pandas.options.display.float_format = '{:,.2f}%'.format
         pandas.set_option('display.float_format', lambda x: '%.3f' % x)
                 
@@ -228,6 +228,7 @@ class MarketScan:
             print "exception when write to csv ",outputFn
             
     # get symbol by pid
+    # move to marketdata
     def getSymbolByPid(self):
         # load symbol list file
         df = self.loadSymbolLstFile(self.symbolLstFile)
@@ -319,22 +320,16 @@ class MarketScan:
             symbol = row['symbol']
             print "processing ",index, symbol
             try:
-                ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
-                '''
-                dateidx = ohlc.index
-                print ohlc.loc['2014-04-01']
-                print ohlc.index.get_loc('2014-04-01')
-                print type(ohlc.index)
-                print ohlc.loc['2014-04-01']['Open']
-                '''
-                #print ohlc
+                ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)                
             except:
                 numError += 1
                 print "System/Network Error when retrieving ",symbol," skip it"
                 if numError>3:
                     print "too many errors when downloading symbol data, exit now"
                     sys.exit()
-            
+            #add 'px' column
+            table.loc[index,'px'] = ohlc['Adj Close'][-1]
+                        
             for sgyname in self.sgyInx:
                 #if not sgyname in self.sgyInfo:
                 sgx = self.sgyInx[sgyname]

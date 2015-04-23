@@ -11,18 +11,23 @@ class st_sma:
         
     def cleanup(self):
         self.ind = OrderedDict()
-        self.sgy = 1 # default sort all symbols 
+        self.offset = 3 #cross in past 3 bars
+        self.lookback = 10 #look back 10days
+        self.diff = 1 #diff from ma < 1%  
         return
 
     def usage(self):
-        return "available parameter:topperf;topperf_is,sort24,sort12,sort4,sort1,help"
+        return "px>ma200"
 
     def getIndicators(self):
         return self.ind    
 
     def setupParam(self,param):
         return
-      
+        
+    def needPriceData(self):
+        return True
+  
     # chart pattern recognize
     # move to standard package
     def cpr(self):
@@ -32,7 +37,12 @@ class st_sma:
     ma10,ma50,ma200
     '''
     def algoFunc(self, px):
-        plen = len(px)        
+        plen = len(px)  
+        #print "len=",plen
+        ma10=[]      
+        ma50=[]
+        ma100=[]
+        ma200=[]
         if plen >= 10:
             ma10 = pandas.stats.moments.rolling_mean(px,10)
             self.ind['ma10'] = ma10[-1]
@@ -45,7 +55,22 @@ class st_sma:
         if plen >= 200:
             ma200 = pandas.stats.moments.rolling_mean(px,200)
             self.ind['ma200'] = ma200[-1]
-        
+            self.ind['px_cross_sma_buy'] = 0
+            count = 0
+            for index in range(1,plen+1):
+                if px[-index] > ma200[-index]:
+                    buy = True
+                    for prev in range(index+1,index+11):
+                        if px[-prev] > ma200[-prev]:
+                            buy = False
+                            break;
+                    if buy==True:
+                        self.ind['px_cross_sma_buy'] = 1
+                    break
+                count+=1
+                if count>=self.offset:
+                    break;
+
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         #initialize tradesupport

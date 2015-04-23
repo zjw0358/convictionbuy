@@ -13,6 +13,10 @@ load market data
 '''
 class MarketData:
     def __init__(self):
+        pandas.set_option('display.max_columns', 50)
+        pandas.set_option('display.precision', 3)
+        pandas.set_option('display.expand_frame_repr', False)
+        pandas.set_option('display.max_rows', 1500)
         #pandas.set_option('display.max_columns', 50)
         #pandas.set_option('display.precision', 3)
         #pandas.set_option('display.expand_frame_repr', False)
@@ -85,6 +89,24 @@ class MarketData:
         else:
             return float(item)
 
+    # df is the loaded sysmbol list table
+    def getSymbolByPid(self,df,pid):        
+        #filter via pid mask
+        if pid>0:
+            criterion = df['pid'].map(lambda x: (int(x)&pid>0))
+            df1 = df[criterion] 
+        else: #all 
+            df1 = df
+        return df1
+
+    # idlst 1,2 -> mask = 0x3
+    def parsePidLst(self,idLst):
+        allMask = 0
+        for idstr in idLst:
+            theid = int(idstr)
+            allMask |= 2**(theid-1)
+        return allMask
+        
     #old version1      
     def evalCriteria1(self, df, param, colsin):
         criteria = []
