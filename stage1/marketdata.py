@@ -39,6 +39,36 @@ class MarketData:
 
         return
         
+    # google style portfolio file    
+    
+    def parseGooglePortfolio(self,line):
+        stocklist = {}
+        for item in line.split():      
+            symbols = item.split(':')
+            exg = ""
+            if (len(symbols))>1:
+                symbol = symbols[1]
+                if symbols[0] == "NYSE":
+                    exg = "N"
+                elif symbols[0] == "NYSEMKT":                
+                    exg = "A" #AMEX
+                elif symbols[0] == "NASDAQ":
+                    exg = "O" #NASDAQ
+            else:
+                symbol = symbols[0]                          
+            stocklist[symbol] = exg
+        return stocklist
+    
+    def loadPortfolioFile(self,fn):
+        fp = open(fn,'r',-1)
+        stocklist={}
+        for line in fp:
+            if line=="":
+                continue
+            else:
+                stocklist.update(self.parseGooglePortfolio(line))
+        fp.close()              
+        return stocklist
         
     def loadSymbolLstFile(self,fileName):
         #symbol,rank,name,sector,industry,pid,exg
@@ -92,8 +122,8 @@ class MarketData:
     # df is the loaded sysmbol list table
     def getSymbolByPid(self,df,pid):        
         #filter via pid mask
-        if pid>0:
-            criterion = df['pid'].map(lambda x: (int(x)&pid>0))
+        if pid!=0:
+            criterion = df['pid'].map(lambda x: ((int(x)&pid)>0))
             df1 = df[criterion] 
         else: #all 
             df1 = df
@@ -207,6 +237,7 @@ class MarketData:
         return df
         
     #save table
+    '''
     def saveTableFile(self,table,addstr=""):
         saveFileName = "mdscan_"
         for sgyname in self.sgyInx:
@@ -223,4 +254,11 @@ class MarketData:
             print "Finish wrote to ",outputFn
         except:
             print "exception when write to csv ",outputFn
+    '''     
+    def saveTable(self,df1,path):
+        try:
+            df1.to_csv(path,sep=',',index=False)
+        except:
+            print "exception when write to csv ",path
             
+        print "Finish wrote to ",path

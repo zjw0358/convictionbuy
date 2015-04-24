@@ -1,5 +1,5 @@
 symbol,rank,name,sector,industry,pid,exg
-^GSPC,1,S&P 500,,,7,N
+^GSPC,1,S&P 500,,,0,N
 SPP,0,Sanchez Production Partners LLC,Energy,Oil & Gas Production,0,A
 SPR,1,Spirit Aerosystems Holdings Inc.,Capital Goods,Military/Government/Technical,0,N
 SPU,0,SkyPeople Fruit Juice Inc.,Consumer Non-Durables,Packaged Foods,0,O
@@ -14,7 +14,7 @@ SPF,3,Standard Pacific Corp,Capital Goods,Homebuilding,0,N
 SPG,3,Simon Property Group Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 XPO,2,XPO Logistics Inc.,Consumer Services,Transportation Services,0,N
 XPL,3,Solitario Exploration & Royalty Corp,Basic Industries,Precious Metals,0,A
-JNS,2,Janus Capital Group Inc,Finance,Investment Managers,4,N
+JNS,2,Janus Capital Group Inc,Finance,Investment Managers,0,N
 REMY,3,Remy International Inc.,Capital Goods,Auto Parts:O.E.M.,0,O
 MBSD,0,FlexShares Disciplined Duration MBS Index Fund,n/a,n/a,0,O
 JNJ,3,Johnson & Johnson,Health Care,Major Pharmaceuticals,3,N
@@ -42,14 +42,14 @@ AVHI,3,A V Homes Inc.,Capital Goods,Homebuilding,0,O
 NOG,4,Northern Oil and Gas Inc.,Energy,Oil & Gas Production,0,A
 HLS,1,HealthSouth Corporation,Health Care,Hospital/Nursing Management,0,N
 NOA,2,North American Energy Partners Inc.,Energy,Oilfield Services/Equipment,0,N
-NOC,2,Northrop Grumman Corporation,Capital Goods,Industrial Machinery/Components,6,N
+NOC,2,Northrop Grumman Corporation,Capital Goods,Industrial Machinery/Components,2,N
 HLF,4,Herbalife LTD.,Health Care,Other Pharmaceuticals,0,N
-NOV,5,National Oilwell Varco Inc.,Energy,Metal Fabrications,4,N
+NOV,5,National Oilwell Varco Inc.,Energy,Metal Fabrications,0,N
 HVT/A,-1,Haverty Furniture Companies Inc.,Consumer Services,Other Specialty Stores,0,N
 NOR,1,Noranda Aluminum Holding Corporation,Basic Industries,Aluminum,0,N
 SYPR,0,Sypris Solutions Inc.,Capital Goods,Industrial Machinery/Components,0,O
 IFAS,0,iShares FTSE EPRA/NAREIT Asia Index Fund,n/a,n/a,0,O
-SPW,4,SPX Corporation,Technology,Industrial Machinery/Components,4,N
+SPW,4,SPX Corporation,Technology,Industrial Machinery/Components,0,N
 RFI,0,Cohen & Steers Total Return Realty Fund Inc.,n/a,n/a,0,N
 VRTX,3,Vertex Pharmaceuticals Incorporated,Health Care,Major Pharmaceuticals,0,O
 ARTW,0,Art&#39;s-Way Manufacturing Co. Inc.,Capital Goods,Industrial Machinery/Components,0,O
@@ -59,7 +59,7 @@ WSH,3,Willis Group Holdings Limited,Finance,Specialty Insurers,0,N
 EVBS,3,Eastern Virginia Bankshares Inc.,Finance,Major Banks,0,O
 BFAM,2,Bright Horizons Family Solutions Inc.,Miscellaneous,Other Consumer Services,0,N
 RLI,3,RLI Corp.,Finance,Property-Casualty Insurers,0,N
-NTAP,3,NetApp Inc.,Technology,Electronic Components,4,O
+NTAP,3,NetApp Inc.,Technology,Electronic Components,0,O
 EDD,0,Morgan Stanley Emerging Markets Domestic Debt Fund Inc.,n/a,n/a,0,N
 ZBRA,2,Zebra Technologies Corporation,Technology,Industrial Machinery/Components,0,O
 RLD,2,RealD Inc,Technology,Radio And Television Broadcasting And Communications Equipment,0,N
@@ -86,7 +86,7 @@ COHU,2,Cohu Inc.,Capital Goods,Electrical Products,0,O
 LF,4,Leapfrog Enterprises Inc,Consumer Non-Durables,Recreational Products/Toys,0,N
 LG,3,Laclede Group Inc.,Public Utilities,Oil/Gas Transmission,0,N
 LE,1,Lands&#39; End Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
-LB,2,L Brands Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,4,N
+LB,2,L Brands Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
 LC,3,LendingClub Corporation,n/a,n/a,0,N
 LO,4,Lorillard Inc,Consumer Non-Durables,Farming/Seeds/Milling,0,N
 LL,4,Lumber Liquidators Holdings Inc,Consumer Services,RETAIL: Building Materials,0,N
@@ -99,21 +99,21 @@ HEAR,3,Turtle Beach Corporation,Consumer Durables,Telecommunications Equipment,0
 NBHC,2,National Bank Holdings Corporation,Finance,Major Banks,0,N
 FRGI,2,Fiesta Restaurant Group Inc.,Consumer Services,Restaurants,0,O
 CNTY,3,Century Casinos Inc.,Consumer Services,Hotels/Resorts,0,O
-CFN,4,CareFusion Corporation,Health Care,Medical/Dental Instruments,4,N
+CFN,4,CareFusion Corporation,Health Care,Medical/Dental Instruments,0,N
 CFO,0,Compass EMP US 500 Enhanced Volatility Weighted Index ETF,n/a,n/a,0,O
 CFI,3,Culp Inc.,Basic Industries,Textiles,0,N
 CFG,3,Citizens Financial Group Inc.,Finance,Major Banks,0,N
 CFD,-1,Nuveen Diversified Commodity Fund,n/a,n/a,0,A
-PNR,3,Pentair plc.,Technology,Industrial Machinery/Components,4,N
+PNR,3,Pentair plc.,Technology,Industrial Machinery/Components,0,N
 PNW,3,Pinnacle West Capital Corporation,Public Utilities,Electric Utilities: Central,0,N
 CFA,0,Compass EMP US 500 Volatility Weighted Index ETF,n/a,n/a,0,O
 PNI,-1,Pimco New York Municipal Income Fund II,n/a,n/a,0,N
 PNK,4,Pinnacle Entertainment Inc.,Consumer Services,Hotels/Resorts,0,N
 MRLN,3,Marlin Business Services Corp.,Finance,Major Banks,0,O
 PNM,2,PNM Resources Inc. (Holding Co.),Public Utilities,Electric Utilities: Central,0,N
-CFX,4,Colfax Corporation,Capital Goods,Fluid Controls,4,N
+CFX,4,Colfax Corporation,Capital Goods,Fluid Controls,0,N
 PNC,3,PNC Financial Services Group Inc. (The),Finance,Major Banks,0,N
-CFR,3,Cullen/Frost Bankers Inc.,Finance,Major Banks,4,N
+CFR,3,Cullen/Frost Bankers Inc.,Finance,Major Banks,0,N
 CFP,-1,Cornerstone Progressive Return Fund,n/a,n/a,0,A
 PNF,-1,PIMCO New York Municipal Income Fund,n/a,n/a,0,N
 TRUP,3,Trupanion Inc.,Health Care,Medical Specialities,0,N
@@ -150,7 +150,7 @@ GULTU,-1,Gulf Coast Ultra Deep Royalty Trust,Energy,Oil & Gas Production,0,O
 ADNC,3,Audience Inc.,Technology,Semiconductors,0,O
 UCTT,3,Ultra Clean Holdings Inc.,Technology,Semiconductors,0,O
 EMKR,3,EMCORE Corporation,Technology,Semiconductors,0,O
-PAYX,3,Paychex Inc.,Consumer Services,Diversified Commercial Services,4,O
+PAYX,3,Paychex Inc.,Consumer Services,Diversified Commercial Services,0,O
 CSOD,3,Cornerstone OnDemand Inc.,Technology,Computer Software: Prepackaged Software,0,O
 SLCT,2,Select Bancorp Inc.,Finance,Major Banks,0,O
 TRTLW,-1,Terrapin 3 Acquisition Corporation,Finance,Business Services,0,O
@@ -178,7 +178,7 @@ SPAR,3,Spartan Motors Inc.,Capital Goods,Auto Manufacturing,0,O
 ANSS,3,ANSYS Inc.,Technology,Computer Software: Prepackaged Software,0,O
 CNHI,3,CNH Industrial N.V.,Capital Goods,Construction/Ag Equipment/Trucks,0,N
 GEF/B,-1,Greif Bros. Corporation,n/a,n/a,0,N
-BIIB,2,Biogen Idec Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),6,O
+BIIB,2,Biogen Idec Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),2,O
 PHIIK,0,PHI Inc.,Transportation,Transportation Services,0,O
 HOTRW,-1,Chanticleer Holdings Inc.,Consumer Services,Restaurants,0,O
 OAKS,5,Five Oaks Investment Corp.,Consumer Services,Real Estate Investment Trusts,0,N
@@ -216,10 +216,10 @@ UMBF,3,UMB Financial Corporation,Finance,Major Banks,0,O
 DMB,-1,Dreyfus Municipal Bond Infrastructure Fund Inc.,n/a,n/a,0,N
 DMD,3,Demand Media Inc.,Technology,EDP Services,0,N
 DMF,0,Dreyfus Municipal Income Inc.,n/a,n/a,0,A
-VNTV,4,Vantiv Inc.,Miscellaneous,Business Services,0,N
+VNTV,4,Vantiv Inc.,Miscellaneous,Business Services,4,N
 DMO,-1,Western Asset Mortgage Defined Opportunity Fund Inc,n/a,n/a,0,N
-SWKS,1,Skyworks Solutions Inc.,Technology,Semiconductors,4,O
-INFA,4,Informatica Corporation,Technology,Computer Software: Prepackaged Software,4,O
+SWKS,1,Skyworks Solutions Inc.,Technology,Semiconductors,0,O
+INFA,4,Informatica Corporation,Technology,Computer Software: Prepackaged Software,0,O
 GPOR,4,Gulfport Energy Corporation,Energy,Oil & Gas Production,0,O
 FWV,0,First West Virginia Bancorp Inc.,Finance,Major Banks,0,A
 XWES,-1,World Energy Solutions Inc (DE),Miscellaneous,Business Services,0,O
@@ -234,7 +234,7 @@ MGIC,4,Magic Software Enterprises Ltd.,Technology,Computer Software: Prepackaged
 FFBC,3,First Financial Bancorp.,Finance,Major Banks,0,O
 LEN/B,-1,Lennar Corporation,n/a,n/a,0,N
 XRM,0,Xerium Technologies Inc.,Basic Industries,Textiles,0,N
-INFY,3,Infosys Limited,Technology,EDP Services,4,N
+INFY,3,Infosys Limited,Technology,EDP Services,0,N
 XRA,0,Exeter Resource Corporation,Basic Industries,Mining & Quarrying of Nonmetallic Minerals (No Fuels),0,A
 XRX,4,Xerox Corporation,Miscellaneous,Business Services,0,N
 XRS,3,TAL Education Group,Consumer Services,Other Consumer Services,0,N
@@ -276,7 +276,7 @@ SRC,3,Spirit Realty Capital Inc.,Consumer Services,Building operators,0,N
 SRF,-1,The Cushing Royalty & Income Fund,n/a,n/a,0,N
 ASRVP,-1,AmeriServ Financial Inc.,Finance,Major Banks,0,O
 CORI,3,Corium International Inc.,Health Care,Major Pharmaceuticals,0,O
-SRE,3,Sempra Energy,Public Utilities,Natural Gas Distribution,4,N
+SRE,3,Sempra Energy,Public Utilities,Natural Gas Distribution,0,N
 SRI,3,Stoneridge Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
 ESCRP,-1,Escalera Resources Co.,Energy,Oil & Gas Production,0,O
 SRV,0,The Cushing MLP Total Return Fund,n/a,n/a,0,N
@@ -288,7 +288,7 @@ NMR,0,Nomura Holdings Inc ADR,Finance,Investment Bankers/Brokers/Service,0,N
 NMS,-1,Nuveen Minnesota Municipal Income Fund,n/a,n/a,0,N
 TDC,3,Teradata Corporation,Technology,Computer Manufacturing,0,N
 TDA,-1,Telephone and Data Systems Inc.,Public Utilities,Telecommunications Equipment,0,N
-HLX,4,Helix Energy Solutions Group Inc.,Energy,Oilfield Services/Equipment,4,N
+HLX,4,Helix Energy Solutions Group Inc.,Energy,Oilfield Services/Equipment,0,N
 TDG,2,Transdigm Group Incorporated,Capital Goods,Military/Government/Technical,0,N
 TDF,0,Templeton Dragon Fund Inc.,n/a,n/a,0,N
 TDE,-1,Telephone and Data Systems Inc.,Public Utilities,Telecommunications Equipment,0,N
@@ -308,7 +308,7 @@ SYRX,3,Sysorex Global Holding Corp.,Technology,EDP Services,0,O
 SMFG,4,Sumitomo Mitsui Financial Group Inc,Finance,Commercial Banks,0,N
 LOR,-1,Lazard World Dividend & Income Fund Inc.,n/a,n/a,0,N
 FHY,-1,First Trust Strategic High Income Fund II,n/a,n/a,0,N
-LOW,2,Lowe&#39;s Companies Inc.,Consumer Services,RETAIL: Building Materials,4,N
+LOW,2,Lowe&#39;s Companies Inc.,Consumer Services,RETAIL: Building Materials,0,N
 ADUS,3,Addus HomeCare Corporation,Health Care,Medical/Nursing Services,0,O
 IKAN,3,Ikanos Communications Inc.,Public Utilities,Telecommunications Equipment,0,O
 GUID,3,Guidance Software Inc.,Technology,Computer Software: Prepackaged Software,0,O
@@ -317,11 +317,11 @@ QTEC,1,First Trust NASDAQ-100-Technology Sector Index Fund,n/a,n/a,0,O
 NTGR,3,NETGEAR Inc.,Public Utilities,Telecommunications Equipment,0,O
 EBF,0,Ennis Inc.,Consumer Services,Office Equipment/Supplies/Services,0,N
 NOW,3,ServiceNow Inc.,Technology,Computer Software: Prepackaged Software,0,N
-RJF,4,Raymond James Financial Inc.,Finance,Investment Bankers/Brokers/Service,4,N
+RJF,4,Raymond James Financial Inc.,Finance,Investment Bankers/Brokers/Service,0,N
 RJD,-1,Raymond James Financial Inc.,Finance,Investment Bankers/Brokers/Service,0,N
 EBR,0,Centrais Electricas Brasileiras SA,Public Utilities,Electric Utilities: Central,0,N
 EBS,3,Emergent Biosolutions Inc.,Health Care,Major Pharmaceuticals,0,N
-DRQ,4,Dril-Quip Inc.,Energy,Metal Fabrications,4,N
+DRQ,4,Dril-Quip Inc.,Energy,Metal Fabrications,0,N
 ABGB,1,Abengoa S.A.,Consumer Services,Military/Government/Technical,0,O
 GLNG,3,Golar LNG Limited,Consumer Services,Marine Transportation,0,O
 LFUS,3,Littelfuse Inc.,Consumer Durables,Electrical Products,0,O
@@ -352,7 +352,7 @@ AAOI,3,Applied Optoelectronics Inc.,Technology,Semiconductors,0,O
 OXGN,3,OXiGENE Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 GOF,-1,Guggenheim Strategic Opportunities Fund,n/a,n/a,0,N
 NEPT,2,Neptune Technologies & Bioresources Inc,Health Care,Major Pharmaceuticals,0,O
-JAZZ,3,Jazz Pharmaceuticals plc,Health Care,Major Pharmaceuticals,0,O
+JAZZ,3,Jazz Pharmaceuticals plc,Health Care,Major Pharmaceuticals,4,O
 IBCP,3,Independent Bank Corporation,Finance,Major Banks,0,O
 CAPL,3,CrossAmerica Partners LP,Energy,Oil Refining/Marketing,0,N
 CAPN,0,Capnia Inc.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
@@ -365,7 +365,7 @@ MPG,0,Metaldyne Performance Group Inc.,n/a,n/a,0,N
 MPB,0,Mid Penn Bancorp,Finance,Major Banks,0,O
 MPC,3,Marathon Petroleum Corporation,Energy,Integrated oil Companies,0,N
 MPA,0,Blackrock MuniYield Pennsylvania Quality Fund,n/a,n/a,0,N
-AVT,3,Avnet Inc.,Consumer Non-Durables,Electronic Components,4,N
+AVT,3,Avnet Inc.,Consumer Non-Durables,Electronic Components,0,N
 MPO,2,Midstates Petroleum Company Inc.,Energy,Oil & Gas Production,0,N
 AVV,-1,Aviva plc,Finance,Life Insurance,0,N
 AVP,4,Avon Products Inc.,Consumer Non-Durables,Package Goods/Cosmetics,0,N
@@ -431,8 +431,8 @@ EDE,2,Empire District Electric Company (The),Public Utilities,Electric Utilities
 PSTB,3,Park Sterling Corporation,Finance,Major Banks,0,O
 HBOS,2,Heritage Financial Group,Finance,Savings Institutions,0,O
 PSTI,2,Pluristem Therapeutics Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
-LRCX,2,Lam Research Corporation,Technology,Industrial Machinery/Components,4,O
-LMT,3,Lockheed Martin Corporation,Capital Goods,Military/Government/Technical,6,N
+LRCX,2,Lam Research Corporation,Technology,Industrial Machinery/Components,0,O
+LMT,3,Lockheed Martin Corporation,Capital Goods,Military/Government/Technical,2,N
 MPET,3,Magellan Petroleum Corporation,Energy,Oil & Gas Production,0,O
 WNRL,3,Western Refining Logistics LP,Energy,Natural Gas Distribution,0,N
 HMTV,0,Hemisphere Media Group Inc.,Consumer Services,Television Services,0,O
@@ -444,7 +444,7 @@ SFUN,3,SouFun Holdings Limited,Technology,EDP Services,0,N
 UVV,0,Universal Corporation,Consumer Services,Farming/Seeds/Milling,0,N
 SNBC,3,Sun Bancorp Inc.,Finance,Commercial Banks,0,O
 FNGN,3,Financial Engines Inc.,Finance,Investment Managers,0,O
-PCLN,4,The Priceline Group Inc. ,Miscellaneous,Business Services,4,O
+PCLN,4,The Priceline Group Inc. ,Miscellaneous,Business Services,0,O
 BRFS,3,BRF S.A.,Consumer Non-Durables,Meat/Poultry/Fish,0,N
 NWLI,0,National Western Life Insurance Company,Finance,Life Insurance,0,O
 UVE,1,UNIVERSAL INSURANCE HOLDINGS INC,Finance,Property-Casualty Insurers,0,N
@@ -452,10 +452,10 @@ LITB,4,LightInTheBox Holding Co. Ltd.,Consumer Services,Catalog/Specialty Distri
 DIOD,3,Diodes Incorporated,Technology,Semiconductors,0,O
 VALE/P,-1,VALE S.A.,n/a,n/a,0,N
 PNQI,3,PowerShares NASDAQ Internet Portfolio,n/a,n/a,0,O
-MD,2,Mednax Inc,Health Care,Hospital/Nursing Management,4,N
+MD,2,Mednax Inc,Health Care,Hospital/Nursing Management,0,N
 MG,2,Mistras Group Inc,Consumer Services,Military/Government/Technical,0,N
 RWC,0,RELM Wireless Corporation,Technology,Radio And Television Broadcasting And Communications Equipment,0,A
-MA,3,Mastercard Incorporated,Miscellaneous,Business Services,6,N
+MA,3,Mastercard Incorporated,Miscellaneous,Business Services,2,N
 ALOG,1,Analogic Corporation,Capital Goods,Electrical Products,0,O
 MC,2,Moelis & Company,Finance,Investment Managers,0,N
 MM,3,Millennial Media Inc.,Technology,Advertising,0,N
@@ -477,7 +477,7 @@ DOM,0,Dominion Resources Black Warrior Trust,Energy,Coal Mining,0,N
 DOC,4,Physicians Realty Trust,Consumer Services,Real Estate Investment Trusts,0,N
 COSI,0,Cosi Inc.,Consumer Services,Restaurants,0,O
 DOX,3,Amdocs Limited,Technology,EDP Services,0,O
-COST,3,Costco Wholesale Corporation,Consumer Services,Department/Specialty Retail Stores,4,O
+COST,3,Costco Wholesale Corporation,Consumer Services,Department/Specialty Retail Stores,2,O
 DOV,3,Dover Corporation,Technology,Industrial Machinery/Components,0,N
 LDRH,0,LDR Holding Corporation,Health Care,Medical/Dental Instruments,0,O
 SWIR,3,Sierra Wireless Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
@@ -491,14 +491,14 @@ PUK,4,Prudential Public Limited Company,Finance,Life Insurance,0,N
 INUV,3,Inuvo Inc,Consumer Services,Advertising,0,A
 THGA,-1,The Hanover Insurance Group Inc.,Finance,Property-Casualty Insurers,0,N
 EQY,3,Equity One Inc.,Consumer Services,Real Estate Investment Trusts,0,N
-CIEN,3,Ciena Corporation,Public Utilities,Telecommunications Equipment,0,N
+CIEN,3,Ciena Corporation,Public Utilities,Telecommunications Equipment,4,N
 LTRPA,3,Liberty TripAdvisor Holdings Inc.,Technology,EDP Services,0,O
 ITCI,3,Intra-Cellular Therapies Inc.,Health Care,Major Pharmaceuticals,0,O
 KNL,3,Knoll Inc.,Consumer Durables,Office Equipment/Supplies/Services,0,N
 BAX,4,Baxter International Inc.,Health Care,Medical/Dental Instruments,0,N
 BAF,-1,BlackRock Income Investment Quality Trust,n/a,n/a,0,N
 DPO,-1,Dow 30 Premium,n/a,n/a,0,N
-BAC,4,Bank of America Corporation,Finance,Major Banks,2,N
+BAC,4,Bank of America Corporation,Finance,Major Banks,6,N
 TRLA,3,Trulia Inc.,Technology,EDP Services,0,N
 RNDY,4,Roundy&#39;s Inc.,Consumer Services,Food Chains,0,N
 BAM,2,Brookfield Asset Management Inc,Consumer Services,Building operators,0,N
@@ -561,13 +561,13 @@ RTGN,0,Ruthigen Inc.,Health Care,Major Pharmaceuticals,0,O
 KAI,1,Kadant Inc,Technology,Industrial Machinery/Components,0,N
 FITBI,-1,Fifth Third Bancorp,Finance,Major Banks,0,O
 RHT,3,Red Hat Inc.,Technology,Computer Software: Programming Data Processing,0,N
-RHI,3,Robert Half International Inc.,Technology,Professional Services,4,N
+RHI,3,Robert Half International Inc.,Technology,Professional Services,0,N
 KAR,3,KAR Auction Services Inc,Consumer Durables,Automotive Aftermarket,0,N
 KAP,-1,KCAP Financial Inc.,n/a,n/a,0,N
 ABEV,3,Ambev S.A.,Consumer Non-Durables,Beverages (Production/Distribution),0,N
 WF,3,Woori Bank,Finance,Commercial Banks,0,N
 FCFS,3,First Cash Financial Services Inc.,Consumer Services,Other Specialty Stores,0,O
-BMRN,3,BioMarin Pharmaceutical Inc.,Health Care,Major Pharmaceuticals,0,O
+BMRN,3,BioMarin Pharmaceutical Inc.,Health Care,Major Pharmaceuticals,4,O
 COLB,3,Columbia Banking System Inc.,Finance,Major Banks,0,O
 ACY,5,AeroCentury Corp.,Technology,Diversified Commercial Services,0,A
 BMRC,3,Bank of Marin Bancorp,Finance,Major Banks,0,O
@@ -586,7 +586,7 @@ HIG/WS,-1,Hartford Financial Services Group Inc. (The),n/a,n/a,0,N
 RGP,3,Regency Energy Partners LP,Energy,Oil & Gas Production,0,N
 ATE,0,Advantest Corporation (Kabushiki Kaisha Advantest) ADS,Technology,Semiconductors,0,N
 CBST,2,Cubist Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
-ATO,2,Atmos Energy Corporation,Public Utilities,Oil/Gas Transmission,4,N
+ATO,2,Atmos Energy Corporation,Public Utilities,Oil/Gas Transmission,0,N
 ATL,3,Atlatsa Resources Corporation,Basic Industries,Precious Metals,0,A
 ATK,4,Alliant Techsystems Inc.,Capital Goods,Military/Government/Technical,0,N
 ATI,4,Allegheny Technologies Incorporated,Basic Industries,Steel/Iron Ore,0,N
@@ -630,7 +630,7 @@ CGI,2,Celadon Group Inc.,Transportation,Trucking Freight/Courier Services,0,N
 LMNX,2,Luminex Corporation,Health Care,Medical/Dental Instruments,0,O
 LMNS,3,Lumenis Ltd.,Health Care,Medical Specialities,0,O
 LMNR,4,Limoneira Co,Consumer Non-Durables,Farming/Seeds/Milling,0,O
-AZPN,3,Aspen Technology Inc.,Technology,EDP Services,4,O
+AZPN,3,Aspen Technology Inc.,Technology,EDP Services,0,O
 VRNGW,-1,Vringo Inc.,Consumer Services,Telecommunications Equipment,0,O
 SJI,3,South Jersey Industries Inc.,Public Utilities,Oil/Gas Transmission,0,N
 GTLS,5,Chart Industries Inc.,Capital Goods,Metal Fabrications,0,O
@@ -676,7 +676,7 @@ FSP,4,Franklin Street Properties Corp.,Consumer Services,Real Estate Investment 
 FSS,3,Federal Signal Corporation,Capital Goods,Auto Manufacturing,0,N
 AMWD,3,American Woodmark Corporation,Basic Industries,Forest Products,0,O
 SIVBO,-1,SVB Financial Group,Finance,Major Banks,0,O
-ZTS,3,Zoetis Inc.,Health Care,Major Pharmaceuticals,4,N
+ZTS,3,Zoetis Inc.,Health Care,Major Pharmaceuticals,0,N
 ZTR,0,Zweig Total Return Fund Inc. (The),n/a,n/a,0,N
 NYMX,0,Nymox Pharmaceutical Corporation,Health Care,Biotechnology: In Vitro & In Vivo Diagnostic Substances,0,O
 RUK,4,Reed Elsevier PLC,Consumer Services,Publishing,0,N
@@ -710,7 +710,7 @@ UTL,3,UNITIL Corporation,Public Utilities,Power Generation,0,N
 IRL,0,New Ireland Fund Inc. (The),n/a,n/a,0,N
 IRM,3,Iron Mountain Incorporated,Consumer Services,Office Equipment/Supplies/Services,0,N
 JPEP,4,JP Energy Partners LP,Energy,Oil Refining/Marketing,0,N
-UTX,3,United Technologies Corporation,Capital Goods,Aerospace,1,N
+UTX,3,United Technologies Corporation,Capital Goods,Aerospace,3,N
 IRC,4,Inland Real Estate Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 IRE,3,Governor and Company of the Bank of Ireland (The),Finance,Commercial Banks,0,N
 IRF,-1,International Rectifier Corporation,Technology,Semiconductors,0,N
@@ -768,7 +768,7 @@ SFST,3,Southern First Bancshares Inc.,Finance,Major Banks,0,O
 FONR,0,Fonar Corporation,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
 CPHR,0,Cipher Pharmaceuticals Inc.,n/a,n/a,0,O
 CACC,3,Credit Acceptance Corporation,Finance,Finance: Consumer Services,0,O
-APH,3,Amphenol Corporation,Capital Goods,Electrical Products,4,N
+APH,3,Amphenol Corporation,Capital Goods,Electrical Products,0,N
 PEB,2,Pebblebrook Hotel Trust,Consumer Services,Real Estate Investment Trusts,0,N
 GM/WS/C,-1,General Motors Company,n/a,n/a,0,N
 GM/WS/B,-1,General Motors Company,n/a,n/a,0,N
@@ -794,7 +794,7 @@ NX,5,Quanex Building Products Corporation,Capital Goods,Metal Fabrications,0,N
 NP,3,Neenah Paper Inc.,Basic Industries,Paper,0,N
 DMLP,0,Dorchester Minerals L.P.,Energy,Oil & Gas Production,0,O
 NR,5,Newpark Resources Inc.,Energy,Metal Fabrications,0,N
-NS,3,Nustar Energy L.P.,Energy,Natural Gas Distribution,4,N
+NS,3,Nustar Energy L.P.,Energy,Natural Gas Distribution,0,N
 NU,2,Northeast Utilities,Public Utilities,Electric Utilities: Central,0,N
 HUB/A,-1,Hubbell Inc,Capital Goods,Electrical Products,0,N
 HUB/B,-1,Hubbell Inc,Capital Goods,Electrical Products,0,N
@@ -850,7 +850,7 @@ DLR,3,Digital Realty Trust Inc.,Consumer Services,Real Estate Investment Trusts,
 LNBB,3,LNB Bancorp Inc.,Finance,Major Banks,0,O
 FNFV,3,Fidelity National Financial Inc.,Finance,Specialty Insurers,0,N
 SHLDW,-1,Sears Holdings Corporation,n/a,n/a,0,O
-MKC,2,McCormick & Company Incorporated,Consumer Non-Durables,Packaged Foods,4,N
+MKC,2,McCormick & Company Incorporated,Consumer Non-Durables,Packaged Foods,0,N
 SDPI,3,Superior Drilling Products Inc.,Energy,Metal Fabrications,0,A
 FICO,3,Fair Isaac Corporation,Miscellaneous,Business Services,0,N
 VET,5,Vermilion Energy Inc.,Energy,Oil & Gas Production,0,N
@@ -881,7 +881,7 @@ RSO,3,Resource Capital Corp.,Consumer Services,Real Estate Investment Trusts,0,N
 RSH,3,Radioshack Corporation,Consumer Services,Consumer Electronics/Video Chains,0,N
 ALKS,4,Alkermes plc,Health Care,Major Pharmaceuticals,0,O
 RSE,3,Rouse Properties Inc.,Finance,Real Estate,0,N
-RSG,2,Republic Services Inc.,Public Utilities,Environmental Services,4,N
+RSG,2,Republic Services Inc.,Public Utilities,Environmental Services,0,N
 MSLI,0,Merus Labs International Inc.,Health Care,Major Pharmaceuticals,0,O
 RST,3,Rosetta Stone,Technology,Computer Software: Prepackaged Software,0,N
 BLKB,3,Blackbaud Inc.,Technology,Computer Software: Prepackaged Software,0,O
@@ -905,7 +905,7 @@ SXCP,3,SunCoke Energy Partners L.P.,Basic Industries,Steel/Iron Ore,0,N
 URG,3,Ur Energy Inc,Basic Industries,Precious Metals,0,A
 URBN,3,Urban Outfitters Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
 AEPI,0,AEP Industries Inc.,Capital Goods,Specialty Chemicals,0,O
-URI,3,United Rentals Inc.,Technology,Diversified Commercial Services,4,N
+URI,3,United Rentals Inc.,Technology,Diversified Commercial Services,0,N
 MAYS,0,J. W. Mays Inc.,Consumer Services,Building operators,0,O
 VIRC,5,Virco Manufacturing Corporation,Consumer Durables,Industrial Specialties,0,O
 IPB,-1,Merrill Lynch & Co. Inc.,Finance,Finance: Consumer Services,0,A
@@ -924,18 +924,18 @@ HDP,3,Hortonworks Inc.,n/a,n/a,0,O
 NGL,3,NGL ENERGY PARTNERS LP,Energy,Oil Refining/Marketing,0,N
 HDY,0,HyperDynamics Corporation,Energy,Oil & Gas Production,0,N
 EROC,2,Eagle Rock Energy Partners L.P.,Energy,Oil & Gas Production,0,O
-HDB,4,HDFC Bank Limited,Finance,Commercial Banks,4,N
+HDB,4,HDFC Bank Limited,Finance,Commercial Banks,0,N
 NGS,3,Natural Gas Services Group Inc.,Energy,Oilfield Services/Equipment,0,N
 EROS,3,Eros International PLC,Consumer Services,Movies/Entertainment,0,N
 BMA,2,Macro Bank Inc.,Finance,Commercial Banks,0,N
 BME,-1,Blackrock Health Sciences Trust,n/a,n/a,0,N
 BMI,3,Badger Meter Inc.,Capital Goods,Industrial Machinery/Components,0,N
 BMO,3,Bank Of Montreal,Finance,Commercial Banks,0,N
-BMR,3,Biomed Realty Trust,Consumer Services,Real Estate Investment Trusts,4,N
-BMS,2,Bemis Company Inc.,Consumer Durables,Containers/Packaging,4,N
-BMY,3,Bristol-Myers Squibb Company,Health Care,Major Pharmaceuticals,2,N
+BMR,3,Biomed Realty Trust,Consumer Services,Real Estate Investment Trusts,0,N
+BMS,2,Bemis Company Inc.,Consumer Durables,Containers/Packaging,0,N
+BMY,3,Bristol-Myers Squibb Company,Health Care,Major Pharmaceuticals,6,N
 DTLK,3,Datalink Corporation,Technology,EDP Services,0,O
-SHW,3,Sherwin-Williams Company (The),Consumer Services,RETAIL: Building Materials,4,N
+SHW,3,Sherwin-Williams Company (The),Consumer Services,RETAIL: Building Materials,0,N
 IT,3,Gartner Inc.,Consumer Services,Other Consumer Services,0,N
 ACFC,3,Atlantic Coast Financial Corporation,Finance,Savings Institutions,0,O
 SHG,3,Shinhan Financial Group Co Ltd,Finance,Major Banks,0,N
@@ -943,12 +943,12 @@ ACFN,0,Acorn Energy Inc.,Consumer Services,Military/Government/Technical,0,O
 RDS/A,-1,Royal Dutch Shell PLC,n/a,n/a,0,N
 POST,3,Post Holdings Inc.,Consumer Non-Durables,Packaged Foods,0,N
 SHO,2,Sunstone Hotel Investors Inc.,Consumer Services,Hotels/Resorts,0,N
-MGA,2,Magna International Inc.,Capital Goods,Auto Parts:O.E.M.,4,N
+MGA,2,Magna International Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
 RMT,0,Royce Micro-Cap Trust Inc.,n/a,n/a,0,N
 MGI,3,Moneygram International Inc.,Miscellaneous,Business Services,0,O
 MGH,0,Minco Gold Corporation,Basic Industries,Precious Metals,0,A
 MGN,0,Mines Management Inc.,Basic Industries,Precious Metals,0,A
-MGM,3,MGM Resorts International,Consumer Services,Hotels/Resorts,0,N
+MGM,3,MGM Resorts International,Consumer Services,Hotels/Resorts,4,N
 TBI,3,TrueBlue Inc.,Technology,Professional Services,0,N
 MGR,-1,Affiliated Managers Group Inc.,Finance,Investment Managers,0,N
 TBK,3,Triumph Bancorp Inc.,Finance,Major Banks,0,O
@@ -957,7 +957,7 @@ MGT,0,MGT Capital Investments Inc,Miscellaneous,Multi-Sector Companies,0,A
 GZT,0,Gazit-Globe Ltd.,Finance,Real Estate,0,N
 PDM,3,Piedmont Office Realty Trust Inc.,Consumer Services,Building operators,0,N
 OTEL,0,Otelco Inc.,Public Utilities,Telecommunications Equipment,0,O
-ECL,4,Ecolab Inc.,Basic Industries,Package Goods/Cosmetics,4,N
+ECL,4,Ecolab Inc.,Basic Industries,Package Goods/Cosmetics,0,N
 LUV,1,Southwest Airlines Company,Transportation,Air Freight/Delivery Services,0,N
 LUX,4,Luxottica Group S.p.A.,Health Care,Ophthalmic Goods,0,N
 STXS,0,Stereotaxis Inc.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
@@ -985,9 +985,9 @@ KED,3,Kayne Anderson Energy Development Company,n/a,n/a,0,N
 RYAM,3,Rayonier Advanced Materials Inc.,Basic Industries,Major Chemicals,0,N
 HSBC,3,HSBC Holdings plc,n/a,n/a,0,N
 VKTX,-1,Viking Therapeutics Inc.,n/a,n/a,0,O
-LNC,2,Lincoln National Corporation,Finance,Life Insurance,4,N
+LNC,2,Lincoln National Corporation,Finance,Life Insurance,0,N
 KEY,3,KeyCorp,Finance,Major Banks,0,N
-KEX,4,Kirby Corporation,Consumer Services,Marine Transportation,4,N
+KEX,4,Kirby Corporation,Consumer Services,Marine Transportation,0,N
 APDNW,-1,Applied DNA Sciences Inc,Consumer Services,Other Consumer Services,0,O
 KEP,4,Korea Electric Power Corporation,Public Utilities,Electric Utilities: Central,0,N
 CWCO,2,Consolidated Water Co. Ltd.,Public Utilities,Water Supply,0,O
@@ -995,11 +995,11 @@ ABIO,0,ARCA biopharma Inc.,Health Care,Biotechnology: In Vitro & In Vivo Diagnos
 ACCO,3,Acco Brands Corporation,Consumer Durables,Publishing,0,N
 MOLG,0,MOL Global Inc.,Miscellaneous,Business Services,0,O
 TFSL,3,TFS Financial Corporation,Finance,Savings Institutions,0,O
-ITC,3,ITC Holdings Corp.,Public Utilities,Electric Utilities: Central,4,N
+ITC,3,ITC Holdings Corp.,Public Utilities,Electric Utilities: Central,0,N
 UVSP,3,Univest Corporation of Pennsylvania,Finance,Major Banks,0,O
 DMRC,2,Digimarc Corporation,Technology,EDP Services,0,O
-BBD,4,Banco Bradesco Sa,Finance,Major Banks,4,N
-M,3,Macy&#39;s Inc,Consumer Services,Department/Specialty Retail Stores,4,N
+BBD,4,Banco Bradesco Sa,Finance,Major Banks,0,N
+M,3,Macy&#39;s Inc,Consumer Services,Department/Specialty Retail Stores,0,N
 ICAD,3,icad inc.,Health Care,Medical/Dental Instruments,0,O
 IPCC,2,Infinity Property and Casualty Corporation,Finance,Property-Casualty Insurers,0,O
 ZGNX,3,Zogenix Inc.,Health Care,Major Pharmaceuticals,0,O
@@ -1013,7 +1013,7 @@ FUEL,2,Rocket Fuel Inc.,Technology,Computer Software: Programming Data Processin
 TESS,5,TESSCO Technologies Incorporated,Consumer Non-Durables,Electronic Components,0,O
 AXR,0,AMREP Corporation,Consumer Services,Newspapers/Magazines,0,N
 AXS,3,Axis Capital Holdings Limited,Finance,Property-Casualty Insurers,0,N
-AXP,3,American Express Company,Finance,Finance: Consumer Services,7,N
+AXP,3,American Express Company,Finance,Finance: Consumer Services,3,N
 CVCY,4,Central Valley Community Bancorp,Finance,Major Banks,0,O
 AXX,3,Alderon Iron Ore Corp.,Basic Industries,Precious Metals,0,A
 CVCO,0,Cavco Industries Inc.,Basic Industries,Homebuilding,0,O
@@ -1136,7 +1136,7 @@ KOPN,0,Kopin Corporation,Technology,Semiconductors,0,O
 ACE,3,Ace Limited,Finance,Property-Casualty Insurers,0,N
 ACI,4,Arch Coal Inc.,Energy,Coal Mining,0,N
 NEE,4,NextEra Energy Inc.,Public Utilities,Electric Utilities: Central,0,N
-ACN,3,Accenture plc.,Miscellaneous,Business Services,4,N
+ACN,3,Accenture plc.,Miscellaneous,Business Services,0,N
 ACM,3,Aecom Technology Corporation,n/a,n/a,0,N
 NEA,-1,Nuveen AMT-Free Municipal Income Fund,n/a,n/a,0,N
 ACP,-1,Avenue Income Credit Strategies Fund,n/a,n/a,0,N
@@ -1157,7 +1157,7 @@ BKK,-1,Blackrock Municipal 2020 Term Trust,n/a,n/a,0,N
 BKT,0,BlackRock Income Trust Inc. (The),n/a,n/a,0,N
 BKU,4,BankUnited Inc.,Finance,Savings Institutions,0,N
 BKS,3,Barnes & Noble Inc.,Consumer Services,Other Specialty Stores,0,N
-GILD,4,Gilead Sciences Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),6,O
+GILD,4,Gilead Sciences Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),2,O
 MDVN,3,Medivation Inc.,Health Care,Major Pharmaceuticals,0,O
 SJW,3,SJW Corporation,Public Utilities,Water Supply,0,N
 SJT,0,San Juan Basin Royalty Trust,Energy,Oil & Gas Production,0,N
@@ -1175,7 +1175,7 @@ MEA,3,Metalico Inc,Basic Industries,Metal Fabrications,0,A
 GDV,-1,Gabelli Dividend,n/a,n/a,0,N
 MEN,0,Blackrock MuniEnhanced Fund Inc.,n/a,n/a,0,N
 MEI,2,Methode Electronics Inc.,Capital Goods,Electrical Products,0,N
-MET,3,MetLife Inc.,Finance,Life Insurance,4,N
+MET,3,MetLife Inc.,Finance,Life Insurance,0,N
 MEP,3,Midcoast Energy Partners L.P.,Public Utilities,Oil & Gas Production,0,N
 GDF,0,Western Asset Global Partners Income Fund Inc.,n/a,n/a,0,N
 GDL,0,The GDL Fund,n/a,n/a,0,N
@@ -1190,14 +1190,14 @@ QQEW,3,First Trust NASDAQ-100 Equal Weighted Index Fund,n/a,n/a,0,O
 ESBK,0,Elmira Savings Bank NY (The),Finance,Major Banks,0,O
 SLVO,0,Credit Suisse Silver Shares Covered Call ETN,Finance,Investment Bankers/Brokers/Service,0,O
 AFSD,-1,Aflac Incorporated,Finance,Accident &Health Insurance,0,N
-AFSI,3,AmTrust Financial Services Inc.,Finance,Property-Casualty Insurers,4,O
+AFSI,3,AmTrust Financial Services Inc.,Finance,Property-Casualty Insurers,0,O
 EZT,-1,Entergy Texas Inc,Public Utilities,Electric Utilities: Central,0,N
 KGC,3,Kinross Gold Corporation,Basic Industries,Precious Metals,0,N
 CPK,1,Chesapeake Utilities Corporation,Public Utilities,Oil & Gas Production,0,N
 CPL,3,CPFL Energia S.A.,Public Utilities,Electric Utilities: Central,0,N
 CPN,2,Calpine Corporation,Public Utilities,Electric Utilities: Central,0,N
 CPA,5,Copa Holdings S.A.,Transportation,Air Freight/Delivery Services,0,N
-CPB,3,Campbell Soup Company,Consumer Non-Durables,Packaged Foods,4,N
+CPB,3,Campbell Soup Company,Consumer Non-Durables,Packaged Foods,0,N
 CWAY,0,Coastway Bancorp Inc.,Finance,Savings Institutions,0,O
 CPE,4,Callon Petroleum Company,Energy,Oil & Gas Production,0,N
 CPF,3,CPB Inc.,Finance,Major Banks,0,N
@@ -1206,7 +1206,7 @@ CPS,3,Cooper-Standard Holdings Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
 CPT,3,Camden Property Trust,Consumer Services,Real Estate Investment Trusts,0,N
 NILE,3,Blue Nile Inc.,Consumer Services,Consumer Specialties,0,O
 FCHI,3,iShares FTSE China (HK Listed) Index Fund,n/a,n/a,0,O
-VOYA,2,Voya Financial Inc.,Finance,Life Insurance,0,N
+VOYA,2,Voya Financial Inc.,Finance,Life Insurance,4,N
 ARBR,-1,ArborGen Inc.,n/a,n/a,0,O
 EVAR,3,Lombard Medical Inc.,Health Care,Medical/Dental Instruments,0,O
 SLMBP,-1,SLM Corporation,Finance,Finance: Consumer Services,0,O
@@ -1243,12 +1243,12 @@ NATH,0,Nathan&#39;s Famous Inc.,Consumer Services,Restaurants,0,O
 NATL,3,National Interstate Corporation,Finance,Property-Casualty Insurers,0,O
 BONA,2,Bona Film Group Limited,Consumer Services,Movies/Entertainment,0,O
 BONE,0,Bacterin International Holdings Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,A
-ZMH,4,Zimmer Holdings Inc.,Health Care,Industrial Specialties,4,N
+ZMH,4,Zimmer Holdings Inc.,Health Care,Industrial Specialties,0,N
 TAOM,1,Taomee Holdings Limited,Miscellaneous,Business Services,0,N
 HYZD,0,WisdomTree BofA Merrill Lynch High Yield Bond Zero Duration Fu,n/a,n/a,0,O
 RUBI,2,The Rubicon Project Inc.,Technology,Computer Software: Programming Data Processing,0,N
 PLPM,3,Planet Payment Inc.,Miscellaneous,Business Services,0,O
-PAGP,4,Plains Group Holdings L.P.,Energy,Natural Gas Distribution,4,N
+PAGP,4,Plains Group Holdings L.P.,Energy,Natural Gas Distribution,0,N
 PLPC,0,Preformed Line Products Company,Basic Industries,Water Supply,0,O
 VTWV,3,Vanguard Russell 2000 Value ETF,n/a,n/a,0,O
 VTWO,3,Vanguard Russell 2000 ETF,n/a,n/a,0,O
@@ -1282,7 +1282,7 @@ TAXI,5,Medallion Financial Corp.,Finance,Finance: Consumer Services,0,O
 IGTE,3,iGATE Corporation,Technology,EDP Services,0,O
 NOAH,3,Noah Holdings Ltd.,Finance,Investment Managers,0,N
 KFX,3,Kofax Limited,Technology,Computer Software: Programming Data Processing,0,O
-RLJ,2,RLJ Lodging Trust,Consumer Services,Real Estate Investment Trusts,4,N
+RLJ,2,RLJ Lodging Trust,Consumer Services,Real Estate Investment Trusts,0,N
 GLOW,0,Glowpoint Inc.,Public Utilities,Telecommunications Equipment,0,A
 OHAI,3,OHA Investment Corporation,n/a,n/a,0,O
 SHEN,3,Shenandoah Telecommunications Co,Public Utilities,Telecommunications Equipment,0,O
@@ -1331,15 +1331,15 @@ FCSC,3,Fibrocell Science Inc,Health Care,Major Pharmaceuticals,0,O
 DGI,2,DigitalGlobe Inc,Consumer Services,Telecommunications Equipment,0,N
 DGX,3,Quest Diagnostics Incorporated,Health Care,Medical Specialities,0,N
 SWAY,3,Starwood Waypoint Residential Trust,Consumer Services,Real Estate Investment Trusts,0,N
-UNP,3,Union Pacific Corporation,Transportation,Railroads,4,N
+UNP,3,Union Pacific Corporation,Transportation,Railroads,0,N
 HERO,4,Hercules Offshore Inc.,Energy,Oil & Gas Production,0,O
 UNB,0,Union Bankshares Inc.,Finance,Major Banks,0,O
 MTOR,2,Meritor Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
 UNF,3,Unifirst Corporation,Consumer Services,Other Consumer Services,0,N
-UNH,2,UnitedHealth Group Incorporated,Health Care,Medical Specialities,5,N
-UNM,4,Unum Group,Finance,Accident &Health Insurance,4,N
+UNH,2,UnitedHealth Group Incorporated,Health Care,Medical Specialities,3,N
+UNM,4,Unum Group,Finance,Accident &Health Insurance,0,N
 GBCI,4,Glacier Bancorp Inc.,Finance,Major Banks,0,O
-OMC,4,Omnicom Group Inc.,Technology,Advertising,4,N
+OMC,4,Omnicom Group Inc.,Technology,Advertising,0,N
 OMG,4,OM Group Inc.,Consumer Durables,Miscellaneous manufacturing industries,0,N
 OME,0,Omega Protein Corporation,Consumer Non-Durables,Packaged Foods,0,N
 ITI,3,Iteris Inc.,Consumer Durables,Telecommunications Equipment,0,A
@@ -1347,15 +1347,15 @@ ITG,1,Investment Technology Group Inc.,Finance,Investment Bankers/Brokers/Servic
 OMI,3,Owens & Minor Inc.,Health Care,Medical Specialities,0,N
 OMN,3,OMNOVA Solutions Inc.,Basic Industries,Specialty Chemicals,0,N
 VIVO,3,Meridian Bioscience Inc.,Health Care,Biotechnology: In Vitro & In Vivo Diagnostic Substances,0,O
-ITW,3,Illinois Tool Works Inc.,Technology,Industrial Machinery/Components,4,N
+ITW,3,Illinois Tool Works Inc.,Technology,Industrial Machinery/Components,0,N
 ITT,3,ITT Corporation,Capital Goods,Fluid Controls,0,N
 AAC,2,AAC Holdings Inc.,Health Care,Medical Specialities,0,N
-AAL,1,American Airlines Group Inc.,Transportation,Air Freight/Delivery Services,0,O
+AAL,1,American Airlines Group Inc.,Transportation,Air Freight/Delivery Services,4,O
 AAN,3,Aaron&#39;s  Inc.,Technology,Diversified Commercial Services,0,N
 AAU,0,Almaden Minerals Ltd.,Basic Industries,Precious Metals,0,A
 AAT,2,American Assets Trust Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 AAV,0,Advantage Oil & Gas Ltd,Energy,Oil & Gas Production,0,N
-AAP,1,Advance Auto Parts Inc,Consumer Services,Other Specialty Stores,0,N
+AAP,1,Advance Auto Parts Inc,Consumer Services,Other Specialty Stores,4,N
 BIN,3,Progressive Waste Solutions Ltd.,Public Utilities,Environmental Services,0,N
 BIO,5,Bio-Rad Laboratories Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,N
 JOUT,0,Johnson Outdoors Inc.,Consumer Non-Durables,Recreational Products/Toys,0,O
@@ -1381,9 +1381,9 @@ SLI,0,SL Industries Inc.,Capital Goods,Industrial Machinery/Components,0,A
 HOLI,3,Hollysys Automation Technologies Ltd.,Energy,Industrial Machinery/Components,0,O
 CYBE,0,CyberOptics Corporation,Capital Goods,Electronic Components,0,O
 SLF,3,Sun Life Financial Inc.,Finance,Life Insurance,0,N
-SLG,3,SL Green Realty Corporation,Consumer Services,Real Estate Investment Trusts,4,N
+SLG,3,SL Green Realty Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 POOL,1,Pool Corporation,Consumer Durables,Industrial Specialties,0,O
-MCO,4,Moody&#39;s Corporation,Finance,Finance: Consumer Services,4,N
+MCO,4,Moody&#39;s Corporation,Finance,Finance: Consumer Services,0,N
 MCN,-1,Madison Covered Call & Equity Strategy Fund,n/a,n/a,0,N
 GFY,-1,Western Asset Variable Rate Strategic Fund Inc.,n/a,n/a,0,N
 MCK,2,McKesson Corporation,Health Care,Other Pharmaceuticals,0,N
@@ -1410,13 +1410,13 @@ EXA,3,Exa Corporation,Technology,Computer Software: Prepackaged Software,0,O
 EXL,2,Excel Trust Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 EXK,4,Endeavour Silver Corporation,Basic Industries,Precious Metals,0,N
 EXH,1,Exterran Holdings Inc.,Technology,Diversified Commercial Services,0,N
-EXR,2,Extra Space Storage Inc,Consumer Services,Real Estate Investment Trusts,4,N
-EXP,2,Eagle Materials Inc,Capital Goods,Building Materials,4,N
+EXR,2,Extra Space Storage Inc,Consumer Services,Real Estate Investment Trusts,0,N
+EXP,2,Eagle Materials Inc,Capital Goods,Building Materials,0,N
 PWOD,0,Penns Woods Bancorp Inc.,Finance,Major Banks,0,O
-DLPH,3,Delphi Automotive plc,Capital Goods,Auto Parts:O.E.M.,4,N
-FBHS,4,Fortune Brands Home & Security Inc.,Basic Industries,Homebuilding,4,N
+DLPH,3,Delphi Automotive plc,Capital Goods,Auto Parts:O.E.M.,0,N
+FBHS,4,Fortune Brands Home & Security Inc.,Basic Industries,Homebuilding,0,N
 FBR,2,Fibria Celulose S.A.,Basic Industries,Paper,0,N
-XLNX,4,Xilinx Inc.,Technology,Semiconductors,4,O
+XLNX,4,Xilinx Inc.,Technology,Semiconductors,0,O
 IESC,0,Integrated Electrical Services Inc.,Capital Goods,Engineering & Construction,0,O
 SLTC,3,Selectica Inc.,Technology,Computer Software: Prepackaged Software,0,O
 SLTB,-1,Scorpio Bulkers Inc.,Transportation,Marine Transportation,0,N
@@ -1447,12 +1447,12 @@ PW,0,Power REIT,Consumer Services,Real Estate Investment Trusts,0,A
 HGSH,0,China HGS Real Estate Inc.,Finance,Real Estate,0,O
 GLDC,0,Golden Enterprises Inc.,Consumer Non-Durables,Packaged Foods,0,O
 GLDD,3,Great Lakes Dredge & Dock Corporation,Basic Industries,Military/Government/Technical,0,O
-PB,3,Prosperity Bancshares Inc.,Finance,Major Banks,4,N
+PB,3,Prosperity Bancshares Inc.,Finance,Major Banks,0,N
 PF,3,Pinnacle Foods Inc.,Consumer Non-Durables,Packaged Foods,0,N
 PG,3,Procter & Gamble Company (The),Basic Industries,Package Goods/Cosmetics,3,N
 PE,4,Parsley Energy Inc.,Energy,Oil & Gas Production,0,N
 PH,4,Parker-Hannifin Corporation,Capital Goods,Metal Fabrications,0,N
-PL,2,Protective Life Corporation,Finance,Life Insurance,4,N
+PL,2,Protective Life Corporation,Finance,Life Insurance,0,N
 PM,4,Philip Morris International Inc,Consumer Non-Durables,Farming/Seeds/Milling,0,N
 KTCC,0,Key Tronic Corporation,Technology,Computer peripheral equipment,0,O
 SVBI,0,Severn Bancorp Inc,Finance,Major Banks,0,O
@@ -1496,7 +1496,7 @@ JRJC,0,China Finance Online Co. Limited,Miscellaneous,Business Services,0,O
 WASH,3,Washington Trust Bancorp Inc.,Finance,Major Banks,0,O
 RDVY,0,First Trust NASDAQ Rising Dividend Achievers ETF,n/a,n/a,0,O
 DXGE,2,WisdomTree Germany Hedged Equity Fund,n/a,n/a,0,O
-PSX,3,Phillips 66,Energy,Integrated oil Companies,0,N
+PSX,3,Phillips 66,Energy,Integrated oil Companies,4,N
 AMBR,3,Amber Road Inc.,Technology,Computer Software: Prepackaged Software,0,N
 FFWM,0,First Foundation Inc.,Finance,Major Banks,0,O
 GTE,3,Gran Tierra Energy Inc.,Energy,Oil & Gas Production,0,A
@@ -1510,7 +1510,7 @@ USCR,3,U S Concrete Inc.,Capital Goods,Building Materials,0,O
 BBNK,2,Bridge Capital Holdings,Finance,Major Banks,0,O
 OVAS,3,Ovascience Inc.,Health Care,Major Pharmaceuticals,0,O
 HCACU,-1,Hennessy Capital Acquisition Corp.,Finance,Investment Managers,0,O
-APEI,3,American Public Education Inc.,Consumer Services,Other Consumer Services,0,O
+APEI,3,American Public Education Inc.,Consumer Services,Other Consumer Services,4,O
 TYL,3,Tyler Technologies Inc.,Technology,Computer Software: Prepackaged Software,0,N
 NAVB,3,Navidea Biopharmaceuticals Inc.,Health Care,Biotechnology: In Vitro & In Vivo Diagnostic Substances,0,A
 NAVG,1,The Navigators Group Inc.,Finance,Property-Casualty Insurers,0,O
@@ -1538,7 +1538,7 @@ CZFC,0,Citizens First Corporation,Finance,Major Banks,0,O
 MDVXU,-1,Medovex Corp.,n/a,n/a,0,O
 FOSL,4,Fossil Group Inc.,Consumer Non-Durables,Consumer Specialties,0,O
 IMDZ,3,Immune Design Corp.,Health Care,Major Pharmaceuticals,0,O
-STOR,3,STORE Capital Corporation,Consumer Services,Real Estate Investment Trusts,4,N
+STOR,3,STORE Capital Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 STON,3,StoneMor Partners L.P.,Consumer Services,Other Consumer Services,0,N
 IRDM,3,Iridium Communications Inc,Consumer Durables,Telecommunications Equipment,0,O
 ELTK,0,Eltek Ltd.,Technology,Electrical Products,0,O
@@ -1549,7 +1549,7 @@ MINI,2,Mobile Mini Inc.,Capital Goods,Metal Fabrications,0,O
 MIND,4,Mitcham Industries Inc.,Technology,Diversified Commercial Services,0,O
 GCAP,1,GAIN Capital Holdings Inc.,Finance,Investment Bankers/Brokers/Service,0,N
 PFH,-1,CABCO Series 2004-101 Trust,Finance,Finance: Consumer Services,0,N
-CIB,5,BanColombia S.A.,Finance,Commercial Banks,4,N
+CIB,5,BanColombia S.A.,Finance,Commercial Banks,0,N
 CIA,0,Citizens Inc.,Finance,Life Insurance,0,N
 MRTN,2,Marten Transport Ltd.,Transportation,Trucking Freight/Courier Services,0,O
 CIG,3,Comp En De Mn Cemig ADS,Public Utilities,Electric Utilities: Central,0,N
@@ -1598,17 +1598,17 @@ ERII,3,Energy Recovery Inc.,Technology,Industrial Machinery/Components,0,O
 AGU,3,Agrium Inc.,Basic Industries,Agricultural Chemicals,0,N
 ERIE,2,Erie Indemnity Company,Finance,Specialty Insurers,0,O
 ERIC,4,Ericsson,Technology,Radio And Television Broadcasting And Communications Equipment,2,O
-BWP,3,Boardwalk Pipeline Partners L.P.,Public Utilities,Natural Gas Distribution,0,N
+BWP,3,Boardwalk Pipeline Partners L.P.,Public Utilities,Natural Gas Distribution,4,N
 BWS,1,Brown Shoe Company Inc.,Consumer Non-Durables,Shoe Manufacturing,0,N
 SCLN,3,SciClone Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 TINY,0,Harris & Harris Group Inc.,Finance,Finance/Investors Services,0,O
-BWA,3,BorgWarner Inc.,Capital Goods,Auto Parts:O.E.M.,4,N
+BWA,3,BorgWarner Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
 BWC,2,Babcock & Wilcox Company (The),Energy,Industrial Machinery/Components,0,N
 BWG,-1,Legg Mason BW Global Income Opportunities Fund Inc.,n/a,n/a,0,N
 CTLT,4,Catalent Inc.,Health Care,Major Pharmaceuticals,0,N
 GLADO,-1,Gladstone Capital Corporation,n/a,n/a,0,O
 TDI,-1,Telephone and Data Systems Inc.,Public Utilities,Telecommunications Equipment,0,N
-MAS,2,Masco Corporation,Basic Industries,Forest Products,4,N
+MAS,2,Masco Corporation,Basic Industries,Forest Products,0,N
 MAR,3,Marriott International,Consumer Services,Hotels/Resorts,4,O
 MAT,4,Mattel Inc.,Consumer Non-Durables,Recreational Products/Toys,0,O
 MAV,-1,Pioneer Municipal High Income Advantage Trust,n/a,n/a,0,N
@@ -1725,7 +1725,7 @@ CREG,0,China Recycling Energy Corporation,Miscellaneous,Business Services,0,O
 DYNT,0,Dynatronics Corporation,n/a,n/a,0,O
 TSL,4,Trina Solar Limited,Technology,Semiconductors,0,N
 WYY,3,WidePoint Corporation,Technology,EDP Services,0,A
-WYN,3,Wyndham Worldwide Corp,Consumer Services,Hotels/Resorts,4,N
+WYN,3,Wyndham Worldwide Corp,Consumer Services,Hotels/Resorts,0,N
 PGTI,3,PGT Inc.,Capital Goods,Building Products,0,O
 SCCO,3,Southern Copper Corporation,Basic Industries,Precious Metals,0,N
 HBMD,0,Howard Bancorp Inc.,Finance,Major Banks,0,O
@@ -1790,7 +1790,7 @@ AETI,0,American Electric Technologies Inc.,Energy,Industrial Machinery/Component
 DRRX,3,Durect Corporation,Health Care,Major Pharmaceuticals,0,O
 SGNT,3,Sagent Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 SGNL,0,Signal Genetics Inc.,Health Care,Medical Specialities,0,O
-OII,4,Oceaneering International Inc.,Energy,Oilfield Services/Equipment,4,N
+OII,4,Oceaneering International Inc.,Energy,Oilfield Services/Equipment,0,N
 IHS,3,IHS Inc.,Technology,Computer Software: Programming Data Processing,0,N
 OIA,0,Invesco Municipal Income Opportunities Trust,n/a,n/a,0,N
 IHC,0,Independence Holding Company,Finance,Life Insurance,0,N
@@ -1798,10 +1798,10 @@ OIS,5,Oil States International Inc.,Energy,Metal Fabrications,0,N
 IHG,2,Intercontinental Hotels Group,Consumer Services,Hotels/Resorts,0,N
 IHD,0,Voya Emerging Markets High Income Dividend Equity Fund,n/a,n/a,0,N
 CONE,3,CyrusOne Inc,Consumer Services,Real Estate Investment Trusts,0,O
-AEP,3,American Electric Power Company Inc.,Public Utilities,Electric Utilities: Central,4,N
+AEP,3,American Electric Power Company Inc.,Public Utilities,Electric Utilities: Central,0,N
 AES,3,The AES Corporation,Basic Industries,Electric Utilities: Central,0,N
 AER,2,Aercap Holdings N.V.,Technology,Diversified Commercial Services,0,N
-AET,3,Aetna Inc.,Health Care,Medical Specialities,4,N
+AET,3,Aetna Inc.,Health Care,Medical Specialities,0,N
 AEY,0,ADDvantage Technologies Group Inc.,Consumer Services,Office Equipment/Supplies/Services,0,O
 GBL,2,Gamco Investors Inc.,Finance,Investment Bankers/Brokers/Service,0,N
 CVTS,-1,Civitas Therapeutics Inc.,n/a,n/a,0,O
@@ -1828,7 +1828,7 @@ BUD,4,Anheuser-Busch Inbev SA,Consumer Non-Durables,Beverages (Production/Distri
 MSCI,3,MSCI Inc,Miscellaneous,Business Services,0,N
 MSCA,-1,Main Street Capital Corporation,n/a,n/a,0,N
 MSCC,3,Microsemi Corporation,Technology,Semiconductors,0,O
-MOS,4,Mosaic Company (The),Basic Industries,Agricultural Chemicals,0,N
+MOS,4,Mosaic Company (The),Basic Industries,Agricultural Chemicals,4,N
 IMKTA,1,Ingles Markets Incorporated,Consumer Services,Food Chains,0,O
 ACNB,0,ACNB Corporation,Finance,Major Banks,0,O
 MOV,3,Movado Group Inc.,Consumer Non-Durables,Consumer Specialties,0,N
@@ -1849,13 +1849,13 @@ ETB,-1,Eaton Vance Tax-Managed Buy-Write Income Fund,n/a,n/a,0,N
 KMT,4,Kennametal Inc.,Capital Goods,Industrial Machinery/Components,0,N
 ETF,0,Aberdeen Emerging Markets Smaller Company Opportunities Fund I,n/a,n/a,0,A
 ETG,-1,Eaton Vance Tax-Advantaged Global Dividend Income Fund,n/a,n/a,0,N
-ETE,3,Energy Transfer Equity L.P.,Public Utilities,Natural Gas Distribution,4,N
+ETE,3,Energy Transfer Equity L.P.,Public Utilities,Natural Gas Distribution,0,N
 ETJ,-1,Eaton Vance Risk-Managed Diversified Equity Income Fund,n/a,n/a,0,N
 ETH,3,Ethan Allen Interiors Inc.,Consumer Durables,Home Furnishings,0,N
 ETN,4,Eaton Corporation PLC,Technology,Industrial Machinery/Components,0,N
 ETO,-1,Eaton Vance Tax-Advantage Global Dividend Opp,n/a,n/a,0,N
 ETM,3,Entercom Communications Corporation,Consumer Services,Broadcasting,0,N
-DLTR,2,Dollar Tree Inc.,Consumer Services,Department/Specialty Retail Stores,4,O
+DLTR,2,Dollar Tree Inc.,Consumer Services,Department/Specialty Retail Stores,0,O
 LLEX,0,Lilis Energy Inc.,Energy,Oil & Gas Production,0,O
 MDAS,3,MedAssets Inc.,Technology,Computer Software: Prepackaged Software,0,O
 RVP,0,Retractable Technologies Inc.,Health Care,Medical/Dental Instruments,0,A
@@ -1894,7 +1894,7 @@ CANF,2,Can-Fite Biopharma Ltd,Health Care,Major Pharmaceuticals,0,A
 WDC,3,Western Digital Corporation,Technology,Electronic Components,0,O
 FATE,3,Fate Therapeutics Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 GRBK,0,Green Brick Partners Inc.,Capital Goods,Homebuilding,0,O
-WDR,4,Waddell & Reed Financial Inc.,Finance,Investment Bankers/Brokers/Service,4,N
+WDR,4,Waddell & Reed Financial Inc.,Finance,Investment Bankers/Brokers/Service,0,N
 WTSL,0,The Wet Seal Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
 NVSL,0,Naugatuck Valley Financial Corporation,Finance,Savings Institutions,0,O
 CHCI,0,Comstock Holding Companies Inc.,Capital Goods,Homebuilding,0,O
@@ -1922,8 +1922,8 @@ HDSN,3,Hudson Technologies Inc.,Consumer Durables,Industrial Specialties,0,O
 SLB,5,Schlumberger N.V.,Energy,Oilfield Services/Equipment,0,N
 AMFW,-1,Amec Plc Ord,n/a,n/a,0,N
 HUSA,0,Houston American Energy Corporation,Energy,Oil & Gas Production,0,A
-VIAB,3,Viacom Inc.,Consumer Services,Television Services,4,O
-XEC,5,Cimarex Energy Co,Energy,Oil & Gas Production,4,N
+VIAB,3,Viacom Inc.,Consumer Services,Television Services,0,O
+XEC,5,Cimarex Energy Co,Energy,Oil & Gas Production,0,N
 XEL,2,Xcel Energy Inc.,Public Utilities,Power Generation,0,N
 AXPWW,-1,Axion Power International Inc.,Miscellaneous,Industrial Machinery/Components,0,O
 VIAS,3,Viasystems Group Inc.,Technology,Electrical Products,0,O
@@ -1935,9 +1935,9 @@ TWO,4,Two Harbors Investments Corp,Consumer Services,Real Estate Investment Trus
 HQH,0,Tekla Healthcare Investors,n/a,n/a,0,N
 GNMA,0,iShares Core GNMA Bond ETF,n/a,n/a,0,O
 HQL,0,Tekla Life Sciences Investors,n/a,n/a,0,N
-TWX,3,Time Warner Inc.,Consumer Services,Television Services,4,N
+TWX,3,Time Warner Inc.,Consumer Services,Television Services,0,N
 GNMK,2,GenMark Diagnostics Inc.,Health Care,Medical/Dental Instruments,0,O
-VEEV,2,Veeva Systems Inc.,Technology,Computer Software: Prepackaged Software,4,N
+VEEV,2,Veeva Systems Inc.,Technology,Computer Software: Prepackaged Software,0,N
 JTPY,3,JetPay Corporation,Finance,Business Services,0,O
 SHOR,2,ShoreTel Inc.,Public Utilities,Telecommunications Equipment,0,O
 SHOS,0,Sears Hometown and Outlet Stores Inc.,Consumer Services,Department/Specialty Retail Stores,0,O
@@ -1950,7 +1950,7 @@ VSH,3,Vishay Intertechnology Inc.,Capital Goods,Electrical Products,0,N
 VSI,3,Vitamin Shoppe Inc,Consumer Non-Durables,Food Chains,0,N
 RYN,3,Rayonier Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 RYL,3,Ryland Group Inc. (The),Capital Goods,Homebuilding,0,N
-EOG,5,EOG Resources Inc.,Energy,Oil & Gas Production,4,N
+EOG,5,EOG Resources Inc.,Energy,Oil & Gas Production,0,N
 RYI,3,Ryerson Holding Corporation,Basic Industries,Metal Fabrications,0,N
 UBCP,0,United Bancorp Inc.,Finance,Major Banks,0,O
 EOI,0,Eaton Vance Enhance Equity Income Fund,n/a,n/a,0,N
@@ -1974,18 +1974,18 @@ WILC,0,G. Willi-Food International  Ltd.,Consumer Non-Durables,Food Distributors
 CMO,3,Capstead Mortgage Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 CMN,0,Cantel Medical Corp.,Health Care,Medical/Dental Instruments,0,N
 CMK,-1,Colonial Intermarket Income Trust I,n/a,n/a,0,N
-CMI,2,Cummins Inc.,Energy,Industrial Machinery/Components,4,N
-CMG,3,Chipotle Mexican Grill Inc.,Consumer Services,Restaurants,0,N
+CMI,2,Cummins Inc.,Energy,Industrial Machinery/Components,0,N
+CMG,3,Chipotle Mexican Grill Inc.,Consumer Services,Restaurants,4,N
 CME,2,CME Group Inc.,Finance,Investment Bankers/Brokers/Service,0,O
 PCQ,-1,PIMCO California Municipal Income Fund,n/a,n/a,0,N
 CMC,2,Commercial Metals Company,Basic Industries,Steel/Iron Ore,0,N
-CMA,3,Comerica Incorporated,Finance,Major Banks,4,N
+CMA,3,Comerica Incorporated,Finance,Major Banks,0,N
 PCK,0,Pimco California Municipal Income Fund II,n/a,n/a,0,N
 ASEI,3,American Science and Engineering Inc.,Health Care,Medical Electronics,0,O
 PCI,-1,PIMCO Dynamic Credit Income Fund,n/a,n/a,0,N
 PCN,-1,Pimco Corporate & Income Stategy Fund,n/a,n/a,0,N
 PCO,0,Pendrell Corporation,Miscellaneous,Multi-Sector Companies,0,O
-PCL,4,Plum Creek Timber Company Inc.,Consumer Services,Real Estate Investment Trusts,0,N
+PCL,4,Plum Creek Timber Company Inc.,Consumer Services,Real Estate Investment Trusts,4,N
 PCM,0,PIMCO Commercial Mortgage Securities Trust Inc.,n/a,n/a,0,N
 CMU,0,Colonial Municipal Income Trust,n/a,n/a,0,N
 CMT,0,Core Molding Technologies Inc,Consumer Non-Durables,Plastic Products,0,A
@@ -2008,7 +2008,7 @@ GBIM,0,GlobeImmune Inc.,Health Care,Major Pharmaceuticals,0,O
 INS,0,Intelligent Systems Corporation,Capital Goods,Metal Fabrications,0,A
 INN,1,Summit Hotel Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 TENX,3,Tenax Therapeutics Inc.,Health Care,Biotechnology: Commercial Physical & Biological Resarch,0,O
-NDAQ,3,The NASDAQ OMX Group Inc.,Finance,Investment Bankers/Brokers/Service,4,O
+NDAQ,3,The NASDAQ OMX Group Inc.,Finance,Investment Bankers/Brokers/Service,0,O
 UHS,2,Universal Health Services Inc.,Health Care,Hospital/Nursing Management,0,N
 IND,-1,ING Group N.V.,Finance,Life Insurance,0,N
 INF,0,Brookfield Global Listed Infrastructure Income Fund,n/a,n/a,0,N
@@ -2027,14 +2027,14 @@ GLT,2,Glatfelter,Basic Industries,Paper,0,N
 GLU,-1,The Gabelli Global Utility and Income Trust,n/a,n/a,0,A
 GLV,-1,Clough Global Allocation Fund,n/a,n/a,0,A
 ORIG,2,Ocean Rig UDW Inc.,Energy,Oil & Gas Production,0,O
-SCHW,3,The Charles Schwab Corporation,Finance,Investment Bankers/Brokers/Service,4,N
+SCHW,3,The Charles Schwab Corporation,Finance,Investment Bankers/Brokers/Service,0,N
 BSX,3,Boston Scientific Corporation,Health Care,Medical/Dental Instruments,0,N
 QRHC,2,Quest Resource Holding Corporation.,Technology,Diversified Commercial Services,0,O
 BST,-1,BlackRock Science and Technology Trust,n/a,n/a,0,N
 VLCCF,5,Knightsbridge Shipping Limited,Consumer Services,Marine Transportation,0,O
 BSL,-1,Blackstone GSO Senior Floating Rate Term Fund,n/a,n/a,0,N
 BSI,0,Alon Blue Square Israel Ltd.,Consumer Services,Department/Specialty Retail Stores,0,N
-CAR,3,Avis Budget Group Inc.,Consumer Services,Rental/Leasing Companies,0,O
+CAR,3,Avis Budget Group Inc.,Consumer Services,Rental/Leasing Companies,4,O
 SCHN,4,Schnitzer Steel Industries Inc.,Consumer Durables,Industrial Specialties,0,O
 BSE,-1,Blackrock New York Municipal Income Quality Trust,n/a,n/a,0,N
 CISG,2,CNinsure Inc.,Finance,Specialty Insurers,0,O
@@ -2053,7 +2053,7 @@ MMT,0,MFS Multimarket Income Trust,n/a,n/a,0,N
 SBY,3,Silver Bay Realty Trust Corp.,Consumer Services,Real Estate Investment Trusts,0,N
 MMP,3,Magellan Midstream Partners L.P.,Energy,Natural Gas Distribution,0,N
 MMS,3,Maximus Inc.,Miscellaneous,Business Services,0,N
-MMM,3,3M Company,Health Care,Medical/Dental Instruments,7,N
+MMM,3,3M Company,Health Care,Medical/Dental Instruments,3,N
 MMI,3,Marcus & Millichap Inc.,Finance,Real Estate,0,N
 MMD,-1,MainStay DefinedTerm Municipal Opportunities Fund,n/a,n/a,0,N
 SBH,3,Sally Beauty Holdings Inc.,Consumer Services,Other Specialty Stores,0,N
@@ -2113,7 +2113,7 @@ EMDI,3,iShares MSCI Emerging Markets Consumer Discrectionary Sector I,n/a,n/a,0,
 HBNK,0,Hampden Bancorp Inc.,Finance,Banks,0,O
 LGCY,4,Legacy Reserves LP,Energy,Oil & Gas Production,0,O
 WFM,3,Whole Foods Market Inc.,Consumer Services,Food Chains,0,O
-WFC,3,Wells Fargo & Company,Finance,Major Banks,6,N
+WFC,3,Wells Fargo & Company,Finance,Major Banks,2,N
 HZNP,3,Horizon Pharma plc,Health Care,Major Pharmaceuticals,0,O
 WFD,3,Westfield Financial Inc.,Finance,Savings Institutions,0,O
 CHTR,2,Charter Communications Inc.,Consumer Services,Television Services,0,O
@@ -2122,9 +2122,9 @@ GGACW,-1,Garnero Group Acquisition Company,Finance,Business Services,0,O
 GGACU,-1,Garnero Group Acquisition Company,Finance,Business Services,0,O
 GGACR,-1,Garnero Group Acquisition Company,Finance,Business Services,0,O
 EDAP,3,EDAP TMS S.A.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
-DISCA,4,Discovery Communications Inc.,Consumer Services,Television Services,4,O
+DISCA,4,Discovery Communications Inc.,Consumer Services,Television Services,0,O
 DISCB,4,Discovery Communications Inc.,Consumer Services,Television Services,0,O
-DISCK,3,Discovery Communications Inc.,Consumer Services,Television Services,4,O
+DISCK,3,Discovery Communications Inc.,Consumer Services,Television Services,0,O
 ATTU,2,Attunity Ltd.,Technology,Computer Software: Prepackaged Software,0,O
 NPSP,3,NPS Pharmaceuticals Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 TEN,3,Tenneco Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
@@ -2142,7 +2142,7 @@ MCBC,3,Macatawa Bank Corporation,Finance,Major Banks,0,O
 PLXS,2,Plexus Corp.,Technology,Electrical Products,0,O
 ELON,0,Echelon Corporation,Technology,Computer Communications Equipment,0,O
 NCMI,3,National CineMedia Inc.,Consumer Services,Advertising,0,O
-LKQ,4,LKQ Corporation,Consumer Services,Motor Vehicles,4,O
+LKQ,4,LKQ Corporation,Consumer Services,Motor Vehicles,0,O
 AXDX,0,Accelerate Diagnostics Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,O
 XNCR,3,Xencor Inc.,Health Care,Major Pharmaceuticals,0,O
 SIMO,3,Silicon Motion Technology Corporation,Technology,Semiconductors,0,O
@@ -2171,7 +2171,7 @@ RGLS,1,Regulus Therapeutics Inc.,Health Care,Major Pharmaceuticals,0,O
 AMDA,0,Amedica Corporation,Health Care,Medical/Dental Instruments,0,O
 UCFC,3,United Community Financial Corp.,Finance,Banks,0,O
 BOFI,2,BofI Holding Inc.,Finance,Savings Institutions,0,O
-RGLD,3,Royal Gold Inc.,Basic Industries,Precious Metals,4,O
+RGLD,3,Royal Gold Inc.,Basic Industries,Precious Metals,0,O
 SUNE,5,SunEdison Inc.,Technology,Semiconductors,0,N
 FNRG,0,ForceField Energy Inc.,Basic Industries,Major Chemicals,0,O
 PT,0,Portugal Telecom SGPS S.A .,Public Utilities,Telecommunications Equipment,0,N
@@ -2184,10 +2184,10 @@ OMAB,3,Grupo Aeroportuario del Centro Norte S.A.B. de C.V.,Transportation,Aerosp
 OMAM,3,OM Asset Management plc,Finance,Investment Managers,0,N
 HSP,3,Hospira Inc,Health Care,Major Pharmaceuticals,0,N
 BCBP,0,BCB Bancorp Inc. (NJ),Finance,Savings Institutions,0,O
-HST,2,Host Hotels & Resorts Inc.,Consumer Services,Real Estate Investment Trusts,4,N
+HST,2,Host Hotels & Resorts Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 HBM/WS,-1,HudBay Minerals Inc,n/a,n/a,0,N
 HSY,3,Hershey Company (The),Consumer Non-Durables,Specialty Foods,0,N
-CTSH,2,Cognizant Technology Solutions Corporation,Technology,EDP Services,4,O
+CTSH,2,Cognizant Technology Solutions Corporation,Technology,EDP Services,0,O
 IART,4,Integra LifeSciences Holdings Corporation,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,O
 FSFG,0,First Savings Financial Group Inc.,Finance,Savings Institutions,0,O
 BSMX,4,Grupo Financiero Santander Mexico S.A. B. de C.V.,Finance,Commercial Banks,0,N
@@ -2234,7 +2234,7 @@ ASPN,3,Aspen Aerogels Inc.,Consumer Services,RETAIL: Building Materials,0,N
 FBSS,0,Fauquier Bankshares Inc.,Finance,Major Banks,0,O
 AFFX,2,Affymetrix Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,O
 OSHC,0,Ocean Shore Holding Co.,Finance,Savings Institutions,0,O
-ULTA,2,Ulta Salon Cosmetics & Fragrance Inc.,Consumer Services,Other Specialty Stores,4,O
+ULTA,2,Ulta Salon Cosmetics & Fragrance Inc.,Consumer Services,Other Specialty Stores,0,O
 ULTI,3,The Ultimate Software Group Inc.,Technology,Computer Software: Prepackaged Software,0,O
 NQU,0,Nuveen Quality Income Municipal Fund Inc.,n/a,n/a,0,N
 ULTR,3,Ultrapetrol (Bahamas) Limited,Transportation,Marine Transportation,0,O
@@ -2243,13 +2243,13 @@ COP,5,ConocoPhillips,Energy,Integrated oil Companies,2,N
 COR,2,CoreSite Realty Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 COT,3,Cott Corporation,Consumer Non-Durables,Beverages (Production/Distribution),0,N
 COV,3,Covidien plc.,Health Care,Medical/Dental Instruments,0,N
-PEP,3,Pepsico Inc.,Consumer Non-Durables,Beverages (Production/Distribution),6,N
+PEP,3,Pepsico Inc.,Consumer Non-Durables,Beverages (Production/Distribution),2,N
 PER,5,SandRidge Permian Trust,Energy,Oil & Gas Production,0,N
 PES,4,Pioneer Energy Services Corp.,Energy,Oil & Gas Production,0,N
 KLXI,3,KLX Inc.,n/a,n/a,0,O
 PEO,0,Petroleum Resources Corporation,n/a,n/a,0,N
 PEI,3,Pennsylvania Real Estate Investment Trust,Consumer Services,Real Estate Investment Trusts,0,N
-COG,5,Cabot Oil & Gas Corporation,Energy,Oil & Gas Production,4,N
+COG,5,Cabot Oil & Gas Corporation,Energy,Oil & Gas Production,0,N
 COF,4,Capital One Financial Corporation,Finance,Major Banks,0,N
 PED,3,Pedevco Corp.,Energy,Oil & Gas Production,0,A
 COH,3,Coach Inc.,Consumer Non-Durables,Apparel,2,N
@@ -2269,7 +2269,7 @@ TYPE,3,Monotype Imaging Holdings Inc.,Technology,EDP Services,0,O
 AIY,-1,Apollo Investment Corporation,n/a,n/a,0,N
 GNW,5,Genworth Financial Inc,Finance,Life Insurance,0,N
 GNT,-1,GAMCO Natural Resources Gold & Income Tust ,n/a,n/a,0,N
-AIZ,3,Assurant Inc.,Finance,Accident &Health Insurance,4,N
+AIZ,3,Assurant Inc.,Finance,Accident &Health Insurance,0,N
 AIT,4,Applied Industrial Technologies Inc.,Consumer Durables,Industrial Specialties,0,N
 AIW,-1,Arlington Asset Investment Corp,Finance,Finance/Investors Services,0,N
 AIV,3,Apartment Investment and Management Company,Consumer Services,Real Estate Investment Trusts,0,N
@@ -2308,13 +2308,13 @@ FTEK,3,Fuel Tech Inc.,Capital Goods,Pollution Control Equipment,0,O
 EPR,2,EPR Properties,Consumer Services,Real Estate Investment Trusts,0,N
 EPM,0,Evolution Petroleum Corporation Inc.,Energy,Oil & Gas Production,0,A
 PARR,0,Par Petroleum Corporation,Energy,Oil & Gas Production,0,A
-EPD,3,Enterprise Products Partners L.P.,Public Utilities,Natural Gas Distribution,4,N
+EPD,3,Enterprise Products Partners L.P.,Public Utilities,Natural Gas Distribution,0,N
 EPE,3,EP Energy Corporation,Energy,Oil & Gas Production,0,N
 WAFD,3,Washington Federal Inc.,Finance,Savings Institutions,0,O
 LYV,2,Live Nation Entertainment Inc.,Consumer Services,Services-Misc. Amusement & Recreation,0,N
 CENT,4,Central Garden & Pet Company,Consumer Durables,Consumer Specialties,0,O
 LYG,4,Lloyds Banking Group Plc,Finance,Commercial Banks,0,N
-LYB,5,LyondellBasell Industries NV,Basic Industries,Major Chemicals,4,N
+LYB,5,LyondellBasell Industries NV,Basic Industries,Major Chemicals,0,N
 ADGE,0,American DG Energy Inc.,Energy,Electric Utilities: Central,0,A
 BWLD,3,Buffalo Wild Wings Inc.,Consumer Services,Restaurants,0,O
 VYFC,0,Valley Financial Corporation,Finance,Savings Institutions,0,O
@@ -2351,13 +2351,13 @@ CCXI,3,ChemoCentryx Inc.,Health Care,Major Pharmaceuticals,0,O
 PLAY,3,Dave & Buster&#39;s Entertainment Inc.,Consumer Services,Restaurants,0,O
 LSTR,3,Landstar System Inc.,Transportation,Trucking Freight/Courier Services,0,O
 PFPT,3,Proofpoint Inc.,Technology,EDP Services,0,O
-YUM,4,Yum! Brands Inc.,Consumer Services,Restaurants,4,N
+YUM,4,Yum! Brands Inc.,Consumer Services,Restaurants,0,N
 GAIN,3,Gladstone Investment Corporation,n/a,n/a,0,O
 JWN,3,Nordstrom Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
 GAIA,3,Gaiam Inc.,Consumer Services,Movies/Entertainment,0,O
 BLDP,3,Ballard Power Systems Inc.,Energy,Industrial Machinery/Components,0,O
 RPTP,3,Raptor Pharmaceutical Corp.,Health Care,Major Pharmaceuticals,0,O
-NGLS,5,Targa Resources Partners LP,Public Utilities,Natural Gas Distribution,4,N
+NGLS,5,Targa Resources Partners LP,Public Utilities,Natural Gas Distribution,0,N
 RJET,3,Republic Airways Holdings Inc.,Transportation,Air Freight/Delivery Services,0,O
 LIOX,3,Lionbridge Technologies Inc.,Miscellaneous,Business Services,0,O
 LION,2,Fidelity Southern Corporation,Finance,Major Banks,0,O
@@ -2366,10 +2366,10 @@ CMFN,3,CM Finance Inc,n/a,n/a,0,O
 BRSS,5,Global Brass and Copper Holdings Inc.,Capital Goods,Metal Fabrications,0,N
 QEPM,3,QEP Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,N
 VBTX,3,Veritex Holdings Inc.,Finance,Major Banks,0,O
-XYL,4,Xylem Inc.,Capital Goods,Fluid Controls,4,N
+XYL,4,Xylem Inc.,Capital Goods,Fluid Controls,0,N
 SBNYW,-1,Signature Bank,Finance,Major Banks,0,O
 VIEW,0,Viewtran Group Inc.,Capital Goods,Electrical Products,0,O
-TSN,2,Tyson Foods Inc.,Consumer Non-Durables,Meat/Poultry/Fish,0,N
+TSN,2,Tyson Foods Inc.,Consumer Non-Durables,Meat/Poultry/Fish,4,N
 TSO,2,Tesoro Corporation,Energy,Integrated oil Companies,0,N
 GUA,-1,Gulf Power Company,Public Utilities,Electric Utilities: Central,0,N
 TSM,1,Taiwan Semiconductor Manufacturing Company Ltd.,Technology,Semiconductors,0,N
@@ -2388,13 +2388,13 @@ LTRX,2,Lantronix Inc.,Technology,Computer Communications Equipment,0,O
 TSQ,4,Townsquare Media Inc.,Consumer Services,Broadcasting,0,N
 OMCL,3,Omnicell Inc.,Technology,Computer Manufacturing,0,O
 PGRE,3,Paramount Group Inc.,Consumer Services,Real Estate Investment Trusts,0,N
-HUM,2,Humana Inc.,Health Care,Medical Specialities,0,N
+HUM,2,Humana Inc.,Health Care,Medical Specialities,4,N
 HUN,4,Huntsman Corporation,Basic Industries,Major Chemicals,0,N
 UGLD,0,VelocityShares 3x Long Gold ETN linked to the S&P GSCI Gold In,Finance,Investment Bankers/Brokers/Service,0,O
 MSTX,0,Mast Therapeutics Inc.,Health Care,Major Pharmaceuticals,0,A
 OPXA,3,Opexa Therapeutics Inc.,Health Care,Major Pharmaceuticals,0,O
 KVHI,2,KVH Industries Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
-FFIV,2,F5 Networks Inc.,Technology,Computer Communications Equipment,4,O
+FFIV,2,F5 Networks Inc.,Technology,Computer Communications Equipment,0,O
 MSTR,3,MicroStrategy Incorporated,Technology,Computer Software: Prepackaged Software,0,O
 FFIN,3,First Financial Bankshares Inc.,Finance,Major Banks,0,O
 FFIC,3,Flushing Financial Corporation,Finance,Major Banks,0,O
@@ -2403,13 +2403,13 @@ SAIA,2,Saia Inc.,Transportation,Trucking Freight/Courier Services,0,O
 PSCF,4,PowerShares S&P SmallCap Financials Portfolio,n/a,n/a,0,O
 VWR,4,VWR Corporation,Consumer Durables,Diversified Electronic Products,0,O
 REX,0,REX American Resources Corporation,Basic Industries,Major Chemicals,0,N
-RES,5,RPC Inc.,Energy,Oilfield Services/Equipment,4,N
+RES,5,RPC Inc.,Energy,Oilfield Services/Equipment,0,N
 BOSC,0,B.O.S. Better Online Solutions,Technology,Computer Communications Equipment,0,O
 REV,0,Revlon Inc.,Consumer Non-Durables,Package Goods/Cosmetics,0,N
 MTB/WS,-1,M&T Bank Corporation,n/a,n/a,0,N
 REI,4,Ring Energy Inc.,Energy,Oil & Gas Production,0,A
 REN,5,Resolute Energy Corporation,Energy,Oil & Gas Production,0,N
-REG,2,Regency Centers Corporation,Consumer Services,Real Estate Investment Trusts,4,N
+REG,2,Regency Centers Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 REE,0,Rare Element Resources Ltd.,Basic Industries,Precious Metals,0,A
 FCS,3,Fairchild Semiconductor International Inc.,Technology,Semiconductors,0,O
 FCT,0,First Trust Senior Floating Rate Income Fund II,n/a,n/a,0,N
@@ -2417,7 +2417,7 @@ LFC,3,China Life Insurance Company Limited,Finance,Life Insurance,0,N
 FCX,3,Freeport-McMoran Inc.,Basic Industries,Precious Metals,0,N
 LFL,3,LATAM Airlines Group S.A.,Transportation,Air Freight/Delivery Services,0,N
 CLAC,-1,Capitol Acquisition Corp. II,Finance,Business Services,0,O
-STWD,3,STARWOOD PROPERTY TRUST INC.,Consumer Services,Real Estate Investment Trusts,4,N
+STWD,3,STARWOOD PROPERTY TRUST INC.,Consumer Services,Real Estate Investment Trusts,0,N
 SMMF,0,Summit Financial Group Inc.,Finance,Major Banks,0,O
 FCB,3,FCB Financial Holdings Inc.,Finance,Major Banks,0,N
 PWRD,4,Perfect World Co. Ltd.,Miscellaneous,Business Services,0,O
@@ -2429,7 +2429,7 @@ FGEN,3,FibroGen Inc,Health Care,Major Pharmaceuticals,0,O
 MIFI,2,Novatel Wireless Inc.,Consumer Durables,Telecommunications Equipment,0,O
 SP,4,SP Plus Corporation,Consumer Services,Rental/Leasing Companies,0,O
 SU,5,Suncor Energy  Inc.,Energy,Integrated oil Companies,0,N
-ST,3,Sensata Technologies Holding N.V.,Capital Goods,Industrial Machinery/Components,4,N
+ST,3,Sensata Technologies Holding N.V.,Capital Goods,Industrial Machinery/Components,0,N
 SO,3,Southern Company (The),Public Utilities,Electric Utilities: Central,0,N
 SN,3,Sanchez Energy Corporation,Energy,Oil & Gas Production,0,N
 SM,5,SM Energy Company,Energy,Oil & Gas Production,0,N
@@ -2444,10 +2444,10 @@ IBN,4,ICICI Bank Limited,Finance,Commercial Banks,0,N
 IBO,-1,IBO (Listing Market - NYSE Amex Network B F),n/a,n/a,0,A
 CAS,4,Castle (A.M.) & Co.,Basic Industries,Metal Fabrications,0,N
 IBA,3,Industrias Bachoco S.A. de C.V.,Consumer Non-Durables,Meat/Poultry/Fish,0,N
-IBB,2,iShares NASDAQ Biotechnology Index Fund,n/a,n/a,0,O
+IBB,2,iShares NASDAQ Biotechnology Index Fund,n/a,n/a,2,O
 CAP,2,Cai International Inc.,Technology,Diversified Commercial Services,0,N
 CAW,0,CCA Industries Inc.,Consumer Non-Durables,Package Goods/Cosmetics,0,A
-CAT,4,Caterpillar Inc.,Capital Goods,Construction/Ag Equipment/Trucks,7,N
+CAT,4,Caterpillar Inc.,Capital Goods,Construction/Ag Equipment/Trucks,3,N
 CAK,0,CAMAC Energy Inc.,Energy,Oil & Gas Production,0,A
 CAJ,3,Canon Inc.,Miscellaneous,Industrial Machinery/Components,0,N
 CAH,2,Cardinal Health Inc.,Health Care,Other Pharmaceuticals,0,N
@@ -2493,7 +2493,7 @@ NQS,0,Nuveen Select Quality Municipal Fund Inc.,n/a,n/a,0,N
 NQP,0,Nuveen Pennsylvania Investment Quality Municipal Fund Inc.,n/a,n/a,0,N
 AOD,-1,Alpine Total Dynamic Dividend Fund,n/a,n/a,0,N
 CBFV,0,CB Financial Services Inc.,Finance,Major Banks,0,O
-AON,3,Aon plc,Finance,Specialty Insurers,4,N
+AON,3,Aon plc,Finance,Specialty Insurers,0,N
 AOL,3,AOL Inc.,Technology,EDP Services,0,N
 RIBT,3,RiceBran Technologies,Consumer Non-Durables,Packaged Foods,0,O
 AOI,0,Alliance One International Inc.,Consumer Services,Farming/Seeds/Milling,0,N
@@ -2509,9 +2509,9 @@ SFS,3,Smart,Consumer Services,Food Chains,0,N
 UFCS,3,United Fire Group Inc,Finance,Property-Casualty Insurers,0,O
 SFN,-1,Stifel Financial Corporation,Finance,Investment Bankers/Brokers/Service,0,N
 SFL,3,Ship Finance International Limited,Transportation,Marine Transportation,0,N
-SFM,3,Sprouts Farmers Market Inc.,Consumer Services,Food Chains,4,O
+SFM,3,Sprouts Farmers Market Inc.,Consumer Services,Food Chains,0,O
 ACTA,3,Actua Corporation,Technology,EDP Services,0,O
-SAVE,2,Spirit Airlines Inc.,Transportation,Air Freight/Delivery Services,4,O
+SAVE,2,Spirit Airlines Inc.,Transportation,Air Freight/Delivery Services,0,O
 SFB,-1,Stifel Financial Corporation,Finance,Investment Bankers/Brokers/Service,0,N
 ACTG,3,Acacia Research Corporation,Miscellaneous,Multi-Sector Companies,0,O
 KSU,3,Kansas City Southern,Transportation,Railroads,0,N
@@ -2537,7 +2537,7 @@ QTM,2,Quantum Corporation,Technology,Electronic Components,0,N
 ARNA,3,Arena Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 VTA,-1,Invesco Credit Opportunities Fund,n/a,n/a,0,N
 CADT,0,DT Asia Investments Limited,Finance,Business Services,0,O
-WBS,2,Webster Financial Corporation,Finance,Major Banks,4,N
+WBS,2,Webster Financial Corporation,Finance,Major Banks,0,N
 LOV,3,Spark Networks Inc.,Miscellaneous,Business Services,0,A
 DWSN,3,Dawson Geophysical Company,Energy,Oil & Gas Production,0,O
 SINO,0,Sino-Global Shipping America Ltd.,Transportation,Oil Refining/Marketing,0,O
@@ -2549,21 +2549,21 @@ SINA,3,Sina Corporation,Technology,Computer Software: Prepackaged Software,0,O
 SYRG,4,Synergy Resources Corporation,Energy,Oil & Gas Production,0,A
 TUMI,3,Tumi Holdings Inc.,Consumer Non-Durables,Apparel,0,N
 AKAO,3,Achaogen Inc.,Health Care,Major Pharmaceuticals,0,O
-AKAM,3,Akamai Technologies Inc.,Miscellaneous,Business Services,4,O
+AKAM,3,Akamai Technologies Inc.,Miscellaneous,Business Services,0,O
 GLRI,3,Glori Energy Inc,Energy,Oil & Gas Production,0,O
 BEAT,1,BioTelemetry Inc.,Health Care,Medical/Dental Instruments,0,O
-BEAV,5,B/E Aerospace Inc.,Consumer Durables,Industrial Specialties,4,O
+BEAV,5,B/E Aerospace Inc.,Consumer Durables,Industrial Specialties,0,O
 VTR,3,Ventas Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 BBEPP,-1,BreitBurn Energy Partners L.P.,Energy,Oil & Gas Production,0,O
 GTU,0,Central Gold Trust,n/a,n/a,0,A
-NFLX,3,Netflix Inc.,Consumer Services,Consumer Electronics/Video Chains,6,O
+NFLX,3,Netflix Inc.,Consumer Services,Consumer Electronics/Video Chains,2,O
 AGEN,2,Agenus Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 BLVD,0,Boulevard Acquisition Corp.,Finance,Business Services,0,O
 IRWD,3,Ironwood Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 ROIQU,-1,ROI Acquisition Corp. II,n/a,n/a,0,O
 ROIQW,-1,ROI Acquisition Corp. II,Finance,Business Services,0,O
 BNDX,0,Vanguard Total International Bond ETF,n/a,n/a,0,O
-FITB,4,Fifth Third Bancorp,Finance,Major Banks,0,O
+FITB,4,Fifth Third Bancorp,Finance,Major Banks,4,O
 AWRE,0,Aware Inc.,Technology,Semiconductors,0,O
 HAWK,4,Blackhawk Network Holdings Inc.,Finance,Finance: Consumer Services,0,O
 XGTI,3,XG Technology Inc,Consumer Durables,Telecommunications Equipment,0,O
@@ -2572,7 +2572,7 @@ HVB,2,Hudson Valley Holding Corp.,Finance,Major Banks,0,N
 CRMT,1,America&#39;s Car-Mart Inc.,Consumer Durables,Automotive Aftermarket,0,O
 ESRX,3,Express Scripts Holding Company,Health Care,Medical/Nursing Services,0,O
 CRMD,3,CorMedix Inc,Health Care,Major Pharmaceuticals,0,A
-KLAC,3,KLA-Tencor Corporation,Capital Goods,Electronic Components,0,O
+KLAC,3,KLA-Tencor Corporation,Capital Goods,Electronic Components,4,O
 PMBC,3,Pacific Mercantile Bancorp,Finance,Major Banks,0,O
 OKSB,3,Southwest Bancorp Inc.,Finance,Major Banks,0,O
 IXYS,0,IXYS Corporation,Technology,Semiconductors,0,O
@@ -2591,7 +2591,7 @@ ATLO,0,Ames National Corporation,Finance,Major Banks,0,O
 GWW,3,W.W. Grainger Inc.,Consumer Services,Office Equipment/Supplies/Services,0,N
 GWR,3,Genesee & Wyoming Inc.,Transportation,Railroads,0,N
 TMH,2,Team Health Holdings Inc.,Technology,Professional Services,0,N
-TMK,3,Torchmark Corporation,Finance,Life Insurance,4,N
+TMK,3,Torchmark Corporation,Finance,Life Insurance,0,N
 ATLC,0,Atlanticus Holdings Corporation,Finance,Finance: Consumer Services,0,O
 TMO,4,Thermo Fisher Scientific Inc,Capital Goods,Industrial Machinery/Components,0,N
 NSIG,-1,NeuroSigma Inc.,n/a,n/a,0,O
@@ -2601,7 +2601,7 @@ OMEX,2,Odyssey Marine Exploration Inc.,Consumer Services,Marine Transportation,0
 NJV,-1,Nuveen New Jersey Municipal Value Fund,n/a,n/a,0,A
 NSIT,3,Insight Enterprises Inc.,Consumer Services,Catalog/Specialty Distribution,0,O
 OMER,3,Omeros Corporation,Health Care,Major Pharmaceuticals,0,O
-N,3,Netsuite Inc,Technology,Computer Software: Prepackaged Software,0,N
+N,3,Netsuite Inc,Technology,Computer Software: Prepackaged Software,4,N
 EARN,3,Ellington Residential Mortgage REIT,Consumer Services,Real Estate Investment Trusts,0,N
 CHXF,0,WisdomTree China Dividend Ex-Financials Fund,n/a,n/a,0,O
 FFKT,4,Farmers Capital Bank Corporation,Finance,Major Banks,0,O
@@ -2611,7 +2611,7 @@ WVVI,0,Willamette Valley Vineyards Inc.,Consumer Non-Durables,Beverages (Product
 EIP,-1,Eaton Vance Pennsylvania Municipal Bond Fund,n/a,n/a,0,A
 EIV,0,Eaton Vance Municipal Bond Fund II,n/a,n/a,0,A
 EIX,3,Edison International,Public Utilities,Electric Utilities: Central,0,N
-KRFT,4,Kraft Foods Group Inc.,Consumer Non-Durables,Packaged Foods,0,O
+KRFT,4,Kraft Foods Group Inc.,Consumer Non-Durables,Packaged Foods,2,O
 RCS,0,PIMCO Strategic Income Fund Inc.,n/a,n/a,0,N
 RCL,1,Royal Caribbean Cruises Ltd.,Consumer Services,Marine Transportation,0,N
 RCI,4,Rogers Communication Inc.,Consumer Services,Television Services,0,N
@@ -2629,7 +2629,7 @@ FAM,0,First Trust/Aberdeen Global Opportunity Income Fund,n/a,n/a,0,N
 FAC,0,First Acceptance Corporation,Finance,Property-Casualty Insurers,0,N
 FAF,3,First American Corporation (The),Finance,Specialty Insurers,0,N
 PDLI,0,PDL BioPharma Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
-MS,3,Morgan Stanley,Finance,Investment Bankers/Brokers/Service,6,N
+MS,3,Morgan Stanley,Finance,Investment Bankers/Brokers/Service,2,N
 VECO,1,Veeco Instruments Inc.,Technology,Industrial Machinery/Components,0,O
 RVLT,3,Revolution Lighting Technologies Inc.,Consumer Durables,Building Products,0,O
 NXZ,-1,Nuveen Dividend Advantage Municipal Fund 2,n/a,n/a,0,A
@@ -2655,7 +2655,7 @@ CCF,0,Chase Corporation,Consumer Durables,Building Products,0,A
 CCA,-1,MFS California Insured Municipal Trust,n/a,n/a,0,A
 CCC,3,Calgon Carbon Corporation,Basic Industries,Major Chemicals,0,N
 PIH,0,1347 Property Insurance Holdings Inc.,Finance,Property-Casualty Insurers,0,O
-PII,3,Polaris Industries Inc.,Capital Goods,Industrial Specialties,4,N
+PII,3,Polaris Industries Inc.,Capital Goods,Industrial Specialties,0,N
 PIM,0,Putnam Master Intermediate Income Trust,n/a,n/a,0,N
 INAP,3,Internap Corporation,Technology,Computer Software: Programming Data Processing,0,O
 FLIR,3,FLIR Systems Inc.,Capital Goods,Industrial Machinery/Components,0,O
@@ -2666,7 +2666,7 @@ FLIC,3,The First of Long Island Corporation,Finance,Major Banks,0,O
 SYKE,3,Sykes Enterprises Incorporated,Technology,EDP Services,0,O
 VCYT,3,Veracyte Inc.,Health Care,Medical Specialities,0,O
 UBP,0,Urstadt Biddle Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,N
-UBS,3,UBS AG,Finance,Major Banks,4,N
+UBS,3,UBS AG,Finance,Major Banks,0,N
 ARQL,3,ArQule Inc.,Health Care,Major Pharmaceuticals,0,O
 UBA,4,Urstadt Biddle Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 MAIN,3,Main Street Capital Corporation,n/a,n/a,0,N
@@ -2692,15 +2692,15 @@ AMH,2,American Homes 4 Rent,Consumer Services,Real Estate Investment Trusts,0,N
 CVLT,3,CommVault Systems Inc.,Technology,Computer Software: Prepackaged Software,0,O
 NWS,2,News Corporation,Consumer Services,Newspapers/Magazines,0,O
 AMC,5,AMC Entertainment Holdings Inc.,Consumer Services,Movies/Entertainment,0,N
-AME,4,AMTEK Inc.,Consumer Durables,Metal Fabrications,4,N
+AME,4,AMTEK Inc.,Consumer Durables,Metal Fabrications,0,N
 NWY,3,New York & Company Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
 AMG,1,Affiliated Managers Group Inc.,Finance,Investment Managers,0,N
 DOW,5,Dow Chemical Company (The),Basic Industries,Major Chemicals,2,N
 NWE,2,NorthWestern Corporation,Public Utilities,Power Generation,0,N
 NWL,3,Newell Rubbermaid Inc.,Consumer Non-Durables,Plastic Products,0,N
-AMP,3,AMERIPRISE FINANCIAL SERVICES INC.,Finance,Investment Managers,4,N
+AMP,3,AMERIPRISE FINANCIAL SERVICES INC.,Finance,Investment Managers,0,N
 NWN,3,Northwest Natural Gas Company,Public Utilities,Oil/Gas Transmission,0,N
-AMT,3,American Tower Corporation (REIT),Consumer Services,Real Estate Investment Trusts,4,N
+AMT,3,American Tower Corporation (REIT),Consumer Services,Real Estate Investment Trusts,0,N
 NSTG,3,NanoString Technologies Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 UPLD,3,Upland Software Inc.,Technology,Computer Software: Prepackaged Software,0,O
 WMGIZ,-1,Wright Medical Group Inc.,Health Care,Industrial Specialties,0,O
@@ -2711,7 +2711,7 @@ CYNI,2,Cyan Inc.,Technology,EDP Services,0,N
 TI/A,-1,Telecom Italia S.P.A.,Consumer Services,Telecommunications Equipment,0,N
 WABC,4,Westamerica Bancorporation,Finance,Major Banks,0,O
 POWI,3,Power Integrations Inc.,Technology,Semiconductors,0,O
-KORS,2,Michael Kors Holdings Limited,Consumer Non-Durables,Apparel,4,N
+KORS,2,Michael Kors Holdings Limited,Consumer Non-Durables,Apparel,0,N
 GSIT,0,GSI Technology Inc.,Technology,Semiconductors,0,O
 GSIG,0,GSI Group Inc.,Miscellaneous,Industrial Machinery/Components,0,O
 PRTA,1,Prothena Corporation plc,Health Care,Major Pharmaceuticals,0,O
@@ -2736,20 +2736,20 @@ TM,3,Toyota Motor Corp Ltd Ord,Capital Goods,Auto Manufacturing,0,N
 TK,3,Teekay Corporation,Transportation,Marine Transportation,0,N
 TI,4,Telecom Italia S.P.A.,Consumer Services,Telecommunications Equipment,0,N
 TG,0,Tredegar Corporation,Capital Goods,Metal Fabrications,0,N
-TD,4,Toronto Dominion Bank (The),Finance,Commercial Banks,4,N
-TE,2,TECO Energy Inc.,Public Utilities,Electric Utilities: Central,4,N
+TD,4,Toronto Dominion Bank (The),Finance,Commercial Banks,0,N
+TE,2,TECO Energy Inc.,Public Utilities,Electric Utilities: Central,0,N
 TC,3,Thompson Creek Metals Company Inc.,Basic Industries,Precious Metals,0,N
 BGCA,-1,BGC Partners Inc.,Finance,Investment Bankers/Brokers/Service,0,N
 TA,3,TravelCenters of America LLC,Consumer Durables,Automotive Aftermarket,0,N
-AA,2,Alcoa Inc.,Capital Goods,Metal Fabrications,0,N
+AA,2,Alcoa Inc.,Capital Goods,Metal Fabrications,4,N
 AB,3,Allianceberstein Holding L.P.,Finance,Investment Managers,0,N
 AE,0,Adams Resources & Energy Inc.,Energy,Oil Refining/Marketing,0,A
 AG,3,First Majestic Silver Corp.,Basic Industries,Precious Metals,0,N
 AF,3,Astoria Financial Corporation,Finance,Savings Institutions,0,N
 AI,2,Arlington Asset Investment Corp,Finance,Finance/Investors Services,0,N
 AM,3,Antero Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,N
-AL,1,Air Lease Corporation,Technology,Diversified Commercial Services,4,N
-AN,3,AutoNation Inc.,Consumer Durables,Automotive Aftermarket,4,N
+AL,1,Air Lease Corporation,Technology,Diversified Commercial Services,0,N
+AN,3,AutoNation Inc.,Consumer Durables,Automotive Aftermarket,0,N
 NCTY,0,The9 Limited,Miscellaneous,Business Services,0,O
 AP,0,Ampco-Pittsburgh Corporation,Capital Goods,Fluid Controls,0,N
 AR,5,Antero Resources Corporation,Energy,Oil & Gas Production,0,N
@@ -2761,7 +2761,7 @@ TSRA,3,Tessera Technologies Inc.,Technology,Semiconductors,0,O
 TSRE,4,Trade Street Residential Inc.,Consumer Services,Real Estate Investment Trusts,0,O
 ISRG,3,Intuitive Surgical Inc.,Health Care,Industrial Specialties,0,O
 UBNT,3,Ubiquiti Networks Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
-ARLP,4,Alliance Resource Partners L.P.,Energy,Coal Mining,0,O
+ARLP,4,Alliance Resource Partners L.P.,Energy,Coal Mining,4,O
 RRMS,3,Rose Rock Midstream L.P.,Energy,Natural Gas Distribution,0,N
 CZWI,0,Citizens Community Bancorp Inc.,Finance,Savings Institutions,0,O
 WLT,2,Walter Energy Inc.,Energy,Coal Mining,0,N
@@ -2770,7 +2770,7 @@ AUY,3,Yamana Gold Inc.,Basic Industries,Precious Metals,0,N
 GNVC,3,GenVec Inc.,Health Care,Major Pharmaceuticals,0,O
 WLK,5,Westlake Chemical Corporation,Basic Industries,Major Chemicals,0,N
 WLL,5,Whiting Petroleum Corporation,Energy,Oil & Gas Production,0,N
-SBAC,3,SBA Communications Corporation,Consumer Services,Telecommunications Equipment,0,O
+SBAC,3,SBA Communications Corporation,Consumer Services,Telecommunications Equipment,4,O
 FALC,0,FalconStor Software Inc.,Technology,Computer Software: Prepackaged Software,0,O
 WLB,4,Westmoreland Coal Company,Energy,Coal Mining,0,O
 NXPI,2,NXP Semiconductors N.V.,Technology,Semiconductors,0,O
@@ -2780,7 +2780,7 @@ APRI,3,Apricus Biosciences Inc,Health Care,Major Pharmaceuticals,0,O
 EHIC,0,eHi Car Services Limited,Consumer Services,Rental/Leasing Companies,0,N
 BECN,3,Beacon Roofing Supply Inc.,Consumer Services,RETAIL: Building Materials,0,O
 TGEN,0,Tecogen Inc.,Capital Goods,Industrial Machinery/Components,0,O
-GLPI,3,Gaming and Leisure Properties Inc.,Consumer Services,Real Estate Investment Trusts,4,O
+GLPI,3,Gaming and Leisure Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,O
 SEAS,3,SeaWorld Entertainment Inc.,Consumer Services,Services-Misc. Amusement & Recreation,0,N
 CSWC,0,Capital Southwest Corporation,n/a,n/a,0,O
 SEAC,3,SeaChange International Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
@@ -2823,14 +2823,14 @@ MYOS,3,MYOS Corporation,Health Care,Major Pharmaceuticals,0,O
 BAA,3,BANRO CORPORATION,Basic Industries,Precious Metals,0,A
 TOT,5,TotalFinaElf S.A.,Energy,Oil & Gas Production,0,N
 TOO,2,Teekay Offshore Partners L.P.,Consumer Services,Marine Transportation,0,N
-TOL,3,Toll Brothers Inc.,Capital Goods,Homebuilding,4,N
+TOL,3,Toll Brothers Inc.,Capital Goods,Homebuilding,0,N
 BELFB,0,Bel Fuse Inc.,Capital Goods,Electrical Products,0,O
 BELFA,0,Bel Fuse Inc.,Capital Goods,Electrical Products,0,O
 BVSN,0,BroadVision Inc.,Technology,Computer Software: Prepackaged Software,0,O
 NHC,0,National HealthCare Corporation,Health Care,Hospital/Nursing Management,0,A
-HIW,3,Highwoods Properties Inc.,Consumer Services,Real Estate Investment Trusts,4,N
+HIW,3,Highwoods Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 STRZB,0,Starz,Consumer Services,Television Services,0,O
-STRZA,3,Starz,Consumer Services,Television Services,4,O
+STRZA,3,Starz,Consumer Services,Television Services,0,O
 NHI,2,National Health Investors Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 BAK,3,Braskem S.A.,Basic Industries,Major Chemicals,0,N
 HIE,-1,Miller/Howard High Income Equity Fund,n/a,n/a,0,N
@@ -2892,15 +2892,15 @@ PKX,3,POSCO,Basic Industries,Steel/Iron Ore,0,N
 CEL,0,Cellcom Israel Ltd.,Public Utilities,Telecommunications Equipment,0,N
 ASMB,3,Assembly Biosciences Inc.,Health Care,Major Pharmaceuticals,0,O
 CET,0,Central Securities Corporation,n/a,n/a,0,A
-PKG,3,Packaging Corporation of America,Consumer Durables,Containers/Packaging,4,N
+PKG,3,Packaging Corporation of America,Consumer Durables,Containers/Packaging,0,N
 PKD,4,Parker Drilling Company,Energy,Oil & Gas Production,0,N
 PKE,5,Park Electrochemical Corporation,Technology,Electrical Products,0,N
 ASMI,0,ASM International N.V.,Technology,Industrial Machinery/Components,0,O
-PKI,4,PerkinElmer Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,4,N
+PKI,4,PerkinElmer Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,N
 PKO,-1,Pimco Income Opportunity Fund,n/a,n/a,0,N
 NEN,0,New England Realty Associates Limited Partnership,Consumer Services,Building operators,0,A
-ASML,4,ASML Holding N.V.,Technology,Industrial Machinery/Components,4,O
-SYMC,3,Symantec Corporation,Technology,Computer Software: Prepackaged Software,4,O
+ASML,4,ASML Holding N.V.,Technology,Industrial Machinery/Components,0,O
+SYMC,3,Symantec Corporation,Technology,Computer Software: Prepackaged Software,0,O
 VJET,3,voxeljet AG,Capital Goods,Industrial Machinery/Components,0,N
 SYMX,0,Synthesis Energy Systems Inc.,Basic Industries,Major Chemicals,0,O
 OUTR,1,Outerwall Inc.,Consumer Services,Other Consumer Services,0,O
@@ -2925,7 +2925,7 @@ ASR,3,Grupo Aeroportuario del Sureste S.A. de C.V.,Transportation,Aerospace,0,N
 AST,0,Asterias Biotherapeutics Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,A
 NUV,0,Nuveen AMT-Free Municipal Value Fund,n/a,n/a,0,N
 NUW,-1,Nuveen AMT-Free Municipal Value Fund,n/a,n/a,0,N
-ASX,3,Advanced Semiconductor Engineering Inc.,Technology,Semiconductors,4,N
+ASX,3,Advanced Semiconductor Engineering Inc.,Technology,Semiconductors,0,N
 GKNT,2,Geeknet Inc.,Consumer Services,Other Specialty Stores,0,O
 NUS,3,Nu Skin Enterprises Inc.,Health Care,Other Pharmaceuticals,0,N
 ASC,3,Ardmore Shipping Corporation,Transportation,Marine Transportation,0,N
@@ -2933,7 +2933,7 @@ NUO,0,Nuveen Ohio Quality Income Municipal Fund,n/a,n/a,0,N
 ASA,0,ASA Gold and Precious Metals Limited,n/a,n/a,0,N
 NUM,0,Nuveen Michigan Quality Income Municipal Fund,n/a,n/a,0,N
 ASG,0,Liberty All-Star Growth Fund Inc.,n/a,n/a,0,N
-NUE,3,Nucor Corporation,Basic Industries,Steel/Iron Ore,4,N
+NUE,3,Nucor Corporation,Basic Industries,Steel/Iron Ore,0,N
 ORAN,2,Orange,Public Utilities,Telecommunications Equipment,0,N
 SIEN,3,Sientra Inc.,Health Care,Industrial Specialties,0,O
 DUK,3,Duke Energy Corporation,Public Utilities,Power Generation,0,N
@@ -2942,7 +2942,7 @@ DUA,-1,Deutsche Bank AG,n/a,n/a,0,N
 QCRH,1,QCR Holdings Inc.,Finance,Major Banks,0,O
 DUC,0,Duff & Phelps Utility & Corporate Bond Trust Inc.,n/a,n/a,0,N
 EHTH,3,eHealth Inc.,Finance,Specialty Insurers,0,O
-R,3,Ryder System Inc.,Consumer Services,Rental/Leasing Companies,4,N
+R,3,Ryder System Inc.,Consumer Services,Rental/Leasing Companies,0,N
 KCLI,0,Kansas City Life Insurance Company,Finance,Life Insurance,0,O
 NCR,3,NCR Corporation,Miscellaneous,Office Equipment/Supplies/Services,0,N
 OXLC,4,Oxford Lane Capital Corp.,n/a,n/a,0,O
@@ -2978,7 +2978,7 @@ ISTR,3,Investar Holding Corporation,Finance,Major Banks,0,O
 SBCP,0,Sunshine Bancorp Inc.,Finance,Savings Institutions,0,O
 SBCF,3,Seacoast Banking Corporation of Florida,Finance,Major Banks,0,O
 WNC,1,Wabash National Corporation,Capital Goods,Construction/Ag Equipment/Trucks,0,N
-FANG,3,Diamondback Energy Inc.,Energy,Oil & Gas Production,4,O
+FANG,3,Diamondback Energy Inc.,Energy,Oil & Gas Production,0,O
 PGEM,1,Ply Gem Holdings Inc.,Basic Industries,Forest Products,0,N
 MHI,-1,Pioneer Municipal High Income Trust,n/a,n/a,0,N
 WNR,3,Western Refining Inc.,Energy,Integrated oil Companies,0,N
@@ -2987,7 +2987,7 @@ AKER,0,Akers Biosciences Inc,Health Care,Biotechnology: In Vitro & In Vivo Diagn
 SIRI,3,Sirius XM Holdings Inc.,Consumer Services,Broadcasting,0,O
 APTO,3,Aptose Biosciences Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 APTS,3,Preferred Apartment Communities Inc.,Consumer Services,Real Estate Investment Trusts,0,A
-QCOM,3,QUALCOMM Incorporated,Technology,Radio And Television Broadcasting And Communications Equipment,6,O
+QCOM,3,QUALCOMM Incorporated,Technology,Radio And Television Broadcasting And Communications Equipment,2,O
 CADC,0,China Advanced Construction Materials Group Inc.,Basic Industries,Engineering & Construction,0,O
 GYRO,0,Gyrodyne Company of America Inc.,Consumer Services,Building operators,0,O
 MVNR,1,Mavenir Systems Inc.,Technology,Computer Communications Equipment,0,N
@@ -3005,8 +3005,8 @@ NVEC,3,NVE Corporation,Technology,Semiconductors,0,O
 NNVC,3,NanoViricides Inc.,Health Care,Biotechnology: Commercial Physical & Biological Resarch,0,A
 CCRN,2,Cross Country Healthcare Inc.,Technology,Professional Services,0,O
 SRLP,3,Sprague Resources LP,Energy,Oil Refining/Marketing,0,N
-CMCSK,3,Comcast Corporation,Consumer Services,Television Services,4,O
-CMCSA,3,Comcast Corporation,Consumer Services,Television Services,4,O
+CMCSK,3,Comcast Corporation,Consumer Services,Television Services,0,O
+CMCSA,3,Comcast Corporation,Consumer Services,Television Services,0,O
 ZHNE,3,Zhone Technologies Inc.,Public Utilities,Telecommunications Equipment,0,O
 PPC,1,Pilgrim&#39;s Pride Corporation,Consumer Non-Durables,Meat/Poultry/Fish,0,O
 PPG,3,PPG Industries Inc.,Basic Industries,Paints/Coatings,0,N
@@ -3023,14 +3023,14 @@ PPT,0,Putnam Premier Income Trust,n/a,n/a,0,N
 PPX,-1,PPL Capital Funding Inc.,Public Utilities,Electric Utilities: Central,0,N
 BRID,0,Bridgford Foods Corporation,Consumer Non-Durables,Specialty Foods,0,O
 MAPI,-1,Mapi - Pharma Ltd.,n/a,n/a,0,O
-PETM,1,PetSmart Inc,Consumer Services,Other Specialty Stores,4,O
+PETM,1,PetSmart Inc,Consumer Services,Other Specialty Stores,0,O
 ZPIN,3,Zhaopin Limited,Technology,Professional Services,0,N
 TNGO,3,Tangoe Inc.,Technology,Computer Software: Prepackaged Software,0,O
 SGYP,3,Synergy Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 TMP,3,Tompkins Financial Corporation,Finance,Major Banks,0,A
 GSS,2,Golden Star Resources Ltd,Basic Industries,Precious Metals,0,A
 BG,3,Bunge Limited,Consumer Non-Durables,Packaged Foods,0,N
-BA,2,Boeing Company (The),Capital Goods,Aerospace,3,N
+BA,2,Boeing Company (The),Capital Goods,Aerospace,7,N
 GSV,3,Gold Standard Ventures Corporation,Basic Industries,Mining & Quarrying of Nonmetallic Minerals (No Fuels),0,A
 BH,0,Biglari Holdings Inc.,Consumer Services,Restaurants,0,N
 BK,3,Bank Of New York Mellon Corporation (The),Finance,Major Banks,0,N
@@ -3046,7 +3046,7 @@ GSK,4,GlaxoSmithKline PLC,Health Care,Major Pharmaceuticals,2,N
 GSJ,-1,Goldman Sachs Group Inc. (The),Finance,Investment Bankers/Brokers/Service,0,N
 GSM,2,Globe Specialty Metals Inc.,Capital Goods,Metal Fabrications,0,O
 GSL,0,Global Ship Lease Inc.,Transportation,Marine Transportation,0,N
-NNN,3,National Retail Properties,Consumer Services,Real Estate Investment Trusts,4,N
+NNN,3,National Retail Properties,Consumer Services,Real Estate Investment Trusts,0,N
 AVID,3,Avid Technology Inc.,n/a,n/a,0,O
 DBVT,3,DBV Technologies S.A.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 NNI,0,Nelnet Inc.,Finance,Finance: Consumer Services,0,N
@@ -3088,7 +3088,7 @@ BDN,3,Brandywine Realty Trust,Consumer Services,Real Estate Investment Trusts,0,
 BDJ,-1,Blackrock Enhanced Equity Dividend Trust,n/a,n/a,0,N
 BDR,0,Blonder Tongue Laboratories Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,A
 CUBI,1,Customers Bancorp Inc,Finance,Major Banks,0,O
-BDX,3,Becton Dickinson and Company,Health Care,Medical/Dental Instruments,4,N
+BDX,3,Becton Dickinson and Company,Health Care,Medical/Dental Instruments,0,N
 SDLP,1,Seadrill Partners LLC,Energy,Oil & Gas Production,0,N
 MIXT,3,MiX Telematics Limited,Technology,Computer Software: Prepackaged Software,0,N
 UL,5,Unilever PLC,Basic Industries,Package Goods/Cosmetics,0,N
@@ -3154,7 +3154,7 @@ JCOM,3,j2 Global Inc.,Technology,Telecommunications Equipment,0,O
 COKE,0,Coca-Cola Bottling Co. Consolidated,Consumer Non-Durables,Beverages (Production/Distribution),0,O
 THFF,3,First Financial Corporation Indiana,Finance,Major Banks,0,O
 FCCY,0,1st Constitution Bancorp (NJ),Finance,Savings Institutions,0,O
-ABBV,2,AbbVie Inc.,Health Care,Major Pharmaceuticals,0,N
+ABBV,2,AbbVie Inc.,Health Care,Major Pharmaceuticals,2,N
 DWA,5,Dreamworks Animation SKG Inc.,Consumer Services,Movies/Entertainment,0,O
 LFVN,0,Lifevantage Corporation,Health Care,Major Pharmaceuticals,0,O
 FCCO,3,First Community Corporation,Finance,Major Banks,0,O
@@ -3204,7 +3204,7 @@ CPRT,3,Copart Inc.,Consumer Durables,Automotive Aftermarket,0,O
 WPCS,0,WPCS International Incorporated,Consumer Services,Telecommunications Equipment,0,O
 VBF,0,Invesco Bond Fund,n/a,n/a,0,N
 WEBK,-1,Wellesley Bancorp Inc.,Finance,Banks,0,O
-ITUB,3,Itau Unibanco Banco Holding SA,Finance,Major Banks,4,N
+ITUB,3,Itau Unibanco Banco Holding SA,Finance,Major Banks,0,N
 WHF,3,WhiteHorse Finance Inc.,n/a,n/a,0,O
 WHG,0,Westwood Holdings Group Inc,Finance,Investment Managers,0,N
 WHR,3,Whirlpool Corporation,Consumer Durables,Consumer Electronics/Appliances,0,N
@@ -3247,7 +3247,7 @@ ASTC,0,Astrotech Corporation,Capital Goods,Military/Government/Technical,0,O
 PRI,2,Primerica Inc.,Finance,Life Insurance,0,N
 ASTE,4,Astec Industries Inc.,Capital Goods,Construction/Ag Equipment/Trucks,0,O
 PRK,3,Park National Corporation,Finance,Major Banks,0,A
-PRU,3,Prudential Financial Inc.,Finance,Life Insurance,0,N
+PRU,3,Prudential Financial Inc.,Finance,Life Insurance,4,N
 JOB,3,General Employment Enterprises Inc.,Technology,Diversified Commercial Services,0,A
 MBRG,3,Middleburg Financial Corporation,Finance,Major Banks,0,O
 JOE,3,St. Joe Company (The),Consumer Services,Homebuilding,0,N
@@ -3279,7 +3279,7 @@ AMRS,3,Amyris Inc.,Basic Industries,Major Chemicals,0,O
 ISL,0,Aberdeen Israel Fund Inc.,n/a,n/a,0,A
 SNH,3,Senior Housing Properties Trust,Consumer Services,Real Estate Investment Trusts,0,N
 TKF,0,Turkish Investment Fund Inc. (The),n/a,n/a,0,N
-SNV,3,Synovus Financial Corp.,Finance,Major Banks,4,N
+SNV,3,Synovus Financial Corp.,Finance,Major Banks,0,N
 NLS,1,Nautilus Group Inc. (The),Consumer Non-Durables,Recreational Products/Toys,0,N
 AVGO,1,Avago Technologies Limited,Technology,Semiconductors,0,O
 HMY,0,Harmony Gold Mining Company Limited,Basic Industries,Precious Metals,0,N
@@ -3289,10 +3289,10 @@ DEST,0,Destination Maternity Corporation,Consumer Services,Clothing/Shoe/Accesso
 HMN,3,Horace Mann Educators Corporation,Finance,Property-Casualty Insurers,0,N
 MAB,-1,Eaton Vance Massachusetts Municipal Bond Fund,n/a,n/a,0,A
 TKR,2,Timken Company (The),Capital Goods,Metal Fabrications,0,N
-LPLA,3,LPL Financial Holdings Inc.,Finance,Investment Bankers/Brokers/Service,0,O
+LPLA,3,LPL Financial Holdings Inc.,Finance,Investment Bankers/Brokers/Service,4,O
 HME,3,Home Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 HMG,0,HMG/Courtland Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,A
-HMC,3,Honda Motor Company Ltd.,Capital Goods,Auto Manufacturing,4,N
+HMC,3,Honda Motor Company Ltd.,Capital Goods,Auto Manufacturing,0,N
 DLB,3,Dolby Laboratories,Technology,Radio And Television Broadcasting And Communications Equipment,0,N
 DLA,0,Delta Apparel Inc.,Consumer Non-Durables,Apparel,0,A
 SNP,5,China Petroleum & Chemical Corporation,Energy,Integrated oil Companies,0,N
@@ -3316,7 +3316,7 @@ TBRA,-1,Tobira Therapeutics Inc.,n/a,n/a,0,O
 SSB,3,South State Corporation,Finance,Major Banks,0,O
 MFNC,0,Mackinac Financial Corporation,Finance,Major Banks,0,O
 TCPI,3,TCP International Holdings Ltd.,Consumer Durables,Building Products,0,N
-WSM,2,Williams-Sonoma Inc.,Consumer Services,Home Furnishings,4,N
+WSM,2,Williams-Sonoma Inc.,Consumer Services,Home Furnishings,0,N
 ECF,0,Ellsworth Convertible Growth and Income Fund Inc.,n/a,n/a,0,A
 RMP,3,Rice Midstream Partners LP,n/a,n/a,0,N
 ECC,3,Eagle Point Credit Company Inc.,n/a,n/a,0,N
@@ -3330,11 +3330,11 @@ BWL/A,-1,Bowl America Inc.,Consumer Services,Services-Misc. Amusement & Recreati
 LNN,3,Lindsay Corporation,Capital Goods,Industrial Machinery/Components,0,N
 EXPO,3,Exponent Inc.,Consumer Services,Professional Services,0,O
 ECR,3,Eclipse Resources Corporation,Energy,Oil & Gas Production,0,N
-RMD,2,ResMed Inc.,Health Care,Medical/Dental Instruments,4,N
+RMD,2,ResMed Inc.,Health Care,Medical/Dental Instruments,0,N
 LND,0,Brasilagro Cia Brasileira De Propriedades Agricolas,Consumer Non-Durables,Farming/Seeds/Milling,0,N
 LNG,3,Cheniere Energy Inc.,Public Utilities,Oil/Gas Transmission,0,A
 EXPE,1,Expedia Inc.,Consumer Services,Transportation Services,0,O
-EXPD,3,Expeditors International of Washington Inc.,Transportation,Oil Refining/Marketing,4,O
+EXPD,3,Expeditors International of Washington Inc.,Transportation,Oil Refining/Marketing,0,O
 BBN,-1,BalckRock Build America Bond Trust,n/a,n/a,0,N
 BBL,5,BHP Billiton plc,Energy,Coal Mining,0,N
 BBK,-1,Blackrock Municipal Bond Trust,n/a,n/a,0,N
@@ -3354,14 +3354,14 @@ FRA,-1,Blackrock Floating Rate Income Strategies Fund Inc,n/a,n/a,0,N
 NBIX,3,Neurocrine Biosciences Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 NKSH,0,National Bankshares Inc.,Finance,Major Banks,0,O
 CYS,1,CYS Investments Inc.,Consumer Services,Real Estate Investment Trusts,0,N
-CYT,3,Cytec Industries Inc.,Basic Industries,Major Chemicals,4,N
+CYT,3,Cytec Industries Inc.,Basic Industries,Major Chemicals,0,N
 POT,3,Potash Corporation of Saskatchewan Inc.,Basic Industries,Agricultural Chemicals,0,N
 MRKT,3,Markit Ltd.,Finance,Investment Bankers/Brokers/Service,0,O
 POL,3,PolyOne Corporation,Basic Industries,Major Chemicals,0,N
 POM,3,PEPCO Holdings Inc.,Public Utilities,Power Generation,0,N
 CYD,0,China Yuchai International Limited,Energy,Industrial Machinery/Components,0,N
 CYH,2,Community Health Systems Inc.,Health Care,Hospital/Nursing Management,0,N
-CYN,3,City National Corporation,Finance,Major Banks,4,N
+CYN,3,City National Corporation,Finance,Major Banks,0,N
 SMED,3,Sharps Compliance Corp,Basic Industries,Environmental Services,0,O
 TSEM,3,Tower Semiconductor Ltd.,Technology,Semiconductors,0,O
 FWRD,3,Forward Air Corporation,Transportation,Oil Refining/Marketing,0,O
@@ -3379,7 +3379,7 @@ VLY,3,Valley National Bancorp,Finance,Major Banks,0,N
 AWX,0,Avalon Holdings Corporation,Public Utilities,Environmental Services,0,A
 FSNN,4,Fusion Telecommunications International Inc.,Public Utilities,Telecommunications Equipment,0,O
 AWP,0,Alpine Global Premier Properties Fund,n/a,n/a,0,N
-AWK,3,American Water Works,Public Utilities,Water Supply,4,N
+AWK,3,American Water Works,Public Utilities,Water Supply,0,N
 MQT,0,Blackrock MuniYield Quality Fund II Inc.,n/a,n/a,0,N
 AWI,2,Armstrong World Industries Inc,Consumer Non-Durables,Plastic Products,0,N
 AWH,3,Allied World Assurance Company Holdings AG,Finance,Property-Casualty Insurers,0,N
@@ -3414,8 +3414,8 @@ SWJ,-1,Stanley Black & Decker Inc.,Capital Goods,Industrial Machinery/Components
 CRVL,0,CorVel Corp.,Finance,Specialty Insurers,0,O
 SWN,3,Southwestern Energy Company,Energy,Oil & Gas Production,0,N
 VNRCP,-1,Vanguard Natural Resources LLC,Energy,Oil & Gas Production,0,O
-DD,3,E.I. du Pont de Nemours and Company,Basic Industries,Major Chemicals,5,N
-CI,2,Cigna Corporation,Health Care,Medical Specialities,4,N
+DD,3,E.I. du Pont de Nemours and Company,Basic Industries,Major Chemicals,1,N
+CI,2,Cigna Corporation,Health Care,Medical Specialities,0,N
 CH,0,Aberdeen Chile Fund Inc.,n/a,n/a,0,A
 CO,3,China Cord Blood Corporation,Finance,Business Services,0,N
 CM,4,Canadian Imperial Bank of Commerce,Finance,Commercial Banks,0,N
@@ -3429,7 +3429,7 @@ CY,2,Cypress Semiconductor Corporation,Technology,Semiconductors,0,O
 CX,4,Cemex S.A.B. de C.V.,Capital Goods,Building Materials,0,N
 CS,4,Credit Suisse Group,Finance,Investment Bankers/Brokers/Service,0,N
 CR,3,Crane Company,Capital Goods,Metal Fabrications,0,N
-CP,3,Canadian Pacific Railway Limited,Transportation,Railroads,4,N
+CP,3,Canadian Pacific Railway Limited,Transportation,Railroads,0,N
 CW,2,Curtiss-Wright Corporation,Technology,Industrial Machinery/Components,0,N
 CU,0,First Trust ISE Global Copper Index Fund,n/a,n/a,0,O
 BIOA/WS,-1,BioAmber Inc.,n/a,n/a,0,N
@@ -3448,7 +3448,7 @@ ZNGA,2,Zynga Inc.,Technology,EDP Services,0,O
 TWTR,3,Twitter Inc.,Technology,Computer Software: Programming Data Processing,2,N
 SBGL,0,Sibanye Gold Limited,Basic Industries,Precious Metals,0,N
 TUES,3,Tuesday Morning Corp.,Consumer Services,Department/Specialty Retail Stores,0,O
-SBGI,3,Sinclair Broadcast Group Inc.,Consumer Services,Broadcasting,4,O
+SBGI,3,Sinclair Broadcast Group Inc.,Consumer Services,Broadcasting,0,O
 WMS,3,Advanced Drainage Systems Inc.,Capital Goods,Containers/Packaging,0,N
 EFUT,0,eFuture Information Technology Inc.,Technology,EDP Services,0,O
 PSUN,1,Pacific Sunwear of California Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
@@ -3475,7 +3475,7 @@ DGICB,0,Donegal Group Inc.,Finance,Property-Casualty Insurers,0,O
 HCAC,-1,Hennessy Capital Acquisition Corp.,Capital Goods,Construction/Ag Equipment/Trucks,0,O
 EEME,0,iShares MSCI Emerging Markets EMEA Index Fund,n/a,n/a,0,O
 EEMA,2,iShares MSCI Emerging Markets Asia Index Fund,n/a,n/a,0,O
-ALLY,3,Ally Financial Inc.,Finance,Finance: Consumer Services,0,N
+ALLY,3,Ally Financial Inc.,Finance,Finance: Consumer Services,4,N
 NVAX,3,Novavax Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 CTX,-1,Qwest Corporation,Public Utilities,Telecommunications Equipment,0,N
 PBYI,3,Puma Biotechnology Inc,Health Care,Major Pharmaceuticals,0,N
@@ -3566,12 +3566,12 @@ ALSK,0,Alaska Communications Systems Group Inc.,Public Utilities,Telecommunicati
 EAT,2,Brinker International Inc.,Consumer Services,Restaurants,0,N
 HOG,4,Harley-Davidson Inc.,Consumer Non-Durables,Motor Vehicles,0,N
 CIDM,3,Cinedigm Corp,Miscellaneous,Business Services,0,O
-HON,3,Honeywell International Inc.,Capital Goods,Auto Parts:O.E.M.,4,N
+HON,3,Honeywell International Inc.,Capital Goods,Auto Parts:O.E.M.,0,N
 HOV,5,Hovnanian Enterprises Inc,Capital Goods,Homebuilding,0,N
 HOT,3,Starwood Hotels & Resorts Worldwide Inc.,Consumer Services,Hotels/Resorts,0,N
 TROX,3,Tronox Limited,Basic Industries,Major Chemicals,0,N
 HOS,5,Hornbeck Offshore Services,Consumer Services,Marine Transportation,0,N
-TROW,3,T. Rowe Price Group Inc.,Finance,Investment Bankers/Brokers/Service,4,O
+TROW,3,T. Rowe Price Group Inc.,Finance,Investment Bankers/Brokers/Service,0,O
 TROV,3,TrovaGene Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 KELYB,0,Kelly Services Inc.,Technology,Professional Services,0,O
 KELYA,3,Kelly Services Inc.,Technology,Professional Services,0,O
@@ -3605,7 +3605,7 @@ CHKP,3,Check Point Software Technologies Ltd.,Technology,Computer Software: Prep
 CHKR,4,Chesapeake Granite Wash Trust,Energy,Oil & Gas Production,0,N
 CHKE,2,Cherokee Inc.,Consumer Non-Durables,Apparel,0,O
 SZMK,0,Sizmek Inc.,Consumer Services,Advertising,0,O
-WY,3,Weyerhaeuser Company,Consumer Services,Real Estate Investment Trusts,4,N
+WY,3,Weyerhaeuser Company,Consumer Services,Real Estate Investment Trusts,0,N
 FSLR,3,First Solar Inc.,Technology,Semiconductors,0,O
 MAGS,0,Magal Security Systems Ltd.,Consumer Durables,Telecommunications Equipment,0,O
 TGLS,0,Tecnoglass Inc.,Consumer Durables,Electronic Components,0,O
@@ -3641,7 +3641,7 @@ BJRI,2,BJ&#39;s Restaurants Inc.,Consumer Services,Restaurants,0,O
 VNRAP,-1,Vanguard Natural Resources LLC,Energy,Oil & Gas Production,0,O
 XNPT,2,XenoPort Inc.,Health Care,Major Pharmaceuticals,0,O
 CERE,3,Ceres Inc.,Consumer Non-Durables,Farming/Seeds/Milling,0,O
-CERN,4,Cerner Corporation,Technology,EDP Services,4,O
+CERN,4,Cerner Corporation,Technology,EDP Services,0,O
 NCLH,2,Norwegian Cruise Line Holdings Ltd.,Consumer Services,Marine Transportation,0,O
 CERU,3,Cerulean Pharma Inc.,Health Care,Major Pharmaceuticals,0,O
 CERS,4,Cerus Corporation,Health Care,Medical/Dental Instruments,0,O
@@ -3649,7 +3649,7 @@ RGCO,0,RGC Resources Inc.,Public Utilities,Oil & Gas Production,0,O
 VFL,0,Delaware Investments Florida Insured Municipal Income Fund,n/a,n/a,0,A
 VFC,3,V.F. Corporation,Consumer Non-Durables,Apparel,0,N
 TRMK,4,Trustmark Corporation,Finance,Major Banks,0,O
-WTR,3,Aqua America Inc.,Public Utilities,Water Supply,4,N
+WTR,3,Aqua America Inc.,Public Utilities,Water Supply,0,N
 WTS,3,Watts Water Technologies Inc.,Capital Goods,Metal Fabrications,0,N
 WTT,0,Wireless Telecom Group  Inc.,Capital Goods,Electrical Products,0,A
 WTW,2,Weight Watchers International Inc,Consumer Services,Other Consumer Services,0,N
@@ -3664,10 +3664,10 @@ IVAC,3,Intevac Inc.,Technology,Industrial Machinery/Components,0,O
 IVAN,0,Ivanhoe Energy Inc.,Energy,Oil & Gas Production,0,O
 OFLX,0,Omega Flex Inc.,Capital Goods,Industrial Specialties,0,O
 RZA,-1,Reinsurance Group of America Incorporated,n/a,n/a,0,N
-RTN,3,Raytheon Company,Capital Goods,Industrial Machinery/Components,6,N
+RTN,3,Raytheon Company,Capital Goods,Industrial Machinery/Components,2,N
 RTI,2,RTI International Metals Inc.,Capital Goods,Metal Fabrications,0,N
 RTK,3,Rentech Inc.,Basic Industries,Agricultural Chemicals,0,O
-SEIC,3,SEI Investments Company,Finance,Investment Bankers/Brokers/Service,4,O
+SEIC,3,SEI Investments Company,Finance,Investment Bankers/Brokers/Service,0,O
 GFED,3,Guaranty Federal Bancshares Inc.,Finance,Major Banks,0,O
 PLNR,2,Planar Systems Inc.,Capital Goods,Industrial Machinery/Components,0,O
 HCCI,4,Heritage-Crystal Clean Inc.,Basic Industries,Miscellaneous,0,O
@@ -3708,13 +3708,13 @@ SNMX,3,Senomyx Inc.,Health Care,Biotechnology: Commercial Physical & Biological 
 UUU,0,Universal Security Instruments Inc.,Consumer Non-Durables,Electronic Components,0,A
 SWI,3,Solarwinds Inc.,Technology,Computer Software: Prepackaged Software,0,N
 SWH,0,Stanley Black & Decker Inc.,Capital Goods,Industrial Machinery/Components,0,N
-SWK,4,Stanley Black & Decker Inc.,Capital Goods,Industrial Machinery/Components,4,N
+SWK,4,Stanley Black & Decker Inc.,Capital Goods,Industrial Machinery/Components,0,N
 DM,2,Dominion Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,N
 SWM,0,Schweitzer-Mauduit International Inc.,Basic Industries,Paper,0,N
 DK,5,Delek US Holdings Inc.,Energy,Integrated oil Companies,0,N
 PRTS,3,U.S. Auto Parts Network Inc.,Consumer Services,Other Specialty Stores,0,O
 DF,2,Dean Foods Company,Consumer Non-Durables,Specialty Foods,0,N
-DG,3,Dollar General Corporation,Consumer Services,Department/Specialty Retail Stores,4,N
+DG,3,Dollar General Corporation,Consumer Services,Department/Specialty Retail Stores,0,N
 SWC,5,Stillwater Mining Company,Basic Industries,Precious Metals,0,N
 DE,3,Deere & Company,Capital Goods,Industrial Machinery/Components,0,N
 DB,5,Deutsche Bank AG,Finance,Major Banks,0,N
@@ -3784,15 +3784,15 @@ RIG,3,Transocean Ltd.,Energy,Oil & Gas Production,0,N
 RIC,3,Richmont Mines Inc.,Basic Industries,Precious Metals,0,A
 BNY,-1,BlackRock New York Investment Quality Municipal Trust Inc. (Th,n/a,n/a,0,N
 TRMR,3,Tremor Video Inc.,Technology,Advertising,0,N
-HAL,5,Halliburton Company,Energy,Oilfield Services/Equipment,4,N
+HAL,5,Halliburton Company,Energy,Oilfield Services/Equipment,0,N
 BNS,4,Bank of Nova Scotia (The),Finance,Major Banks,0,N
 HAE,3,Haemonetics Corporation,Health Care,Medical/Dental Instruments,0,N
 BNK,3,C1 Financial Inc.,Finance,Major Banks,0,N
 BNJ,-1,BlackRock New Jersey Municipal Income Trust,n/a,n/a,0,N
-TRMB,3,Trimble Navigation Limited,Capital Goods,Industrial Machinery/Components,0,O
+TRMB,3,Trimble Navigation Limited,Capital Goods,Industrial Machinery/Components,4,O
 CIFC,0,CIFC Corp.,Finance,Finance: Consumer Services,0,O
 RNET,4,RigNet Inc.,Consumer Services,Telecommunications Equipment,0,O
-HAR,4,Harman International Industries Incorporated,Consumer Non-Durables,Consumer Electronics/Appliances,4,N
+HAR,4,Harman International Industries Incorporated,Consumer Non-Durables,Consumer Electronics/Appliances,0,N
 HAS,3,Hasbro Inc.,Consumer Non-Durables,Recreational Products/Toys,0,O
 ZLTQ,2,ZELTIQ Aesthetics Inc.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
 WLKP,3,Westlake Chemical Partners LP,Basic Industries,Major Chemicals,0,N
@@ -3830,8 +3830,8 @@ CASY,1,Caseys General Stores Inc.,Consumer Durables,Automotive Aftermarket,0,O
 MRGE,3,Merge Healthcare Incorporated.,Technology,EDP Services,0,O
 COMT,0,iShares Commodities Select Strategy ETF,n/a,n/a,0,O
 ABDC,1,Alcentra Capital Corp.,n/a,n/a,0,O
-COMM,3,CommScope Holding Company Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,4,O
-FEYE,3,FireEye Inc.,Technology,Computer peripheral equipment,0,O
+COMM,3,CommScope Holding Company Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
+FEYE,3,FireEye Inc.,Technology,Computer peripheral equipment,6,O
 SAQ,-1,Saratoga Investment Corp,n/a,n/a,0,N
 FCEL,2,FuelCell Energy Inc.,Miscellaneous,Industrial Machinery/Components,0,O
 VDSI,0,VASCO Data Security International Inc.,Technology,EDP Services,0,O
@@ -3883,20 +3883,20 @@ BDCV,0,BDCA Venture Inc.,n/a,n/a,0,O
 MCRL,3,Micrel Incorporated,Technology,Semiconductors,0,O
 MCRI,3,Monarch Casino & Resort Inc.,Consumer Services,Hotels/Resorts,0,O
 NYLD,2,NRG Yield Inc.,Public Utilities,Electric Utilities: Central,0,N
-QVCA,3,Liberty Interactive Corporation,Consumer Services,Catalog/Specialty Distribution,4,O
+QVCA,3,Liberty Interactive Corporation,Consumer Services,Catalog/Specialty Distribution,0,O
 QVCB,0,Liberty Interactive Corporation,Consumer Services,Catalog/Specialty Distribution,0,O
 BCOM,0,B Communications Ltd.,Consumer Services,Telecommunications Equipment,0,O
 BRG,0,Bluerock Residential Growth REIT Inc.,Consumer Services,Real Estate Investment Trusts,0,A
 BCOV,2,Brightcove Inc.,Technology,EDP Services,0,O
 BCOR,3,Blucora Inc.,Technology,EDP Services,0,O
 NVMI,2,Nova Measuring Instruments Ltd.,Capital Goods,Electronic Components,0,O
-BIDU,3,Baidu Inc.,Technology,Computer Software: Programming Data Processing,6,O
+BIDU,3,Baidu Inc.,Technology,Computer Software: Programming Data Processing,2,O
 QLIK,5,Qlik Technologies Inc.,Technology,Computer Software: Prepackaged Software,0,O
 CMTL,3,Comtech Telecommunications Corp.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
 LIQD,0,Liquid Holdings Group Inc.,Technology,Computer Software: Prepackaged Software,0,O
 PVCT,0,Provectus Biopharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,A
 GBDC,3,Golub Capital BDC Inc.,n/a,n/a,0,O
-USB,3,U.S. Bancorp,Finance,Major Banks,4,N
+USB,3,U.S. Bancorp,Finance,Major Banks,0,N
 USA,0,Liberty All-Star Equity Fund,n/a,n/a,0,N
 USM,3,United States Cellular Corporation,Public Utilities,Telecommunications Equipment,0,N
 LIQT,3,LiqTech International Inc.,Technology,Industrial Machinery/Components,0,A
@@ -3904,9 +3904,9 @@ IQI,0,Invesco Quality Municipal Income Trust,n/a,n/a,0,N
 LDOS,2,Leidos Holdings Inc.,Technology,EDP Services,0,N
 VISI,0,Volt Information Sciences Inc.,Technology,Professional Services,0,A
 VISN,0,VisionChina Media Inc.,Technology,Advertising,0,O
-PCAR,2,PACCAR Inc.,Capital Goods,Auto Manufacturing,4,O
+PCAR,2,PACCAR Inc.,Capital Goods,Auto Manufacturing,0,O
 AURX,-1,Audeo Oncology Inc.,n/a,n/a,0,O
-PXD,5,Pioneer Natural Resources Company,Energy,Oil & Gas Production,0,N
+PXD,5,Pioneer Natural Resources Company,Energy,Oil & Gas Production,4,N
 FPF,-1,First Trust Intermediate Duration Preferred & Income Fund,n/a,n/a,0,N
 STFC,2,State Auto Financial Corporation,Finance,Property-Casualty Insurers,0,O
 FPL,-1,First Trust New Opportunities MLP & Energy Fund,n/a,n/a,0,N
@@ -3917,11 +3917,11 @@ FPP,0,FieldPoint Petroleum Corporation,Energy,Oil & Gas Production,0,A
 AMTX,3,Aemetis Inc,Basic Industries,Major Chemicals,0,O
 SNOW,3,Intrawest Resorts Holdings Inc.,Consumer Services,Services-Misc. Amusement & Recreation,0,N
 AMTG,3,Apollo Residential Mortgage Inc.,Consumer Services,Real Estate Investment Trusts,0,N
-AMTD,3,TD Ameritrade Holding Corporation,Finance,Investment Bankers/Brokers/Service,4,N
+AMTD,3,TD Ameritrade Holding Corporation,Finance,Investment Bankers/Brokers/Service,0,N
 PNRG,0,PrimeEnergy Corporation,Energy,Oil & Gas Production,0,O
 PNRA,3,Panera Bread Company,Consumer Services,Restaurants,0,O
 SIR,4,Select Income REIT,Consumer Services,Real Estate Investment Trusts,0,N
-JBHT,3,J.B. Hunt Transport Services Inc.,Transportation,Trucking Freight/Courier Services,4,O
+JBHT,3,J.B. Hunt Transport Services Inc.,Transportation,Trucking Freight/Courier Services,0,O
 POPE,0,Pope Resources,Consumer Non-Durables,Environmental Services,0,O
 SIX,3,Six Flags Entertainment Corporation New,Consumer Services,Services-Misc. Amusement & Recreation,0,N
 SAGE,3,Sage Therapeutics Inc.,Health Care,Major Pharmaceuticals,0,O
@@ -3961,7 +3961,7 @@ BLW,0,Citigroup Inc.,Finance,Major Banks,0,N
 BCRX,1,BioCryst Pharmaceuticals Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 NSEC,0,National Security Group Inc.,Finance,Life Insurance,0,O
 TRCO,2,Tribune Media Company,n/a,n/a,0,N
-BLL,4,Ball Corporation,Consumer Durables,Containers/Packaging,4,N
+BLL,4,Ball Corporation,Consumer Durables,Containers/Packaging,0,N
 HCA,1,HCA Holdings Inc.,Health Care,Hospital/Nursing Management,4,N
 GCO,4,Genesco Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
 BLK,3,BlackRock Inc.,Finance,Investment Bankers/Brokers/Service,2,N
@@ -3997,7 +3997,7 @@ FMB,0,First Trust Managed Municipal ETF,n/a,n/a,0,O
 FMC,4,FMC Corporation,Basic Industries,Major Chemicals,0,N
 CLSN,4,Celsion Corporation,Health Care,Major Pharmaceuticals,0,O
 ADPT,3,Adeptus Health Inc.,Health Care,Hospital/Nursing Management,0,N
-TSCO,3,Tractor Supply Company,Consumer Services,RETAIL: Building Materials,4,O
+TSCO,3,Tractor Supply Company,Consumer Services,RETAIL: Building Materials,0,O
 IFON,0,InfoSonics Corp,Consumer Non-Durables,Electronic Components,0,O
 VBND,0,Vident Core U.S. Bond Strategy Fund,n/a,n/a,0,O
 OXBR,0,Oxbridge Re Holdings Limited,Finance,Property-Casualty Insurers,0,O
@@ -4037,13 +4037,13 @@ ENLC,4,EnLink Midstream LLC,Public Utilities,Natural Gas Distribution,0,N
 NYMTP,-1,New York Mortgage Trust Inc.,Finance,Finance: Consumer Services,0,O
 HTBX,3,Heat Biologics Inc.,Health Care,Major Pharmaceuticals,0,O
 FOXA,3,Twenty-First Century Fox Inc.,Consumer Services,Television Services,2,O
-PRXL,3,PAREXEL International Corporation,Health Care,Biotechnology: Commercial Physical & Biological Resarch,4,O
+PRXL,3,PAREXEL International Corporation,Health Care,Biotechnology: Commercial Physical & Biological Resarch,0,O
 PRXI,0,Premier Exhibitions Inc.,Consumer Services,Services-Misc. Amusement & Recreation,0,O
 HTBK,3,Heritage Commerce Corp,Finance,Major Banks,0,O
 HTBI,2,HomeTrust Bancshares Inc.,Finance,Savings Institutions,0,O
 TAP/A,-1,Molson Coors Brewing  Company,Consumer Non-Durables,Beverages (Production/Distribution),0,N
 ISNS,0,Image Sensing Systems Inc.,Capital Goods,Industrial Machinery/Components,0,O
-VIPS,3,Vipshop Holdings Limited,Consumer Services,Catalog/Specialty Distribution,6,N
+VIPS,3,Vipshop Holdings Limited,Consumer Services,Catalog/Specialty Distribution,2,N
 KODK/WS/A,-1,Eastman Kodak Company,n/a,n/a,0,N
 XLS,3,Exelis Inc.,Consumer Durables,Telecommunications Equipment,0,N
 DXYN,3,The Dixie Group Inc.,Consumer Durables,Home Furnishings,0,O
@@ -4063,7 +4063,7 @@ EA,3,Electronic Arts Inc.,Technology,Computer Software: Prepackaged Software,0,O
 EC,5,Ecopetrol S.A.,Energy,Oil & Gas Production,0,N
 WAVX,0,Wave Systems Corp.,Technology,Computer peripheral equipment,0,O
 EW,2,Edwards Lifesciences Corporation,Health Care,Industrial Specialties,0,N
-EV,3,Eaton Vance Corporation,Finance,Investment Managers,4,N
+EV,3,Eaton Vance Corporation,Finance,Investment Managers,0,N
 AMID,3,American Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,N
 AMIC,0,American Independence Corp.,Finance,Accident &Health Insurance,0,O
 DWAT,0,Arrow DWA Tactical ETF,n/a,n/a,0,O
@@ -4088,11 +4088,11 @@ VSCI,0,Vision-Sciences Inc.,Health Care,Biotechnology: Electromedical & Electrot
 RPT,3,Ramco-Gershenson Properties Trust,Consumer Services,Real Estate Investment Trusts,0,N
 RPI,0,Roberts Realty Investors Inc.,Consumer Services,Real Estate Investment Trusts,0,A
 RPM,3,RPM International Inc.,Basic Industries,Paints/Coatings,0,N
-HXL,3,Hexcel Corporation,Basic Industries,Major Chemicals,4,N
+HXL,3,Hexcel Corporation,Basic Industries,Major Chemicals,0,N
 SARA,0,Saratoga Resources Inc,Energy,Oil & Gas Production,0,A
 KEQU,0,Kewaunee Scientific Corporation,Capital Goods,Medical Specialities,0,O
 OGAR,-1,The O&#39;Gara Group Inc.,n/a,n/a,0,O
-PBCT,3,People&#39;s United Financial Inc.,Finance,Savings Institutions,4,O
+PBCT,3,People&#39;s United Financial Inc.,Finance,Savings Institutions,0,O
 FIBK,3,First Interstate BancSystem Inc.,Finance,Major Banks,0,O
 UQM,3,UQM TECHNOLOGIES INC,Capital Goods,Industrial Machinery/Components,0,A
 PCCC,3,PC Connection Inc.,Consumer Services,Catalog/Specialty Distribution,0,O
@@ -4116,21 +4116,21 @@ CLNY,1,Colony Financial Inc,Consumer Services,Real Estate Investment Trusts,0,N
 BOH,3,Bank of Hawaii Corporation,Finance,Major Banks,0,N
 BOI,-1,Brookfield Mortgage Opportunity Income Fund Inc.,n/a,n/a,0,N
 ZIXI,2,Zix Corporation,Technology,EDP Services,0,O
-BRCM,1,Broadcom Corporation,Technology,Semiconductors,0,O
+BRCM,1,Broadcom Corporation,Technology,Semiconductors,4,O
 BRCD,3,Brocade Communications Systems Inc.,Technology,Computer Communications Equipment,0,O
 CFGE,0,Calamos Focus Growth ETF,n/a,n/a,0,O
 KNMD,-1,KineMed Inc.,n/a,n/a,0,O
 SKT,3,Tanger Factory Outlet Centers Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 GHM,3,Graham Corporation,Technology,Industrial Machinery/Components,0,N
 SKY,0,Skyline Corporation,Basic Industries,Homebuilding,0,A
-SKX,3,Skechers U.S.A. Inc.,Consumer Non-Durables,Shoe Manufacturing,4,N
-CTAS,1,Cintas Corporation,Consumer Non-Durables,Apparel,4,O
+SKX,3,Skechers U.S.A. Inc.,Consumer Non-Durables,Shoe Manufacturing,0,N
+CTAS,1,Cintas Corporation,Consumer Non-Durables,Apparel,0,O
 SKM,4,SK Telecom Co. Ltd.,Public Utilities,Telecommunications Equipment,0,N
 ACGL,1,Arch Capital Group Ltd.,Finance,Property-Casualty Insurers,0,O
 GES,4,Guess? Inc.,Consumer Non-Durables,Apparel,0,N
 MFA,3,MFA Financial Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 GEQ,-1,Guggenheim Equal Weight Enhanced Equity Income Fund,n/a,n/a,0,N
-MFC,3,Manulife Financial Corp,Finance,Life Insurance,4,N
+MFC,3,Manulife Financial Corp,Finance,Life Insurance,0,N
 MFD,-1,Macquarie/First Trust Global,n/a,n/a,0,N
 TCX,3,Tucows Inc.,Technology,EDP Services,0,O
 MFG,3,Mizuho Financial Group Inc.,Finance,Major Banks,0,N
@@ -4152,7 +4152,7 @@ GEL,3,Genesis Energy L.P.,Energy,Oil Refining/Marketing,0,N
 JGH,-1,Nuveen Global High Income Fund,n/a,n/a,0,N
 INPH,0,Interphase Corporation,Technology,Computer Communications Equipment,0,O
 BTH,0,Blyth Inc.,Consumer Durables,Miscellaneous manufacturing industries,0,N
-DDS,4,Dillard&#39;s Inc.,Consumer Services,Department/Specialty Retail Stores,4,N
+DDS,4,Dillard&#39;s Inc.,Consumer Services,Department/Specialty Retail Stores,0,N
 DDR,3,DDR Corp.,Consumer Services,Real Estate Investment Trusts,0,N
 BBVA,3,Banco Bilbao Viscaya Argentaria S.A.,Finance,Commercial Banks,0,N
 KAMN,3,Kaman Corporation,Consumer Durables,Industrial Specialties,0,N
@@ -4206,7 +4206,7 @@ FRPH,0,FRP Holdings Inc.,n/a,n/a,0,O
 TERP,2,TerraForm Power Inc.,Public Utilities,Electric Utilities: Central,0,O
 LEVY,0,Levy Acquisition Corp.,Finance,Business Services,0,O
 ADRU,3,BLDRS Europe 100 ADR Index Fund,n/a,n/a,0,O
-LVS,5,Las Vegas Sands Corp.,Consumer Services,Hotels/Resorts,4,N
+LVS,5,Las Vegas Sands Corp.,Consumer Services,Hotels/Resorts,0,N
 SFLY,3,Shutterfly Inc.,Miscellaneous,Other Consumer Services,0,O
 ADRA,3,BLDRS Asia 50 ADR Index Fund,n/a,n/a,0,O
 ADRE,3,BLDRS Emerging Markets 50 ADR Index Fund,n/a,n/a,0,O
@@ -4247,13 +4247,13 @@ WHLRP,-1,Wheeler Real Estate Investment Trust Inc.,Consumer Services,Real Estate
 LOPE,3,Grand Canyon Education Inc.,Consumer Services,Other Consumer Services,0,O
 GTWN,0,Georgetown Bancorp Inc.,Finance,Major Banks,0,O
 LMAT,3,LeMaitre Vascular Inc.,Health Care,Medical/Dental Instruments,0,O
-ODFL,2,Old Dominion Freight Line Inc.,Transportation,Trucking Freight/Courier Services,4,O
-O,3,Realty Income Corporation,Consumer Services,Real Estate Investment Trusts,4,N
+ODFL,2,Old Dominion Freight Line Inc.,Transportation,Trucking Freight/Courier Services,0,O
+O,3,Realty Income Corporation,Consumer Services,Real Estate Investment Trusts,0,N
 CVBF,3,CVB Financial Corporation,Finance,Major Banks,0,O
-WWW,4,Wolverine World Wide Inc.,Consumer Non-Durables,Shoe Manufacturing,4,N
+WWW,4,Wolverine World Wide Inc.,Consumer Non-Durables,Shoe Manufacturing,0,N
 ANGO,4,AngioDynamics Inc.,Health Care,Medical/Dental Instruments,0,O
 ANGI,4,Angie&#39;s List Inc.,Consumer Services,Advertising,0,O
-SCTY,3,SolarCity Corporation,Basic Industries,Engineering & Construction,0,O
+SCTY,3,SolarCity Corporation,Basic Industries,Engineering & Construction,4,O
 AAVL,3,Avalanche Biotechnologies Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 HTLF,4,Heartland Financial USA Inc.,Finance,Major Banks,0,O
 ENRJ,0,EnerJex Resources Inc.,Energy,Oil & Gas Production,0,A
@@ -4262,13 +4262,13 @@ VBIV,0,VBI Vaccines Inc.,Health Care,Biotechnology: Biological Products (No Diag
 SOHU,1,Sohu.com Inc.,Technology,EDP Services,2,O
 SOHO,1,Sotherly Hotels Inc.,Consumer Services,Real Estate Investment Trusts,0,O
 QBAK,0,Qualstar Corporation,Technology,Electronic Components,0,O
-FLS,3,Flowserve Corporation,Capital Goods,Fluid Controls,4,N
+FLS,3,Flowserve Corporation,Capital Goods,Fluid Controls,0,N
 BBBY,3,Bed Bath & Beyond Inc.,Consumer Services,Home Furnishings,0,O
-FLT,1,FleetCor Technologies Inc.,Miscellaneous,Business Services,4,N
+FLT,1,FleetCor Technologies Inc.,Miscellaneous,Business Services,0,N
 TVPT,3,Travelport Worldwide Limited,Consumer Services,Transportation Services,0,N
 NCFT,2,Norcraft Companies Inc.,Basic Industries,Forest Products,0,N
 BOOT,3,Boot Barn Holdings Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
-EBAY,4,eBay Inc.,Miscellaneous,Business Services,4,O
+EBAY,4,eBay Inc.,Miscellaneous,Business Services,0,O
 NAUH,2,National American University Holdings Inc.,Consumer Services,Other Consumer Services,0,O
 SSTK,3,Shutterstock Inc.,Technology,EDP Services,0,N
 BOOM,3,Dynamic Materials Corporation,Capital Goods,Industrial Specialties,0,O
@@ -4279,7 +4279,7 @@ HRZN,3,Horizon Technology Finance Corporation,n/a,n/a,0,O
 VHI,2,Valhi Inc.,Basic Industries,Major Chemicals,0,N
 FLC,-1,Flaherty & Crumrine Total Return Fund Inc,n/a,n/a,0,N
 VHC,3,VirnetX Holding Corp,Miscellaneous,Multi-Sector Companies,0,A
-TXN,2,Texas Instruments Incorporated,Technology,Semiconductors,4,O
+TXN,2,Texas Instruments Incorporated,Technology,Semiconductors,0,O
 GLYC,3,GlycoMimetics Inc.,Health Care,Major Pharmaceuticals,0,O
 SMBC,0,Southern Missouri Bancorp Inc.,Finance,Banks,0,O
 DWCH,3,Datawatch Corporation,Technology,Computer Software: Prepackaged Software,0,O
@@ -4302,7 +4302,7 @@ ALDX,3,Aldeyra Therapeutics Inc.,Health Care,Major Pharmaceuticals,0,O
 ALDW,5,Alon USA Partners LP,Energy,Integrated oil Companies,0,N
 ALDR,3,Alder BioPharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 WRE,4,Washington Real Estate Investment Trust,n/a,n/a,0,N
-WRB,3,W.R. Berkley Corporation,Finance,Property-Casualty Insurers,4,N
+WRB,3,W.R. Berkley Corporation,Finance,Property-Casualty Insurers,0,N
 WRN,0,Western Copper and Gold Corporation,Basic Industries,Precious Metals,0,A
 HZO,3,MarineMax Inc.,Consumer Services,Other Specialty Stores,0,N
 DYSL,0,Dynasil Corporation of America,Capital Goods,Industrial Machinery/Components,0,O
@@ -4325,7 +4325,7 @@ STBZ,3,State Bank Financial Corporation.,Finance,Major Banks,0,O
 THRM,3,Gentherm Inc,Capital Goods,Auto Parts:O.E.M.,0,O
 IMAX,4,Imax Corporation,Miscellaneous,Industrial Machinery/Components,0,N
 FTF,-1,Franklin Limited Duration Income Trust,n/a,n/a,0,A
-FTI,5,FMC Technologies Inc.,Energy,Metal Fabrications,4,N
+FTI,5,FMC Technologies Inc.,Energy,Metal Fabrications,0,N
 FTK,4,Flotek Industries Inc.,Basic Industries,Major Chemicals,0,N
 BLFS,3,BioLife Solutions Inc.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
 MTLS,3,Materialise NV,Technology,Computer Software: Prepackaged Software,0,O
@@ -4359,7 +4359,7 @@ MDR,3,McDermott International Inc.,Capital Goods,Metal Fabrications,0,N
 MDP,3,Meredith Corporation,Consumer Services,Newspapers/Magazines,0,N
 GGN,0,GAMCO Global Gold Natural Reources & Income Trust ,n/a,n/a,0,A
 MDW,3,Midway Gold Corporation,Basic Industries,Precious Metals,0,A
-MDT,3,Medtronic Inc.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,N
+MDT,3,Medtronic Inc.,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,4,N
 MDU,5,MDU Resources Group Inc.,Basic Industries,Mining & Quarrying of Nonmetallic Minerals (No Fuels),0,N
 ESBF,0,ESB Financial Corporation,Finance,Savings Institutions,0,O
 JEQ,0,Aberdeen Japan Equity Fund Inc. ,n/a,n/a,0,N
@@ -4368,10 +4368,10 @@ REFR,2,Research Frontiers Incorporated,Miscellaneous,Multi-Sector Companies,0,O
 DFP,-1,Flaherty & Crumrine Dynamic Preferred and Income Fund Inc.,n/a,n/a,0,N
 DFS,3,Discover Financial Services,Finance,Finance: Consumer Services,0,N
 JEC,5,Jacobs Engineering Group Inc.,Basic Industries,Military/Government/Technical,0,N
-ILMN,2,Illumina Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,O
+ILMN,2,Illumina Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,4,O
 INNL,3,Innocoll AG,Health Care,Major Pharmaceuticals,0,O
 DCT,3,DCT Industrial Trust Inc,Consumer Services,Real Estate Investment Trusts,0,N
-JNPR,3,Juniper Networks Inc.,Technology,Computer Communications Equipment,4,N
+JNPR,3,Juniper Networks Inc.,Technology,Computer Communications Equipment,0,N
 WEC,2,Wisconsin Energy Corporation,Public Utilities,Power Generation,0,N
 MITT,3,AG Mortgage Investment Trust Inc.,n/a,n/a,0,N
 FHN,3,First Horizon National Corporation,Finance,Major Banks,0,N
@@ -4403,13 +4403,13 @@ HGH,-1,Hartford Financial Services Group Inc. (The),Finance,Property-Casualty In
 ABX,3,Barrick Gold Corporation,Basic Industries,Precious Metals,0,N
 HGG,3,HHGregg Inc.,Consumer Services,Consumer Electronics/Video Chains,0,N
 NZH,-1,Nuveen California Dividend Advantage Municipal Fund 3,n/a,n/a,0,A
-BHI,5,Baker Hughes Incorporated,Energy,Metal Fabrications,4,N
+BHI,5,Baker Hughes Incorporated,Energy,Metal Fabrications,0,N
 BHK,0,Blackrock Core Bond Trust,n/a,n/a,0,N
 BHL,-1,Blackrock Defined Opportunity Credit Trust,n/a,n/a,0,N
 BHB,0,Bar Harbor Bankshares Inc.,Finance,Major Banks,0,A
 BHE,3,Benchmark Electronics Inc.,Technology,Electrical Products,0,N
 ATNM,0,Actinium Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,A
-TRGP,3,Targa Resources Inc.,Public Utilities,Natural Gas Distribution,4,N
+TRGP,3,Targa Resources Inc.,Public Utilities,Natural Gas Distribution,0,N
 TRGT,3,Targacept Inc.,Health Care,Major Pharmaceuticals,0,O
 BHP,5,BHP Billiton Limited,Basic Industries,Precious Metals,0,N
 PRCP,0,Perceptron Inc.,Capital Goods,Electronic Components,0,O
@@ -4427,13 +4427,13 @@ LPT,4,Liberty Property Trust,Consumer Services,Real Estate Investment Trusts,0,N
 GMAN,3,Gordmans Stores Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
 LPL,3,LG Display Co. Ltd.,Capital Goods,Industrial Machinery/Components,0,N
 LPI,4,Laredo Petroleum Inc.,Energy,Oil & Gas Production,0,N
-LPG,2,Dorian LPG Ltd.,Transportation,Marine Transportation,0,N
+LPG,2,Dorian LPG Ltd.,Transportation,Marine Transportation,4,N
 SFNC,3,Simmons First National Corporation,Finance,Major Banks,0,O
 BWEN,3,Broadwind Energy Inc.,Capital Goods,Metal Fabrications,0,O
 ROSE,5,Rosetta Resources Inc.,Energy,Oil & Gas Production,0,O
 ROSG,3,Rosetta Genomics Ltd.,Health Care,Major Pharmaceuticals,0,O
 GURE,0,Gulf Resources Inc.,Basic Industries,Major Chemicals,0,O
-ROST,2,Ross Stores Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,4,O
+ROST,2,Ross Stores Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
 VLGEA,0,Village Super Market Inc.,Consumer Services,Food Chains,0,O
 IHT,0,InnSuites Hospitality Trust,Consumer Services,Real Estate Investment Trusts,0,A
 CHSP,2,Chesapeake Lodging Trust,Consumer Services,Real Estate Investment Trusts,0,N
@@ -4447,7 +4447,7 @@ CSH,5,Cash America International Inc.,Consumer Services,Other Specialty Stores,0
 CSG,3,Chambers Street Properties,Consumer Services,Real Estate Investment Trusts,0,N
 CSF,0,Compass EMP U.S. Discovery 500 Enhanced Volatility Weighted Fu,n/a,n/a,0,O
 CSC,3,Computer Sciences Corporation,Technology,EDP Services,0,N
-CSX,3,CSX Corporation,Transportation,Railroads,4,N
+CSX,3,CSX Corporation,Transportation,Railroads,0,N
 CSU,3,Capital Senior Living Corporation,Health Care,Hospital/Nursing Management,0,N
 CST,2,CST Brands Inc.,Consumer Durables,Automotive Aftermarket,0,N
 CSV,3,Carriage Services Inc.,Consumer Services,Other Consumer Services,0,N
@@ -4468,7 +4468,7 @@ NQ,0,NQ Mobile Inc.,Technology,Computer Software: Prepackaged Software,0,N
 EGLT,3,Egalet Corporation,Health Care,Major Pharmaceuticals,0,O
 MNGA,0,MagneGas Corporation,Technology,Industrial Machinery/Components,0,O
 ENPH,2,Enphase Energy Inc.,Technology,Semiconductors,0,O
-ANET,3,Arista Networks Inc.,Technology,Computer Communications Equipment,4,N
+ANET,3,Arista Networks Inc.,Technology,Computer Communications Equipment,0,N
 DANG,3,E-Commerce China Dangdang Inc.,Consumer Services,Other Specialty Stores,0,N
 AEE,3,Ameren Corporation,Public Utilities,Power Generation,0,N
 EGLE,0,Eagle Bulk Shipping Inc.,Transportation,Marine Transportation,0,O
@@ -4608,7 +4608,7 @@ OSK,2,Oshkosh Corporation,Capital Goods,Auto Manufacturing,0,N
 OSM,-1,SLM Corporation,Finance,Finance: Consumer Services,0,O
 KINS,0,Kingstone Companies Inc,Finance,Property-Casualty Insurers,0,O
 OSN,0,Ossen Innovation Co. Ltd.,Basic Industries,Steel/Iron Ore,0,O
-KMX,1,CarMax Inc,Consumer Durables,Automotive Aftermarket,4,N
+KMX,1,CarMax Inc,Consumer Durables,Automotive Aftermarket,0,N
 CPAH,3,CounterPath Corporation,Technology,Computer Software: Prepackaged Software,0,O
 CPAC,3,Cementos Pacasmayo S.A.A.,Capital Goods,Building Materials,0,N
 LRE,3,LRR Energy L.P.,Energy,Oil & Gas Production,0,N
@@ -4617,10 +4617,10 @@ LRN,3,K12 Inc,Consumer Services,Other Consumer Services,0,N
 MDLZ,4,Mondelez International Inc.,Consumer Non-Durables,Packaged Foods,0,O
 MDLY,3,Medley Management Inc.,Finance,Investment Managers,0,N
 FBIZ,3,First Business Financial Services Inc.,Finance,Major Banks,0,O
-GMCR,2,Keurig Green Mountain Inc.,Consumer Non-Durables,Packaged Foods,4,O
-VRX,2,Valeant Pharmaceuticals International Inc.,Health Care,Major Pharmaceuticals,0,N
+GMCR,2,Keurig Green Mountain Inc.,Consumer Non-Durables,Packaged Foods,0,O
+VRX,2,Valeant Pharmaceuticals International Inc.,Health Care,Major Pharmaceuticals,4,N
 NOK,3,Nokia Corporation,Technology,Radio And Television Broadcasting And Communications Equipment,2,N
-FAST,3,Fastenal Company,Consumer Services,RETAIL: Building Materials,4,O
+FAST,3,Fastenal Company,Consumer Services,RETAIL: Building Materials,0,O
 GRAM,3,Grana y Montero S.A.A.,Basic Industries,Military/Government/Technical,0,N
 CAKE,3,The Cheesecake Factory Incorporated,Consumer Services,Restaurants,0,O
 SIEB,0,Siebert Financial Corp.,Finance,Investment Bankers/Brokers/Service,0,O
@@ -4657,13 +4657,13 @@ GV,0,Goldfield Corporation (The),Basic Industries,Water Supply,0,A
 GT,3,The Goodyear Tire & Rubber Company,Consumer Durables,Automotive Aftermarket,0,O
 GS,3,Goldman Sachs Group Inc. (The),Finance,Investment Bankers/Brokers/Service,3,N
 GY,3,GenCorp Inc.,Basic Industries,Specialty Chemicals,0,N
-GG,3,Goldcorp Inc.,Basic Industries,Precious Metals,0,N
+GG,3,Goldcorp Inc.,Basic Industries,Precious Metals,4,N
 GF,0,New Germany Fund Inc. (The),n/a,n/a,0,N
 GE,3,General Electric Company,Energy,Consumer Electronics/Appliances,3,N
-GD,3,General Dynamics Corporation,Capital Goods,Marine Transportation,4,N
+GD,3,General Dynamics Corporation,Capital Goods,Marine Transportation,0,N
 OSBCP,-1,Old Second Bancorp Inc.,Finance,Major Banks,0,O
 RDWR,3,Radware Ltd.,Miscellaneous,Business Services,0,O
-GM,3,General Motors Company,Capital Goods,Auto Manufacturing,2,N
+GM,3,General Motors Company,Capital Goods,Auto Manufacturing,6,N
 GK,2,G&K Services Inc.,Consumer Services,Other Consumer Services,0,O
 AXAS,4,Abraxas Petroleum Corporation,Energy,Oil & Gas Production,0,O
 EBMT,3,Eagle Bancorp Montana Inc.,Finance,Savings Institutions,0,O
@@ -4674,7 +4674,7 @@ AMCC,3,Applied Micro Circuits Corporation,Technology,Semiconductors,0,O
 JBSS,0,John B. Sanfilippo & Son Inc.,Consumer Non-Durables,Specialty Foods,0,O
 TOPS,0,TOP Ships Inc.,Transportation,Marine Transportation,0,O
 BSRR,3,Sierra Bancorp,Finance,Major Banks,0,O
-VLO,3,Valero Energy Corporation,Energy,Integrated oil Companies,4,N
+VLO,3,Valero Energy Corporation,Energy,Integrated oil Companies,0,N
 MPLX,2,MPLX LP,Energy,Natural Gas Distribution,0,N
 TTS,3,Tile Shop Hldgs Inc.,Consumer Services,Home Furnishings,0,O
 TTP,-1,Tortoise Pipeline & Energy Fund Inc.,n/a,n/a,0,N
@@ -4761,7 +4761,7 @@ ASBC,-1,Associated Banc-Corp,Finance,Major Banks,0,O
 CHS,3,Chico&#39;s FAS Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
 CHT,3,Chunghwa Telecom Co. Ltd.,Public Utilities,Telecommunications Equipment,0,N
 CHU,3,China Unicom (Hong Kong) Ltd,Public Utilities,Telecommunications Equipment,0,N
-JAH,3,Jarden Corporation,Consumer Durables,Consumer Specialties,0,N
+JAH,3,Jarden Corporation,Consumer Durables,Consumer Specialties,4,N
 CHW,-1,Calamos Global Dynamic Income Fund,n/a,n/a,0,O
 CHY,0,Calamos Convertible and High Income Fund,n/a,n/a,0,O
 FELE,4,Franklin Electric Co. Inc.,Consumer Durables,Metal Fabrications,0,O
@@ -4775,8 +4775,8 @@ WSCI,0,WSI Industries Inc.,Technology,Industrial Machinery/Components,0,O
 CHSCM,-1,CHS Inc,Consumer Services,Farming/Seeds/Milling,0,O
 CHSCN,-1,CHS Inc,Consumer Services,Farming/Seeds/Milling,0,O
 CHSCO,-1,CHS Inc,Consumer Services,Farming/Seeds/Milling,0,O
-EWBC,3,East West Bancorp Inc.,Finance,Major Banks,4,O
-CBG,2,CBRE Group Inc.,Finance,Real Estate,4,N
+EWBC,3,East West Bancorp Inc.,Finance,Major Banks,0,O
+CBG,2,CBRE Group Inc.,Finance,Real Estate,0,N
 PTEN,3,Patterson-UTI Energy Inc.,Energy,Oil & Gas Production,0,O
 OBAS,0,Optibase Ltd.,Finance,Real Estate,0,O
 TCFC,3,The Community Financial Corporation,Finance,Major Banks,0,O
@@ -4788,7 +4788,7 @@ GCI,3,Gannett Co. Inc.,Consumer Services,Newspapers/Magazines,0,N
 GCH,0,Aberdeen Greater China Fund Inc.,n/a,n/a,0,N
 AFG,3,American Financial Group Inc.,Finance,Property-Casualty Insurers,0,N
 AFA,-1,American Financial Group Inc.,Finance,Property-Casualty Insurers,0,N
-ORLY,1,O&#39;Reilly Automotive Inc.,Consumer Services,Other Specialty Stores,4,O
+ORLY,1,O&#39;Reilly Automotive Inc.,Consumer Services,Other Specialty Stores,0,O
 AFC,-1,Ares Capital Corporation,n/a,n/a,0,N
 W,4,Wayfair Inc.,Consumer Services,Catalog/Specialty Distribution,0,N
 GCV,0,Gabelli Convertible and Income Securities Fund Inc. (The),n/a,n/a,0,N
@@ -4821,12 +4821,12 @@ AREX,3,Approach Resources Inc.,Energy,Oil & Gas Production,0,O
 WAIR,4,Wesco Aircraft Holdings Inc.,Capital Goods,Wholesale Distributors,0,N
 ASH,2,Ashland Inc.,Consumer Durables,Specialty Chemicals,0,N
 IKNX,0,Ikonics Corporation,Miscellaneous,Industrial Machinery/Components,0,O
-GMED,3,Globus Medical Inc.,Health Care,Medical/Dental Instruments,4,N
+GMED,3,Globus Medical Inc.,Health Care,Medical/Dental Instruments,0,N
 CPGI,0,China Shengda Packaging Group Inc.,Consumer Durables,Containers/Packaging,0,O
 HOVNP,-1,Hovnanian Enterprises Inc,Capital Goods,Homebuilding,0,O
 YDIV,0,First Trust International Multi-Asset Diversified Income Index,n/a,n/a,0,O
 VGIT,3,Vanguard Intermediate -Term Government Bond ETF,n/a,n/a,0,O
-WYNN,5,Wynn Resorts Limited,Consumer Services,Hotels/Resorts,4,O
+WYNN,5,Wynn Resorts Limited,Consumer Services,Hotels/Resorts,0,O
 NPTN,3,NeoPhotonics Corporation,Technology,Semiconductors,0,N
 MMYT,2,MakeMyTrip Limited,Consumer Services,Transportation Services,0,O
 CAMP,3,CalAmp Corp.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
@@ -4846,7 +4846,7 @@ ENTA,3,Enanta Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 SKUL,1,Skullcandy Inc.,Consumer Non-Durables,Consumer Electronics/Appliances,0,O
 ENTG,3,Entegris Inc.,Consumer Non-Durables,Plastic Products,0,O
 SRCE,3,1st Source Corporation,Finance,Major Banks,0,O
-AAPL,2,Apple Inc.,Technology,Computer Manufacturing,6,O
+AAPL,2,Apple Inc.,Technology,Computer Manufacturing,3,O
 SRCL,3,Stericycle Inc.,Basic Industries,Environmental Services,0,O
 ENTR,3,Entropic Communications Inc.,Technology,Semiconductors,0,O
 ZFC,3,ZAIS Financial Corp.,Consumer Services,Real Estate Investment Trusts,0,N
@@ -4857,7 +4857,7 @@ WEA,-1,Western Asset Bond Fund,n/a,n/a,0,N
 SIGI,2,Selective Insurance Group Inc.,Finance,Property-Casualty Insurers,0,O
 SIGM,4,Sigma Designs Inc.,Technology,Semiconductors,0,O
 WEN,2,Wendy&#39;s Company (The),Consumer Services,Restaurants,0,O
-WES,3,Western Gas Partners LP,Public Utilities,Natural Gas Distribution,4,N
+WES,3,Western Gas Partners LP,Public Utilities,Natural Gas Distribution,0,N
 PSDV,3,pSivida Corp.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,O
 SZYM,0,Solazyme Inc.,Basic Industries,Major Chemicals,0,O
 VMBS,0,Vanguard Mortgage-Backed Securities ETF,n/a,n/a,0,O
@@ -4919,7 +4919,7 @@ HPQ,3,Hewlett-Packard Company,Technology,Computer Manufacturing,0,N
 HPP,2,Hudson Pacific Properties Inc.,Finance,Real Estate,0,N
 TACT,4,TransAct Technologies Incorporated,Technology,Computer peripheral equipment,0,O
 KONE,0,Kingtone Wirelessinfo Solution Holding Ltd,Technology,EDP Services,0,O
-HPT,2,Hospitality Properites Trust,Consumer Services,Real Estate Investment Trusts,4,N
+HPT,2,Hospitality Properites Trust,Consumer Services,Real Estate Investment Trusts,0,N
 HPJ,3,Highpower International Inc,Miscellaneous,Industrial Machinery/Components,0,O
 HPI,-1,John Hancock Preferred Income Fund,n/a,n/a,0,N
 BCEI,4,Bonanza Creek Energy Inc.,Energy,Oil & Gas Production,0,N
@@ -4933,7 +4933,7 @@ UIL,4,UIL Holdings Corporation,Public Utilities,Electric Utilities: Central,0,N
 GBNK,3,Guaranty Bancorp,Finance,Major Banks,0,O
 UIS,2,Unisys Corporation,Technology,EDP Services,0,N
 IOC,3,InterOil Corporation,Energy,Oil & Gas Production,0,N
-D,3,Dominion Resources Inc.,Public Utilities,Electric Utilities: Central,0,N
+D,3,Dominion Resources Inc.,Public Utilities,Electric Utilities: Central,4,N
 RXN,4,Rexnord Corporation,Technology,Industrial Machinery/Components,0,N
 HCOM,3,Hawaiian Telcom Holdco Inc.,Consumer Services,Telecommunications Equipment,0,O
 CLFD,3,Clearfield Inc.,Public Utilities,Telecommunications Equipment,0,O
@@ -4955,7 +4955,7 @@ HL,3,Hecla Mining Company,Basic Industries,Mining & Quarrying of Nonmetallic Min
 HA,1,Hawaiian Holdings Inc.,Transportation,Air Freight/Delivery Services,0,O
 CTIB,0,CTI Industries Corporation,Basic Industries,Specialty Chemicals,0,O
 CTIC,3,CTI BioPharma Corp.,Health Care,Major Pharmaceuticals,0,O
-HD,3,Home Depot Inc. (The),Consumer Services,RETAIL: Building Materials,7,N
+HD,3,Home Depot Inc. (The),Consumer Services,RETAIL: Building Materials,3,N
 HE,3,Hawaiian Electric Industries Inc.,Public Utilities,Electric Utilities: Central,0,N
 SCM,3,Stellus Capital Investment Corporation,n/a,n/a,0,N
 SCL,2,Stepan Company,Basic Industries,Package Goods/Cosmetics,0,N
@@ -4998,7 +4998,7 @@ FSCE,-1,Fifth Street Finance Corp.,n/a,n/a,0,N
 ADT,4,ADT Corporation,Consumer Services,Diversified Commercial Services,0,N
 GMO,3,General Moly Inc,Basic Industries,Precious Metals,0,A
 ADS,3,Alliance Data Systems Corporation,Miscellaneous,Business Services,0,N
-ADP,4,Automatic Data Processing Inc.,Technology,EDP Services,4,O
+ADP,4,Automatic Data Processing Inc.,Technology,EDP Services,0,O
 GMC,-1,Global Market Group Limited,n/a,n/a,0,O
 ADX,0,Adams Express Company (The),n/a,n/a,0,N
 GMZ,-1,Goldman Sachs Group Inc. (The),Finance,Investment Bankers/Brokers/Service,0,N
@@ -5033,7 +5033,7 @@ FBMS,3,The First Bancshares Inc.,Finance,Major Banks,0,O
 FMN,-1,Federated Premier Municipal Income Fund,n/a,n/a,0,N
 DSPG,3,DSP Group Inc.,Technology,Semiconductors,0,O
 CECE,4,CECO Environmental Corp.,Capital Goods,Pollution Control Equipment,0,O
-SCG,3,Scana Corporation,Public Utilities,Power Generation,4,N
+SCG,3,Scana Corporation,Public Utilities,Power Generation,0,N
 CECO,3,Career Education Corporation,Consumer Services,Other Consumer Services,0,O
 MARPS,0,Marine Petroleum Trust,Energy,Oil & Gas Production,0,O
 VGGL,3,Viggle Inc.,Technology,Computer Software: Programming Data Processing,0,O
@@ -5109,7 +5109,7 @@ TPL,0,Texas Pacific Land Trust,Energy,Oil & Gas Production,0,N
 HRS,1,Harris Corporation,Capital Goods,Industrial Machinery/Components,0,N
 HLIT,2,Harmonic Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
 ATAX,3,America First Multifamily Investors L.P.,Finance,Finance: Consumer Services,0,O
-HRL,3,Hormel Foods Corporation,Consumer Non-Durables,Meat/Poultry/Fish,4,N
+HRL,3,Hormel Foods Corporation,Consumer Non-Durables,Meat/Poultry/Fish,0,N
 HRG,0,Harbinger Group Inc,Miscellaneous,Industrial Machinery/Components,0,N
 TPZ,-1,Tortoise Power and Energy Infrastructure Fund Inc,n/a,n/a,0,N
 HRC,3,Hill-Rom Holdings Inc,Health Care,Medical/Dental Instruments,0,N
@@ -5156,7 +5156,7 @@ SEV,0,Sevcon Inc.,Energy,Industrial Machinery/Components,0,O
 QUNR,3,Qunar Cayman Islands Limited,Miscellaneous,Business Services,0,O
 SASR,3,Sandy Spring Bancorp Inc.,Finance,Major Banks,0,O
 PODD,3,Insulet Corporation,Health Care,Medical/Dental Instruments,0,O
-SEE,1,Sealed Air Corporation,Basic Industries,Major Chemicals,4,N
+SEE,1,Sealed Air Corporation,Basic Industries,Major Chemicals,0,N
 DGII,2,Digi International Inc.,Technology,Computer Communications Equipment,0,O
 SEM,4,Select Medical Holdings Corporation,Health Care,Hospital/Nursing Management,0,N
 CLM,0,Cornerstone Strategic Value Fund Inc.,n/a,n/a,0,A
@@ -5169,10 +5169,10 @@ CLF,2,Cliffs Natural Resources Inc.,Basic Industries,Precious Metals,0,N
 PDT,0,John Hancock Premium Dividend Fund,n/a,n/a,0,N
 PDS,3,Precision Drilling Corporation,Energy,Oil & Gas Production,0,N
 CLA,-1,Capitala Finance Corp.,n/a,n/a,0,N
-CLB,5,Core Laboratories N.V.,Energy,Oilfield Services/Equipment,4,N
+CLB,5,Core Laboratories N.V.,Energy,Oilfield Services/Equipment,0,N
 IMN,3,Imation Corporation,Technology,Electronic Components,0,N
 IMS,3,IMS Health Holdings Inc.,Technology,EDP Services,0,N
-MRVL,3,Marvell Technology Group Ltd.,Technology,Semiconductors,4,O
+MRVL,3,Marvell Technology Group Ltd.,Technology,Semiconductors,0,O
 CLX,2,Clorox Company (The),Consumer Durables,Specialty Chemicals,0,N
 PDI,-1,PIMCO Dynamic Income Fund,n/a,n/a,0,N
 FCNCA,0,First Citizens BancShares Inc.,Finance,Major Banks,0,O
@@ -5240,10 +5240,10 @@ KNM,0,Konami Corporation,Technology,Computer Software: Prepackaged Software,0,N
 H,4,Hyatt Hotels Corporation,Consumer Services,Hotels/Resorts,0,N
 KND,3,Kindred Healthcare Inc.,Health Care,Hospital/Nursing Management,0,N
 EQR,2,Equity Residential,Consumer Services,Real Estate Investment Trusts,0,N
-EQT,5,EQT Corporation,Energy,Oil & Gas Production,4,N
+EQT,5,EQT Corporation,Energy,Oil & Gas Production,0,N
 FORTY,0,Formula Systems (1985) Ltd.,Technology,EDP Services,0,O
 EQM,3,EQT Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,N
-KNX,2,Knight Transportation Inc.,Transportation,Trucking Freight/Courier Services,4,N
+KNX,2,Knight Transportation Inc.,Transportation,Trucking Freight/Courier Services,0,N
 EQC,4,Equity Commonwealth,Consumer Services,Real Estate Investment Trusts,0,N
 LXU,5,Lsb Industries Inc.,Basic Industries,Major Chemicals,0,N
 LXP,4,Lexington Realty Trust,Consumer Services,Real Estate Investment Trusts,0,N
@@ -5260,13 +5260,13 @@ TMUS,3,T-Mobile US Inc.,Public Utilities,Telecommunications Equipment,0,N
 ECHO,4,Echo Global Logistics Inc.,Transportation,Oil Refining/Marketing,0,O
 FUND,0,Royce Focus Trust Inc.,n/a,n/a,0,O
 FUNC,0,First United Corporation,Finance,Major Banks,0,O
-PX,3,Praxair Inc.,Basic Industries,Major Chemicals,4,N
+PX,3,Praxair Inc.,Basic Industries,Major Chemicals,0,N
 TWC,3,Time Warner Cable Inc,Consumer Services,Television Services,0,N
 FISH,3,Marlin Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,O
 FISI,3,Financial Institutions Inc.,Finance,Major Banks,0,O
 LMCA,3,Liberty Media Corporation,Consumer Services,Broadcasting,0,O
 DAVE,4,Famous Dave&#39;s of America Inc.,Consumer Services,Restaurants,0,O
-FISV,4,Fiserv Inc.,Technology,EDP Services,4,O
+FISV,4,Fiserv Inc.,Technology,EDP Services,0,O
 LMCB,0,Liberty Media Corporation,Consumer Services,Broadcasting,0,O
 HART,0,Harvard Apparatus Regenerative Technology Inc.,Health Care,Medical/Dental Instruments,0,O
 ZBB,3,ZBB Energy Corporation,Public Utilities,Electric Utilities: Central,0,A
@@ -5275,7 +5275,7 @@ WAL,1,Western Alliance Bancorporation,Finance,Major Banks,0,N
 PSXP,2,Phillips 66 Partners LP,Energy,Integrated oil Companies,0,N
 WAG,-1,Walgreen Co.,Health Care,Medical/Nursing Services,0,N
 WAC,3,Walter Investment Management Corp.,Finance,Finance: Consumer Services,0,N
-WAB,3,Westinghouse Air Brake Technologies Corporation,Capital Goods,Railroads,4,N
+WAB,3,Westinghouse Air Brake Technologies Corporation,Capital Goods,Railroads,0,N
 WAT,3,Waters Corporation,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,N
 CAAS,3,China Automotive Systems Inc.,Capital Goods,Auto Parts:O.E.M.,0,O
 GROW,0,U.S. Global Investors Inc.,Finance,Investment Managers,0,O
@@ -5288,7 +5288,7 @@ PANW,3,Palo Alto Networks Inc.,Technology,Computer peripheral equipment,0,N
 IP,3,International Paper Company,Basic Industries,Paper,0,N
 IR,3,Ingersoll-Rand plc (Ireland),Capital Goods,Auto Parts:O.E.M.,4,N
 UTHR,3,United Therapeutics Corporation,Health Care,Major Pharmaceuticals,0,O
-CLD,3,Cloud Peak Energy Inc,Energy,Coal Mining,0,N
+CLD,3,Cloud Peak Energy Inc,Energy,Coal Mining,4,N
 IM,4,Ingram Micro Inc.,Technology,Retail: Computer Software & Peripheral Equipment,0,N
 IL,3,IntraLinks Holdings Inc.,Technology,Computer Software: Prepackaged Software,0,N
 IO,3,Ion Geophysical Corporation,Energy,Oil & Gas Production,0,N
@@ -5297,11 +5297,11 @@ ELNK,3,EarthLink Holdings Corp.,Technology,Computer Software: Programming Data P
 IG,1,IGI Laboratories Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,A
 PANL,0,Pangaea Logistics Solutions Ltd.,Consumer Services,Marine Transportation,0,O
 RNP,-1,Cohen & Steers Reit and Preferred Income Fund Inc,n/a,n/a,0,N
-SHLX,3,Shell Midstream Partners L.P.,Energy,Natural Gas Distribution,4,N
+SHLX,3,Shell Midstream Partners L.P.,Energy,Natural Gas Distribution,0,N
 CTRN,3,Citi Trends Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
 CTRL,2,Control4 Corporation,Capital Goods,Electrical Products,0,O
 CTRE,4,CareTrust REIT Inc.,Consumer Services,Real Estate Investment Trusts,0,O
-CTRX,3,Catamaran Corporation,Finance,Specialty Insurers,4,O
+CTRX,3,Catamaran Corporation,Finance,Specialty Insurers,0,O
 SHLM,3,A. Schulman Inc.,Basic Industries,Major Chemicals,0,O
 SHLO,0,Shiloh Industries Inc.,Capital Goods,Industrial Specialties,0,O
 CTRP,4,Ctrip.com International Ltd.,Miscellaneous,Business Services,0,O
@@ -5329,7 +5329,7 @@ OSIR,2,Osiris Therapeutics Inc.,Health Care,Biotechnology: Biological Products (
 FINL,4,The Finish Line Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,O
 TRI,3,Thomson Reuters Corp,Consumer Services,Publishing,0,N
 TRK,3,Speedway Motorsports Inc.,Consumer Services,Services-Misc. Amusement & Recreation,0,N
-TRN,3,Trinity Industries Inc.,Capital Goods,Railroads,4,N
+TRN,3,Trinity Industries Inc.,Capital Goods,Railroads,0,N
 TRC,0,Tejon Ranch Co,Finance,Real Estate,0,N
 TRF,0,Templeton Russia Fund Inc.,n/a,n/a,0,N
 TRX,0,Tanzanian Royalty Exploration Corporation,Basic Industries,Precious Metals,0,A
@@ -5339,7 +5339,7 @@ TRP,4,TransCanada Corporation,Public Utilities,Natural Gas Distribution,0,N
 TRS,4,TriMas Corporation,Capital Goods,Industrial Specialties,0,O
 TRR,0,TRC Companies Inc.,Basic Industries,Environmental Services,0,N
 TRT,0,Trio-Tech International,Technology,Industrial Machinery/Components,0,A
-TRW,3,TRW Automotive Holdings Corporation,Capital Goods,Auto Parts:O.E.M.,4,N
+TRW,3,TRW Automotive Holdings Corporation,Capital Goods,Auto Parts:O.E.M.,0,N
 TRV,3,The Travelers Companies Inc.,Finance,Property-Casualty Insurers,1,N
 HTF,-1,Horizon Technology Finance Corporation,n/a,n/a,0,N
 HTD,-1,John Hancock Tax Advantaged Dividend Income Fund,n/a,n/a,0,N
@@ -5374,7 +5374,7 @@ RDN,2,Radian Group Inc.,Finance,Property-Casualty Insurers,0,N
 RDI,0,Reading International Inc,Consumer Services,Movies/Entertainment,0,O
 NTIC,0,Northern Technologies International Corporation,Capital Goods,Industrial Specialties,0,O
 ELU,-1,Entergy Louisiana Inc.,Public Utilities,Electric Utilities: Central,0,N
-LEA,2,Lear Corporation,Capital Goods,Auto Parts:O.E.M.,4,N
+LEA,2,Lear Corporation,Capital Goods,Auto Parts:O.E.M.,0,N
 FBP,3,First BanCorp.,Finance,Major Banks,0,N
 SMLP,4,Summit Midstream Partners LP,Public Utilities,Natural Gas Distribution,0,N
 LEE,0,Lee Enterprises Incorporated,Consumer Services,Newspapers/Magazines,0,N
@@ -5389,7 +5389,7 @@ LEU,0,Centrus Energy Corp.,Basic Industries,Mining & Quarrying of Nonmetallic Mi
 NLNK,1,NewLink Genetics Corporation,Health Care,Major Pharmaceuticals,0,O
 MXIM,3,Maxim Integrated Products Inc.,Technology,Semiconductors,0,O
 SGY,4,Stone Energy Corporation,Energy,Oil & Gas Production,0,N
-QIHU,4,Qihoo 360 Technology Co. Ltd.,Technology,EDP Services,6,N
+QIHU,4,Qihoo 360 Technology Co. Ltd.,Technology,EDP Services,2,N
 ACST,3,Acasti Pharma Inc.,Health Care,Major Pharmaceuticals,0,O
 SGU,0,Star Gas Partners L.P.,Consumer Services,Other Specialty Stores,0,N
 SGI,3,Silicon Graphics International Corp,Technology,Computer Manufacturing,0,O
@@ -5412,12 +5412,12 @@ CWST,3,Casella Waste Systems Inc.,Public Utilities,Environmental Services,0,O
 CNX,3,CONSOL Energy Inc.,Energy,Coal Mining,0,N
 ICD,3,Independence Contract Drilling Inc.,Energy,Oil & Gas Production,0,N
 AMSGP,-1,Amsurg Corp.,Health Care,Medical/Nursing Services,0,O
-CNC,1,Centene Corporation,Health Care,Medical Specialities,4,N
+CNC,1,Centene Corporation,Health Care,Medical Specialities,0,N
 CNA,4,CNA Financial Corporation,Finance,Property-Casualty Insurers,0,N
 CNO,3,CNO Financial Group Inc.,Finance,Accident &Health Insurance,0,N
 CNL,4,Cleco Corporation,Public Utilities,Electric Utilities: Central,0,N
 CNK,3,Cinemark Holdings Inc,Consumer Services,Movies/Entertainment,0,N
-CNI,3,Canadian National Railway Company,Transportation,Railroads,4,N
+CNI,3,Canadian National Railway Company,Transportation,Railroads,0,N
 PFE,3,Pfizer Inc.,Health Care,Major Pharmaceuticals,3,N
 PFD,0,Flaherty & Crumrine Preferred Income Fund Incorporated,n/a,n/a,0,N
 PFG,3,Principal Financial Group Inc,Finance,Accident &Health Insurance,0,N
@@ -5509,7 +5509,7 @@ DATA,2,Tableau Software Inc.,Technology,Computer Software: Prepackaged Software,
 CACQ,5,Caesars Acquisition Company,Consumer Services,Hotels/Resorts,0,O
 UNTY,0,Unity Bancorp Inc.,Finance,Major Banks,0,O
 MMSI,2,Merit Medical Systems Inc.,Health Care,Medical/Dental Instruments,0,O
-WWAV,4,Whitewave Foods Company (The),Consumer Non-Durables,Packaged Foods,4,N
+WWAV,4,Whitewave Foods Company (The),Consumer Non-Durables,Packaged Foods,0,N
 JAGX,-1,Jaguar Animal Health Inc.,n/a,n/a,0,O
 SIMG,3,Silicon Image Inc.,Capital Goods,Electrical Products,0,O
 UNTD,3,United Online Inc.,Technology,Computer Software: Programming Data Processing,0,O
@@ -5552,18 +5552,18 @@ GORO,3,Gold Resource Corporation,Basic Industries,Precious Metals,0,A
 IQNT,2,Inteliquent Inc.,Public Utilities,Telecommunications Equipment,0,O
 USTR,3,United Stationers Inc.,Consumer Services,Paper,0,O
 BBGI,0,Beasley Broadcast Group Inc.,Consumer Services,Broadcasting,0,O
-TXRH,3,Texas Roadhouse Inc.,Consumer Services,Restaurants,4,O
+TXRH,3,Texas Roadhouse Inc.,Consumer Services,Restaurants,0,O
 MTN,2,Vail Resorts Inc.,Consumer Services,Services-Misc. Amusement & Recreation,0,N
 WSFSL,-1,WSFS Financial Corporation,Finance,Major Banks,0,O
 WGBS,4,WaferGen Bio-systems Inc.,Capital Goods,Biotechnology: Laboratory Analytical Instruments,0,O
 AFCB,0,Athens Bancshares Corporation,Finance,Savings Institutions,0,O
 QTS,4,QTS Realty Trust Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 LBIX,0,Leading Brands Inc,Consumer Non-Durables,Beverages (Production/Distribution),0,O
-BITA,5,Bitauto Holdings Limited,Technology,EDP Services,4,N
+BITA,5,Bitauto Holdings Limited,Technology,EDP Services,0,N
 GEVA,3,Synageva BioPharma Corp.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 GEVO,3,Gevo Inc.,Basic Industries,Major Chemicals,0,O
 AXLL,4,Axiall Corporation,Basic Industries,Major Chemicals,0,N
-PCP,3,Precision Castparts Corporation,Basic Industries,Metal Fabrications,4,N
+PCP,3,Precision Castparts Corporation,Basic Industries,Metal Fabrications,0,N
 AVNW,3,Aviat Networks Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
 TLR,0,Timberline Resources Corporation,Basic Industries,Precious Metals,0,A
 TLP,2,Transmontaigne Partners L.P.,Energy,Natural Gas Distribution,0,N
@@ -5622,7 +5622,7 @@ JE,0,Just Energy Group Inc.,Public Utilities,Oil/Gas Transmission,0,N
 GST,4,Gastar Exploration Inc.,Energy,Oil & Gas Production,0,A
 FLWS,3,1-800 FLOWERS.COM Inc.,Consumer Services,Other Specialty Stores,0,O
 ACUR,3,Acura Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
-BC,4,Brunswick Corporation,Energy,Industrial Machinery/Components,4,N
+BC,4,Brunswick Corporation,Energy,Industrial Machinery/Components,0,N
 SNA,3,Snap-On Incorporated,Capital Goods,Industrial Machinery/Components,0,N
 OFC,3,Corporate Office Properties Trust,Consumer Services,Real Estate Investment Trusts,0,N
 YPRO,0,AdvisorShares YieldPro ETF,n/a,n/a,0,O
@@ -5653,7 +5653,7 @@ GSI,0,General Steel Holdings Inc.,Capital Goods,Steel/Iron Ore,0,N
 WGA,0,AG&E Holdings Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,A
 TRST,3,TrustCo Bank Corp NY,Finance,Major Banks,0,O
 TIF,3,Tiffany & Co.,Consumer Services,Consumer Specialties,0,N
-BX,3,The Blackstone Group L.P.,Finance,Investment Managers,4,N
+BX,3,The Blackstone Group L.P.,Finance,Investment Managers,0,N
 WBKC,-1,Wolverine Bancorp Inc.,Finance,Banks,0,O
 SNPS,4,Synopsys Inc.,Technology,Computer Software: Prepackaged Software,0,O
 IRBT,2,iRobot Corporation,Consumer Durables,Consumer Electronics/Appliances,0,O
@@ -5682,7 +5682,7 @@ NVG,0,Nuveen Dividend Advantage Municipal Income Fund,n/a,n/a,0,A
 CBIN,0,Community Bank Shares of Indiana Inc.,Finance,Major Banks,0,O
 MELI,3,MercadoLibre Inc.,Miscellaneous,Business Services,0,O
 ANR,3,Alpha Natural Resources inc.,Energy,Coal Mining,0,N
-NVO,4,Novo Nordisk A/S,Health Care,Major Pharmaceuticals,4,N
+NVO,4,Novo Nordisk A/S,Health Care,Major Pharmaceuticals,0,N
 MELA,3,MELA Sciences Inc,Health Care,Medical/Dental Instruments,0,O
 ANY,3,Sphere 3D Corp,Technology,EDP Services,0,O
 IMGN,3,ImmunoGen Inc.,Health Care,Major Pharmaceuticals,0,O
@@ -5691,7 +5691,7 @@ BDBD,3,Boulder Brands Inc.,Consumer Non-Durables,Packaged Foods,0,O
 ATHM,3,Autohome Inc.,Technology,EDP Services,0,N
 EMAN,3,eMagin Corporation,Technology,Semiconductors,0,A
 ARMK,3,Aramark,Consumer Services,Restaurants,0,N
-ARMH,3,ARM Holdings plc,Technology,Semiconductors,4,O
+ARMH,3,ARM Holdings plc,Technology,Semiconductors,0,O
 ARMF,-1,Ares Multi-Strategy Credit Fund Inc.,n/a,n/a,0,N
 RTRX,0,Retrophin Inc.,Health Care,Major Pharmaceuticals,0,O
 FTHI,0,First Trust High Income ETF,n/a,n/a,0,O
@@ -5750,7 +5750,7 @@ DFRG,3,Del Frisco&#39;s Restaurant Group Inc.,Consumer Services,Restaurants,0,O
 AKG,3,Asanko Gold Inc.,Basic Industries,Mining & Quarrying of Nonmetallic Minerals (No Fuels),0,A
 PCTI,3,PC-Tel Inc.,Technology,Radio And Television Broadcasting And Communications Equipment,0,O
 PVTD,-1,PrivateBancorp Inc.,Finance,Major Banks,0,N
-PVTB,3,PrivateBancorp Inc.,Finance,Major Banks,4,O
+PVTB,3,PrivateBancorp Inc.,Finance,Major Banks,0,O
 PCTY,3,Paylocity Holding Corporation,Technology,Computer Software: Prepackaged Software,0,O
 GLW,2,Corning Incorporated,Basic Industries,Telecommunications Equipment,0,N
 TNXP,3,Tonix Pharmaceuticals Holding Corp.,Health Care,Major Pharmaceuticals,0,O
@@ -5795,7 +5795,7 @@ TNH,0,Terra Nitrogen Company L.P.,Basic Industries,Agricultural Chemicals,0,N
 TNK,3,Teekay Tankers Ltd.,Consumer Services,Marine Transportation,0,N
 HHS,3,Harte-Hanks Inc.,Technology,Advertising,0,N
 NKA,3,Niska Gas Storage Partners LLC,Public Utilities,Natural Gas Distribution,0,N
-NKE,3,Nike Inc.,Consumer Non-Durables,Shoe Manufacturing,5,N
+NKE,3,Nike Inc.,Consumer Non-Durables,Shoe Manufacturing,3,N
 NKG,-1,Nuveen Georgia Dividend Advantage Municipal Fund 2,n/a,n/a,0,N
 HHY,0,Brookfield High Income Fund Inc.,n/a,n/a,0,N
 HHC,0,Howard Hughes Corporation (The),Consumer Services,Real Estate Investment Trusts,0,N
@@ -5819,11 +5819,11 @@ EHI,-1,Western Asset Global High Income Fund Inc,n/a,n/a,0,N
 OTIC,2,Otonomy Inc.,Health Care,Major Pharmaceuticals,0,O
 IFEU,0,iShares FTSE EPRA/NAREIT Europe Index Fund,n/a,n/a,0,O
 LAD,2,Lithia Motors Inc.,Consumer Durables,Automotive Aftermarket,0,N
-BCE,4,BCE Inc.,Public Utilities,Telecommunications Equipment,4,N
+BCE,4,BCE Inc.,Public Utilities,Telecommunications Equipment,0,N
 FOXF,4,Fox Factory Holding Corp.,Consumer Non-Durables,Motor Vehicles,0,O
 ROBO,0,Robo-Stox Global Robotics and Automation Index ETF,n/a,n/a,0,O
 OTIV,0,On Track Innovations Ltd,Technology,Semiconductors,0,O
-LAZ,3,Lazard Ltd.,Finance,Investment Managers,4,N
+LAZ,3,Lazard Ltd.,Finance,Investment Managers,0,N
 FFG,3,FBL Financial Group Inc.,Finance,Life Insurance,0,N
 FFC,-1,Flaherty & Crumrine Preferred Securities Income Fund Inc,n/a,n/a,0,N
 LAQ,-1,Latin America Equity Fund Inc. (The),n/a,n/a,0,A
@@ -5856,13 +5856,13 @@ CBF,3,Capital Bank Financial Corp.,Finance,Major Banks,0,O
 PJH,-1,Prudential Financial Inc.,Finance,Life Insurance,0,N
 CBD,3,Companhia Brasileira de Distribuicao,Consumer Services,Food Chains,0,N
 CBK,3,Christopher & Banks Corporation,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
-CBI,4,Chicago Bridge & Iron Company N.V.,Basic Industries,Engineering & Construction,6,N
+CBI,4,Chicago Bridge & Iron Company N.V.,Basic Industries,Engineering & Construction,2,N
 CBO,-1,CBO (Listing Market - NYSE - Networks A/E),n/a,n/a,0,N
 CNBKA,0,Century Bancorp Inc.,Finance,Major Banks,0,O
 IDSA,0,Industrial Services of America Inc.,Basic Industries,Miscellaneous,0,O
 CBR,3,Ciber Inc.,Technology,EDP Services,0,N
 CBS,3,CBS Corporation,Consumer Services,Broadcasting,0,N
-MMC,3,Marsh & McLennan Companies Inc.,Finance,Specialty Insurers,4,N
+MMC,3,Marsh & McLennan Companies Inc.,Finance,Specialty Insurers,0,N
 CBT,5,Cabot Corporation,Basic Industries,Major Chemicals,0,N
 CBU,3,Community Bank System Inc.,Finance,Major Banks,0,N
 CBZ,2,CBIZ Inc.,Miscellaneous,Business Services,0,N
@@ -5936,10 +5936,10 @@ GOMO,4,Sungy Mobile Limited,Technology,Computer Software: Prepackaged Software,0
 DNOW,5,NOW Inc.,Energy,Metal Fabrications,0,N
 RMCF,0,Rocky Mountain Chocolate Factory Inc.,Consumer Non-Durables,Specialty Foods,0,O
 EVRY,0,EveryWare Global Inc.,Consumer Durables,Home Furnishings,0,O
-FMER,4,FirstMerit Corporation,Finance,Major Banks,4,O
+FMER,4,FirstMerit Corporation,Finance,Major Banks,0,O
 MDCA,5,MDC Partners Inc.,Technology,Advertising,0,O
 NVDQ,3,Novadaq Technologies Inc,Health Care,Biotechnology: Electromedical & Electrotherapeutic Apparatus,0,O
-NVDA,3,NVIDIA Corporation,Technology,Semiconductors,4,O
+NVDA,3,NVIDIA Corporation,Technology,Semiconductors,0,O
 VMEM,4,Violin Memory Inc.,Technology,Electronic Components,0,N
 PULB,3,Pulaski Financial Corp.,Finance,Savings Institutions,0,O
 CCUR,0,Concurrent Computer Corporation,Technology,Computer Manufacturing,0,O
@@ -5952,7 +5952,7 @@ CADTR,-1,DT Asia Investments Limited,Finance,Business Services,0,O
 BKSC,0,Bank of South Carolina Corp.,Finance,Major Banks,0,O
 UNXL,3,Uni-Pixel Inc.,Capital Goods,Industrial Machinery/Components,0,O
 TUBE,3,TubeMogul Inc.,Technology,Computer Software: Prepackaged Software,0,O
-YPF,4,YPF Sociedad Anonima,Energy,Integrated oil Companies,4,N
+YPF,4,YPF Sociedad Anonima,Energy,Integrated oil Companies,0,N
 NWBI,2,Northwest Bancshares Inc.,Finance,Major Banks,0,O
 NWBO,3,Northwest Biotherapeutics Inc.,Health Care,Major Pharmaceuticals,0,O
 WSO/B,-1,Watsco Inc.,Consumer Durables,Industrial Machinery/Components,0,N
@@ -5975,8 +5975,8 @@ KE,0,Kimball Electronics Inc.,Technology,Electrical Products,0,O
 VRNT,2,Verint Systems Inc.,Technology,EDP Services,0,O
 KO,4,Coca-Cola Company (The),Consumer Non-Durables,Beverages (Production/Distribution),3,N
 VRNS,3,Varonis Systems Inc.,Technology,Computer Software: Prepackaged Software,0,O
-KS,3,KapStone Paper and Packaging Corporation,Basic Industries,Paper,4,N
-KR,2,Kroger Company (The),Consumer Services,Food Chains,4,N
+KS,3,KapStone Paper and Packaging Corporation,Basic Industries,Paper,0,N
+KR,2,Kroger Company (The),Consumer Services,Food Chains,0,N
 KW,3,Kennedy-Wilson Holdings Inc.,Finance,Real Estate,0,N
 KT,4,KT Corporation,Public Utilities,Telecommunications Equipment,0,N
 VRNG,0,Vringo Inc.,Consumer Services,Telecommunications Equipment,0,O
@@ -6024,7 +6024,7 @@ PICO,0,PICO Holdings Inc.,Finance,Real Estate,0,O
 TCK,3,Teck Resources Ltd,Basic Industries,Mining & Quarrying of Nonmetallic Minerals (No Fuels),0,N
 GPL,0,Great Panther Silver Limited,Basic Industries,Precious Metals,0,A
 GPM,-1,Guggenheim Enhanced Equity Income Fund,n/a,n/a,0,N
-GPN,2,Global Payments Inc.,Miscellaneous,Business Services,4,N
+GPN,2,Global Payments Inc.,Miscellaneous,Business Services,0,N
 GPI,2,Group 1 Automotive Inc.,Consumer Durables,Automotive Aftermarket,0,N
 GPK,4,Graphic Packaging Holding Company,Consumer Durables,Containers/Packaging,0,N
 THS,4,Treehouse Foods Inc.,Consumer Non-Durables,Packaged Foods,0,N
@@ -6040,7 +6040,7 @@ GPS,3,Gap Inc. (The),Consumer Services,Clothing/Shoe/Accessory Stores,0,N
 HJV,-1,MS Structured Asset Corp Saturns GE Cap Corp Series 2002-14,Finance,Finance: Consumer Services,0,N
 NIO,0,Nuveen Municipal Opportunity Fund Inc.,n/a,n/a,0,N
 NIM,0,Nuveen Select Maturities Municipal Fund,n/a,n/a,0,N
-TCB,3,TCF Financial Corporation,Finance,Major Banks,4,N
+TCB,3,TCF Financial Corporation,Finance,Major Banks,0,N
 TAIT,0,Taitron Components Incorporated,Consumer Non-Durables,Electronic Components,0,O
 NID,-1,Nuveen Intermediate Duration Municipal Term Fund,n/a,n/a,0,N
 NIE,-1,AllianzGI Equity & Convertible Income Fund,n/a,n/a,0,N
@@ -6055,7 +6055,7 @@ FDP,0,Fresh Del Monte Produce Inc.,Consumer Non-Durables,Farming/Seeds/Milling,0
 FDS,3,FactSet Research Systems Inc.,Technology,Computer Software: Programming Data Processing,0,N
 AUMAU,-1,AR Capital Acquisition Corp.,n/a,n/a,0,O
 AUMAW,-1,AR Capital Acquisition Corp.,Finance,Business Services,0,O
-FDX,3,FedEx Corporation,Transportation,Air Freight/Delivery Services,4,N
+FDX,3,FedEx Corporation,Transportation,Air Freight/Delivery Services,0,N
 SYNT,2,Syntel Inc.,Technology,EDP Services,0,O
 PNFP,3,Pinnacle Financial Partners Inc.,Finance,Major Banks,0,O
 AEGR,3,Aegerion Pharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
@@ -6064,7 +6064,7 @@ DRII,3,Diamond Resorts International Inc.,Consumer Services,Hotels/Resorts,0,N
 AEGN,3,Aegion Corp,Basic Industries,Water Supply,0,O
 SGEN,2,Seattle Genetics Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
 GFIG,3,GFI Group Inc.,Finance,Investment Bankers/Brokers/Service,0,N
-EFX,3,Equifax Inc.,Finance,Finance: Consumer Services,4,N
+EFX,3,Equifax Inc.,Finance,Finance: Consumer Services,0,N
 EFR,-1,Eaton Vance Senior Floating-Rate Fund,n/a,n/a,0,N
 FTSL,0,First Trust Senior Loan Fund ETF,n/a,n/a,0,O
 EFT,0,Eaton Vance Floating Rate Income Trust,n/a,n/a,0,N
@@ -6088,7 +6088,7 @@ STRL,3,Sterling Construction Company Inc,Basic Industries,Military/Government/Te
 RNR,3,RenaissanceRe Holdings Ltd.,Finance,Property-Casualty Insurers,0,N
 STRA,3,Strayer Education Inc.,Consumer Services,Other Consumer Services,0,O
 LCM,-1,Advent/Claymore Enhanced Growth & Income Fund,n/a,n/a,0,N
-ALTR,2,Altera Corporation,Technology,Semiconductors,4,O
+ALTR,2,Altera Corporation,Technology,Semiconductors,0,O
 LCI,2,Lannett Co Inc,Health Care,Major Pharmaceuticals,0,N
 ABCD,0,Cambium Learning Group Inc.,Consumer Services,Publishing,0,O
 DVN,5,Devon Energy Corporation,Energy,Oil & Gas Production,0,N
@@ -6119,18 +6119,18 @@ CDC,0,Compass EMP U S EQ Income 100 Enhanced Volatility Weighted Fun,n/a,n/a,0,O
 CDI,0,CDI Corporation,Technology,Professional Services,0,N
 CDK,3,CDK Global Inc.,Miscellaneous,Business Services,0,O
 PLG,2,Platinum Group Metals Ltd.,Basic Industries,Precious Metals,0,A
-PLD,3,ProLogis Inc.,Consumer Services,Real Estate Investment Trusts,0,N
+PLD,3,ProLogis Inc.,Consumer Services,Real Estate Investment Trusts,4,N
 MORN,3,Morningstar Inc.,Finance,Investment Managers,0,O
 CDR,4,Cedar Realty Trust Inc.,Consumer Services,Real Estate Investment Trusts,0,N
 PLM,3,Polymet Mining Corp.,Basic Industries,Precious Metals,0,A
-PLL,3,Pall Corporation,Capital Goods,Industrial Machinery/Components,4,N
+PLL,3,Pall Corporation,Capital Goods,Industrial Machinery/Components,0,N
 CDX,-1,CardioDx Inc.,n/a,n/a,0,O
 MORE,0,Monogram Residential Trust Inc.,n/a,n/a,0,N
 SCAI,3,Surgical Care Affiliates Inc.,Health Care,Medical Specialities,0,O
 CBMG,0,Cellular Biomedicine Group Inc.,Finance,Finance: Consumer Services,0,O
 PRSS,3,CafePress Inc.,Consumer Services,Other Specialty Stores,0,O
 BXP,3,Boston Properties Inc.,Consumer Services,Real Estate Investment Trusts,0,N
-BXS,2,BancorpSouth Inc.,Finance,Major Banks,4,N
+BXS,2,BancorpSouth Inc.,Finance,Major Banks,0,N
 MNTX,3,Manitex International Inc.,Technology,Industrial Machinery/Components,0,O
 MSF,0,Morgan Stanley Emerging Markets Fund Inc.,n/a,n/a,0,N
 PRSC,3,The Providence Service Corporation,Consumer Services,Transportation Services,0,O
@@ -6152,7 +6152,7 @@ MTT,-1,Western Asset Municipal Defined Opportunity Trust Inc,n/a,n/a,0,N
 MTU,3,Mitsubishi UFJ Financial Group Inc,Finance,Commercial Banks,0,N
 NHTB,0,New Hampshire Thrift Bancshares Inc.,Finance,Savings Institutions,0,O
 MTH,3,Meritage Corporation,Capital Goods,Homebuilding,0,N
-SIVB,3,SVB Financial Group,Finance,Major Banks,0,O
+SIVB,3,SVB Financial Group,Finance,Major Banks,4,O
 TPI,0,Tianyin Pharmaceutical Co. Inc.,Health Care,Major Pharmaceuticals,0,A
 MTL,2,Mechel OAO,Basic Industries,Steel/Iron Ore,0,N
 MTB,3,M&T Bank Corporation,Finance,Major Banks,0,N
@@ -6182,12 +6182,12 @@ CPSS,3,Consumer Portfolio Services Inc.,Finance,Finance: Consumer Services,0,O
 EMMS,0,Emmis Communications Corporation,Consumer Services,Broadcasting,0,O
 HRB,4,H&R Block Inc.,Consumer Services,Other Consumer Services,0,N
 TLYS,2,Tilly&#39;s Inc.,Consumer Services,Clothing/Shoe/Accessory Stores,0,N
-T,3,AT&T Inc.,Public Utilities,Telecommunications Equipment,3,N
+T,3,AT&T Inc.,Public Utilities,Telecommunications Equipment,2,N
 LOGM,2,LogMein Inc.,Technology,Computer Software: Prepackaged Software,0,O
 FTLB,0,First Trust Low Beta Income ETF,n/a,n/a,0,O
 LOGI,1,Logitech International S.A.,Technology,Computer peripheral equipment,0,O
-VRSN,3,VeriSign Inc.,Technology,EDP Services,4,O
-VRSK,3,Verisk Analytics Inc.,Technology,EDP Services,4,O
+VRSN,3,VeriSign Inc.,Technology,EDP Services,0,O
+VRSK,3,Verisk Analytics Inc.,Technology,EDP Services,0,O
 LEVYW,-1,Levy Acquisition Corp.,Finance,Business Services,0,O
 LEVYU,-1,Levy Acquisition Corp.,Finance,Business Services,0,O
 OFIX,3,Orthofix International N.V.,Health Care,Medical/Dental Instruments,0,O

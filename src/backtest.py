@@ -56,22 +56,7 @@ class BackTest:
         self.simutable = simutable.SimuTable(self)
         self.mkt = marketdata.MarketData()
         
-    # google style portfolio file    
-    '''
-    def loadPortfolioFile(self,fileName):
-        #print "open file:",fileName
-        fp = open(fileName,'r',-1)
-        pf = fp.read()
-        stocklist=[]
-        #print pf
-        for item in pf.split():            
-            market,symbol = item.split(':')
-            print symbol
-            stocklist.append(symbol)
-                    
-        fp.close()
-        return stocklist
-    '''
+  
     def loadSymbolListFile(self,fileName, pid):
         table = self.mkt.loadSymbolLstFilePid(fileName,pid)
         #print table

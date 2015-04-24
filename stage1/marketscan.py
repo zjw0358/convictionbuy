@@ -8,6 +8,7 @@ import sys
 import pandas.io.data as web
 import pandas
 import csv
+import marketdata
 
 #sys.path.insert(0, "../src/")
 #import simutable
@@ -33,6 +34,7 @@ class MarketScan:
         self.symbolLstFile = "./marketdata.csv"  #default marketdata file
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
+        self.mkt = marketdata.MarketData()
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
         self.help = False
@@ -84,7 +86,8 @@ class MarketScan:
             elif opt in ("-e", "--enddate"):
                 self.enddate = arg
             elif opt in ("-i", "--pid"):
-                self.pid = int(arg)
+                idLst = arg.split(",")
+                self.pid = self.mkt.parsePidLst(idLst)
             elif opt in ("-g", "--strategy"):
                 self.sgyparam = self.parseStrategy(arg)
             elif opt in ("-h", "--help"):
@@ -229,6 +232,7 @@ class MarketScan:
             
     # get symbol by pid
     # move to marketdata
+    '''
     def getSymbolByPid(self):
         # load symbol list file
         df = self.loadSymbolLstFile(self.symbolLstFile)
@@ -240,7 +244,7 @@ class MarketScan:
         else: #all 
             df1 = df
         return df1
-        
+    ''' 
     def getSymbolByRank(self,table,rmin,rmax):
         df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
         return df
@@ -267,7 +271,9 @@ class MarketScan:
         
     def procMarketData(self):
         if not self.ticklist:
-            df1 = self.getSymbolByPid()[['symbol']]
+            #df1 = self.getSymbolByPid()[['symbol']]
+            df = self.loadSymbolLstFile(self.symbolLstFile)
+            df1 = self.mkt.getSymbolByPid(df,self.pid)[['symbol']]
             ticklist = df1['symbol']
         else:
             df1 = pandas.DataFrame(self.ticklist,columns=['symbol'])
