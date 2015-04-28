@@ -117,6 +117,13 @@ class SymbolTool:
         if self.option=="list":
             df1 = self.mkt.getSymbolByPid(df,self.pid)
             print df1,"\nnumber=",len(df1.index)
+            print "====="
+            #print type(df1['symbol'])
+            lst = df1['symbol'].values.tolist()
+            for x in lst:
+                print x
+            #print(df1['symbol'].to_csv(sep='\t', index=False))
+            #print lst
         elif self.option=="clear":
             df1 = self.clearPid(df,self.pid)
         elif self.option=="add":
