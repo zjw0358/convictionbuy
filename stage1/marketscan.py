@@ -62,7 +62,7 @@ class MarketScan:
 
                   
     def usage(self):
-        print "program -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
+        print "marketscan.py -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
  
     def parseOption(self):
         print "=========================="
@@ -91,6 +91,7 @@ class MarketScan:
             elif opt in ("-g", "--strategy"):
                 self.sgyparam = self.parseStrategy(arg)
             elif opt in ("-h", "--help"):
+                self.usage()
                 self.help=True                                   
                 
         if self.enddate == "":

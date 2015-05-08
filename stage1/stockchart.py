@@ -1,12 +1,14 @@
 import pandas.io.data as web
 import matplotlib.pyplot as plt
 import pandas as pd
+import chartkit
 from scipy.stats.stats import pearsonr 
 
 class StockChart:
     def __init__(self):
+        self.chartkit = chartkit.ChartKit()
         return
-
+    '''
     def calcZigzag(self,df):
         trend = 0 #0-undefined,1-up,-1 down
         lastpx = 0
@@ -61,7 +63,8 @@ class StockChart:
         print "latest pivot point",lastpx
         df.loc[lastpx_idx,zzcol] = lastpx                            
         return df
-        
+    '''
+    
     def calcPercent(self,data):
         zz_rets = (1+data.pct_change()).cumprod()
         zz_rets[0] = 1
@@ -133,9 +136,17 @@ class StockChart:
         s1_rets.plot()
         s2_rets.plot()
         plt.show()
-
+        
+    #find double top
+    def process2(self):
+        #goog
+        #df1 = web.get_data_yahoo('GOOG', '2015-02-15','2015-03-31')
+        df1 = web.get_data_yahoo('AAL', '2015-01-7','2015-04-8')
+        ret = self.chartkit.doubletop(df1)
+        print ret
+        return
                 
 if __name__ == "__main__":
     obj = StockChart()
-    obj.process1()    
+    obj.process2()    
     #obj.drawChart('VMW','2015-01-01')

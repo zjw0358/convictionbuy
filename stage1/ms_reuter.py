@@ -11,7 +11,7 @@ import pandas
 import datetime
 import re
 import marketdata
-#from collections import OrderedDict
+from collections import OrderedDict
 
 class ms_reuter:
     def __init__(self):
@@ -27,6 +27,9 @@ class ms_reuter:
     def parseParam(self,param):
         return
     
+    def usage(self):
+        return "ms_reuter: $eracc1, $eracc2,$eps"
+
 
     # no need real price data
     def needPriceData(self):
@@ -76,21 +79,32 @@ class ms_reuter:
             df1 = self.eracc2(df1)
         return df1
     '''
-    def process(self,tablein,param):
-        #param = self.setupParam(param)
+    def process(self,tablein,param0):
+        #"$eracc2":"epsq1e/epsqtr-3>epsqtr0/epsqtr-4&epsqtr0/epsqtr-4>epsqtr-1/epsqtr-5&epsqtr-1/epsqtr-5>epsqtr-2/epsqtr-6",
         ticklist = tablein['symbol']
+        param = OrderedDict()
         macro = {
             "$eracc1":"epsqtr0/epsqtr-1>epsqtr-1/epsqtr-2&epsqtr-1/epsqtr-2>epsqtr-2/epsqtr-3&epsq1e/epsqtr0>epsqtr0/epsqtr-1",
-            "$eracc2":"epsq1e/epsqtr-3>epsqtr0/epsqtr-4&epsqtr0/epsqtr-4>epsqtr-1/epsqtr-5&epsqtr-1/epsqtr-5>epsqtr-2/epsqtr-6",
+            "$eracc2":"epsqtr0&epsqtr-1&epsqtr-2&epsqtr-3&epsqtr-4&epsqtr-5&epsqtr-6&epsqtr-7&epsqtr0/epsqtr-4>epsqtr-1/epsqtr-5&epsqtr-1/epsqtr-5>epsqtr-2/epsqtr-6&epsqtr-2/epsqtr-6>epsqtr-3/epsqtr-7",
             "$eps":"epsqtr0&epsqtr-1&epsqtr-2&epsqtr-3&epsqtr-4&epsqtr-5&epsqtr-6&epsqtr-7&epsqtr-8&epsqtr-9"
         }
         #replace keyword in parameter
+        '''
         for ma in macro:
-            if ma in param:
-                del param[ma]
+            if ma in param0:
+                #del param[ma]
                 crlst = macro[ma].split("&")
                 for cr in crlst:
                     param[cr]=""
+        '''
+        for pa in param0:
+            if pa in macro:
+                crlst = macro[pa].split("&")                            
+                for cr in crlst:
+                    param[cr]=""
+            else:
+                param[pa]=""
+                
 
         print "ms_reuter parameter=",param
         

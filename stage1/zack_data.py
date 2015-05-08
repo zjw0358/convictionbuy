@@ -1,12 +1,19 @@
-#from bs4 import BeautifulSoup
+'''
+run zack_data.py -f symbollist.txt -t starttick -u update_tick_list -r zack_result_csvfile"
+'''
+
+
 import urllib2
 import re
 import csv
 import pandas
+import getopt
+import sys
+import datetime
 import marketdata
 
 from bs4 import BeautifulSoup
-
+from collections import OrderedDict
 
 
 class zack_data:
@@ -17,9 +24,17 @@ class zack_data:
         #self.rankPattern = '[\d\D]*Zacks[\D]*Rank[/s]*: (.)[\d\D]*'
 
         self.rankPattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
-        self.columns = ['symbol','rank','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
-            'abr3m','numbr']
+        self.cqestCol = ['cq0','cq7','cq30','cq60','cq90']
+        
+        self.columns = ['rank','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
+            'abr3m','numbr'] + self.cqestCol
             
+        
+        self.fileName = "./marketdata.csv"
+        self.outputfn = "./msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
+        self.zackfile = ""
+        self.starttick = ""
+        self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
         
 
@@ -29,7 +44,7 @@ class zack_data:
         print "example:run zackrank.py -t aapl"
         print "example:run zackrank.py -p portfolio.txt"
 
-        
+    '''    
     def getRank(self,ticklist):
         zackranks = {}
         for symbol in ticklist:
@@ -45,7 +60,7 @@ class zack_data:
                 print symbol, zrank
                 zackranks[symbol] = zrank
         return zackranks
-        
+    ''' 
     def getSymbolRank(self,symbol):
         zrank = -1
         url = "http://www.zacks.com/stock/quote/"+symbol
@@ -63,6 +78,7 @@ class zack_data:
                 zrank = int(str1[0])
         print symbol, zrank    
         return zrank
+
     '''
     Brokerage Recommendations
 
@@ -130,16 +146,33 @@ class zack_data:
         print symbol,abr
         return abr
         
-        
+    def parseRank(self,htmltxt):
+        an = re.match(self.rankPattern, htmltxt)
+        if an!=None:
+            str1=an.group(1)
+            if str1=='N':
+                zrank = "0"
+            else:
+                zrank = str1[0]
+        else:
+            zrank = "-1"
+        return zrank    
+
+          
     def getEstimate(self, symbol):
         url = "http://www.zacks.com/stock/quote/" + symbol + "/detailed-estimates"
         page = urllib2.urlopen(url).read()
+        
         soup = BeautifulSoup(page)
         #print page
+        epsEstmDct = {}
+        epsEstmDct['rank'] = self.parseRank(page)
         magntable = soup.find("section", {'id':'magnitude_estimate'})
-        tdLst = magntable.findAll('td')
-        cqEstm = []
-        nqEstm = []
+        if magntable!=None:
+            tdLst = magntable.findAll('td')
+        else:
+            return None
+
         tdlen = len(tdLst)
         '''
         [<td class="alpha">Current</td>, <td>0.51</td>, <td>0.56</td>, <td>2.40</td>, <td>2.59</td>, 
@@ -150,66 +183,61 @@ class zack_data:
 
         '''
         idcqLst = [1,6,11,16,21]
-        idnqLst = [2,7,12,17,22]
-        
-        for id in idcqLst:
-            if id < tdlen:
-                cqEstm.append(tdLst[id].string)
-        for id in idnqLst:
-            if id < tdlen:
-                cqEstm.append(tdLst[id].string)
+        # idnqLst = [2,7,12,17,22] # next qtr estimate
+
+
+        for index,theid in enumerate(idcqLst):
+            if theid < tdlen:
+                epsEstmDct[self.cqestCol[index]] = tdLst[theid].string
+        '''        
+        for idx in idnqLst:
+            if idx < tdlen:
+                epsEstmDct[self.cqestCol[idx]] = tdLst[idx].string
+        '''
+        return epsEstmDct
     
-        
-    '''    
-    def write2File(self,zackranks):
-        fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
-        fp = open(fileName,'w',-1)
-        fp.writelines(["%s,%d\n" % (item,zackranks[item])  for item in zackranks])
-        fp.close()
     '''
-
-    def test(self):
-        #txt= '<div class="zr_rankbox">\n<p>Zacks Rank : 2-Buy <sup class=xxx\nmmk\n'
-        #pattern = '[\d\D]*Zacks[ETF|\s]?Rank[\s]?: (.)[\d\D]*'
-        pattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
-        #txt = '<p>Zacks Rank : 2-Buy <sup class='
-        txt = '<p>Zacks Rank : NA <sup clas'
-        #txt = '<p>Zacks Rank : 2-Buy <sup class='
-        #txt = 'Zacks ETF Rank: 2 - Buy'
-        an = re.match(pattern,txt)
-        if an!=None:
-            str1=an.group(1)
-            print str1
-        print an
-        
-    def testRank(self):
-        self.getSymbolRank('QQQ')   # 2 ETF
-        self.getSymbolRank('AAPL')  # 2 Buy
-        self.getSymbolRank('HUSA')  # 0 NR
-        self.getSymbolRank('GNMA')  # 0 NR ETF        
-        
-    def testAbr(self):
-        print self.getBrokerRecom('AAPL')
-        print self.getBrokerRecom('spy')
-    def test(self):
-        return
+    main routine
+    get past all Quarters earning data from reuter
+    '''    
+    def getZackData(self,symbol):
+        dct = {}
+        estdct = self.getEstimate(symbol)
+        if estdct!=None:
+            dct.update(estdct)
+        print dct
+        return dct
                 
-    def process(self,tablein,param):
-        ticklist = tablein['symbol']
-        col = ['symbol']
-        df = self.loadZackCsvFile("msdata_zackabr_2015-01-19.csv")     
-        df = self.mtd.evalCriteria(df,param,col)                
-        #df1 = df[df['symbol'].isin(ticklist)]
-        df1 = pandas.merge(tablein,df,how='inner')
-        return df1
-
-    def needPriceData(self):
-        return False
-        
-    def updateData(self):
+    def parseOption(self):
+        self.ticklist=[]
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:u:r:", ["filename", "start","ticklist","zackfile"])
+        except getopt.GetoptError:
+            print "parameter error"
+            sys.exit()
+        for opt, arg in opts:
+            if opt in ("-f", "--filename"):
+                self.fileName = arg
+            elif opt in ("-t", "--start"):
+                self.starttick = arg
+            elif opt in ("-u","--ticklist"):
+                items = arg.split(",") #update ticklist only 
+                tdict = {}
+                for t in items:
+                    tick,exg = t.split(".")
+                    tdict[tick.upper()] = exg.upper()
+                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+            elif opt in ("-r","--zackfile"):
+                self.zackfile = arg
+            
+        print "symbolfile=",self.fileName
+        print "ticklist==="
+        if not self.tickdf.empty:
+            print self.tickdf
+        print "zackfile=",self.zackfile
         return
-        
-    #load zack csv file
+  
+      #load zack csv file
     def loadZackCsvFile(self,fileName):
         print  "Loading zack csv file..."
          
@@ -241,11 +269,156 @@ class zack_data:
         table = pandas.DataFrame(allLst,columns=self.columns)
         return table
         
+    def verifyCol(self,dct):
+        missLst = []
+        if 'cq0' not in dct:
+            missLst.append("Current Qtr Est.")
+        if len(missLst)>0:
+            print "Missing list:",missLst
+            
+    # update tick list    
+    def updateTickLst(self,zackFile,tickdf): 
+        if zackFile!="":
+            zackTable = self.loadZackCsvFile(zackFile)
+        else:
+            zackTable = tickdf
+            
+        if tickdf.empty:
+            if not zackTable.empty:
+                tickdf =  zackTable
+            else:
+                print "both reuterFile and tickdf are empty,exit"
+                return
+           
+        updatelst = tickdf['symbol']
+        lenticklst = len(tickdf.index)    
+        lf =  zackTable[~zackTable['symbol'].isin(updatelst)]
+
+        #to update table
+        allLst = {}
+        allCol = ['symbol','exg'] + self.columns
+        for key in allCol:
+            lst = []
+            allLst[key] = lst
+        #print "len of allLst",len(allLst)                 
+        print "total",lenticklst,"ticks to be updated",len(lf.index),"to keep unchanged"
+
+        if lenticklst>100: 
+            outputfn = self.outputfn+"_bak"
+            outputfp = open(outputfn,'w',-1)         
+            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
+            outputfp.write(header)
+       
+       
+        for index, row in tickdf.iterrows():
+            #rowLst = []
+            print "downloading ",index,row['symbol'],row['exg']
+            rowdct = self.getZackData(row['symbol'])
+            line = row['symbol'] + ',' + row['exg']
+            if len(rowdct)>0:
+                self.verifyCol(rowdct)  
+                for key in self.columns:
+                    lst = allLst[key]
+                    if key in rowdct:
+                        lst.append(rowdct[key])
+                        line = line + "," + rowdct[key]
+                    else:
+                        lst.append("")   
+                        line = line + "," + ""
+                                     
+                allLst['symbol'].append(row['symbol'])
+                allLst['exg'].append(row['exg'])
+                #write to disk is ticks length > 100
+                if lenticklst>100:                 
+                    line = line + "\n"
+                    outputfp.write(line)
+                    if index%10 == 0:
+                        outputfp.flush()
+                                    
+            else:
+                print "No financials information,skip ",row['symbol'],row['exg']
+        
+        if lenticklst>100:
+            outputfp.close()
+        rf = pandas.DataFrame(allLst,columns = allCol)
+        mf = lf.append(rf)
+        mf.to_csv(self.outputfn,sep=',',index=False)
+
+      
+    # update tick data    
+    def updateData(self): 
+        if self.zackfile!="":
+            self.updateTickLst(self.zackfile,self.tickdf)
+        else:
+            if self.tickdf.empty:
+                symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+                self.tickdf = symbolTable[symbolTable['rank']>0]
+                self.updateTickLst("",self.tickdf)
+            else:
+                self.updateTickLst("",self.tickdf)
+    '''    
+    def write2File(self,zackranks):
+        fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
+        fp = open(fileName,'w',-1)
+        fp.writelines(["%s,%d\n" % (item,zackranks[item])  for item in zackranks])
+        fp.close()
+    '''
+    '''
+    def test(self):
+        #txt= '<div class="zr_rankbox">\n<p>Zacks Rank : 2-Buy <sup class=xxx\nmmk\n'
+        #pattern = '[\d\D]*Zacks[ETF|\s]?Rank[\s]?: (.)[\d\D]*'
+        pattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
+        #txt = '<p>Zacks Rank : 2-Buy <sup class='
+        txt = '<p>Zacks Rank : NA <sup clas'
+        #txt = '<p>Zacks Rank : 2-Buy <sup class='
+        #txt = 'Zacks ETF Rank: 2 - Buy'
+        an = re.match(pattern,txt)
+        if an!=None:
+            str1=an.group(1)
+            print str1
+        print an
+        
+    def testRank(self):
+        self.getSymbolRank('QQQ')   # 2 ETF
+        self.getSymbolRank('AAPL')  # 2 Buy
+        self.getSymbolRank('HUSA')  # 0 NR
+        self.getSymbolRank('GNMA')  # 0 NR ETF        
+        
+    def testAbr(self):
+        print self.getBrokerRecom('AAPL')
+        print self.getBrokerRecom('spy')
+        
+    def test(self):
+        return
+    '''
+       
+    def process(self):
+        self.parseOption()
+        self.updateData()
+        print "Done,exit..."
+        
+    '''            
+    def process(self,tablein,param):
+        ticklist = tablein['symbol']
+        col = ['symbol']
+        df = self.loadZackCsvFile("msdata_zackabr_2015-01-19.csv")     
+        df = self.mtd.evalCriteria(df,param,col)                
+        #df1 = df[df['symbol'].isin(ticklist)]
+        df1 = pandas.merge(tablein,df,how='inner')
+        return df1
+    '''
+    def needPriceData(self):
+        return False
+        
+
+  
+        
 ################################################################################        
 # main routine
 ################################################################################            
 if __name__ == "__main__":
     obj = zack_data()
+    obj.process()
     #zr.getEstimate('intc')
     #zr.getBrokerRecom('intc')
     #zr.getPriceSale('intc')

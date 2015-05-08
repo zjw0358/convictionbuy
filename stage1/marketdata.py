@@ -134,7 +134,8 @@ class MarketData:
         allMask = 0
         for idstr in idLst:
             theid = int(idstr)
-            allMask |= 2**(theid-1)
+            if theid!=0:
+                allMask |= 2**(theid-1)
         return allMask
         
     #old version1      

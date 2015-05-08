@@ -53,8 +53,9 @@ class GoogleFinanceAPI:
         print url
         u = urllib2.urlopen(url)
         content = u.read()
+        print content
         outer = json.loads(content[3:])
-        print outer
+        #print outer
         inner = json.dumps(outer[0])
         obj = json.loads(inner)
         return obj       
@@ -71,6 +72,6 @@ class GoogleFinanceAPI:
         
 if __name__ == "__main__":
     c = GoogleFinanceAPI()    
-    quote = c.get_rtpx("AAPL","O")
+    quote = c.get_rtpx("QCOM","O")
     print quote
     #print quote

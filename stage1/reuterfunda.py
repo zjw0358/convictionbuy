@@ -10,7 +10,7 @@ import sys
 import csv
 
 '''
-run reuterfunda.py -f symbollist.txt -t stattick -u update_tick_list -r reuter_result_csvfile"
+run reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
 '''
 class ReuterFunda:
     def __init__(self):
@@ -22,9 +22,9 @@ class ReuterFunda:
         self.mtd = marketdata.MarketData()
         self.outputpath = "./"
         self.outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
-        self.fileName = ""
+        self.fileName = "./marketdata.csv"
+        self.reuterfile = ""
         self.starttick = ""
-        #self.ticklist = []
         self.tickdf = pandas.DataFrame()
         self.columns = [
             'saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
@@ -59,10 +59,6 @@ class ReuterFunda:
                     'cpcurra','cpquira','cpdebt2equity',\
                     'cpgm','cpom','cpnm','cpbeta']
 
-    #usage
-    def usage(self):
-        print "program -f symbollist.txt -t stattick -u update_tick_list -r reuter_result_csvfile"
-       
                
     '''
     main routine
@@ -86,7 +82,7 @@ class ReuterFunda:
             
         soup = BeautifulSoup(page)
 
-        #earning pasr quarter
+        #earning past quarter
         dataTableLst = soup.findAll("table",attrs={'class':"dataTable"})
         retmx={'er':0,'estm':0,'vr':0,'div':0,'gr':0,'fins':0,'mrg':0,'me':0}
             
@@ -164,70 +160,7 @@ class ReuterFunda:
         if len(missLst)>0:
             print "Missing list:",missLst
         
-    def updateData0(self): 
-        lenticklst = len(self.ticklist)       
-        symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
-        reuterTable = pandas.DataFrame()
-        if self.reuterfile!="" and lenticklst>0:
-            reuterTable = self.loadReuterCsvFile(self.reuterfile)
-        outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
-        outputfp = open(outputfn,'w',-1)        
-         
-        header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
-        outputfp.write(header)
-          
-        startFlag = True
-        if self.starttick!="":
-            startFlag = False
-            print "wait for ",self.starttick
-        
-        print lenticklst
-        for index, row in symbolTable.iterrows():
-            if startFlag==False and row['symbol']!=self.starttick:
-                continue
-            else:
-                startFlag=True
-
-            rowLst = []
-            #if row['symbol'] in self.ticklist:
-            #    print row['symbol']
-            if row['rank'] > 0 and ((lenticklst>0 and row['symbol'] in self.ticklist) or (lenticklst==0)):                
-                print "downloading ",row['symbol'],row['exg']
-                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])                
-                if len(rowdct)>0:
-                    self.verifyCol(rowdct)
-                    for key in self.columns:
-                        if key in rowdct:
-                            rowLst.append(rowdct[key])
-                        else:
-                            rowLst.append("")                
-                    line = row['symbol'] + ',' + row['exg'] + ','  + ', '.join(rowLst) + "\n"
-                    outputfp.write(line)
-                    if index%10 == 0:
-                        outputfp.flush()
-                else:
-                    print "No financials information,skip ",row['symbol'],row['exg']
-                    #sys.exit()
-            
-
-        #merge with old reuter csv file
-        #print reuterTable
-        if not reuterTable.empty:
-            for index, rowdct in reuterTable.iterrows():
-                rowLst = []
-                if rowdct['symbol'] in self.ticklist:
-                    print "skip merge ",rowdct['symbol']
-                    continue
-                for key in self.columns:
-                    if key in rowdct:
-                        rowLst.append(str(rowdct[key]))
-                    else:
-                        rowLst.append("") 
-                #print rowLst               
-                line = rowdct['symbol'] + ',' + rowdct['exg'] + ','  + ', '.join(rowLst) + "\n"
-                outputfp.write(line)
-                
-        outputfp.close()
+   
         
     #ROA,ROI,ROE
     def parseMangEffect(self,table):
@@ -828,13 +761,12 @@ class ReuterFunda:
             elif opt in ("-r","--reuterfile"):
                 self.reuterfile = arg
                 
-        #if (self.fileName == ""):
-        #    self.usage()
-        #    sys.exit()
+    
             
         print "symbolfile=",self.fileName
         print "ticklist==="
-        print self.tickdf
+        if not self.tickdf.empty:
+            print self.tickdf
         print "reuterfile=",self.reuterfile
         return
         
@@ -905,7 +837,7 @@ class ReuterFunda:
         return table
     
     # update tick data    
-    def updateData(self): 
+    def updateData1(self): 
         lenticklst = len(self.tickdf.index)       
         #reuterTable = pandas.DataFrame()
         if self.reuterfile!="" and lenticklst>0:
@@ -947,6 +879,162 @@ class ReuterFunda:
         rf = pandas.DataFrame(allLst,columns = allCol)
         mf = lf.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
+        
+    def updateData0(self): 
+        lenticklst = len(self.ticklist)       
+        symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+        reuterTable = pandas.DataFrame()
+        if self.reuterfile!="" and lenticklst>0:
+            reuterTable = self.loadReuterCsvFile(self.reuterfile)
+        outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
+        outputfp = open(outputfn,'w',-1)        
+         
+        header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
+        outputfp.write(header)
+          
+        startFlag = True
+        if self.starttick!="":
+            startFlag = False
+            print "wait for ",self.starttick
+        
+        print lenticklst
+        for index, row in symbolTable.iterrows():
+            if startFlag==False and row['symbol']!=self.starttick:
+                continue
+            else:
+                startFlag=True
+
+            rowLst = []
+            #if row['symbol'] in self.ticklist:
+            #    print row['symbol']
+            if row['rank'] > 0 and ((lenticklst>0 and row['symbol'] in self.ticklist) or (lenticklst==0)):                
+                print "downloading ",row['symbol'],row['exg']
+                rowdct = self.getEarningData(row['symbol']+"."+row['exg'])                
+                if len(rowdct)>0:
+                    self.verifyCol(rowdct)
+                    for key in self.columns:
+                        if key in rowdct:
+                            rowLst.append(rowdct[key])
+                        else:
+                            rowLst.append("")                
+                    line = row['symbol'] + ',' + row['exg'] + ','  + ', '.join(rowLst) + "\n"
+                    outputfp.write(line)
+                    if index%10 == 0:
+                        outputfp.flush()
+                else:
+                    print "No financials information,skip ",row['symbol'],row['exg']
+                    #sys.exit()
+            
+
+        #merge with old reuter csv file
+        #print reuterTable
+        if not reuterTable.empty:
+            for index, rowdct in reuterTable.iterrows():
+                rowLst = []
+                if rowdct['symbol'] in self.ticklist:
+                    print "skip merge ",rowdct['symbol']
+                    continue
+                for key in self.columns:
+                    if key in rowdct:
+                        rowLst.append(str(rowdct[key]))
+                    else:
+                        rowLst.append("") 
+                #print rowLst               
+                line = rowdct['symbol'] + ',' + rowdct['exg'] + ','  + ', '.join(rowLst) + "\n"
+                outputfp.write(line)
+                
+        outputfp.close()
+        
+    # update tick list    
+    def updateTickLst(self,reuterFile,tickdf): 
+        '''
+        lenticklst = len(self.tickdf.index)       
+        if self.reuterfile!="" and lenticklst>0:
+            reuterTable = self.loadReuterCsvFile(self.reuterfile)
+        else:
+            return
+        '''
+        if reuterFile!="":
+            reuterTable = self.loadReuterCsvFile(reuterFile)
+        else:
+            reuterTable = tickdf
+            
+        if tickdf.empty:
+            if not reuterTable.empty:
+                tickdf =  reuterTable
+            else:
+                print "both reuterFile and tickdf are empty,exit"
+                return
+           
+        updatelst = tickdf['symbol']
+        lenticklst = len(tickdf.index)    
+        lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
+
+        #to update table
+        allLst = {}
+        allCol = ['symbol','exg'] + self.columns
+        for key in allCol:
+            lst = []
+            allLst[key] = lst
+        #print "len of allLst",len(allLst)                 
+        print "total",lenticklst,"ticks to be updated",len(lf.index),"to keep unchanged"
+
+        if lenticklst>100: 
+            outputfn = self.outputfn+"_bak"
+            outputfp = open(outputfn,'w',-1)         
+            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
+            outputfp.write(header)
+       
+       
+        for index, row in tickdf.iterrows():
+            #rowLst = []
+            print "downloading ",index,row['symbol'],row['exg']
+            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
+            line = row['symbol'] + ',' + row['exg']
+            if len(rowdct)>0:
+                self.verifyCol(rowdct)  
+                for key in self.columns:
+                    lst = allLst[key]
+                    if key in rowdct:
+                        lst.append(rowdct[key])
+                        line = line + "," + rowdct[key]
+                    else:
+                        lst.append("")   
+                        line = line + "," + ""
+                                     
+                allLst['symbol'].append(row['symbol'])
+                allLst['exg'].append(row['exg'])
+                #write to disk is ticks length > 100
+                if lenticklst>100:                 
+                    line = line + "\n"
+                    outputfp.write(line)
+                    if index%10 == 0:
+                        outputfp.flush()
+                                    
+            else:
+                print "No financials information,skip ",row['symbol'],row['exg']
+        
+        if lenticklst>100:
+            outputfp.close()
+        rf = pandas.DataFrame(allLst,columns = allCol)
+        mf = lf.append(rf)
+        mf.to_csv(self.outputfn,sep=',',index=False)
+          
+    # update tick data    
+    def updateData(self): 
+        #lenticklst = len(self.tickdf.index)       
+        if self.reuterfile!="":
+            self.updateTickLst(self.reuterfile,self.tickdf)
+        else:
+            symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+            self.tickdf = symbolTable[symbolTable['rank']>0]
+            self.updateTickLst("",self.tickdf)
+            
+
+    #usage
+    def usage(self):
+        print "reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
+       
         
     def process(self):
         self.parseOption()
