@@ -39,8 +39,21 @@ class MarketData:
 
         return
         
-    # google style portfolio file    
-    
+    #aapl.o,msft.o...   
+    def parseTickLst(self,line):
+        items = line.split(",") #update ticklist only 
+        tdict = {}
+        for t in items:
+            td = t.split(".")
+            tick = td[0]
+            if len(td)>1:
+                exg = td[1]
+            else:
+                exg = ""                    
+            tdict[tick.upper()] = exg.upper()
+        return tdict
+        
+    #google style portfolio file       
     def parseGooglePortfolio(self,line):
         stocklist = {}
         for item in line.split():      

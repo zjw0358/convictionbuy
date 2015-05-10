@@ -26,10 +26,10 @@ class zack_data:
         self.rankPattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
         self.cqestCol = ['cq0','cq7','cq30','cq60','cq90']
         
-        self.columns = ['rank','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
+        self.columns = ['rank','pid','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
             'abr3m','numbr'] + self.cqestCol
             
-        
+        self.pid = 0
         self.fileName = "./marketdata.csv"
         self.outputfn = "./msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
         self.zackfile = ""
@@ -41,8 +41,8 @@ class zack_data:
         
     def usage(self):
         print "program -f <portfolio_file> -t 'aapl msft' "
-        print "example:run zackrank.py -t aapl"
-        print "example:run zackrank.py -p portfolio.txt"
+        print "example:run zack_data.py -t aapl"
+        print "example:run zack_data.py -p portfolio.txt"
 
     '''    
     def getRank(self,ticklist):
@@ -60,7 +60,8 @@ class zack_data:
                 print symbol, zrank
                 zackranks[symbol] = zrank
         return zackranks
-    ''' 
+    '''
+    '''
     def getSymbolRank(self,symbol):
         zrank = -1
         url = "http://www.zacks.com/stock/quote/"+symbol
@@ -78,7 +79,29 @@ class zack_data:
                 zrank = int(str1[0])
         print symbol, zrank    
         return zrank
-
+    '''
+  
+        
+    def parseRank(self,htmltxt):
+        an = re.match(self.rankPattern, htmltxt)
+        if an!=None:
+            str1=an.group(1)
+            if str1=='N':
+                zrank = "0"
+            else:
+                zrank = str1[0]
+        else:
+            zrank = "-1"
+        return zrank    
+    
+    def parseETF(self,soup):
+        #is ETF?
+        isetf = soup.find("sup",attrs={'title':"Zacks ETF Rank Explained"})
+        if isetf!=None:
+            return True
+        else:
+            return False
+            
     '''
     Brokerage Recommendations
 
@@ -96,83 +119,90 @@ class zack_data:
         #http://www.zacks.com/stock/research/aapl/brokerage-recommendations
         url = "http://www.zacks.com/stock/research/" + symbol + "/brokerage-recommendations"
         abr = {}
-        abr['etf'] = "0"
+        
         try:            
             page = urllib2.urlopen(url).read()
         except:
-            print symbol," ABR Not found"
-            return abr
+            print "unable to get",symbol,"abr,skip"
+            return None
    
         soup = BeautifulSoup(page)
-        #is ETF?
-        isetf = soup.find("sup",attrs={'title':"Zacks ETF Rank Explained"})
-        if isetf!=None:
-            abr['etf'] = "1"
-        else:
-            magntable = soup.find("section", {'id':'quote_brokerage_recomm'})
-            tdLst = magntable.findAll('td')
-    
-            tdlen = len(tdLst)
-            idAbrLst = {'abrt':-5,'abr1w':-4,'abr1m':-3,'abr2m':-2,'abr3m':-1}
         
-            for key in idAbrLst:
-                abr[key] = tdLst[idAbrLst[key]].string
-            #industry rank by abr
-            irba = soup.find("td",attrs={'class':"alpha"},text="Industry Rank by ABR") 
-            irbatxt = irba.nextSibling.nextSibling.string
-            pattern = "([\d]+)[\s]*of[\s]*([\d]+)"
-            an = re.match(pattern,irbatxt)
-            indurank = ""
-            indutotal = ""
-            try:
-                if an!=None:
-                    indurank = an.group(1)
-                    indutotal = an.group(2)
-            except:
-                pass                
-            abr['indurank'] = indurank
-            abr['indutotal'] = indutotal
-            
-            '''
-            <td class="alpha"># of Recs in ABR</td>
-            <td><span>1</span></td>            
-            '''
-            nrabr = soup.find("td",attrs={'class':"alpha"},text="# of Recs in ABR") 
-            nrabrtxt = ""
-            if nrabr!=None:
-                nrabrtxt = nrabr.nextSibling.nextSibling.string
-            abr['numbr'] = nrabrtxt
+        '''
+        isetf = self.parseETF(soup)
+        if isetf:
+            print symbol,"is ETF, skip"
+            abr['etf'] = "1"
+            return abr
+        '''
+        
+        magntable = soup.find("section", {'id':'quote_brokerage_recomm'})
+        tdLst = magntable.findAll('td')
 
-        print symbol,abr
+        tdlen = len(tdLst)
+        idAbrLst = {'abrt':-5,'abr1w':-4,'abr1m':-3,'abr2m':-2,'abr3m':-1}
+    
+        for key in idAbrLst:
+            abr[key] = tdLst[idAbrLst[key]].string
+        #industry rank by abr
+        irba = soup.find("td",attrs={'class':"alpha"},text="Industry Rank by ABR") 
+        irbatxt = irba.nextSibling.nextSibling.string
+        pattern = "([\d]+)[\s]*of[\s]*([\d]+)"
+        an = re.match(pattern,irbatxt)
+        indurank = ""
+        indutotal = ""
+        try:
+            if an!=None:
+                indurank = an.group(1)
+                indutotal = an.group(2)
+        except:
+            pass                
+        abr['indurank'] = indurank
+        abr['indutotal'] = indutotal
+        
+        '''
+        <td class="alpha"># of Recs in ABR</td>
+        <td><span>1</span></td>            
+        '''
+        nrabr = soup.find("td",attrs={'class':"alpha"},text="# of Recs in ABR") 
+        nrabrtxt = ""
+        if nrabr!=None:
+            nrabrtxt = nrabr.nextSibling.nextSibling.string
+        abr['numbr'] = nrabrtxt
+
+        #print symbol,abr
         return abr
         
-    def parseRank(self,htmltxt):
-        an = re.match(self.rankPattern, htmltxt)
-        if an!=None:
-            str1=an.group(1)
-            if str1=='N':
-                zrank = "0"
-            else:
-                zrank = str1[0]
-        else:
-            zrank = "-1"
-        return zrank    
-
-          
+   
+        
+    #first try             
     def getEstimate(self, symbol):
         url = "http://www.zacks.com/stock/quote/" + symbol + "/detailed-estimates"
-        page = urllib2.urlopen(url).read()
-        
+        try:
+            page = urllib2.urlopen(url).read()
+        except:
+            print "unable to get",symbol,"estimate,skip"
+            return None
+            
         soup = BeautifulSoup(page)
-        #print page
         epsEstmDct = {}
+        isetf = self.parseETF(soup)
+        if isetf:
+            print symbol,"is ETF, skip"
+            epsEstmDct['etf'] = "1"
+            return epsEstmDct
+        
+            
+        #print page
+        
         epsEstmDct['rank'] = self.parseRank(page)
         magntable = soup.find("section", {'id':'magnitude_estimate'})
-        if magntable!=None:
-            tdLst = magntable.findAll('td')
-        else:
-            return None
-
+        if magntable==None:
+            print "estimation information"
+            return epsEstmDct
+            
+        tdLst = magntable.findAll('td')
+        
         tdlen = len(tdLst)
         '''
         [<td class="alpha">Current</td>, <td>0.51</td>, <td>0.56</td>, <td>2.40</td>, <td>2.59</td>, 
@@ -201,35 +231,51 @@ class zack_data:
     get past all Quarters earning data from reuter
     '''    
     def getZackData(self,symbol):
-        dct = {}
+        dct = OrderedDict()
+        for key in self.columns:
+            dct[key]=""
+        dct['etf']="0"
+          
         estdct = self.getEstimate(symbol)
-        if estdct!=None:
-            dct.update(estdct)
-        print dct
+        dct.update(estdct)
+        
+        if dct['etf']=="1":
+            return
+            
+        abrdct = self.getBrokerRecom(symbol)
+        if abrdct==None:
+            return
+        dct.update(abrdct)
+            
+        #print dct
         return dct
                 
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:u:r:", ["filename", "start","ticklist","zackfile"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:h", ["filename", "ticklist","zackfile","pid"])
         except getopt.GetoptError:
             print "parameter error"
             sys.exit()
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.fileName = arg
-            elif opt in ("-t", "--start"):
-                self.starttick = arg
-            elif opt in ("-u","--ticklist"):
-                items = arg.split(",") #update ticklist only 
-                tdict = {}
-                for t in items:
-                    tick,exg = t.split(".")
-                    tdict[tick.upper()] = exg.upper()
+            #elif opt in ("-t", "--start"):
+            #    self.starttick = arg
+            elif opt in ("-t","--ticklist"):
+                tdict = self.mtd.parseTickLst(arg)
                 self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+                for co in self.columns:
+                    self.tickdf[co]=""
             elif opt in ("-r","--zackfile"):
                 self.zackfile = arg
-            
+            elif opt in ("--i","pid"):
+                idLst = arg.split(",")
+                self.pid = self.mkt.parsePidLst(idLst)
+            elif opt in ("-h"):
+                self.usage()
+                sys.exit()
+                
         print "symbolfile=",self.fileName
         print "ticklist==="
         if not self.tickdf.empty:
@@ -273,6 +319,9 @@ class zack_data:
         missLst = []
         if 'cq0' not in dct:
             missLst.append("Current Qtr Est.")
+        if 'abrt' not in dct:
+            missLst.append("Current ABR")
+            
         if len(missLst)>0:
             print "Missing list:",missLst
             
@@ -287,7 +336,7 @@ class zack_data:
             if not zackTable.empty:
                 tickdf =  zackTable
             else:
-                print "both reuterFile and tickdf are empty,exit"
+                print "both zackCsvFile and tickdf are empty,exit"
                 return
            
         updatelst = tickdf['symbol']
@@ -314,6 +363,8 @@ class zack_data:
             #rowLst = []
             print "downloading ",index,row['symbol'],row['exg']
             rowdct = self.getZackData(row['symbol'])
+            if rowdct==None:
+                continue
             line = row['symbol'] + ',' + row['exg']
             if len(rowdct)>0:
                 self.verifyCol(rowdct)  
@@ -336,12 +387,15 @@ class zack_data:
                         outputfp.flush()
                                     
             else:
-                print "No financials information,skip ",row['symbol'],row['exg']
+                print "No zack information,skip ",row['symbol'],row['exg']
         
         if lenticklst>100:
             outputfp.close()
         rf = pandas.DataFrame(allLst,columns = allCol)
+        #print lf
+        #print rf
         mf = lf.append(rf)
+        #print mf
         mf.to_csv(self.outputfn,sep=',',index=False)
 
       
