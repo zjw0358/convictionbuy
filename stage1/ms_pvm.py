@@ -1,10 +1,10 @@
 '''
 marketscan module
-- download stock p/s,marketcap,avgvol
-- filter by pricesale,marketcap,avgvol,px
+- download stock px,p/s,marketcap,avgvol,peg
+- filter by the above columns
 
 use case:    
-run marketscan -g "ms_pvm&avgvol>1000000&download=1"
+run marketscan -g "ms_pvm&avgvol>1000000&peg<2"
 
 '''
 import datetime
@@ -17,8 +17,8 @@ import marketdata
 # marketscan module price/volume/marketcap
 class ms_pvm:
     def __init__(self):
-        self.columns = ['symbol','pricesale','marketcap','avgvol','px']
-        self.colcode = "&f=sp5j1a2l1"
+        self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg']
+        self.colcode = "&f=sp5j1a2l1r5"
         self.outputFileName = "./msdata_pvm.csv"
         self.mtd = marketdata.MarketData()
         return        

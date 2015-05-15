@@ -40,9 +40,11 @@ class zack_data:
 
         
     def usage(self):
-        print "program -f <portfolio_file> -t 'aapl msft' "
-        print "example:run zack_data.py -t aapl"
-        print "example:run zack_data.py -i 1,2,3 "
+        print "run zack_data.py -t aapl " #update aapl only
+        print "run zack_data.py -r zackfile -t aapl -m" #merge with zackfile
+        print "run zack_data.py -i 1,2,3 "
+
+
 
     '''    
     def getRank(self,ticklist):
@@ -265,11 +267,11 @@ class zack_data:
             #    self.starttick = arg
             elif opt in ("-t","--ticklist"):
                 tdict = self.mtd.parseTickLst(arg)
-                print tdict
+                #print tdict
                 self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
                 for co in self.columns:
                     self.tickdf[co]=""
-                print self.tickdf
+                #print self.tickdf
             elif opt in ("-r","--zackfile"):
                 self.zackfile = arg
             elif opt in ("-i","pid"):
@@ -288,7 +290,7 @@ class zack_data:
         print "zackfile=",self.zackfile
         return
   
-      #load zack csv file
+    #load zack csv file
     def loadZackCsvFile(self,fileName):
         print  "Loading zack csv file..."
          
@@ -371,10 +373,10 @@ class zack_data:
             header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
             outputfp.write(header)
        
-       
+        idx = 0
         for index, row in dfup.iterrows():
-            #rowLst = []
             print "downloading ",index,row['symbol'],row['exg']
+            idx += 1
             rowdct = self.getZackData(row['symbol'])
             if rowdct==None:
                 continue
@@ -399,7 +401,7 @@ class zack_data:
                 if lenticklst>100:                 
                     line = line + "\n"
                     outputfp.write(line)
-                    if index%10 == 0:
+                    if idx%10 == 0:
                         outputfp.flush()
                                     
             else:
@@ -447,14 +449,19 @@ class zack_data:
                 self.updateTickLst(dfnc,zackTable)
         else:
             if self.tickdf.empty:
+                print "update symbolfile"
                 symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
                 df = symbolTable[symbolTable['rank']>0]
-                self.tickdf = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
-                #print "self.pid=",self.pid
-                #print self.tickdf                         
-                self.updateTickLst("",self.tickdf)
+                df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+                dfup = df[['symbol','exg']]
+                for co in self.columns:
+                    dfup[co]=""
+                dfnc = pandas.DataFrame({},columns=self.allcols)
+                self.updateTickLst(dfnc,dfup)
             else:
-                self.updateTickLst("",self.tickdf)
+                print "update ticklist only"
+                dfnc = pandas.DataFrame({},columns=self.allcols)
+                self.updateTickLst(dfnc,self.tickdf)
                         
     '''    
     def write2File(self,zackranks):

@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+'''
+run reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
+'''
+
+# -*- coding: utf-8 -*-
 import urllib2
 import re
 from bs4 import BeautifulSoup
@@ -9,9 +14,7 @@ import getopt
 import sys
 import csv
 
-'''
-run reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
-'''
+
 class ReuterFunda:
     def __init__(self):
         pandas.set_option('display.max_columns', 100)
@@ -23,8 +26,9 @@ class ReuterFunda:
         self.outputpath = "./"
         self.outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
         self.fileName = "./marketdata.csv"
-        self.reuterfile = ""
-        self.starttick = ""
+        self.reuterFile = ""
+        #self.starttick = ""
+        self.option = ""
         self.tickdf = pandas.DataFrame()
         self.columns = [
             'saleqtr0','saleqtr-1','saleqtr-2','saleqtr-3','saleqtr-4','saleqtr-5','saleqtr-6','saleqtr-7',\
@@ -52,6 +56,8 @@ class ReuterFunda:
             'cproa','induroa','sectorroa','cproa5y','induroa5y','sectorroa5y','cproi','induroi','sectorroi','cproi5y','induroi5y','sectorroi5y','cproe','induroe',\
             'sectorroe','cproe5y','induroe5y','sectorroe5y'
             ]
+        self.allcols = ['symbol','exg'] + self.columns
+        self.pid = 0
         # base set columns
         self.colbase = ['symbol','cppettm','cppsttm','cppbmrq','cppcfttm',\
                     'divyield','payoutratio',\
@@ -59,7 +65,47 @@ class ReuterFunda:
                     'cpcurra','cpquira','cpdebt2equity',\
                     'cpgm','cpom','cpnm','cpbeta']
 
-               
+    def parseOption(self):
+        #self.ticklist=[]
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "f:i:t:r:hm",["filename", "pid","ticklist","reuterfile","help","merge"])
+        except getopt.GetoptError:
+            print "parse option error"
+            sys.exit()
+        for opt, arg in opts:
+            if opt in ("-f", "--filename"):#symbol file
+                self.fileName = arg
+            #elif opt in ("-t", "--start"):
+            #    self.starttick = arg
+            elif opt in ("-t","--ticklist"):
+                '''
+                items = arg.split(",") #update ticklist only 
+                tdict = {}
+                for t in items:
+                    tick,exg = t.split(".")
+                    tdict[tick.upper()] = exg.upper()
+                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+                '''    
+                self.tickdf = self.mtd.parseTickLstDf(arg)               
+            elif opt in ("-i","--pid"):
+                idLst = arg.split(",")
+                self.pid = self.mtd.parsePidLst(idLst)                
+            elif opt in ("-r","--reuterfile"):
+                self.reuterFile = arg
+            elif opt in ("-h"):
+                self.usage()
+                sys.exit()
+            elif opt in ("-m"):
+                self.option = "merge" #merge reuterfile with others in symbolfile
+     
+    
+            
+        print "symbolfile=",self.fileName
+        print "ticklist==="
+        if not self.tickdf.empty:
+            print self.tickdf
+        print "reuterfile=",self.reuterFile
+        return           
     '''
     main routine
     get past all Quarters earning data from reuter
@@ -142,7 +188,7 @@ class ReuterFunda:
                     retmx['me'] = 1
                     fundadct.update(ret)
                     continue
-                                 
+        print "\tparsing is done."                        
         return fundadct
         
     def verifyCol(self,dct):
@@ -380,7 +426,7 @@ class ReuterFunda:
             valratio['sectorpehigh5y'] = self.tofloat(sectortag.string)
         else:
             print "P/E High - Last 5 Yrs. not found"
-            #return None
+
       
         tag = table.find("td",text=re.compile('[\d\D]*P/E Low - Last 5 Yrs\.[\d\D]*'))        
         if tag!=None:
@@ -392,7 +438,7 @@ class ReuterFunda:
             valratio['sectorpelow5y'] = self.tofloat(sectortag.string)
         else:
             print "P/E Low - Last 5 Yrs. not found"
-            #return None
+
        
         tag = table.find("td",text=re.compile('[\d\D]*Beta[\d\D]*'))        
         if tag!=None:
@@ -404,7 +450,7 @@ class ReuterFunda:
             valratio['sectorbeta'] = self.tofloat(sectortag.string)
         else:
             print "Beta not found"
-            #return None
+
             
         tag = table.find("td",text=re.compile('[\d\D]*Price to Sales \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -416,7 +462,7 @@ class ReuterFunda:
             valratio['sectorpsttm'] = self.tofloat(sectortag.string)
         else:
             print "Beta not found"
-            #return None
+
 
         tag = table.find("td",text=re.compile('[\d\D]*Price to Book \(MRQ\)[\d\D]*'))        
         if tag!=None:
@@ -428,7 +474,7 @@ class ReuterFunda:
             valratio['sectorpbmrq'] = self.tofloat(sectortag.string)
         else:
             print "Price to Book (MRQ) not found"
-            #return None
+
                       
         tag = table.find("td",text=re.compile('[\d\D]*Price to Cash Flow \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -440,7 +486,7 @@ class ReuterFunda:
             valratio['sectorpcfttm'] = self.tofloat(sectortag.string)
         else:
             print "Price to Cash Flow (TTM) not found"
-            #return None
+
 
         tag = table.find("td",text=re.compile('[\d\D]*Price to Free Cash Flow \(TTM\)[\d\D]*'))        
         if tag!=None:
@@ -451,8 +497,8 @@ class ReuterFunda:
             valratio['indupfcfttm'] = self.tofloat(indutag.string)
             valratio['sectorpfcfttm'] = self.tofloat(sectortag.string)
         else:
-            print "Price to Free Cash Flow (TTM) not found"
-            #return None
+            print "\tPrice to Free Cash Flow (TTM) not found"
+
         
         
         return valratio    
@@ -672,7 +718,7 @@ class ReuterFunda:
             cptag = tag.nextSibling.nextSibling
             div['div5y'] = self.tofloat(cptag.string)
         else:
-            print "Dividend Yield - 5 Year Avg. not found"
+            print "\tDividend Yield - 5 Year Avg. not found"
             #return None
         
         tag = table.find("td",text=re.compile('[\d\D]*Dividend 5 Year Growth Rate[\d\D]*'))        
@@ -732,7 +778,8 @@ class ReuterFunda:
             #return None
             
         return fins
-        
+    
+    #move to marketdata    
     def tofloat(self,txt):
         if txt=="--" or txt==None:
             return "0"
@@ -740,35 +787,7 @@ class ReuterFunda:
             return txt.replace(",","")
             
        
-    def parseOption(self):
-        self.ticklist=[]
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:u:r:", ["filename", "start","ticklist","reuterfile"])
-        except getopt.GetoptError:
-            return False
-        for opt, arg in opts:
-            if opt in ("-f", "--filename"):
-                self.fileName = arg
-            elif opt in ("-t", "--start"):
-                self.starttick = arg
-            elif opt in ("-u","--ticklist"):
-                items = arg.split(",") #update ticklist only 
-                tdict = {}
-                for t in items:
-                    tick,exg = t.split(".")
-                    tdict[tick.upper()] = exg.upper()
-                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
-            elif opt in ("-r","--reuterfile"):
-                self.reuterfile = arg
-                
-    
-            
-        print "symbolfile=",self.fileName
-        print "ticklist==="
-        if not self.tickdf.empty:
-            print self.tickdf
-        print "reuterfile=",self.reuterfile
-        return
+  
         
     def loadReuterCsvFile(self,fileName):
         print "Loading reuter csv file..."
@@ -836,51 +855,225 @@ class ReuterFunda:
         table = pandas.DataFrame(allLst,columns=columns)
         return table
     
-    # update tick data    
-    def updateData1(self): 
-        lenticklst = len(self.tickdf.index)       
-        #reuterTable = pandas.DataFrame()
-        if self.reuterfile!="" and lenticklst>0:
-            reuterTable = self.loadReuterCsvFile(self.reuterfile)
-        else:
-            return
-        #outputfn = self.outputpath + "reuterfunda_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
-        #outputfp = open(outputfn,'w',-1)        
-        updatelst = self.tickdf['symbol']
-        lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
         
+    # update tick list    
+    def updateTickLst0(self,reuterFile,tickdf): 
+        if reuterFile!="":
+            reuterTable = self.loadReuterCsvFile(reuterFile)
+        else:
+            reuterTable = tickdf
+            
+        if tickdf.empty:
+            if not reuterTable.empty:
+                tickdf =  reuterTable
+            else:
+                print "both reuterFile and tickdf are empty,exit"
+                return
+           
+        updatelst = tickdf['symbol']
+        lenticklst = len(tickdf.index)    
+        lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
+
         #to update table
         allLst = {}
         allCol = ['symbol','exg'] + self.columns
         for key in allCol:
             lst = []
             allLst[key] = lst
-        print "len of allLst",len(allLst) 
-                
-        print "total",lenticklst,"ticks to be updated"
-        for index, row in self.tickdf.iterrows():
-            rowLst = []
+        #print "len of allLst",len(allLst)                 
+        print "total",lenticklst,"ticks to be updated",len(lf.index),"to keep unchanged"
+
+        if lenticklst>100: 
+            outputfn = self.outputfn+"_bak"
+            outputfp = open(outputfn,'w',-1)         
+            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
+            outputfp.write(header)
+       
+        idx = 0
+        for index, row in tickdf.iterrows():
+            #rowLst = []
             print "downloading ",index,row['symbol'],row['exg']
-            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])                
+            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
+            line = row['symbol'] + ',' + row['exg']
+            idx += 1
             if len(rowdct)>0:
                 self.verifyCol(rowdct)  
                 for key in self.columns:
                     lst = allLst[key]
                     if key in rowdct:
                         lst.append(rowdct[key])
+                        line = line + "," + rowdct[key]
                     else:
                         lst.append("")   
+                        line = line + "," + ""
                                      
                 allLst['symbol'].append(row['symbol'])
-                allLst['exg'].append(row['exg'])               
+                allLst['exg'].append(row['exg'])
+                #write to disk is ticks length > 100
+                if lenticklst>100:                 
+                    line = line + "\n"
+                    outputfp.write(line)
+                    if idx%10 == 0:
+                        outputfp.flush()
+                                    
             else:
                 print "No financials information,skip ",row['symbol'],row['exg']
-                
+        
+        if lenticklst>100:
+            outputfp.close()
         rf = pandas.DataFrame(allLst,columns = allCol)
         mf = lf.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
+          
+
+    def updateTickLst(self,dfnc,dfup): 
+        '''
+        if reuterFile!="":
+            reuterTable = self.loadReuterCsvFile(reuterFile)
+        else:
+            reuterTable = tickdf
+            
+        if tickdf.empty:
+            if not reuterTable.empty:
+                tickdf =  reuterTable
+            else:
+                print "both reuterFile and tickdf are empty,exit"
+                return
+        '''
         
+        #updatelst = tickdf['symbol']
+        lenticklst = len(dfup.index)    
+        #lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
+
+        #to update table
+        allLst = {}
+        allCol = self.allcols
+        for key in allCol:
+            lst = []
+            allLst[key] = lst
+        #print "len of allLst",len(allLst)                 
+        print "total",lenticklst,"ticks to be updated",len(dfnc.index),"to keep unchanged"
+
+        if lenticklst>100: 
+            outputfn = self.outputfn+"_bak"
+            outputfp = open(outputfn,'w',-1)         
+            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
+            outputfp.write(header)
+       
+        idx = 0
+        for index, row in dfup.iterrows():
+            #rowLst = []
+            print "downloading ",idx,row['symbol'],row['exg']
+            idx += 1
+            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
+            line = row['symbol'] + ',' + row['exg']
+            if len(rowdct)>0:
+                self.verifyCol(rowdct)  
+                for key in self.columns:
+                    lst = allLst[key]
+                    if key in rowdct:
+                        lst.append(rowdct[key])
+                        line = line + "," + rowdct[key]
+                    else:
+                        lst.append("")   
+                        line = line + "," + ""
+                                     
+                allLst['symbol'].append(row['symbol'])
+                allLst['exg'].append(row['exg'])
+                #write to disk is ticks length > 100
+                if lenticklst>100:                 
+                    line = line + "\n"
+                    outputfp.write(line)
+                    if index%10 == 0:
+                        outputfp.flush()
+                                    
+            else:
+                print "No financials information,skip ",row['symbol'],row['exg']
+        
+        if lenticklst>100:
+            outputfp.close()
+        rf = pandas.DataFrame(allLst,columns = allCol)
+        mf = dfnc.append(rf)
+        mf.to_csv(self.outputfn,sep=',',index=False)
+  
+
+    def updateData(self): 
+        if self.reuterFile!="":
+            reuterTable = self.loadReuterCsvFile(self.reuterFile)
+
+        if self.reuterFile!="":
+            if self.option == "merge":
+                reuterList = reuterTable['symbol']
+                if self.tickdf.empty:
+                    print "keep current reuterfile and merge with the update of others from symbolfile"
+                    symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+                    df = symbolTable[symbolTable['rank']>0]
+                    df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+                    dfup = df[~df['symbol'].isin(reuterList)]
+                    for co in self.columns:
+                        dfup[co]=""
+                    dfnc = reuterTable
+                else:
+                    print "keep current reuterfile and merge with the All updates from ticklist"
+                    #dfup = self.tickdf[~self.tickdf['symbol'].isin(reuterList)]
+                    ticklist = self.tickdf['symbol']
+                    dfup = self.tickdf
+                    for co in self.columns:
+                        dfup[co]=""
+                    dfnc = reuterTable[~reuterTable['symbol'].isin(ticklist)]                
+                self.updateTickLst(dfnc,dfup)
+            else:
+                print "update current reuterfile only"
+                dfnc = pandas.DataFrame({},columns=self.allcols)
+                self.updateTickLst(dfnc,reuterTable)  
+        else:
+            if self.tickdf.empty:
+                print "update symbolfile"
+                symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+                df = symbolTable[symbolTable['rank']>0]
+                df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+                dfup = df[['symbol','exg']]
+                for co in self.columns:
+                    dfup[co]=""
+                dfnc = pandas.DataFrame({},columns=self.allcols)
+                self.updateTickLst(dfnc,dfup)
+            else:
+                print "update ticklist only"
+                dfnc = pandas.DataFrame({},columns=self.allcols)
+                self.updateTickLst(dfnc,self.tickdf) 
+            
+
+    #usage
+    def usage(self):
+        print "reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
+       
+        
+    def process(self):
+        self.parseOption()
+        self.updateData()        
+        #self.loadReuterCsvFile(self.fileName)
+            
+        print "Done,exit..."
+################################################################################        
+# main routine
+################################################################################            
+if __name__ == "__main__":
+    obj = ReuterFunda()
+    #zr.getEstimate('intc')
+    #zr.getBrokerRecom('intc')
+    #zr.getPriceSale('intc')
+    obj.process()
+'''
+  # update tick data    
     def updateData0(self): 
+        #lenticklst = len(self.tickdf.index)       
+        if self.reuterfile!="":
+            self.updateTickLst(self.reuterfile,self.tickdf)
+        else:
+            symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+            self.tickdf = symbolTable[symbolTable['rank']>0]
+            self.updateTickLst("",self.tickdf)
+             def updateData0(self): 
         lenticklst = len(self.ticklist)       
         symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
         reuterTable = pandas.DataFrame()
@@ -945,109 +1138,47 @@ class ReuterFunda:
                 
         outputfp.close()
         
-    # update tick list    
-    def updateTickLst(self,reuterFile,tickdf): 
-        '''
+         # update tick data    
+    def updateData1(self): 
         lenticklst = len(self.tickdf.index)       
+        #reuterTable = pandas.DataFrame()
         if self.reuterfile!="" and lenticklst>0:
             reuterTable = self.loadReuterCsvFile(self.reuterfile)
         else:
             return
-        '''
-        if reuterFile!="":
-            reuterTable = self.loadReuterCsvFile(reuterFile)
-        else:
-            reuterTable = tickdf
-            
-        if tickdf.empty:
-            if not reuterTable.empty:
-                tickdf =  reuterTable
-            else:
-                print "both reuterFile and tickdf are empty,exit"
-                return
-           
-        updatelst = tickdf['symbol']
-        lenticklst = len(tickdf.index)    
+        #outputfn = self.outputpath + "reuterfunda_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'        
+        #outputfp = open(outputfn,'w',-1)        
+        updatelst = self.tickdf['symbol']
         lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
-
+        
         #to update table
         allLst = {}
         allCol = ['symbol','exg'] + self.columns
         for key in allCol:
             lst = []
             allLst[key] = lst
-        #print "len of allLst",len(allLst)                 
-        print "total",lenticklst,"ticks to be updated",len(lf.index),"to keep unchanged"
-
-        if lenticklst>100: 
-            outputfn = self.outputfn+"_bak"
-            outputfp = open(outputfn,'w',-1)         
-            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
-            outputfp.write(header)
-       
-       
-        for index, row in tickdf.iterrows():
-            #rowLst = []
+        print "len of allLst",len(allLst) 
+                
+        print "total",lenticklst,"ticks to be updated"
+        for index, row in self.tickdf.iterrows():
+            rowLst = []
             print "downloading ",index,row['symbol'],row['exg']
-            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
-            line = row['symbol'] + ',' + row['exg']
+            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])                
             if len(rowdct)>0:
                 self.verifyCol(rowdct)  
                 for key in self.columns:
                     lst = allLst[key]
                     if key in rowdct:
                         lst.append(rowdct[key])
-                        line = line + "," + rowdct[key]
                     else:
                         lst.append("")   
-                        line = line + "," + ""
                                      
                 allLst['symbol'].append(row['symbol'])
-                allLst['exg'].append(row['exg'])
-                #write to disk is ticks length > 100
-                if lenticklst>100:                 
-                    line = line + "\n"
-                    outputfp.write(line)
-                    if index%10 == 0:
-                        outputfp.flush()
-                                    
+                allLst['exg'].append(row['exg'])               
             else:
                 print "No financials information,skip ",row['symbol'],row['exg']
-        
-        if lenticklst>100:
-            outputfp.close()
+                
         rf = pandas.DataFrame(allLst,columns = allCol)
         mf = lf.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
-          
-    # update tick data    
-    def updateData(self): 
-        #lenticklst = len(self.tickdf.index)       
-        if self.reuterfile!="":
-            self.updateTickLst(self.reuterfile,self.tickdf)
-        else:
-            symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
-            self.tickdf = symbolTable[symbolTable['rank']>0]
-            self.updateTickLst("",self.tickdf)
-            
-
-    #usage
-    def usage(self):
-        print "reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
-       
-        
-    def process(self):
-        self.parseOption()
-        self.updateData()        
-        #self.loadReuterCsvFile(self.fileName)
-            
-        print "Done,exit..."
-################################################################################        
-# main routine
-################################################################################            
-if __name__ == "__main__":
-    obj = ReuterFunda()
-    #zr.getEstimate('intc')
-    #zr.getBrokerRecom('intc')
-    #zr.getPriceSale('intc')
-    obj.process()
+'''

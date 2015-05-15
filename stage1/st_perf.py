@@ -74,7 +74,19 @@ class st_perf:
         self.algoFunc(close_px)        
  
  
-    def runScan(self,table):        
+    def runScan(self,table): 
+        # total return
+        retmax = table['pmax'].sum()
+        ret1w =  table['p1w'].sum()
+        ret4w =  table['p4w'].sum()
+        ret12w =  table['p12w'].sum()
+        ret24w =  table['p24w'].sum()
+        print "return max",retmax
+        print "return 1 week",ret1w
+        print "return 4 week",ret4w
+        print "return 12 week",ret12w
+        print "return 24 week",ret24w
+                                                                        
         if self.sgy == 1:
             '''
             strategy top performance

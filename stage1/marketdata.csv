@@ -228,7 +228,7 @@ OXLCO,-1,Oxford Lane Capital Corp.,n/a,n/a,0,O
 OXLCN,-1,Oxford Lane Capital Corp.,n/a,n/a,0,O
 SABR,3,Sabre Corporation,Technology,Computer Software: Programming Data Processing,0,O
 OPOF,0,Old Point Financial Corporation,Finance,Major Banks,0,O
-CTXS,3,Citrix Systems Inc.,Technology,Computer Software: Prepackaged Software,0,O
+CTXS,3,Citrix Systems Inc.,Technology,Computer Software: Prepackaged Software,2,O
 OXLCP,-1,Oxford Lane Capital Corp.,n/a,n/a,0,O
 MGIC,4,Magic Software Enterprises Ltd.,Technology,Computer Software: Prepackaged Software,0,O
 FFBC,3,First Financial Bancorp.,Finance,Major Banks,0,O
@@ -560,7 +560,7 @@ BASI,0,Bioanalytical Systems Inc.,Health Care,Biotechnology: Commercial Physical
 RTGN,0,Ruthigen Inc.,Health Care,Major Pharmaceuticals,0,O
 KAI,1,Kadant Inc,Technology,Industrial Machinery/Components,0,N
 FITBI,-1,Fifth Third Bancorp,Finance,Major Banks,0,O
-RHT,3,Red Hat Inc.,Technology,Computer Software: Programming Data Processing,0,N
+RHT,3,Red Hat Inc.,Technology,Computer Software: Programming Data Processing,2,N
 RHI,3,Robert Half International Inc.,Technology,Professional Services,0,N
 KAR,3,KAR Auction Services Inc,Consumer Durables,Automotive Aftermarket,0,N
 KAP,-1,KCAP Financial Inc.,n/a,n/a,0,N
@@ -1136,7 +1136,7 @@ KOPN,0,Kopin Corporation,Technology,Semiconductors,0,O
 ACE,3,Ace Limited,Finance,Property-Casualty Insurers,0,N
 ACI,4,Arch Coal Inc.,Energy,Coal Mining,0,N
 NEE,4,NextEra Energy Inc.,Public Utilities,Electric Utilities: Central,0,N
-ACN,3,Accenture plc.,Miscellaneous,Business Services,0,N
+ACN,3,Accenture plc.,Miscellaneous,Business Services,2,N
 ACM,3,Aecom Technology Corporation,n/a,n/a,0,N
 NEA,-1,Nuveen AMT-Free Municipal Income Fund,n/a,n/a,0,N
 ACP,-1,Avenue Income Credit Strategies Fund,n/a,n/a,0,N

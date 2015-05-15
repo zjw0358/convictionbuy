@@ -34,12 +34,13 @@ class MarketScan:
         self.symbolLstFile = "./marketdata.csv"  #default marketdata file
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
-        self.mkt = marketdata.MarketData()
+        self.mtd = marketdata.MarketData()
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
         self.help = False
         self.sgyparam = {}
-        self.ticklist = []
+        self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
+        #self.ticklist = []
         
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
@@ -72,22 +73,24 @@ class MarketScan:
                 ["filename", "ticklist", "startdate","enddate","pid","strategy","help"])
         except getopt.GetoptError:
             print "parse option error"
-            return False
+            sys.exit()
 
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.symbolLstFile = arg
                 #self.option = 1
             elif opt in ("-t", "--ticklist"):
-                newstr = arg #.replace("", "")                
-                self.ticklist = newstr.split(",")
+                #newstr = arg #.replace("", "")                
+                #self.ticklist = newstr.split(",")
+                tdict = self.mtd.parseTickLst(arg)
+                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])                
             elif opt in ("-s", "--startdate"):
                 self.startdate = arg
             elif opt in ("-e", "--enddate"):
                 self.enddate = arg
             elif opt in ("-i", "--pid"):
                 idLst = arg.split(",")
-                self.pid = self.mkt.parsePidLst(idLst)
+                self.pid = self.mtd.parsePidLst(idLst)
             elif opt in ("-g", "--strategy"):
                 self.sgyparam = self.parseStrategy(arg)
             elif opt in ("-h", "--help"):
@@ -271,14 +274,15 @@ class MarketScan:
         return
         
     def procMarketData(self):
-        if not self.ticklist:
-            #df1 = self.getSymbolByPid()[['symbol']]
+        if self.tickdf.empty:
+            print "loading from symbolfile..."
             df = self.loadSymbolLstFile(self.symbolLstFile)
-            df1 = self.mkt.getSymbolByPid(df,self.pid)[['symbol']]
+            df1 = self.mtd.getSymbolByPid(df,self.pid)[['symbol']]
             ticklist = df1['symbol']
         else:
-            df1 = pandas.DataFrame(self.ticklist,columns=['symbol'])
-            ticklist = self.ticklist     
+            print "using ticklist from command line..."            
+            df1 = self.tickdf            
+            #ticklist = self.ticklist     
         
         #load prescan module
         for sgyname in self.sgyInx:

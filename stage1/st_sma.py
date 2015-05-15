@@ -45,16 +45,17 @@ class st_sma:
         ma200=[]
         if plen >= 10:
             ma10 = pandas.stats.moments.rolling_mean(px,10)
-            self.ind['ma10'] = ma10[-1]
+            self.ind['ma10'] = round(ma10[-1],2)
         if plen >= 50:
             ma50 = pandas.stats.moments.rolling_mean(px,50)
-            self.ind['ma50'] = ma50[-1]
+            self.ind['ma50'] = round(ma50[-1],2)
         if plen >= 100:
             ma100 = pandas.stats.moments.rolling_mean(px,100)
-            self.ind['ma100'] = ma100[-1]
+            self.ind['ma100'] = round(ma100[-1],2)
         if plen >= 200:
             ma200 = pandas.stats.moments.rolling_mean(px,200)
-            self.ind['ma200'] = ma200[-1]
+            self.ind['ma200'] = round(ma200[-1],2)
+            ''' TODO
             self.ind['px_cross_sma_buy'] = 0
             count = 0
             for index in range(1,plen+1):
@@ -70,7 +71,7 @@ class st_sma:
                 count+=1
                 if count>=self.offset:
                     break;
-
+            '''
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         #initialize tradesupport

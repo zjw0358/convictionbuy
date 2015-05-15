@@ -53,6 +53,12 @@ class MarketData:
             tdict[tick.upper()] = exg.upper()
         return tdict
         
+    #return dataframe
+    def parseTickLstDf(self,line):
+        tdict = self.parseTickLst(line)
+        return pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+
+      
     #google style portfolio file       
     def parseGooglePortfolio(self,line):
         stocklist = {}
@@ -71,7 +77,7 @@ class MarketData:
                 symbol = symbols[0]                          
             stocklist[symbol] = exg
         return stocklist
-    
+    #return dict
     def loadPortfolioFile(self,fn):
         fp = open(fn,'r',-1)
         stocklist={}
@@ -80,8 +86,9 @@ class MarketData:
                 continue
             else:
                 stocklist.update(self.parseGooglePortfolio(line))
-        fp.close()              
-        return stocklist
+        fp.close()   
+        tickdf = pandas.DataFrame(list(stocklist.iteritems()),columns=['symbol','exg'])           
+        return tickdf
         
     def loadSymbolLstFile(self,fileName):
         #symbol,rank,name,sector,industry,pid,exg
