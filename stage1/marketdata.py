@@ -141,6 +141,18 @@ class MarketData:
                 return float(item)
         except:
             return item
+            
+    def isNumber(self,s):
+        try:
+            n=str(float(s))
+            if n == "nan" or n=="inf" or n=="-inf" : return False
+        except ValueError:
+            try:
+                complex(s) # for complex
+            except ValueError:
+                return False
+        return True     
+            
     # df is the loaded sysmbol list table
     def getSymbolByPid(self,df,pid):        
         #filter via pid mask

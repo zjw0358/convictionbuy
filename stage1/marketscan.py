@@ -282,8 +282,8 @@ class MarketScan:
         else:
             print "using ticklist from command line..."            
             df1 = self.tickdf            
-            #ticklist = self.ticklist     
-        
+            
+        print df1
         #load prescan module
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]

@@ -68,10 +68,10 @@ class ms_csvchart:
             for rowid, item in enumerate(row):            
                 lst = allLst[header[rowid]]
                 #if rowid>1:
-                #    item=item.replace(" ","")
-                #    lst.append(self.mtd.tofloat(item))
+                item=item.replace(" ","")
+                lst.append(self.mtd.tofloat(item))
                 #else:
-                lst.append(item)
+                #lst.append(item)
             idx += 1
         fp.close()        
         
@@ -95,19 +95,27 @@ class ms_csvchart:
             print symbol
         ''' 
         #first column is legend
-        print df
-        nsflag = False
-        offset = 1
-        xtickname = list(df.columns.values[1:])
+        #print dfb.isdeci
+        #nsflag = False
+        offset = 2
+        xtickname = list(df.columns.values[offset:])
+        
         for row in df.iterrows():
             index, data = row
             lst = data.tolist()
+            #print lst
+            '''
             if nsflag==False:
                 for idx in range(0,len(lst)):
-                    if lst[idx].isdigit()==True:
-                        nsflag=True
+                    #print lst[idx],lst[idx].isdigit()
+                    #if lst[idx].isdigit()==True:
+                    if self.mtd.isNumber(lst[idx]):
+                        nsflag=True                        
                         offset = idx
-                        print offset
+                        print "True offset=",offset
+                        break
+            print lst[offset:]
+            '''
             plt.plot(lst[offset:],label=data[0])
         plt.xticks(range(len(xtickname)),xtickname);            
         plt.legend()

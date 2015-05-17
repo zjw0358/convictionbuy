@@ -28,7 +28,7 @@ class ms_reuter:
         return
     
     def usage(self):
-        return "ms_reuter: $eracc1, $eracc2,$eps"
+        return "ms_reuter: $eracc1, $eracc2,$eps,$epsyoy"
 
 
     # no need real price data
@@ -117,23 +117,7 @@ class ms_reuter:
                 
         return df1
         
-    #zack strategy earning acceleration p43, earning improve QoQ
-    # epsq increase for constructive 3 qtr
-    '''
-    def eracc(self,df):
-        f0 = df[ (df['epsqtr0']/df['epsqtr-1'] > df['epsqtr-1']/df['epsqtr-2']) & \
-                (df['epsqtr-1']/df['epsqtr-2'] > df['epsqtr-2']/df['epsqtr-3']) & \
-                (df['epsq1e']/df['epsqtr0'] > df['epsqtr0']/df['epsqtr-1'])]
-        return f0
-
-    #zack strategy earning acceleration p43, earning improve QoQ        
-    def eracc2(self,df):
-        f0 = df[ (df['epsq1e']/df['epsqtr-3'] > df['epsqtr0']/df['epsqtr-4']) & \
-                (df['epsqtr0']/df['epsqtr-4'] > df['epsqtr-1']/df['epsqtr-5']) & \
-                (df['epsqtr-1']/df['epsqtr-5'] > df['epsqtr-2']/df['epsqtr-6'])
-             ]
-        return f0
-    '''     
+     
     def test(self):
         ticklist = ['LLY','BMY','ABBV','GILD','PFE','MRK','JNJ','GSK']
         self.process(ticklist,"")
