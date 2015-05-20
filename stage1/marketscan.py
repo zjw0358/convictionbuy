@@ -9,7 +9,7 @@ import pandas.io.data as web
 import pandas
 import csv
 import marketdata
-
+import ms_csvchart
 #sys.path.insert(0, "../src/")
 #import simutable
 #import tradesupport
@@ -35,12 +35,14 @@ class MarketScan:
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
         self.mtd = marketdata.MarketData()
+        self.csvchart = ms_csvchart.ms_csvchart()
+        self.haschart = False
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
         self.help = False
         self.sgyparam = {}
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
-        #self.ticklist = []
+
         
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
@@ -69,8 +71,8 @@ class MarketScan:
         print "=========================="
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:hc", \
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -96,7 +98,8 @@ class MarketScan:
             elif opt in ("-h", "--help"):
                 self.usage()
                 self.help=True                                   
-                
+            elif opt in ("-c","--chart"):
+                self.haschart = True
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
             if not self.startdate:
@@ -282,8 +285,8 @@ class MarketScan:
         else:
             print "using ticklist from command line..."            
             df1 = self.tickdf            
-            
-        print df1
+            #ticklist = self.ticklist     
+        
         #load prescan module
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
@@ -293,11 +296,12 @@ class MarketScan:
                 #merge tblout & df1
                 df1 = pandas.merge(tblout,df1,how='inner')
                     
-        self.addSP500(df1)
+        #TODO not add index
+        #self.addSP500(df1)
                         
         print "==================================================="
         print "total", len(df1.index),"symbols selected"
-        if self.hasPriceDataModule()==False:
+        if self.hasPriceDataModule()==False and self.haschart==False:
             self.saveTableFile(df1,"raw")
             print df1
             print "No more pricedata module to be processed, exit..."
@@ -318,9 +322,13 @@ class MarketScan:
                 sgx = self.sgyInx[sgyname]
                 table = sgx.runScan(table)
         print table
+        
         #save filted csv file
         self.saveTableFile(table)
-        
+        # trigger csv chart
+        if self.haschart:
+            print "=== csv chart ==="
+            self.csvchart.drawChart(table)
         return       
          
     

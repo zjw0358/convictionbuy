@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import pandas
 import csv
 import marketdata
+import numpy as np
 from collections import OrderedDict
 
 class ms_csvchart:
@@ -97,7 +98,10 @@ class ms_csvchart:
         #first column is legend
         #print dfb.isdeci
         #nsflag = False
-        offset = 2
+        
+        # 0 -> nan
+        df = df.replace(0, np.inf)
+        offset = 1
         xtickname = list(df.columns.values[offset:])
         
         for row in df.iterrows():
@@ -117,9 +121,15 @@ class ms_csvchart:
             print lst[offset:]
             '''
             plt.plot(lst[offset:],label=data[0])
-        plt.xticks(range(len(xtickname)),xtickname);            
-        plt.legend()
+        plt.xticks(range(len(xtickname)),xtickname);
+        #plt.yticks(range(ymin,ymax))
+        #plt.yticks(np.arange(ymin, ymax, 0.2), fontsize=10)
+        legend = plt.legend(loc='upper left', shadow=True)        
+        frame = legend.get_frame()
+        frame.set_facecolor('0.90')       
+        #plt.legend()
         plt.show()                                
+        
     def cmdline(self):
         self.parseOption()
         df = self.loadCsvFile(self.fileName)

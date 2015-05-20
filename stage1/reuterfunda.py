@@ -66,31 +66,22 @@ class ReuterFunda:
                     'cpgm','cpom','cpnm','cpbeta']
 
     def parseOption(self):
-        #self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:i:t:r:hm",["filename", "pid","ticklist","reuterfile","help","merge"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:i:t:r:hm")
+            #,["filename", "pid","ticklist","reuterfile","help","merge"]
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
+        print opts,args
         for opt, arg in opts:
-            if opt in ("-f", "--filename"):#symbol file
-                self.fileName = arg
-            #elif opt in ("-t", "--start"):
-            #    self.starttick = arg
-            elif opt in ("-t","--ticklist"):
-                '''
-                items = arg.split(",") #update ticklist only 
-                tdict = {}
-                for t in items:
-                    tick,exg = t.split(".")
-                    tdict[tick.upper()] = exg.upper()
-                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
-                '''    
-                self.tickdf = self.mtd.parseTickLstDf(arg)               
-            elif opt in ("-i","--pid"):
+            if opt in ("-f"):#symbol file
+                self.fileName = arg            
+            elif opt in ("-i"):
                 idLst = arg.split(",")
-                self.pid = self.mtd.parsePidLst(idLst)                
-            elif opt in ("-r","--reuterfile"):
+                self.pid = self.mtd.parsePidLst(idLst)    
+            elif opt in ("-t"):
+                self.tickdf = self.mtd.parseTickLstDf(arg)                                       
+            elif opt in ("-r"):
                 self.reuterFile = arg
             elif opt in ("-h"):
                 self.usage()
@@ -101,7 +92,7 @@ class ReuterFunda:
     
             
         print "symbolfile=",self.fileName
-        print "ticklist==="
+        print "ticklist=="
         if not self.tickdf.empty:
             print self.tickdf
         print "reuterfile=",self.reuterFile
@@ -1059,9 +1050,6 @@ class ReuterFunda:
 ################################################################################            
 if __name__ == "__main__":
     obj = ReuterFunda()
-    #zr.getEstimate('intc')
-    #zr.getBrokerRecom('intc')
-    #zr.getPriceSale('intc')
     obj.process()
 '''
   # update tick data    
