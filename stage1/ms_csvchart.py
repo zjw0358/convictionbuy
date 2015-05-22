@@ -80,25 +80,7 @@ class ms_csvchart:
         return table
         
     def drawChart(self,df):
-        '''
-        for index, row in df.iterrows():
-            symbol = df.loc[index,'px']
-            symbol = row['symbol']
-            print "processing ",index, symbol
-        '''
-        #print len(df.index)
-        '''
-        for idx in range(0,len(df.index)):            
-            symbol = df.iloc[idx,0]
-            ser = df.iloc[idx,1:]
-            print ser
-            ser.plot()
-            print symbol
-        ''' 
         #first column is legend
-        #print dfb.isdeci
-        #nsflag = False
-        
         # 0 -> nan
         df = df.replace(0, np.inf)
         offset = 1
@@ -128,12 +110,33 @@ class ms_csvchart:
         frame = legend.get_frame()
         frame.set_facecolor('0.90')       
         #plt.legend()
-        plt.show()                                
+        plt.show()   
+                                     
+    def drawScatter(self,df):
+        offset=1
+        xtickname = list(df.columns.values[offset:])
+        plt.scatter(df[xtickname[0]],df[xtickname[1]])
         
+        for row in df.iterrows():
+            index, data = row
+            lst = data.tolist()
+            plt.scatter(df[''])
+            
+        #plt.xticks(range(len(xtickname)),xtickname);
+        #plt.yticks(range(ymin,ymax))
+        #plt.yticks(np.arange(ymin, ymax, 0.2), fontsize=10)
+        #legend = plt.legend(loc='upper left', shadow=True)        
+        #frame = legend.get_frame()
+        #frame.set_facecolor('0.90')       
+        #plt.legend()
+        plt.show()   
+        return
+          
     def cmdline(self):
         self.parseOption()
         df = self.loadCsvFile(self.fileName)
-        self.drawChart(df)
+        #self.drawChart(df)
+        self.drawScatter(df)
         return
         
 if __name__ == "__main__":

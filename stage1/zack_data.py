@@ -578,20 +578,10 @@ class zack_data:
         self.parseOption()
         self.updateData()
         print "Done,exit..."
-        
-    '''            
-    def process(self,tablein,param):
-        ticklist = tablein['symbol']
-        col = ['symbol']
-        df = self.loadZackCsvFile("msdata_zackabr_2015-01-19.csv")     
-        df = self.mtd.evalCriteria(df,param,col)                
-        #df1 = df[df['symbol'].isin(ticklist)]
-        df1 = pandas.merge(tablein,df,how='inner')
-        return df1
-    '''
+    '''    
     def needPriceData(self):
         return False
-        
+    ''' 
 
   
         

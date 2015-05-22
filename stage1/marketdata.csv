@@ -3577,7 +3577,7 @@ KELYB,0,Kelly Services Inc.,Technology,Professional Services,0,O
 KELYA,3,Kelly Services Inc.,Technology,Professional Services,0,O
 KYTH,3,Kythera Biopharmaceuticals Inc.,Health Care,Major Pharmaceuticals,0,O
 NDSN,5,Nordson Corporation,Capital Goods,Industrial Machinery/Components,0,O
-KITE,3,Kite Pharma Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
+KITE,3,Kite Pharma Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),2,O
 ICLN,0,iShares S&P Global Clean Energy Index Fund,n/a,n/a,0,O
 LTRE,0,Learning Tree International Inc.,Consumer Services,Other Consumer Services,0,O
 ICLD,0,InterCloud Systems Inc,Miscellaneous,Business Services,0,O
@@ -5018,7 +5018,7 @@ BRN,0,Barnwell Industries Inc.,Energy,Oil & Gas Production,0,A
 DJCO,0,Daily Journal Corp. (S.C.),Consumer Services,Newspapers/Magazines,0,O
 RIGP,2,Transocean Partners LLC,Energy,Oil & Gas Production,0,N
 BRC,2,Brady Corporation,Consumer Durables,Miscellaneous manufacturing industries,0,N
-JUNO,3,Juno Therapeutics Inc.,n/a,n/a,0,O
+JUNO,3,Juno Therapeutics Inc.,Health Care,Biotechnology: Biological Products,2,O
 HF,3,HFF Inc.,Consumer Services,Real Estate,0,N
 LNTH,-1,Lantheus Holdings Inc.,n/a,n/a,0,O
 ARKR,0,Ark Restaurants Corp.,Consumer Services,Restaurants,0,O
@@ -5968,7 +5968,7 @@ SNDX,-1,Syndax Pharmaceuticals Inc.,n/a,n/a,0,O
 CSTM,3,Constellium N.V.,Basic Industries,Metal Fabrications,0,N
 CSTE,0,CaesarStone Sdot-Yam Ltd.,Capital Goods,Building Materials,0,O
 CDTI,3,Clean Diesel Technologies Inc.,Capital Goods,Pollution Control Equipment,0,O
-BLUE,2,bluebird bio Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,O
+BLUE,2,bluebird bio Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),2,O
 KB,4,KB Financial Group Inc,Finance,Commercial Banks,0,N
 KF,0,Korea Fund Inc. (The),n/a,n/a,0,N
 KE,0,Kimball Electronics Inc.,Technology,Electrical Products,0,O
