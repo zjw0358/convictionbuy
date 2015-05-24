@@ -9,7 +9,7 @@ class st_reuterfa:
     
     def cleanup(self):
         self.ind = OrderedDict()
-        self.pxdf = pandas.DataFrame(columns=['symbol','q5','q4','q3','q2','q1','q0'])
+        #self.pxdf = pandas.DataFrame(columns=['symbol','q5','q4','q3','q2','q1','q0'])
         self.sgyparam={}
         return
 
@@ -18,10 +18,6 @@ class st_reuterfa:
 
         
     def setupParam(self,param):
-        '''
-        if 'eps' in param:
-            self.sgy="eps"            
-        '''
         self.sgyparam = param
         return
         
@@ -41,7 +37,8 @@ class st_reuterfa:
         return self.ind  
    
     def algoFunc(self, symbol, px):
-        if 'px' in self.sgyparam:
+        if 'px' in self.sgyparam:            
+            self.pxdf = pandas.DataFrame(columns=['symbol','q5','q4','q3','q2','q1','q0'])
             px = px.resample('Q',how='last',fill_method='bfill')  #backward filling
             pxlst = px.values.tolist()
             pxlen = len(pxlst)
@@ -61,12 +58,16 @@ class st_reuterfa:
                 self.pxdf.loc[newrow,'q1']= pxlst[-2]/pxlst[-6]-1        
             if pxlen>4:
                 self.pxdf.loc[newrow,'q0']= pxlst[-1]/pxlst[-5]-1
-        #print df
-        #print lst
+        elif 'rep' in self.sgyparam:            
+            #self.pxdf = pandas.DataFrame(columns=['symbol','x','y','ret'])
+            pxlst = px.values.tolist()
+            pxlen = len(pxlst)
+            self.ind['ret'] = round((pxlst[-1]/pxlst[0]-1)*100,2)
+            
         
     #post process        
     def runScan(self,df): 
-        if 'eps' in self.sgyparam:
+        if 'epsyoy' in self.sgyparam:
             df['q5'] = df['epsqtr-5']/df['epsqtr-9']-1
             df['q4'] = df['epsqtr-4']/df['epsqtr-8']-1
             df['q3'] = df['epsqtr-3']/df['epsqtr-7']-1
@@ -76,8 +77,10 @@ class st_reuterfa:
             #newrow = len(self.pxdf)+1
             for index, row in df.iterrows():
                 df.loc[index,'symbol'] = ("%s_eps"%row['symbol'])
-        if len(self.sgyparam)>0:        
-            df=df[['symbol','q5','q4','q3','q2','q1','q0']]
-            df = df.append(self.pxdf) 
+            if len(self.sgyparam)>0:        
+                df=df[['symbol','q5','q4','q3','q2','q1','q0']]
+                df = df.append(self.pxdf) 
+        elif 'rep' in self.sgyparam:
+            df=df[['symbol','cppsalettmyoy','cpepsttmyoy','ret']]
         print df
         return df

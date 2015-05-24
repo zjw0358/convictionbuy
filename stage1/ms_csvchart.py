@@ -16,6 +16,7 @@ import pandas
 import csv
 import marketdata
 import numpy as np
+import math
 from collections import OrderedDict
 
 class ms_csvchart:
@@ -114,13 +115,69 @@ class ms_csvchart:
                                      
     def drawScatter(self,df):
         offset=1
-        xtickname = list(df.columns.values[offset:])
-        plt.scatter(df[xtickname[0]],df[xtickname[1]])
+        cols = list(df.columns.values) #[offset:]
+        maxy=50
+        maxx=50
+        miny=0
+        minx=0
+        maxr=400
+        minr=-30
+        check = False
+        print cols
+
+        print cols
         
-        for row in df.iterrows():
-            index, data = row
-            lst = data.tolist()
-            plt.scatter(df[''])
+        #print "max=",df[cols[3]].max()
+        #print "min=",df[cols[3]].min()
+        #col3upper = max(abs(df[cols[3]].min()),abs(df[cols[3]].max()))
+        
+        col3list = df[cols[3]].tolist()
+        col3arr = abs(np.array(col3list))
+        col3upper1 = np.percentile(col3arr, 34) 
+        col3upper2 = np.percentile(col3arr, 77) 
+        col3upper3spread = np.percentile(col3arr, 100) - col3upper2
+        col3upper2spread = col3upper2 - col3upper1
+        col3upper1spread = col3upper1
+        col3sizeupper = 200
+        col3sizefac = 6
+        #col3sizerange = np.arange(1,200)
+        
+        #col 0 symbol, 1-x,2-y,3-size
+        idx = 0
+        for index,row in df.iterrows():
+            label = row['symbol']
+            ret = row[cols[3]]
+            if ret>0:
+                color = 'green'
+            else:
+                color='red'
+            #size = math.log(abs(ret*20))*40
+            idx += 1
+            
+            x = row[cols[1]]
+            y = row[cols[2]]
+            
+            if check and (x>maxx or y>maxy or x<minx or y<miny or ret<minr or ret>maxr):
+                continue
+            else:
+                if abs(ret)>col3upper2:
+                    shape = "s" #square
+                    col3val = abs(ret)/col3upper3spread
+                elif abs(ret)>col3upper1:
+                    shape = "^"
+                    col3val = abs(ret)/col3upper2spread
+                else:
+                    shape = "o"
+                    col3val = abs(ret)
+                    
+                abret = min(abs(ret),col3sizeupper)
+                size = abret*col3sizefac
+                
+                plt.scatter(x,y,c=color,s=size,marker=shape)#s,o,^
+                plt.annotate(label, xy = (x, y), xytext = (-20, 20),
+        textcoords = 'offset points', ha = 'right', va = 'bottom',
+        bbox = dict(boxstyle = 'round,pad=0.5', fc = 'yellow', alpha = 0.5),
+        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
             
         #plt.xticks(range(len(xtickname)),xtickname);
         #plt.yticks(range(ymin,ymax))
