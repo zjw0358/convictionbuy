@@ -80,7 +80,7 @@ class ms_csvchart:
         table = pandas.DataFrame(allLst,columns=header)
         return table
         
-    def drawChart(self,df):
+    def drawLineChart(self,df):
         #first column is legend
         # 0 -> nan
         df = df.replace(0, np.inf)
@@ -112,73 +112,131 @@ class ms_csvchart:
         frame.set_facecolor('0.90')       
         #plt.legend()
         plt.show()   
-                                     
+        
+    def setupParam(self,param):
+        self.xmin = 5
+        self.xmax = 99
+        self.ymin = 5
+        self.ymax = 99
+        self.zmin = 15
+        self.zmax = 85
+        
+        #if arg=="":
+        #    return
+        #param = {}
+        #for item in arg.split(","):
+        #    tokens=item.split("=")
+        #    param[tokens[0]] = int(tokens[1])        
+                
+        if 'xmin' in param:
+            self.xmin = param['xmin']
+        if 'xmax' in param:
+            self.xmax = param['xmax']
+        if 'ymin' in param:
+            self.ymin = param['ymin']
+        if 'ymax' in param:
+            self.ymax = param['ymax']
+        if 'zmax' in param:
+            self.zmax = param['zmax']
+        if 'zmin' in param:
+            self.zmin = param['zmin']
+        print self.xmin,self.xmax,self.ymin,self.ymax,self.zmin,self.zmax
+    def drawChart(self,df,arg):
+        param={}
+        if arg!="":
+            for item in arg.split(","):
+                tokens=item.split("=")
+                if len(tokens)>1:
+                    param[tokens[0]] = int(tokens[1])        
+                else:
+                    param[tokens[0]] = ""
+        self.setupParam(param)            
+        if 'scatter' in param:
+            self.drawScatter(df)
+        else:
+            self.drawLineChart(df,param)        
+        return
+                           
     def drawScatter(self,df):
+        #self.setupParam(arg)
         offset=1
         cols = list(df.columns.values) #[offset:]
-        maxy=50
-        maxx=50
-        miny=0
-        minx=0
-        maxr=400
-        minr=-30
-        check = False
-        print cols
+        mklst = ['s','o','^','x','v','h','D','d','4','p']                
+        #marker
+        # s = square, o=circle
 
-        print cols
+        lenmk = len(mklst)
+        lencol = len(cols)
+        
         
         #print "max=",df[cols[3]].max()
         #print "min=",df[cols[3]].min()
         #col3upper = max(abs(df[cols[3]].min()),abs(df[cols[3]].max()))
-        
+        #col3ratio = 77
+        #col12ratio = 80
         col3list = df[cols[3]].tolist()
-        col3arr = abs(np.array(col3list))
-        col3upper1 = np.percentile(col3arr, 34) 
-        col3upper2 = np.percentile(col3arr, 77) 
-        col3upper3spread = np.percentile(col3arr, 100) - col3upper2
-        col3upper2spread = col3upper2 - col3upper1
-        col3upper1spread = col3upper1
-        col3sizeupper = 200
-        col3sizefac = 6
-        #col3sizerange = np.arange(1,200)
+        col3arr = np.array(col3list)
+        col3upper0 = np.percentile(col3arr, self.zmin) 
+        col3upper1 = np.percentile(col3arr, self.zmax) 
+        col3upper = max(abs(col3upper0),abs(col3upper1))
         
+        col2list = df[cols[2]].tolist()
+        col2arr = np.array(col2list)
+        col2upper0 = np.percentile(col2arr, self.ymin) 
+        col2upper1 = np.percentile(col2arr, self.ymax) 
+
+        col1list = df[cols[1]].tolist()
+        col1arr = (np.array(col1list))
+        col1upper0 = np.percentile(col1arr, self.xmin) 
+        col1upper1 = np.percentile(col1arr, self.xmax)
+        
+        dprOn = True #display ratio on
+        
+        print "upper",col1upper0,col1upper1,col2upper0,col2upper1,col3upper
+        sizebase = 650
+        
+
         #col 0 symbol, 1-x,2-y,3-size
-        idx = 0
+        #idx = 0
         for index,row in df.iterrows():
             label = row['symbol']
-            ret = row[cols[3]]
-            if ret>0:
-                color = 'green'
-            else:
-                color='red'
+            col3val = row[cols[3]]
             #size = math.log(abs(ret*20))*40
-            idx += 1
+            #idx += 1
             
             x = row[cols[1]]
             y = row[cols[2]]
             
-            if check and (x>maxx or y>maxy or x<minx or y<miny or ret<minr or ret>maxr):
+            #if check and (x>maxx or y>maxy or x<minx or y<miny or ret<minr or ret>maxr):
+            #    continue
+            if dprOn and (x>col1upper1 or x<col1upper0 or y>col2upper1 or y<col2upper0):
+                # or abs(ret)>col3upper)
+                print "skip",label,x,y,col3val
                 continue
-            else:
-                if abs(ret)>col3upper2:
-                    shape = "s" #square
-                    col3val = abs(ret)/col3upper3spread
-                elif abs(ret)>col3upper1:
-                    shape = "^"
-                    col3val = abs(ret)/col3upper2spread
+            else:   
+                if col3val>0:
+                    color = 'green'                    
                 else:
-                    shape = "o"
-                    col3val = abs(ret)
-                    
-                abret = min(abs(ret),col3sizeupper)
-                size = abret*col3sizefac
+                    color='red'
+
+                col3val1 = min(abs(col3val)/col3upper,1)
+                size = col3val1*sizebase
+                if lencol>4:
+                    mker = mklst[int(row[cols[4]])%lenmk]
+                    print label,size,mker
+                else:
+                    mker = mklst[0]
                 
-                plt.scatter(x,y,c=color,s=size,marker=shape)#s,o,^
+                plt.scatter(x,y,c=color,s=size,marker=mker)#s,o,^
                 plt.annotate(label, xy = (x, y), xytext = (-20, 20),
         textcoords = 'offset points', ha = 'right', va = 'bottom',
         bbox = dict(boxstyle = 'round,pad=0.5', fc = 'yellow', alpha = 0.5),
         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
-            
+        
+        plt.ylabel(cols[2])
+        plt.xlabel(cols[1])
+        tl = "scatter chart - z=%s" % (cols[3])
+        plt.title(tl)
         #plt.xticks(range(len(xtickname)),xtickname);
         #plt.yticks(range(ymin,ymax))
         #plt.yticks(np.arange(ymin, ymax, 0.2), fontsize=10)

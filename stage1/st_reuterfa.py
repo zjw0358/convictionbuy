@@ -81,6 +81,15 @@ class st_reuterfa:
                 df=df[['symbol','q5','q4','q3','q2','q1','q0']]
                 df = df.append(self.pxdf) 
         elif 'rep' in self.sgyparam:
-            df=df[['symbol','cppsalettmyoy','cpepsttmyoy','ret']]
+            mLargecap = 80000000000 #80billion
+            mMedcap = 10000000000 #10 billion
+            for index, row in df.iterrows():                
+                if row['marketcap'] > mLargecap:
+                    df.loc[index,'marketcapid'] = 0
+                elif row['marketcap'] > mMedcap:
+                    df.loc[index,'marketcapid'] = 1
+                else:
+                    df.loc[index,'marketcapid'] = 2
+            df=df[['symbol','cppsalettmyoy','cpepsttmyoy','ret','marketcapid']]
         print df
         return df

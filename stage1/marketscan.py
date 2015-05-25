@@ -71,7 +71,7 @@ class MarketScan:
         print "=========================="
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:hc", \
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
                 ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart"])
         except getopt.GetoptError:
             print "parse option error"
@@ -82,8 +82,6 @@ class MarketScan:
                 self.symbolLstFile = arg
                 #self.option = 1
             elif opt in ("-t", "--ticklist"):
-                #newstr = arg #.replace("", "")                
-                #self.ticklist = newstr.split(",")
                 tdict = self.mtd.parseTickLst(arg)
                 self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])                
             elif opt in ("-s", "--startdate"):
@@ -100,6 +98,7 @@ class MarketScan:
                 self.help=True                                   
             elif opt in ("-c","--chart"):
                 self.haschart = True
+                self.chartparam = arg
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
             if not self.startdate:
@@ -328,7 +327,7 @@ class MarketScan:
         # trigger csv chart
         if self.haschart:
             print "=== csv chart ==="
-            self.csvchart.drawChart(table)
+            self.csvchart.drawChart(table,self.chartparam)
         return       
          
     
