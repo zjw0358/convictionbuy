@@ -17,8 +17,8 @@ import marketdata
 # marketscan module price/volume/marketcap
 class ms_pvm:
     def __init__(self):
-        self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg']
-        self.colcode = "&f=sp5j1a2l1r5"
+        self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg','dividend']
+        self.colcode = "&f=sp5j1a2l1r5y"
         self.outputFileName = "./msdata_pvm.csv"
         self.mtd = marketdata.MarketData()
         return        

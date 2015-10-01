@@ -1,4 +1,6 @@
-
+'''
+"marketscan.py -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
+'''
 import getopt
 import datetime
 import sys
@@ -11,8 +13,7 @@ import csv
 import marketdata
 import ms_csvchart
 #sys.path.insert(0, "../src/")
-#import simutable
-#import tradesupport
+
 '''
 historical price
 http://ichart.finance.yahoo.com/table.csv?s=xle&a=01&b=19&c=2014&d=01&e=19&f=2015&g=d&ignore=.csv
