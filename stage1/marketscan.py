@@ -1,10 +1,10 @@
 '''
-"marketscan.py -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
+"marketscan.py -f <portfolio_file> -g "strategy&ckd=2015-03-12" -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
 '''
 import getopt
 import datetime
 import sys
-#sys.path.insert(0, "../strategy/")
+sys.path.insert(0, "../strategies/")
 #sys.path.insert(0, "../screen/")
 
 import pandas.io.data as web
@@ -18,6 +18,7 @@ import ms_csvchart
 historical price
 http://ichart.finance.yahoo.com/table.csv?s=xle&a=01&b=19&c=2014&d=01&e=19&f=2015&g=d&ignore=.csv
 
+call strategy module
 '''
 class MarketScan:
     def __init__(self):
@@ -62,8 +63,7 @@ class MarketScan:
         return self.outputpath
         
     def getNumBest(self):
-        return self.nmuBest        
-
+        return self.nmuBest
                   
     def usage(self):
         print "marketscan.py -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
@@ -118,7 +118,9 @@ class MarketScan:
         print "end date", self.enddate
         print "portfolio id mask ",self.pid
         print "=========================="
+        
     '''
+    strategy_name&parameter=value
     st_rsi&cl=14,st_macd&f=10&s=5
     ms_pvm&download&pe<20&mc>1000
     '''    
@@ -237,21 +239,6 @@ class MarketScan:
         except:
             print "exception when write to csv ",outputFn
             
-    # get symbol by pid
-    # move to marketdata
-    '''
-    def getSymbolByPid(self):
-        # load symbol list file
-        df = self.loadSymbolLstFile(self.symbolLstFile)
-        
-        #filter via pid mask
-        if self.pid>0:
-            criterion = df['pid'].map(lambda x: (int(x)&self.pid>0))
-            df1 = df[criterion] 
-        else: #all 
-            df1 = df
-        return df1
-    ''' 
     def getSymbolByRank(self,table,rmin,rmax):
         df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
         return df
@@ -276,6 +263,9 @@ class MarketScan:
 
         return
         
+    '''
+    main entry
+    '''        
     def procMarketData(self):
         if self.tickdf.empty:
             print "loading from symbolfile..."
@@ -346,6 +336,7 @@ class MarketScan:
                 if numError>3:
                     print "too many errors when downloading symbol data, exit now"
                     sys.exit()
+                continue
             #add 'px' column
             table.loc[index,'px'] = ohlc['Adj Close'][-1]
                         
