@@ -344,6 +344,7 @@ class MarketScan:
                 #if not sgyname in self.sgyInfo:
                 sgx = self.sgyInx[sgyname]
                 if sgx.needPriceData()==True:
+                    sgx.cleanup()
                     sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname]) #parameter
                     indarr = sgx.getIndicators()
                     for cn in indarr:
