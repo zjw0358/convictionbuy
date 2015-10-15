@@ -1,35 +1,28 @@
 '''
 strategy based on RSI indicator
 '''
-import ind_rsi
+from ind_rsi import ind_rsi
 
 class st_rsi(ind_rsi):
     def __init__(self):
-        ind_rsi.__init__(self)
-        #self.cleanup()
-        #self.stname = "strsi" #strategy name      
+        pass
         
     # main process routine, 
     # symbol - stock name
     # ohlc - candle style price,open,high,low,close
     # param - parameters
-    def runIndicator(self,symbol,ohlc,param={}):
-        '''
-        #initialize tradesupport
-        self.setupParam(param)     
-        close_px = ohlc['Adj Close']
-        self.algoFunc(close_px)        
-        self.runStrategy()
-        '''
-        super(st_rsi,self).runIndicator(symbol,ohlc,param)
+    #def runIndicator(self,symbol,ohlc,param={}):
+        #work for new style class only
+        #super(st_rsi,self).runIndicator(symbol,ohlc,param)
+    #    ind_rsi.runIndicator(self,symbol,ohlc,param)
         
     def runStrategy(self):
+        #print "I am in st_rsi runstrategy"
+        #print self.rsi
         offset = 14
         OVERSELL = 30
         OVERBUY = 70
         prev = self.rsi[-offset]
-        #print self.rsi
-        #print "==============================="
         for idx, rs in enumerate(self.rsi[-offset:]):            
             if (prev < OVERSELL) and (rs > OVERSELL) :
                 self.ind['rsi_buy'] = "True(%d)" % (offset-idx)
@@ -38,8 +31,8 @@ class st_rsi(ind_rsi):
             prev = rs
         return
         
-    def getIndicators(self):
-        return self.ind
+    #def getIndicators(self):
+    #    return self.ind
 
 #===============================================================================        
     # RSI strategy
@@ -48,8 +41,6 @@ class st_rsi(ind_rsi):
         if 'rsi' in table:
             print table['rsi'].describe()
             num = float(table['rsi'].count())
-            #df = table[table['rsi']>70]['rsi']
-            #print df.count()
             overbought = table[table['rsi']>70]['rsi'].count()        
             oversold = table[table['rsi']<30]['rsi'].count()
             strong =  table[table['rsi']>=50]['rsi'].count()

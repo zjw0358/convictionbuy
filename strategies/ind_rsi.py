@@ -60,12 +60,15 @@ class ind_rsi:
     # ohlc - candle style price,open,high,low,close
     # param - parameters
     def runIndicator(self,symbol,ohlc,param={}):
-        #initialize tradesupport
+        #print "I am in ind_rsi"
         self.setupParam(param)     
         close_px = ohlc['Adj Close']
         self.algoFunc(close_px)        
-        self.runStrategy()
-        
+        #self.runStrategy()
+
+    def getIndicators(self):
+        return self.ind
+    '''            
     def runStrategy(self):
         offset = 14
         OVERSELL = 30
@@ -80,9 +83,8 @@ class ind_rsi:
                 self.ind['rsi_sell'] = "True(%d)" % (offset-idx)
             prev = rs
         return
-        
-    def getIndicators(self):
-        return self.ind
+    '''    
+
 
 #===============================================================================        
     # RSI strategy
