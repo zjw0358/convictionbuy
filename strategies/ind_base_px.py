@@ -9,6 +9,7 @@ class BaseIndPx(object):
         self.cleanup()
         
     def cleanup(self):
+        #print "BaseIndPx cleanup"
         self.ind = OrderedDict()
         
     def getIndicators(self):
