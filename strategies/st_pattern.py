@@ -12,16 +12,18 @@ class StrategyPattern(object):
     def crossAbove(self):
         prevFast = self.fast[-self.offset]
         prevSlow = self.slow[-self.offset]
-        signal = ""
+        signal = 65535 #float('nan')
         for idx, curSlow in enumerate(self.slow[-self.offset:]):
             #idx,-offset+idx
             currentFast = self.fast[-self.offset+idx]
             #print prevSlow,curSlow,prevFast,currentFast
             if (prevFast < prevSlow) and (currentFast > curSlow) :
-                signal = "True(%d)" % (self.offset-idx)
+                #signal = "True(%d)" % (self.offset-idx)
+                signal = self.offset-idx
                 #print "(buy)"
-                if (curSlow > prevSlow):
-                    signal += "*"
+                # TODO
+                #if (curSlow > prevSlow):
+                #    signal += "*"
                 #    print "****** strong signal********",signal
             prevFast = currentFast
             prevSlow = curSlow
@@ -30,12 +32,13 @@ class StrategyPattern(object):
     def crossBelow(self):
         prevFast = self.fast[-self.offset]
         prevSlow = self.slow[-self.offset]
-        signal = ""
+        signal = 65535 #float('nan')
         for idx, curSlow in enumerate(self.slow[-self.offset:]):
             #print idx,-offset+idx
             currentFast = self.fast[-self.offset+idx]
             if (prevFast > prevSlow) and (currentFast < curSlow):                
-                signal = "True(%d)" % (self.offset-idx)
+                #signal = "True(%d)" % (self.offset-idx)
+                signal = self.offset-idx
             prevFast = currentFast
             prevSlow = curSlow
         return signal
