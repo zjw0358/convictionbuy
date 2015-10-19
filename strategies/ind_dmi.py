@@ -122,7 +122,7 @@ class ind_dmi(BaseIndPx):
         plusDM = 0.
         minusDM = 0.
         index = 0
-        self.inddf = df0[['Adj Close']]
+        #self.inddf = df0[['Adj Close']]
         tr=[]
         pdm=[]
         ndm=[]
@@ -182,7 +182,7 @@ class ind_dmi(BaseIndPx):
         
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
-        print ohlc
+        #print ohlc
         self.setupParam(param)     
         self.close_px = ohlc['Adj Close']
         self.algoFunc(ohlc)        

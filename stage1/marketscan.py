@@ -357,9 +357,6 @@ class MarketScan:
                     ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
                     if (self.savemd):
                         self.saveOhlc(symbol,ohlc)
-                    #mergedf.append(ohlc)   
-                    #print ohlc
-                    #print mergedf        
                 except:
                     numError += 1
                     print "System/Network Error when retrieving ",symbol," skip it"
