@@ -12,6 +12,7 @@ import pandas
 import csv
 import marketdata
 import ms_csvchart
+import pandas
 #sys.path.insert(0, "../src/")
 
 '''
@@ -29,7 +30,8 @@ class MarketScan:
         #pandas.options.display.float_format = '{:,.2f}%'.format
         pandas.set_option('display.float_format', lambda x: '%.3f' % x)
                 
-        self.outputpath = "../result/"        
+        self.outputpath = "../result/"
+        self.cachepath = "../cache/"
         self.enddate = ""
         self.startdate = ""
         self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
@@ -44,7 +46,8 @@ class MarketScan:
         self.help = False
         self.sgyparam = {}
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
-
+        self.savemd = False
+        self.loadmd = False
         
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
@@ -73,7 +76,7 @@ class MarketScan:
         self.ticklist=[]
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart"])
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -100,6 +103,12 @@ class MarketScan:
             elif opt in ("-c","--chart"):
                 self.haschart = True
                 self.chartparam = arg
+            elif opt in ("--savemd"):
+                self.savemd = True
+            elif opt in ("--loadmd"):
+                self.loadmd = True
+
+                
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
             if not self.startdate:
@@ -117,6 +126,8 @@ class MarketScan:
         print "start date", self.startdate
         print "end date", self.enddate
         print "portfolio id mask ",self.pid
+        print "load marketdata", self.loadmd
+        print "save marketdata", self.savemd
         print "=========================="
         
     '''
@@ -320,23 +331,44 @@ class MarketScan:
             print "=== csv chart ==="
             self.csvchart.drawChart(table,self.chartparam)
         return       
-         
-    
+        
+    #save ohlc to csv file
+    def saveOhlc(self, symbol, ohlc):
+        filename = self.cachepath + symbol + "_ohlc.csv"
+        ohlc.to_csv(filename,sep=',')
+        pass
+        
+    def loadOhlc(self,symbol):
+        filename = self.cachepath + symbol + "_ohlc.csv"
+        ohlc = pandas.read_csv(filename,index_col=['Date'])
+        return ohlc
+        
     def runIndicator(self, table):
         #TODO if no post-module, should return immediately
-        numError = 0            
+        numError = 0
+        #mergedf = pandas.DataFrame()       
         for index, row in table.iterrows():
             symbol = row['symbol']
             print "processing ",index, symbol
-            try:
-                ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)                
-            except:
-                numError += 1
-                print "System/Network Error when retrieving ",symbol," skip it"
-                if numError>3:
-                    print "too many errors when downloading symbol data, exit now"
-                    sys.exit()
-                continue
+            if (self.loadmd):
+                ohlc = self.loadOhlc(symbol)
+            else:
+                try:
+                    ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+                    if (self.savemd):
+                        self.saveOhlc(symbol,ohlc)
+                    #mergedf.append(ohlc)   
+                    #print ohlc
+                    #print mergedf        
+                except:
+                    numError += 1
+                    print "System/Network Error when retrieving ",symbol," skip it"
+                    if numError>3:
+                        print "too many errors when downloading symbol data, exit now"
+                        sys.exit()
+                    continue
+            #print type(ohlc)
+            #print ohlc['Adj Close'][-1]
             #add 'px' column
             table.loc[index,'px'] = ohlc['Adj Close'][-1]
                         
@@ -353,7 +385,8 @@ class MarketScan:
 
             
             #break
-        #print table
+#        print table
+        #print mergedf
         return table
         
     def process(self):

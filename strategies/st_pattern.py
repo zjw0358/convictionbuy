@@ -42,3 +42,49 @@ class StrategyPattern(object):
             prevFast = currentFast
             prevSlow = curSlow
         return signal
+    
+    #fast cross above slow, and keep divengency moving at least n bars
+    def divCross(self, nbar):
+        prevFast = self.fast[-self.offset]
+        prevSlow = self.slow[-self.offset]
+        buysignal = 65535
+        sellsignal = 65535
+        buyflag = False
+        buycount = 1
+        sellflag = False
+        sellcount = 1
+        for idx, curSlow in enumerate(self.slow[-self.offset:]):
+            #idx,-offset+idx
+            currentFast = self.fast[-self.offset+idx]
+            #print prevSlow,curSlow,prevFast,currentFast
+            if (buyflag):
+                if (currentFast > prevFast) and (curSlow < prevSlow):
+                    buycount+=1
+                    if (buycount == nbar):
+                        buysignal = self.offset-idx
+                        print "buy signal",buysignal
+                else:
+                    buyflag = False
+                    buycount = 1
+                pass
+            else:
+                if (prevFast < prevSlow) and (currentFast > curSlow) :
+                    #signal = "True(%d)" % (self.offset-idx)
+                    buyflag = True
+            if (sellflag):
+                 if (currentFast < prevFast) and (curSlow > prevSlow):                
+                     sellcount+=1
+                     if (sellcount == nbar):
+                        sellsignal = self.offset-idx
+                        print "sell signal",buysignal
+                 else:
+                     sellcount = 1
+                     sellflag = False
+            else:            
+                if (prevFast > prevSlow) and (currentFast < curSlow):                
+                    sellflag = True                          
+            prevFast = currentFast
+            prevSlow = curSlow
+        return buysignal,sellsignal
+
+        

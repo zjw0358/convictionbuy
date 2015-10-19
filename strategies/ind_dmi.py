@@ -27,9 +27,23 @@ plot ADX = MovingAverage(averageType, DX, length);
 ADX.SetDefaultColor(GetColor(5));
 '''
 import pandas
+import time
 from collections import OrderedDict
 from ind_base_px import BaseIndPx
 
+def calcDX(row):
+    if (row['pdi']+row['ndi'] > 0):
+        return 100 * abs(row['pdi']-row['ndi'])/(row['pdi']-row['ndi'])
+    else:
+        return 0
+
+def calcDX2(pdi,ndi):
+    if (pdi+ndi > 0):
+        return 100 * abs(pdi-ndi)/(pdi-ndi)
+    else:
+        return 0
+
+    
 class ind_dmi(BaseIndPx):
     def usage(self):
         return "dmi=length"
@@ -43,76 +57,25 @@ class ind_dmi(BaseIndPx):
     def movingAverage(self,data,length):
         return pandas.stats.moments.rolling_mean(data,length) #.tolist()      
         
-    def algoFunc1(self,df):
-        length = 14
-        tr = []
-        pdm = []
-        ndm = []
-        prevHigh = 0.
-        prevLow = 0.
-        plusDM = 0.
-        minusDM = 0.
-        index = 1
-        for row_index, row in df.iterrows():
-            #print index
-            close = row['Adj Close']
-            high = row['High']
-            low = row['Low']            
-            tr.append(self.trueRange(high, close, low))
-            if (index>0):
-                hiDiff = high - prevHigh
-                loDiff = prevLow - low
-
-                if hiDiff > loDiff and hiDiff > 0:
-                    plusDM = hiDiff
-                else:
-                    plusDM = 0;
-                    
-                if loDiff > hiDiff and loDiff > 0:
-                    minusDM = loDiff
-                else:
-                    minusDM = 0;
-                    
-                pdm.append(plusDM)
-                ndm.append(minusDM)
-            else:
-                prevHigh = high
-                prevLow = low
-            index+=1
-                                
-        s = pandas.Series(tr[1:], index=df.index[1:]) 
-        p = pandas.Series(pdm, index=df.index[1:]) 
-        n = pandas.Series(ndm, index=df.index[1:]) 
-        atr = self.movingAverage(s,length)
-        pdi = 100*self.movingAverage(p,length) / atr
-        ndi = 100*self.movingAverage(n,length) / atr
-        
-
-        
-        
-        print pdi
-        print ndi
-        #print n       
-        pass  
+  
             
-    def algoFunc(self,df):
+    def algoFunc1(self,df0):
         length = 14
-        tr = []
-        pdm = []
-        ndm = []
         prevHigh = 0.
         prevLow = 0.
         plusDM = 0.
         minusDM = 0.
         index = 0
-        for row_index, row in df.iterrows():
+        self.inddf = df0[['Adj Close']]
+        start = time.time()
+        for row_index, row in df0.iterrows():
             #print index
             close = row['Adj Close']
             high = row['High']
             low = row['Low']            
 
             #tr.append(self.trueRange(high, close, low))
-            df.loc[row_index,'tr'] = self.trueRange(high, close, low)     
+            self.inddf.loc[row_index,'tr'] = self.trueRange(high, close, low)     
             
             if (index>0):
                 hiDiff = high - prevHigh
@@ -126,35 +89,97 @@ class ind_dmi(BaseIndPx):
                     minusDM = loDiff
                 else:
                     minusDM = 0;
-                print row_index, index, high,prevHigh, low, prevLow,hiDiff,loDiff,plusDM
-                df.loc[row_index,'pdm'] = plusDM   
-                df.loc[row_index,'ndm'] = minusDM          
+                #print row_index, index, high,prevHigh, low, prevLow,hiDiff,loDiff,plusDM
+                self.inddf.loc[row_index,'pdm'] = plusDM   
+                self.inddf.loc[row_index,'ndm'] = minusDM          
                 #pdm.append(plusDM)
                 #ndm.append(minusDM)
             else:
-                df.loc[row_index,'pdm'] = 0   
-                df.loc[row_index,'ndm'] = 0    
+                self.inddf.loc[row_index,'pdm'] = 0   
+                self.inddf.loc[row_index,'ndm'] = 0    
             prevHigh = high
             prevLow = low
             index+=1
-      
-        atr = self.movingAverage(df['tr'],length)
-        pdi = 100*self.movingAverage(df['pdm'],length) / atr
-        ndi = 100*self.movingAverage(df['ndm'],length) / atr
-        df['pdi'] = pdi          
-        df['ndi'] = ndi  
-        #s = pandas.Series(tr[1:], index=df.index[1:]) 
-        #p = pandas.Series(pdm, index=df.index[1:]) 
-        #n = pandas.Series(ndm, index=df.index[1:]) 
-        #atr = self.movingAverage(s,length)
-        #pdi = 100*self.movingAverage(p,length) / atr
-        #ndi = 100*self.movingAverage(n,length) / atr
-        #print pdi
-        #print ndi
-        print df
-        #print n       
+        end = time.time()
+        atr = self.movingAverage(self.inddf['tr'],length)
+        pdi = 100*self.movingAverage(self.inddf['pdm'],length) / atr
+        ndi = 100*self.movingAverage(self.inddf['ndm'],length) / atr
+        self.inddf['pdi'] = pdi          
+        self.inddf['ndi'] = ndi 
+
+        self.inddf['dx'] = self.inddf.apply(calcDX,axis=1)
+        adx = self.movingAverage(self.inddf['dx'],length)
+        self.inddf['adx'] = adx
+        self.inddf = self.inddf[['Adj Close','pdi','ndi','adx']]
+        #print self.inddf
+        print end - start
         pass  
 
+    def algoFunc(self,df0):
+        length = 14
+        prevHigh = 0.
+        prevLow = 0.
+        plusDM = 0.
+        minusDM = 0.
+        index = 0
+        self.inddf = df0[['Adj Close']]
+        tr=[]
+        pdm=[]
+        ndm=[]
+        start = time.time()
+        for row_index, row in df0.iterrows():
+            #print index
+            close = row['Adj Close']
+            high = row['High']
+            low = row['Low']            
+            tr.append(self.trueRange(high, close, low))
+            
+            if (index>0):
+                hiDiff = high - prevHigh
+                loDiff = prevLow - low
+                if hiDiff > loDiff and hiDiff > 0:
+                    plusDM = hiDiff
+                else:
+                    plusDM = 0;
+                    
+                if loDiff > hiDiff and loDiff > 0:
+                    minusDM = loDiff
+                else:
+                    minusDM = 0;
+                
+                pdm.append(plusDM)
+                ndm.append(minusDM)
+            else:
+                pdm.append(0.)
+                ndm.append(0.)
+                
+            prevHigh = high
+            prevLow = low
+            index+=1
+
+        #trs = pandas.Series(tr)
+        atr = self.movingAverage(pandas.Series(tr),length)
+        self.pdi = 100*self.movingAverage(pandas.Series(pdm),length) / atr
+        self.ndi = 100*self.movingAverage(pandas.Series(ndm),length) / atr
+        dx = self.pdi.combine(self.ndi,calcDX2)
+        self.adx = self.movingAverage(dx,length)
+        end = time.time()
+        '''
+        atr = self.movingAverage(self.inddf['tr'],length)
+        pdi = 100*self.movingAverage(self.inddf['pdm'],length) / atr
+        ndi = 100*self.movingAverage(self.inddf['ndm'],length) / atr
+        self.inddf['pdi'] = pdi          
+        self.inddf['ndi'] = ndi 
+
+        self.inddf['dx'] = self.inddf.apply(calcDX,axis=1)
+        adx = self.movingAverage(self.inddf['dx'],length)
+        self.inddf['adx'] = adx
+        self.inddf = self.inddf[['Adj Close','pdi','ndi','adx']]
+        '''
+        #print self.inddf
+        print end - start
+        pass  
+        
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         print ohlc
