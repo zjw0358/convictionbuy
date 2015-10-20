@@ -27,9 +27,10 @@ plot ADX = MovingAverage(averageType, DX, length);
 ADX.SetDefaultColor(GetColor(5));
 '''
 import pandas
-import time
+#import time #to measure performance
 from collections import OrderedDict
 from ind_base_px import BaseIndPx
+from st_pattern import StrategyPattern
 
 def calcDX(row):
     if (row['pdi']+row['ndi'] > 0):
@@ -50,15 +51,16 @@ class ind_dmi(BaseIndPx):
 
     def setupParam(self,param):
         return
-        
+ 
+    '''   
     def trueRange(self,high,close,low):
         return max(max(high-low,abs(high-close)),abs(low-close))
 
     def movingAverage(self,data,length):
         return pandas.stats.moments.rolling_mean(data,length) #.tolist()      
-        
+    ''' 
   
-            
+    #slow implementation        
     def algoFunc1(self,df0):
         length = 14
         prevHigh = 0.
@@ -115,6 +117,7 @@ class ind_dmi(BaseIndPx):
         print end - start
         pass  
 
+    #much faster
     def algoFunc(self,df0):
         length = 14
         prevHigh = 0.
@@ -126,13 +129,14 @@ class ind_dmi(BaseIndPx):
         tr=[]
         pdm=[]
         ndm=[]
-        start = time.time()
+        sp = StrategyPattern()
+        #start = time.time()
         for row_index, row in df0.iterrows():
             #print index
             close = row['Adj Close']
             high = row['High']
             low = row['Low']            
-            tr.append(self.trueRange(high, close, low))
+            tr.append(sp.trueRange(high, close, low))
             
             if (index>0):
                 hiDiff = high - prevHigh
@@ -158,12 +162,12 @@ class ind_dmi(BaseIndPx):
             index+=1
 
         #trs = pandas.Series(tr)
-        atr = self.movingAverage(pandas.Series(tr),length)
-        self.pdi = 100*self.movingAverage(pandas.Series(pdm),length) / atr
-        self.ndi = 100*self.movingAverage(pandas.Series(ndm),length) / atr
+        atr = sp.movingAverage(pandas.Series(tr),length)
+        self.pdi = 100 * sp.movingAverage(pandas.Series(pdm),length) / atr
+        self.ndi = 100 * sp.movingAverage(pandas.Series(ndm),length) / atr
         dx = self.pdi.combine(self.ndi,calcDX2)
-        self.adx = self.movingAverage(dx,length)
-        end = time.time()
+        self.adx = sp.movingAverage(dx,length)
+        #end = time.time()
         '''
         atr = self.movingAverage(self.inddf['tr'],length)
         pdi = 100*self.movingAverage(self.inddf['pdm'],length) / atr
@@ -177,7 +181,7 @@ class ind_dmi(BaseIndPx):
         self.inddf = self.inddf[['Adj Close','pdi','ndi','adx']]
         '''
         #print self.inddf
-        print end - start
+        #print end - start
         pass  
         
     #main process routine

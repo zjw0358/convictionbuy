@@ -1,3 +1,4 @@
+import pandas
 
 class StrategyPattern(object):
     def __init__(self):
@@ -87,4 +88,8 @@ class StrategyPattern(object):
             prevSlow = curSlow
         return buysignal,sellsignal
 
-        
+    def trueRange(self,high,close,low):
+        return max(max(high-low,abs(high-close)),abs(low-close))
+
+    def movingAverage(self,data,length):
+        return pandas.stats.moments.rolling_mean(data,length) #.tolist()      
