@@ -4,13 +4,13 @@ run reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_
 '''
 
 # -*- coding: utf-8 -*-
+import getopt
 import urllib2
 import re
 from bs4 import BeautifulSoup
 import pandas
 import marketdata
 import datetime
-import getopt
 import sys
 import csv
 
@@ -67,26 +67,27 @@ class ReuterFunda:
 
     def parseOption(self):
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:i:t:r:hm")
-            #,["filename", "pid","ticklist","reuterfile","help","merge"]
+            opts, args = getopt.getopt(sys.argv[1:], "f:i:t:r:hm",\
+                ["filename", "pid","ticklist","reuterfile","help","merge"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
         print opts,args
         for opt, arg in opts:
-            if opt in ("-f"):#symbol file
+            if opt in ("-f","--filename"):#symbol file
                 self.fileName = arg            
-            elif opt in ("-i"):
+            elif opt in ("-i","--pid"):
                 idLst = arg.split(",")
+                print idLst
                 self.pid = self.mtd.parsePidLst(idLst)    
-            elif opt in ("-t"):
+            elif opt in ("-t","--ticklist"):
                 self.tickdf = self.mtd.parseTickLstDf(arg)                                       
-            elif opt in ("-r"):
+            elif opt in ("-r","reuterfile"):
                 self.reuterFile = arg
-            elif opt in ("-h"):
+            elif opt in ("-h","--help"):
                 self.usage()
                 sys.exit()
-            elif opt in ("-m"):
+            elif opt in ("-m","--merge"):
                 self.option = "merge" #merge reuterfile with others in symbolfile
      
     
@@ -96,6 +97,7 @@ class ReuterFunda:
         if not self.tickdf.empty:
             print self.tickdf
         print "reuterfile=",self.reuterFile
+        print "pid=",self.pid
         return           
     '''
     main routine
@@ -916,7 +918,8 @@ class ReuterFunda:
         mf = lf.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
           
-
+    # dfnc - no change
+    # dfup - to be updated
     def updateTickLst(self,dfnc,dfup): 
         '''
         if reuterFile!="":
@@ -1004,6 +1007,7 @@ class ReuterFunda:
                     for co in self.columns:
                         dfup[co]=""
                     dfnc = reuterTable
+                    print dfnc
                 else:
                     print "keep current reuterfile and merge with the All updates from ticklist"
                     #dfup = self.tickdf[~self.tickdf['symbol'].isin(reuterList)]

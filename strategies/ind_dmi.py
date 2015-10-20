@@ -69,7 +69,7 @@ class ind_dmi(BaseIndPx):
         minusDM = 0.
         index = 0
         self.inddf = df0[['Adj Close']]
-        start = time.time()
+        #start = time.time()
         for row_index, row in df0.iterrows():
             #print index
             close = row['Adj Close']
@@ -102,7 +102,7 @@ class ind_dmi(BaseIndPx):
             prevHigh = high
             prevLow = low
             index+=1
-        end = time.time()
+        #end = time.time()
         atr = self.movingAverage(self.inddf['tr'],length)
         pdi = 100*self.movingAverage(self.inddf['pdm'],length) / atr
         ndi = 100*self.movingAverage(self.inddf['ndm'],length) / atr
