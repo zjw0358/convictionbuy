@@ -849,74 +849,7 @@ class ReuterFunda:
         return table
     
         
-    # update tick list    
-    def updateTickLst0(self,reuterFile,tickdf): 
-        if reuterFile!="":
-            reuterTable = self.loadReuterCsvFile(reuterFile)
-        else:
-            reuterTable = tickdf
-            
-        if tickdf.empty:
-            if not reuterTable.empty:
-                tickdf =  reuterTable
-            else:
-                print "both reuterFile and tickdf are empty,exit"
-                return
-           
-        updatelst = tickdf['symbol']
-        lenticklst = len(tickdf.index)    
-        lf =  reuterTable[~reuterTable['symbol'].isin(updatelst)]
-
-        #to update table
-        allLst = {}
-        allCol = ['symbol','exg'] + self.columns
-        for key in allCol:
-            lst = []
-            allLst[key] = lst
-        #print "len of allLst",len(allLst)                 
-        print "total",lenticklst,"ticks to be updated",len(lf.index),"to keep unchanged"
-
-        if lenticklst>100: 
-            outputfn = self.outputfn+"_bak"
-            outputfp = open(outputfn,'w',-1)         
-            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
-            outputfp.write(header)
-       
-        idx = 0
-        for index, row in tickdf.iterrows():
-            #rowLst = []
-            print "downloading ",index,row['symbol'],row['exg']
-            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
-            line = row['symbol'] + ',' + row['exg']
-            idx += 1
-            if len(rowdct)>0:
-                self.verifyCol(rowdct)  
-                for key in self.columns:
-                    lst = allLst[key]
-                    if key in rowdct:
-                        lst.append(rowdct[key])
-                        line = line + "," + rowdct[key]
-                    else:
-                        lst.append("")   
-                        line = line + "," + ""
-                                     
-                allLst['symbol'].append(row['symbol'])
-                allLst['exg'].append(row['exg'])
-                #write to disk is ticks length > 100
-                if lenticklst>100:                 
-                    line = line + "\n"
-                    outputfp.write(line)
-                    if idx%10 == 0:
-                        outputfp.flush()
-                                    
-            else:
-                print "No financials information,skip ",row['symbol'],row['exg']
-        
-        if lenticklst>100:
-            outputfp.close()
-        rf = pandas.DataFrame(allLst,columns = allCol)
-        mf = lf.append(rf)
-        mf.to_csv(self.outputfn,sep=',',index=False)
+    
           
     # dfnc - no change
     # dfup - to be updated
@@ -990,24 +923,31 @@ class ReuterFunda:
         mf = dfnc.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
   
-
+    #update reuter data
     def updateData(self): 
         if self.reuterFile!="":
             reuterTable = self.loadReuterCsvFile(self.reuterFile)
-
+        # reuterdata csv file is presence
         if self.reuterFile!="":
             if self.option == "merge":
                 reuterList = reuterTable['symbol']
                 if self.tickdf.empty:
                     print "keep current reuterfile and merge with the update of others from symbolfile"
                     symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+                    # select tick list whose rank>0
                     df = symbolTable[symbolTable['rank']>0]
-                    df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
-                    dfup = df[~df['symbol'].isin(reuterList)]
+                    # select pid match from the above list
+                    dfup = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+                    # select no change ticklist
+                    ticklist = dfup['symbol']
+                    dfnc = reuterTable[~reuterTable['symbol'].isin(ticklist)] 
+                    
+                    #dfup = df[~df['symbol'].isin(reuterList)]
                     for co in self.columns:
                         dfup[co]=""
                     dfnc = reuterTable
-                    print dfnc
+                    print len(dfup)
+                    print len(dfnc)
                 else:
                     print "keep current reuterfile and merge with the All updates from ticklist"
                     #dfup = self.tickdf[~self.tickdf['symbol'].isin(reuterList)]
@@ -1015,7 +955,8 @@ class ReuterFunda:
                     dfup = self.tickdf
                     for co in self.columns:
                         dfup[co]=""
-                    dfnc = reuterTable[~reuterTable['symbol'].isin(ticklist)]                
+                    dfnc = reuterTable[~reuterTable['symbol'].isin(ticklist)] 
+                #update data (nochange,toupdate)                   
                 self.updateTickLst(dfnc,dfup)
             else:
                 print "update current reuterfile only"

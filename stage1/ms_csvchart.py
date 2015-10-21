@@ -112,6 +112,22 @@ class ms_csvchart:
         frame.set_facecolor('0.90')       
         #plt.legend()
         plt.show()   
+
+    def heatmap(self, df, cmap=plt.cm.gray_r):
+        #fig = plt.figure()
+        #ax = fig.add_subplot(111)
+        #axim = ax.imshow(df.values, cmap=cmap, interpolation='nearest')
+        fig, ax = plt.subplots()
+        heatmap = ax.pcolor(df.as_matrix(), cmap=plt.cm.Blues)
+
+        ax.set_xlabel(df.columns.name)
+        ax.set_xticks(np.arange(len(df.columns)))
+        ax.set_xticklabels(list(df.columns))
+        ax.set_ylabel(df.index.name)
+        ax.set_yticks(np.arange(len(df.index)))
+        ax.set_yticklabels(list(df.index))
+        #plt.colorbar(axim)                           
+        plt.show()
         
     def setupParam(self,param):
         self.xmin = 5
@@ -141,7 +157,8 @@ class ms_csvchart:
         if 'zmin' in param:
             self.zmin = param['zmin']
         print self.xmin,self.xmax,self.ymin,self.ymax,self.zmin,self.zmax
-    def drawChart(self,df,arg):
+
+    def drawChart(self,df,arg=""):
         param={}
         if arg!="":
             for item in arg.split(","):
@@ -154,9 +171,12 @@ class ms_csvchart:
         if 'scatter' in param:
             self.drawScatter(df)
         else:
-            self.drawLineChart(df,param)        
+            #self.drawLineChart(df)        
+            self.heatmap(df)
+            #print df.values
+            #print df.as_matrix()
         return
-                           
+
     def drawScatter(self,df):
         #self.setupParam(arg)
         offset=1
@@ -250,8 +270,8 @@ class ms_csvchart:
     def cmdline(self):
         self.parseOption()
         df = self.loadCsvFile(self.fileName)
-        #self.drawChart(df)
-        self.drawScatter(df)
+        self.drawChart(df)
+        #self.drawScatter(df)
         return
         
 if __name__ == "__main__":

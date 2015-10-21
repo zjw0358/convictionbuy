@@ -13,6 +13,7 @@ import csv
 import marketdata
 import ms_csvchart
 import pandas
+import xlsxwriter
 #sys.path.insert(0, "../src/")
 
 '''
@@ -249,6 +250,42 @@ class MarketScan:
             print "Finish wrote to ",outputFn
         except:
             print "exception when write to csv ",outputFn
+        
+        # excel
+        self.saveExcelFile(table,saveFileName)
+     
+    
+    def saveExcelFile(self,table,saveFileName):
+        # save to excel
+        #try:
+        outputFnXls = self.outputpath + saveFileName + datetime.datetime.now().strftime("%Y-%m-%d") + '.xls'
+        writer = pandas.ExcelWriter(outputFnXls, engine='xlsxwriter')            
+        table.to_excel(writer, index=False, sheet_name='report')
+        workbook = writer.book
+        worksheet = writer.sheets['report']
+
+        format1 = workbook.add_format({'bg_color': '#FFC7CE','font_color': '#9C0006','bold': True})
+        format2 = workbook.add_format({'bg_color': '#C6EFCE','font_color': '#006100','bold': True})
+        #find the two largest and smallest value
+        offset = 2 #symbol,exg            
+        for col in table:
+            if col=='symbol' or col=='exg':
+                continue
+            lvalue = table[col].max()
+            svalue = table[col].min()
+            lidx = table[col].idxmax()
+            sidx = table[col].idxmin()
+            #print lidx,lvalue,sidx,svalue
+            #worksheet.write('B1', 'Cost', format1)            
+            worksheet.write_string(lidx+1,offset,str(lvalue),format1)
+            worksheet.write_string(sidx+1,offset,str(svalue),format2)
+            offset+=1
+
+        writer.save()
+        print "Finish wrote to ",outputFnXls
+        #except:
+        #    print "exception when write to excel ",outputFnXls
+        pass    
             
     def getSymbolByRank(self,table,rmin,rmax):
         df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
@@ -379,11 +416,6 @@ class MarketScan:
                     for cn in indarr:
                         table.loc[index,cn] = indarr[cn]
                
-
-            
-            #break
-#        print table
-        #print mergedf
         return table
         
     def process(self):
