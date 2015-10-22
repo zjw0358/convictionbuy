@@ -252,7 +252,7 @@ class MarketScan:
             print "exception when write to csv ",outputFn
         
         # excel
-        self.saveExcelFile(table,saveFileName)
+        #self.saveExcelFile(table,saveFileName)
      
     
     def saveExcelFile(self,table,saveFileName):

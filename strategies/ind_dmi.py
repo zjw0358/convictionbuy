@@ -160,26 +160,23 @@ class ind_dmi(BaseIndPx):
             prevHigh = high
             prevLow = low
             index+=1
-
-        #trs = pandas.Series(tr)
+        '''        
         atr = sp.movingAverage(pandas.Series(tr),length)
         self.pdi = 100 * sp.movingAverage(pandas.Series(pdm),length) / atr
         self.ndi = 100 * sp.movingAverage(pandas.Series(ndm),length) / atr
         dx = self.pdi.combine(self.ndi,calcDX2)
         self.adx = sp.movingAverage(dx,length)
-        #end = time.time()
         '''
-        atr = self.movingAverage(self.inddf['tr'],length)
-        pdi = 100*self.movingAverage(self.inddf['pdm'],length) / atr
-        ndi = 100*self.movingAverage(self.inddf['ndm'],length) / atr
-        self.inddf['pdi'] = pdi          
-        self.inddf['ndi'] = ndi 
+        atr = sp.wma(tr,length)
+        tmpPdi = 100 * sp.wma(pdm,length)
+        tmpNdi = 100 * sp.wma(ndm,length)
+        
+        self.pdi = [ai/bi for ai,bi in zip(tmpPdi,atr)]
+        self.ndi = [ai/bi for ai,bi in zip(tmpNdi,atr)]
+        
+        dx = map(calcDX2, self.pdi,self.ndi)
+        self.adx = sp.wma(dx,length)
 
-        self.inddf['dx'] = self.inddf.apply(calcDX,axis=1)
-        adx = self.movingAverage(self.inddf['dx'],length)
-        self.inddf['adx'] = adx
-        self.inddf = self.inddf[['Adj Close','pdi','ndi','adx']]
-        '''
         #print self.inddf
         #print end - start
         pass  
