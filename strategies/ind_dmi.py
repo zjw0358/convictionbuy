@@ -125,7 +125,6 @@ class ind_dmi(BaseIndPx):
         plusDM = 0.
         minusDM = 0.
         index = 0
-        #self.inddf = df0[['Adj Close']]
         tr=[]
         pdm=[]
         ndm=[]
@@ -167,15 +166,22 @@ class ind_dmi(BaseIndPx):
         dx = self.pdi.combine(self.ndi,calcDX2)
         self.adx = sp.movingAverage(dx,length)
         '''
-        atr = sp.wma(tr,length)
-        tmpPdi = 100 * sp.wma(pdm,length)
-        tmpNdi = 100 * sp.wma(ndm,length)
-        
+        atr1 = [float('nan') for _ in range(length)]
+        atr2 = sp.wma(tr,length)
+        atr = atr1 + atr2
+        tmpPdi = sp.wma(pdm,length)
+        tmpNdi = atr1 + 100 * sp.sma(ndm,length)
+        print len(atr1)
+        print len(atr2)
+        print len(tmpPdi)
+        print len(pdm)
+        print len(ndm)
+        #print tmpPdi
+        print len(df0.index)
         self.pdi = [ai/bi for ai,bi in zip(tmpPdi,atr)]
         self.ndi = [ai/bi for ai,bi in zip(tmpNdi,atr)]
-        
         dx = map(calcDX2, self.pdi,self.ndi)
-        self.adx = sp.wma(dx,length)
+        self.adx = sp.sma(dx,length)
 
         #print self.inddf
         #print end - start

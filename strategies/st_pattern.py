@@ -146,10 +146,10 @@ class StrategyPattern(object):
     def trueRange(self,high,close,low):
         return max(max(high-low,abs(high-close)),abs(low-close))
 
-    def movingAverage(self,data,length):
-        return pandas.stats.moments.rolling_mean(data,length) #.tolist()      
+    def sma(self,data,length):
+        return pandas.stats.moments.rolling_mean(pandas.Series(data),length).tolist()      
 
-    def ema(s, n):
+    def ema(self, s, n):
         """
         returns an n period exponential moving average for
         the time series s

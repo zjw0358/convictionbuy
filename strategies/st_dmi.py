@@ -17,13 +17,16 @@ class st_dmi(ind_dmi):
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         ind_dmi.runIndicator(self,symbol,ohlc,param)
-        self.algoStrategy()
+        self.algoStrategy(ohlc)
         pass
         
-    def algoStrategy(self):
+    def algoStrategy(self,ohlc):
         sp = StrategyPattern()
         tsup = TradeSupport()
         buysg,sellsg = sp.divergencyCross(self.pdi, self.ndi, 2)
+        ohlc['pdi'] = self.pdi
+        ohlc['ndi'] = self.ndi
+        print ohlc
         #print buysg
         #print ["%s\n" % item  for item in buysg]        
         #print sellsg
