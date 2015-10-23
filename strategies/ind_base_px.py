@@ -11,7 +11,7 @@ class BaseIndPx(object):
     def cleanup(self):
         #print "BaseIndPx cleanup"
         self.ind = OrderedDict()
-        
+        self.debug = False        
     def getIndicators(self):
         return self.ind
         
@@ -20,3 +20,9 @@ class BaseIndPx(object):
 
     def usage(self):
         return "This is Base indicator with Price data needed"
+        
+    def setupParam(self,param):
+        if ('debug' in param):
+            self.debug = True
+        return
+

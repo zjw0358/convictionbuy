@@ -10,23 +10,29 @@ class st_dmi(ind_dmi):
     def usage(self):
         return "dmi=length"
 
-    def setupParam(self,param):
-        return        
-            
-
     #main process routine
-    def runIndicator(self,symbol,ohlc,param={}):
+    def runIndicator(self,symbol,ohlc,param={}):        
         ind_dmi.runIndicator(self,symbol,ohlc,param)
         self.algoStrategy(ohlc)
         pass
         
+    '''
+    TODO probably there is a false signal,e.g crossbelow happen after buy signal,should we discard the buy signal?
+    '''
     def algoStrategy(self,ohlc):
         sp = StrategyPattern()
         tsup = TradeSupport()
         buysg,sellsg = sp.divergencyCross(self.pdi, self.ndi, 2)
-        ohlc['pdi'] = self.pdi
-        ohlc['ndi'] = self.ndi
-        print ohlc
+        ohlc['buy'] = buysg
+        ohlc['sell'] = sellsg
+
+        if (self.debug):
+            ohlc['buysignal'] = buysg
+            ohlc['sellsignal'] = sellsg
+            ohlc['pdi'] = self.pdi
+            ohlc['ndi'] = self.ndi
+            ohlc['adx'] = self.adx
+            print ohlc
         #print buysg
         #print ["%s\n" % item  for item in buysg]        
         #print sellsg
@@ -41,3 +47,4 @@ class st_dmi(ind_dmi):
 
     def runScan(self,table):
         return table
+        

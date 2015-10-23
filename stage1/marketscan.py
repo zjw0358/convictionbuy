@@ -12,6 +12,7 @@ import pandas
 import csv
 import marketdata
 import ms_csvchart
+import ms_backtest
 import pandas
 import xlsxwriter
 #sys.path.insert(0, "../src/")
@@ -40,7 +41,9 @@ class MarketScan:
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
         self.mtd = marketdata.MarketData()
+        # draw chart
         self.csvchart = ms_csvchart.ms_csvchart()
+        self.hasBackTest = False
         self.haschart = False
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
@@ -56,19 +59,19 @@ class MarketScan:
         #self.sgyInfo = {'ms_pvm':0,"ms_reuter":0,"zack_data":0}
         
         return
-        
+    '''  
     def getTradeSupport(self):
         return self.tradesup
 
     def getSimuTable(self):
         return self.simutable
-
+    
     def getResultPath(self):
         return self.outputpath
         
     def getNumBest(self):
         return self.nmuBest
-                  
+    '''           
     def usage(self):
         print "marketscan.py -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
  
@@ -77,7 +80,7 @@ class MarketScan:
         self.ticklist=[]
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd"])
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -104,6 +107,9 @@ class MarketScan:
             elif opt in ("-c","--chart"):
                 self.haschart = True
                 self.chartparam = arg
+            elif opt in ("--backtest"):
+                self.hasBackTest = True
+                self.backtest = ms_backtest.ms_backtest()
             elif opt in ("--savemd"):
                 self.savemd = True
             elif opt in ("--loadmd"):
@@ -129,6 +135,7 @@ class MarketScan:
         print "portfolio id mask ",self.pid
         print "load marketdata", self.loadmd
         print "save marketdata", self.savemd
+        print "backtest", self.hasBackTest
         print "=========================="
         
     '''
@@ -196,6 +203,7 @@ class MarketScan:
                 
         return 
         
+    #TODO move to marketdata module?  
     def loadSymbolLstFile(self,fileName):
         #symbol,rank,name,sector,industry,pid,exg
         fp = open(fileName,'r',-1)
@@ -401,8 +409,7 @@ class MarketScan:
                         print "too many errors when downloading symbol data, exit now"
                         sys.exit()
                     continue
-            #print type(ohlc)
-            #print ohlc['Adj Close'][-1]
+                    
             #add 'px' column
             table.loc[index,'px'] = ohlc['Adj Close'][-1]
                         
@@ -411,10 +418,18 @@ class MarketScan:
                 sgx = self.sgyInx[sgyname]
                 if sgx.needPriceData()==True:
                     sgx.cleanup()
-                    sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname]) #parameter
+                    sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname])
+                    
+                    #TODO if backtest skip this?
+                    #strategy should only return 1 buy signal column
                     indarr = sgx.getIndicators()
                     for cn in indarr:
                         table.loc[index,cn] = indarr[cn]
+                    
+                    # if backtest...
+                    if (self.hasBackTest):
+                        self.backtest.runBackTest(ohlc)
+                        pass
                
         return table
         

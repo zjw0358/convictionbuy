@@ -14,7 +14,7 @@ class TradeSupport:
             if (sig!=""):
                 sellidx = idx
                 break;
-        print buyidx,sellidx
+        #print buyidx,sellidx
         if (sellidx < buyidx):
             return sellidx,"sell"
         else:

@@ -5,6 +5,8 @@ class StrategyPattern(object):
     def __init__(self):
         pass
         
+    '''
+    #to be deleted    
     def initData(self,fast,slow,offset):
         self.fast = fast
         self.slow = slow
@@ -44,67 +46,80 @@ class StrategyPattern(object):
             prevFast = currentFast
             prevSlow = curSlow
         return signal
-    
-    #fast cross above slow, and keep divengency moving at least n bars
     '''
-    def divCross(self, nbar):
-        prevFast = self.fast[-self.offset]
-        prevSlow = self.slow[-self.offset]
-        buysignal = 65535
-        sellsignal = 65535
+    
+    def cross(self, fast, slow, nbar):
+        prevFast = fast[0]
+        prevSlow = slow[0]
+        buysg = []
+        sellsg = []
         buyflag = False
         buycount = 1
         sellflag = False
         sellcount = 1
-        for idx, curSlow in enumerate(self.slow[-self.offset:]):
-            #idx,-offset+idx
-            currentFast = self.fast[-self.offset+idx]
-            #print prevSlow,curSlow,prevFast,currentFast
+        
+        for idx, curSlow in enumerate(slow):
+            buysignal = ""
+            sellsignal = ""
+            currentFast = fast[idx]
+            
             if (buyflag):
-                if (currentFast > prevFast) and (curSlow < prevSlow):
+                #second round check
+                if (currentFast > curSlow):
                     buycount+=1
                     if (buycount == nbar):
-                        buysignal = self.offset-idx
-                        print "buy signal",buysignal
+                        buysignal = "buy"
+                        buyflag = False
+                        buycount = 1
                 else:
                     buyflag = False
                     buycount = 1
                 pass
             else:
                 if (prevFast < prevSlow) and (currentFast > curSlow) :
-                    #signal = "True(%d)" % (self.offset-idx)
                     buyflag = True
+
             if (sellflag):
-                 if (currentFast < prevFast) and (curSlow > prevSlow):                
+                 if (currentFast < curSlow):                
                      sellcount+=1
                      if (sellcount == nbar):
-                        sellsignal = self.offset-idx
-                        print "sell signal",buysignal
+                        sellsignal = "sell"
+                        sellcount = 1
+                        sellflag = False
                  else:
                      sellcount = 1
                      sellflag = False
             else:            
                 if (prevFast > prevSlow) and (currentFast < curSlow):                
-                    sellflag = True                          
+                    sellflag = True      
+                                        
             prevFast = currentFast
             prevSlow = curSlow
-        return buysignal,sellsignal
-    '''
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)
+            
+        return buysg,sellsg
+
+        
+        
+    #fast cross above slow, and keep divengency moving at least n bars 
+    #divergency cross
     def divergencyCross(self, fast, slow, nbar):
         prevFast = fast[0]
         prevSlow = slow[0]
-        buysg = [""]
-        sellsg = [""]
+        buysg = []
+        sellsg = []
         buyflag = False
         buycount = 1
         sellflag = False
         sellcount = 1
         
-        for idx, curSlow in enumerate(slow[1:]):
+        for idx, curSlow in enumerate(slow):
             #idx,-offset+idx
             buysignal = ""
             sellsignal = ""
             currentFast = fast[idx]
+            #print idx,currentFast
             #print prevSlow,curSlow,prevFast,currentFast
             if (buyflag):
                 if (currentFast > prevFast) and (curSlow < prevSlow):
@@ -112,6 +127,8 @@ class StrategyPattern(object):
                     if (buycount == nbar):
                         #buysignal = self.offset-idx
                         buysignal = "buy"
+                        buyflag = False
+                        buycount = 1
                         #print "buy signal"
                 else:
                     buyflag = False
@@ -126,6 +143,8 @@ class StrategyPattern(object):
                      sellcount+=1
                      if (sellcount == nbar):
                         sellsignal = "sell"
+                        sellcount = 1
+                        sellflag = False
                         #print "sell signal"
                  else:
                      sellcount = 1

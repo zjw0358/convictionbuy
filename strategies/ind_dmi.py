@@ -48,11 +48,10 @@ def calcDX2(pdi,ndi):
 class ind_dmi(BaseIndPx):
     def usage(self):
         return "dmi=length"
-
+    '''
     def setupParam(self,param):
-        return
- 
-    '''   
+        return    
+       
     def trueRange(self,high,close,low):
         return max(max(high-low,abs(high-close)),abs(low-close))
 
@@ -166,32 +165,32 @@ class ind_dmi(BaseIndPx):
         dx = self.pdi.combine(self.ndi,calcDX2)
         self.adx = sp.movingAverage(dx,length)
         '''
-        atr1 = [float('nan') for _ in range(length)]
+        atr1 = [float('nan') for _ in range(length-1)]
         atr2 = sp.wma(tr,length)
         atr = atr1 + atr2
-        tmpPdi = sp.wma(pdm,length)
-        tmpNdi = atr1 + 100 * sp.sma(ndm,length)
+        tmpPdi = atr1 + sp.wma(pdm,length)
+        tmpNdi = atr1 + sp.wma(ndm,length)
+        #print tmpPdi
+        self.pdi = [100*ai/bi for ai,bi in zip(tmpPdi,atr)]
+        self.ndi = [100*ai/bi for ai,bi in zip(tmpNdi,atr)]
+        dx = map(calcDX2, self.pdi,self.ndi)
+        self.adx = atr1 + sp.wma(dx,length)
+        '''
+        print len(df0.index)
+        print len(self.adx)
         print len(atr1)
         print len(atr2)
         print len(tmpPdi)
         print len(pdm)
         print len(ndm)
-        #print tmpPdi
-        print len(df0.index)
-        self.pdi = [ai/bi for ai,bi in zip(tmpPdi,atr)]
-        self.ndi = [ai/bi for ai,bi in zip(tmpNdi,atr)]
-        dx = map(calcDX2, self.pdi,self.ndi)
-        self.adx = sp.sma(dx,length)
-
-        #print self.inddf
-        #print end - start
+        '''
         pass  
         
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         #print ohlc
         self.setupParam(param)     
-        self.close_px = ohlc['Adj Close']
+        #self.close_px = ohlc['Adj Close']
         self.algoFunc(ohlc)        
 
     def runScan(self,table):

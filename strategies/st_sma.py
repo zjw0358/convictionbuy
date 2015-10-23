@@ -1,10 +1,10 @@
 '''
-calculate simple moving average
+simple moving average strategy
 '''
-#import pandas
-#from collections import OrderedDict
+
 from ind_ma import ind_ma
 from st_pattern import StrategyPattern
+from trade_support import TradeSupport
 
 class st_sma(ind_ma):
     def usage(self):
@@ -17,31 +17,33 @@ class st_sma(ind_ma):
    
     def runIndicator(self,symbol,ohlc,param={}):
         ind_ma.runIndicator(self,symbol,ohlc,param)
-        self.algoStrategy()
+        self.algoStrategy(ohlc)
         pass
     
-    def algoStrategy(self):
+    def algoStrategy(self, ohlc):
         # price cross above MA10 and crosee below MA10
         sp = StrategyPattern()
-        sp.initData(self.close_px, self.ma10, 50)
-        self.ind['sma10_buy'] = sp.crossAbove()
-        self.ind['sma10_sell'] = sp.crossBelow()
+        tsup = TradeSupport()
+        if (self.ma10):
+            buysg,sellsg = sp.divergencyCross(self.close_px, self.ma10, 2)
+            idx,sig = tsup.getLastSignal(buysg,sellsg)
+            sigstr = "%s(%d)" % (sig,idx)
+            if (sig=="buy"):            
+                self.ind['ma10_buy'] = sigstr
+            else:
+                self.ind['ma10_sell'] = sigstr
+            ohlc['buy'] = buysg
+            ohlc['sell'] = sellsg
         
         if (self.ma50):
-            sp.initData(self.close_px, self.ma50, 50)
-            buy = sp.crossAbove()
-            sell = sp.crossBelow()
-            if (buy < sell):
-                self.ind['ma50_buy'] = str(buy)
-#                self.ind['ma50_sell'] = ""
-            elif ( buy > sell):
-                self.ind['ma50_sell'] = str(sell)
+            buysg,sellsg = sp.divergencyCross(self.close_px, self.ma50, 2)
+            idx,sig = tsup.getLastSignal(buysg,sellsg)
+            sigstr = "%s(%d)" % (sig,idx)
+            if (sig=="buy"):            
+                self.ind['ma50_buy'] = sigstr
+            else:
+                self.ind['ma50_sell'] = sigstr
                 
-            #self.ind['ma50_buy'] = sp.crossAbove()
-            #self.ind['ma50_sell'] = sp.crossBelow()
-            
-        #MA50 cross MA200
-        #print "checking ma50 vs ma200",(not self.ma50),(not self.ma200)
         #too lag, how about px cross MA50
         '''
         if (self.ma50 and self.ma200):
@@ -52,3 +54,4 @@ class st_sma(ind_ma):
         pass
     def runScan(self,table):
         return table
+
