@@ -428,9 +428,12 @@ class MarketScan:
                     
                     # if backtest...
                     if (self.hasBackTest):
-                        self.backtest.runBackTest(ohlc)
+                        self.backtest.runBackTest(symbol,ohlc)
                         pass
-               
+        backtestDf = self.backtest.getBackTestResult()
+        print "========================="
+        print backtestDf
+        print "========================="
         return table
         
     def process(self):

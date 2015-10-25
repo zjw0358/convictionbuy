@@ -4,49 +4,6 @@ import numpy
 class StrategyPattern(object):
     def __init__(self):
         pass
-        
-    '''
-    #to be deleted    
-    def initData(self,fast,slow,offset):
-        self.fast = fast
-        self.slow = slow
-        self.offset = offset
-        pass
-        
-    def crossAbove(self):
-        prevFast = self.fast[-self.offset]
-        prevSlow = self.slow[-self.offset]
-        signal = 65535 #float('nan')
-        for idx, curSlow in enumerate(self.slow[-self.offset:]):
-            #idx,-offset+idx
-            currentFast = self.fast[-self.offset+idx]
-            #print prevSlow,curSlow,prevFast,currentFast
-            if (prevFast < prevSlow) and (currentFast > curSlow) :
-                #signal = "True(%d)" % (self.offset-idx)
-                signal = self.offset-idx
-                #print "(buy)"
-                # TODO
-                #if (curSlow > prevSlow):
-                #    signal += "*"
-                #    print "****** strong signal********",signal
-            prevFast = currentFast
-            prevSlow = curSlow
-        return signal
-        
-    def crossBelow(self):
-        prevFast = self.fast[-self.offset]
-        prevSlow = self.slow[-self.offset]
-        signal = 65535 #float('nan')
-        for idx, curSlow in enumerate(self.slow[-self.offset:]):
-            #print idx,-offset+idx
-            currentFast = self.fast[-self.offset+idx]
-            if (prevFast > prevSlow) and (currentFast < curSlow):                
-                #signal = "True(%d)" % (self.offset-idx)
-                signal = self.offset-idx
-            prevFast = currentFast
-            prevSlow = curSlow
-        return signal
-    '''
     
     def cross(self, fast, slow, nbar):
         prevFast = fast[0]
@@ -100,7 +57,44 @@ class StrategyPattern(object):
             
         return buysg,sellsg
 
+    # fast and slow covergency
+    def covergency(self,fast,slow,nbar):
+        prevFast = fast[0]
+        prevSlow = slow[0]
+        entryThr = 10        
+        closesg = []
+        closeflag = False
+        count = 1
         
+        for idx, curSlow in enumerate(slow): 
+            closesignal = ""
+            currentFast = fast[idx]
+            prevDiff = abs(prevFast-prevSlow)
+            curDiff = abs(currentFast-curSlow)            
+            
+            if (closeflag):
+                #fast crossbelow slow? rarely happen in short time                                
+                # ADX?
+                if (curDiff < prevDiff):
+                    count+=1
+                    if (count == nbar):
+                        closesignal = "close"
+                        closeflag = False
+                        count = 1
+                        #print "buy signal"
+                else:
+                    closeflag = False
+                    count = 1
+                    
+            else:
+                if (prevDiff > entryThr and curDiff < prevDiff):
+                    closeflag = True
+
+            prevFast = currentFast
+            prevSlow = curSlow
+            closesg.append(closesignal)
+            
+        return closesg
         
     #fast cross above slow, and keep divengency moving at least n bars 
     #divergency cross

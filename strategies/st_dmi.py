@@ -6,6 +6,17 @@ from ind_dmi import ind_dmi
 from st_pattern import StrategyPattern
 from trade_support import TradeSupport
 
+#move to st_pattern
+def mergeSignal(b,s,c):
+    if (b!=""):
+        return b
+    elif (s!=""):
+        return s
+    elif (c!=""):
+        return c
+    else:
+        return ""
+
 class st_dmi(ind_dmi):
     def usage(self):
         return "dmi=length"
@@ -15,7 +26,7 @@ class st_dmi(ind_dmi):
         ind_dmi.runIndicator(self,symbol,ohlc,param)
         self.algoStrategy(ohlc)
         pass
-        
+  
     '''
     TODO probably there is a false signal,e.g crossbelow happen after buy signal,should we discard the buy signal?
     '''
@@ -23,9 +34,16 @@ class st_dmi(ind_dmi):
         sp = StrategyPattern()
         tsup = TradeSupport()
         buysg,sellsg = sp.divergencyCross(self.pdi, self.ndi, 2)
+        closesg = sp.covergency(self.pdi, self.ndi, 2)
+        
+        #To be deleted
         ohlc['buy'] = buysg
         ohlc['sell'] = sellsg
 
+        signal = map(mergeSignal, buysg,sellsg,closesg)
+        ohlc['signal'] = signal
+        
+        '''
         if (self.debug):
             ohlc['buysignal'] = buysg
             ohlc['sellsignal'] = sellsg
@@ -33,6 +51,7 @@ class st_dmi(ind_dmi):
             ohlc['ndi'] = self.ndi
             ohlc['adx'] = self.adx
             print ohlc
+        '''
         #print buysg
         #print ["%s\n" % item  for item in buysg]        
         #print sellsg
