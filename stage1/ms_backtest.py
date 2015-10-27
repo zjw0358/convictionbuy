@@ -17,32 +17,50 @@ class Ordermg:
         
     def endTrade(self,row,index):
         avgpx = (row['High']+row['Low']+row['Close']+row['Open'])/4
-        self.closePos(float(avgpx),index)        
-        self.winrate = round(float(self.win)/self.totalTrade,2)
+        self.closePos(index,float(avgpx),row['Close'],row['Adj Close'])        
+        if (self.totalTrade==0):
+            self.winrate = 0
+        else:
+            self.winrate = round(float(self.win)/self.totalTrade,2)
         self.gainreturn = round(self.gainloss/self.power,2)
         print self.totalTrade,self.winrate,self.gainloss, self.gainreturn
         
-    def closePos(self,avgpx,index):
-        if (self.shares > 0):
+    # close a position
+    def closePos(self,index,avgpx,close,adjclose):
+        #print avgpx,close,adjclose
+        if (self.shares > 0):  
+            if ((abs(avgpx-adjclose)/adjclose*100)>5):
+                #check if stock split
+                ratio = adjclose / close
+                avgpx = avgpx * ratio
+                          
             gl = self.shares * avgpx - self.power
             self.totalTrade += 1
-            #print gl
             if gl>0:
                 self.win += 1
             self.gainloss += gl
             self.shares = 0
             self.position = "sell"
             print "sell@",index,"gain=",round(gl,2)
-                    
+            
+    def openPos(self,index,avgpx,close,adjclose):
+        if ((abs(avgpx-adjclose)/adjclose*100)>5):
+            #check if stock split
+            ratio = adjclose / close
+            avgpx = avgpx * ratio
+        
+        print "buy@",index,"px=",avgpx
+        self.shares = self.power / avgpx
+        self.position = "buy"
+        pass                    
     def procPendingOrder(self,row,index):       
         avgpx = (row['High']+row['Low']+row['Close']+row['Open'])/4
         if (self.pendingOrder != ""):
 
             #print avgpx
             if (self.pendingOrder == "buy"):
-                print "buy@",index,"px=",avgpx
-                self.shares = self.power / avgpx
-                self.position = "buy"
+                self.openPos(index,avgpx,row['Close'],row['Adj Close'])
+                                
             elif (self.pendingOrder == "sell"):
                 '''
                 gainloss = self.shares * avgpx - self.power
@@ -52,7 +70,7 @@ class Ordermg:
                 self.gainloss += gainloss
                 self.shares = 0 
                 '''
-                self.closePos(float(avgpx),index)
+                self.closePos(index,avgpx,row['Close'],row['Adj Close'])
 
             self.pendingOrder = ""
         else:
@@ -92,6 +110,7 @@ class ms_backtest:
         self.gain=[]
         self.gainreturn = []
         pass
+        
     def runBackTest(self,sym,ohlc):
         print ohlc
         ordermg = Ordermg()
@@ -110,8 +129,10 @@ class ms_backtest:
             elif (row['signal'] =="sell" or row['signal'] =="close"):
                 ordermg.sellorder()
             
-        lastRow = ohlc.tail(1)
-        ordermg.endTrade(lastRow,str(lastRow.index[-1]))
+        #lastRow = ohlc.tail(1).value()
+        lastRow = ohlc.iloc[-1] 
+        lastidx = ohlc.index[-1]
+        ordermg.endTrade(lastRow,lastidx)
         
         self.symbols.append(sym)
         self.totalTrade.append(ordermg.totalTrade)
@@ -121,5 +142,6 @@ class ms_backtest:
         pass
         
     def getBackTestResult(self):
-        return pandas.DataFrame({'symbol':self.symbols,'total trade':self.totalTrade,'win rate':self.winrate,'gain':self.gain,'return%':self.gainreturn})
+        return pandas.DataFrame({'symbol':self.symbols,'total trade':self.totalTrade,'win rate':self.winrate,'gain':self.gain,'return%':self.gainreturn},columns=\
+        ['symbol','total trade','win rate','gain','return%'])
         pass

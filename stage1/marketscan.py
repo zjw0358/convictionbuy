@@ -262,8 +262,17 @@ class MarketScan:
         # excel
         #self.saveExcelFile(table,saveFileName)
      
-    
-    def saveExcelFile(self,table,saveFileName):
+    def getFileName(self,addstr=""):
+        saveFileName = "scan_"
+        for sgyname in self.sgyInx:
+            saveFileName += sgyname
+            saveFileName +="_"
+            
+        if addstr != "":
+            saveFileName = saveFileName + addstr + "_"
+        return saveFileName
+
+    def saveExcelFile(self,table,saveFileName,offset = 2):
         # save to excel
         #try:
         outputFnXls = self.outputpath + saveFileName + datetime.datetime.now().strftime("%Y-%m-%d") + '.xls'
@@ -275,7 +284,7 @@ class MarketScan:
         format1 = workbook.add_format({'bg_color': '#FFC7CE','font_color': '#9C0006','bold': True})
         format2 = workbook.add_format({'bg_color': '#C6EFCE','font_color': '#006100','bold': True})
         #find the two largest and smallest value
-        offset = 2 #symbol,exg            
+        #offset = 2 #symbol,exg            
         for col in table:
             if col=='symbol' or col=='exg':
                 continue
@@ -386,6 +395,36 @@ class MarketScan:
     def loadOhlc(self,symbol):
         filename = self.cachepath + symbol + "_ohlc.csv"
         ohlc = pandas.read_csv(filename,index_col=['Date'])
+        # filter as start and end date
+#        ohlc = ohlc.loc[self.startdate:self.enddate]
+        ohlc.index = pandas.to_datetime(ohlc.index)  
+        date1 = datetime.datetime.strptime(self.startdate,'%Y-%m-%d')
+        date2 = datetime.datetime.strptime(self.enddate,'%Y-%m-%d')
+        #lst = pandas.date_range(self.startdate, self.enddate, freq='B')
+        #print lst[0],lst[-1]
+        
+        #ohlc = ohlc.loc['2015-01-02':'2015-10-23']
+        #print ohlc.index
+        #print type(ohlc.index[0])
+        
+        start = -1
+        end = -1
+        for idx,item in enumerate(ohlc.index):
+            #print item,type(item)
+            if (start==-1 and item >= date1):
+                start = idx
+                #print "start",item                
+            if item >= date2:
+                end = idx
+                print "end",item
+                break
+                
+        #if (end==-1):
+        #    end = idx-1
+        print start,end
+        ohlc = ohlc.iloc[start:end]
+        #print ohlc.index
+        #sys.exit()
         return ohlc
         
     def runIndicator(self, table):
@@ -434,6 +473,7 @@ class MarketScan:
         print "========================="
         print backtestDf
         print "========================="
+        self.saveExcelFile(self,backtestDf,saveFileName,1)
         return table
         
     def process(self):
@@ -443,4 +483,6 @@ class MarketScan:
 if __name__ == "__main__":
     obj = MarketScan()
     obj.process()
+ 
+ 
  
