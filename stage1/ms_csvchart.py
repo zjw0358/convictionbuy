@@ -130,6 +130,7 @@ class ms_csvchart:
         plt.show()
         
     def setupParam(self,param):
+        # scatter draw range
         self.xmin = 5
         self.xmax = 99
         self.ymin = 5
@@ -137,13 +138,6 @@ class ms_csvchart:
         self.zmin = 15
         self.zmax = 85
         
-        #if arg=="":
-        #    return
-        #param = {}
-        #for item in arg.split(","):
-        #    tokens=item.split("=")
-        #    param[tokens[0]] = int(tokens[1])        
-                
         if 'xmin' in param:
             self.xmin = param['xmin']
         if 'xmax' in param:
@@ -156,9 +150,11 @@ class ms_csvchart:
             self.zmax = param['zmax']
         if 'zmin' in param:
             self.zmin = param['zmin']
-        print self.xmin,self.xmax,self.ymin,self.ymax,self.zmin,self.zmax
+            
+        print "draw range", self.xmin,self.xmax,self.ymin,self.ymax,self.zmin,self.zmax
 
     def drawChart(self,df,arg=""):
+        #parse parameter
         param={}
         if arg!="":
             for item in arg.split(","):
@@ -168,11 +164,13 @@ class ms_csvchart:
                 else:
                     param[tokens[0]] = ""
         self.setupParam(param)            
+        
         if 'scatter' in param:
             self.drawScatter(df)
         else:
+            pass
             #self.drawLineChart(df)        
-            self.heatmap(df)
+            #self.heatmap(df)
             #print df.values
             #print df.as_matrix()
         return

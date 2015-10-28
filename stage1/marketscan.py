@@ -133,6 +133,9 @@ class MarketScan:
         print "start date", self.startdate
         print "end date", self.enddate
         print "portfolio id mask ",self.pid
+        print "use chart",self.haschart
+        if (self.haschart):
+            print "chart param",self.chartparam
         print "load marketdata", self.loadmd
         print "save marketdata", self.savemd
         print "backtest", self.hasBackTest
@@ -262,7 +265,7 @@ class MarketScan:
         # excel
         #self.saveExcelFile(table,saveFileName)
      
-    def getFileName(self,addstr=""):
+    def getSaveFileName(self,addstr=""):
         saveFileName = "scan_"
         for sgyname in self.sgyInx:
             saveFileName += sgyname
@@ -421,7 +424,7 @@ class MarketScan:
                 
         #if (end==-1):
         #    end = idx-1
-        print start,end
+        #print start,end
         ohlc = ohlc.iloc[start:end]
         #print ohlc.index
         #sys.exit()
@@ -469,11 +472,12 @@ class MarketScan:
                     if (self.hasBackTest):
                         self.backtest.runBackTest(symbol,ohlc)
                         pass
-        backtestDf = self.backtest.getBackTestResult()
-        print "========================="
-        print backtestDf
-        print "========================="
-        self.saveExcelFile(self,backtestDf,saveFileName,1)
+        if (self.hasBackTest):
+            backtestDf = self.backtest.getBackTestResult()
+            print "========================="
+            print backtestDf
+            print "========================="
+            self.saveExcelFile(self,backtestDf,self.getSaveFileName(),1) #offset=1
         return table
         
     def process(self):

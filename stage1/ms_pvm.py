@@ -121,13 +121,13 @@ class ms_pvm:
         
     #main routine       
     def process(self,tablein,param):
-        download = 1  #default = download
+        download = 0  #default = download
         ticklist = tablein['symbol']
         #extract 'download' option
         param1={}
         for op in param:
             if op == 'download':
-                download = int(param['download'])
+                download = 1
             else:
                 param1[op]=""
                 
@@ -146,45 +146,5 @@ class ms_pvm:
         #merge df1 & tablein
         df1 = pandas.merge(tablein,df,how='inner')
         return df1
-
-        
-
-    '''
-    def process(self,ticklist,param):
-        self.download = 1  #default = download
-
-
-        self.criteria = []
-        self.ticklist = ticklist
-        for op in param:
-            if op == 'download':
-                self.download = int(param['download'])
-            else:
-                self.criteria.append(op)
-        
-        # check criteria
-        if not self.criteria:
-            print "criteria is empty,...return original ticklist"
-            return ticklist
-            
-        if (self.download == 1):
-            df = self.downloadData(ticklist)            
-        else:
-            df = self.loadData(self.outputFileName)
-            
-        # filter by dynamic criteria string
-        crstr = ""
-        pattern = "([\w]+)([><])([\d]+)"
-
-        for cr in self.criteria:
-            an = re.match(pattern,cr)            
-            if an!=None:
-                cr0 = "(df['%s']%s%s) & " % (an.group(1),an.group(2),an.group(3))
-                crstr += cr0
-         
-        crstr += "(1)"
-        print "criteria = ", crstr
-        return df[eval(crstr)]['symbol']  
-    '''    
        
     
