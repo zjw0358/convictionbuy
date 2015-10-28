@@ -477,7 +477,7 @@ class MarketScan:
             print "========================="
             print backtestDf
             print "========================="
-            self.saveExcelFile(self,backtestDf,self.getSaveFileName(),1) #offset=1
+            self.saveExcelFile(backtestDf,self.getSaveFileName(),1) #offset=1
         return table
         
     def process(self):
