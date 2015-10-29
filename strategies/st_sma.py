@@ -27,18 +27,19 @@ class st_sma(ind_ma):
         if (self.ma10):
             buysg,sellsg = sp.divergencyCross(self.close_px, self.ma10, 2)
             idx,sig = tsup.getLastSignal(buysg,sellsg)
-            sigstr = "%s(%d)" % (sig,idx)
+            sigstr = "%d" % (idx)
             if (sig=="buy"):            
                 self.ind['ma10_buy'] = sigstr
             else:
                 self.ind['ma10_sell'] = sigstr
-            ohlc['buy'] = buysg
-            ohlc['sell'] = sellsg
+            
+            #ohlc['buy'] = buysg
+            #ohlc['sell'] = sellsg
         
         if (self.ma50):
             buysg,sellsg = sp.divergencyCross(self.close_px, self.ma50, 2)
             idx,sig = tsup.getLastSignal(buysg,sellsg)
-            sigstr = "%s(%d)" % (sig,idx)
+            sigstr = "%d" % (idx)
             if (sig=="buy"):            
                 self.ind['ma50_buy'] = sigstr
             else:

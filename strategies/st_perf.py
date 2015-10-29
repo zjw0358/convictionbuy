@@ -1,20 +1,20 @@
 from collections import OrderedDict
+from ind_base_px import BaseIndPx
 
-class st_perf:
-    def __init__(self):
-        self.cleanup()
-        self.stname = "st_perf" #strategy name
-        
-    def cleanup(self):
-        self.ind = OrderedDict()
-        self.sgy = 1 # default sort all symbols 
-        return
-
+class st_perf(BaseIndPx): 
     def usage(self):
-        return "available parameter:topperf;topperf_is,sort24,sort12,sort4,sort1,help"
+        usage = "available parameter:\n"
+        usage += "\ttopperf: select from 24 week top 20->12 week top 10->4 week top3 \n"
+        usage += "\ttopperf_is: meet all criteria, must be in 24 week top 20,12 week top 10,4 week top3 \n"
+        usage += "\tsort24:sort by past 24 weeks performance\n"
+        usage += "\tsort12:by past 12 weeks\n"
+        usage += "\tsort4:by past 4 weeks\n"
+        usage += "\tsort1:by past 1 weeks\n"        
+        return usage
 
-        
+    #override func
     def setupParam(self,param):
+        BaseIndPx.setupParam(self,param)                
         self.sgy = 1
         if 'topperf' in param:
             self.sgy = 1
@@ -28,6 +28,8 @@ class st_perf:
             self.sgy = 5
         if "sort1" in param:
             self.sgy = 6
+        if "reversal" in param:
+            self.sgy = 7
         return
           
     def algoFunc(self, px):
@@ -56,14 +58,7 @@ class st_perf:
         self.ind['p4w'] = p4w
         self.ind['p12w'] = p12w
         self.ind['p24w'] = p24w
-        self.ind['pmax'] = pmax
-        
-    # it is price data module(need real price data)
-    def needPriceData(self):
-        return True
-        
-    def getIndicators(self):
-        return self.ind    
+        self.ind['pmax'] = pmax        
             
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
@@ -71,8 +66,7 @@ class st_perf:
         self.setupParam(param)
      
         close_px = ohlc['Adj Close']
-        self.algoFunc(close_px)        
- 
+        self.algoFunc(close_px)     
  
     def runScan(self,table): 
         # total return
@@ -119,7 +113,9 @@ class st_perf:
         elif self.sgy == 6:            
             #sort 1 week
             df = table.sort_index(by='p1w',ascending=False)
-
+        elif self.sgy == 7:#doesn't help
+            df = table[(table['p4w']-table['p12w']>1) &(table['p4w']-table['p12w']<3) & (table['p4w']>2) & (table['p4w']<5)]
+            pass
         return  df
         
       

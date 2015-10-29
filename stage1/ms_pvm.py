@@ -1,21 +1,24 @@
 '''
 marketscan module
-- download stock px,p/s,marketcap,avgvol,peg
+- download stock px,p/s,marketcap,avgvol,peg,dividend from Yahoo Finance website
 - filter by the above columns
 
-use case:    
+use case:
+    default = no download 
 run marketscan -g "ms_pvm&avgvol>1000000&peg<2"
-
+run marketscan -g "ms_pvm&download"
 '''
+
 import datetime
 import urllib2
 import csv
 import pandas
 import re
 import marketdata
+from ms_base_npx import MsBaseNPx
 
-# marketscan module price/volume/marketcap
-class ms_pvm:
+
+class ms_pvm(MsBaseNPx):
     def __init__(self):
         self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg','dividend']
         self.colcode = "&f=sp5j1a2l1r5y"
@@ -115,9 +118,10 @@ class ms_pvm:
         table = pandas.DataFrame(allLst,columns=self.columns)
         return table
      
-    # no need real price data
+    ''' # no need real price data
     def needPriceData(self):
         return False
+    '''
         
     #main routine       
     def process(self,tablein,param):
@@ -147,4 +151,5 @@ class ms_pvm:
         df1 = pandas.merge(tablein,df,how='inner')
         return df1
        
+    
     

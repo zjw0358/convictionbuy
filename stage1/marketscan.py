@@ -73,7 +73,8 @@ class MarketScan:
         return self.nmuBest
     '''           
     def usage(self):
-        print "marketscan.py -f <portfolio_file> -g strategy&ckd=2015-03-12 -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
+        print "marketscan.py -f <portfolio_file> -g strategy&parameter=value -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
+        print 'run marketscan.py -g "st_perf" -i 1,2,3 --loadmd -h'
  
     def parseOption(self):
         print "=========================="

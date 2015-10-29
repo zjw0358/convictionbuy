@@ -37,8 +37,8 @@ class st_dmi(ind_dmi):
         closesg = sp.covergency(self.pdi, self.ndi, 2)
         
         #To be deleted
-        ohlc['buy'] = buysg
-        ohlc['sell'] = sellsg
+        #ohlc['buy'] = buysg
+        #ohlc['sell'] = sellsg
 
         signal = map(mergeSignal, buysg,sellsg,closesg)
         ohlc['signal'] = signal

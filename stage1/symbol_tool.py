@@ -21,6 +21,10 @@ class SymbolTool:
     def usage(self):
         print "=== manipulate portfolio id ==================================="
         print "run symboltool.py -f <base_symbol_list_file> -p <new_portfolio_list> -t <ticklist> -[a/l/c] <pid1,pid2>"
+        print "\tc:clear portfolio id"
+        print "\ta:add to portfolio id"
+        print "\tl:list portfolio id"
+        
 
 
                 
@@ -77,15 +81,14 @@ class SymbolTool:
         return df
     
     # assign portfolio with id
+    # df - the marketdata.csv(has all symbol data)
+    # self.tickdf - to be processed tick
     def addPid(self,df,pid):
         if self.tickdf.empty:
             self.tickdf = self.mkt.loadPortfolioFile(self.portfoliofile)
         #ticklist = self.tickdf['symbol']
         tickdct = self.tickdf.set_index('symbol')['exg'].to_dict()
-        #print dct
-        #print self.tickdf
-        #print ticklist
-        #print 'ACN' in ticklist
+        
         chgno = 0
         for index, row in df.iterrows():
             if row['symbol'] in tickdct:

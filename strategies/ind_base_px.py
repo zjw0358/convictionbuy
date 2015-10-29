@@ -11,7 +11,8 @@ class BaseIndPx(object):
     def cleanup(self):
         #print "BaseIndPx cleanup"
         self.ind = OrderedDict()
-        self.debug = False        
+        self.debug = False   
+             
     def getIndicators(self):
         return self.ind
         
