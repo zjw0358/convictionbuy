@@ -9,11 +9,6 @@ from trade_support import TradeSupport
 class st_sma(ind_ma):
     def usage(self):
         return "px>ma200"
-
-
-    def setupParam(self,param):
-        return
-        
    
     def runIndicator(self,symbol,ohlc,param={}):
         ind_ma.runIndicator(self,symbol,ohlc,param)
@@ -26,24 +21,11 @@ class st_sma(ind_ma):
         tsup = TradeSupport()
         if (self.ma10):
             buysg,sellsg = sp.divergencyCross(self.close_px, self.ma10, 2)
-            idx,sig = tsup.getLastSignal(buysg,sellsg)
-            sigstr = "%d" % (idx)
-            if (sig=="buy"):            
-                self.ind['ma10_buy'] = sigstr
-            else:
-                self.ind['ma10_sell'] = sigstr
-            
-            #ohlc['buy'] = buysg
-            #ohlc['sell'] = sellsg
+            tsup.getLastSignal(buysg,sellsg,self.ind,'ma10_buy','ma10_sell')
         
         if (self.ma50):
             buysg,sellsg = sp.divergencyCross(self.close_px, self.ma50, 2)
-            idx,sig = tsup.getLastSignal(buysg,sellsg)
-            sigstr = "%d" % (idx)
-            if (sig=="buy"):            
-                self.ind['ma50_buy'] = sigstr
-            else:
-                self.ind['ma50_sell'] = sigstr
+            tsup.getLastSignal(buysg,sellsg, self.ind,'ma50_buy','ma50_sell')            
                 
         #too lag, how about px cross MA50
         '''
@@ -53,6 +35,4 @@ class st_sma(ind_ma):
             self.ind['ma50_200_sell'] = sp.crossBelow()
         '''    
         pass
-    def runScan(self,table):
-        return table
 

@@ -83,12 +83,11 @@ class SymbolTool:
     # assign portfolio with id
     # df - the marketdata.csv(has all symbol data)
     # self.tickdf - to be processed tick
-    def addPid(self,df,pid):
+    def addPid0(self,df,pid):
         if self.tickdf.empty:
             self.tickdf = self.mkt.loadPortfolioFile(self.portfoliofile)
-        #ticklist = self.tickdf['symbol']
-        tickdct = self.tickdf.set_index('symbol')['exg'].to_dict()
-        
+        # convert to dict
+        tickdct = self.tickdf.set_index('symbol')['exg'].to_dict()        
         chgno = 0
         for index, row in df.iterrows():
             if row['symbol'] in tickdct:
@@ -100,7 +99,32 @@ class SymbolTool:
         print "changed number=",chgno
         return df
     
-    
+    def addPid(self,df,pid):
+        if self.tickdf.empty:
+            self.tickdf = self.mkt.loadPortfolioFile(self.portfoliofile)
+        # convert to dict
+        alltickdct = {}
+        for index, row in df.iterrows():
+            alltickdct[row['symbol']] = index
+            
+        chgno = 0
+        
+        for index, row in self.tickdf.iterrows():
+            symbol = row['symbol']
+            if row['symbol'] in alltickdct:
+                mdidx = alltickdct[symbol]
+                mdrow = df.loc[mdidx]
+                oldpid = int(mdrow['pid'])
+                newpid = oldpid|(pid)
+                df.loc[mdidx,'pid']  = newpid
+                print symbol,newpid
+                chgno+=1
+            else:
+                print symbol,"not found"
+        print "total symbollist number=",len(df.index)
+        print "changed number=",chgno
+        return df
+        
                 
         
     def process(self): 

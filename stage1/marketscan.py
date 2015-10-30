@@ -59,19 +59,7 @@ class MarketScan:
         #self.sgyInfo = {'ms_pvm':0,"ms_reuter":0,"zack_data":0}
         
         return
-    '''  
-    def getTradeSupport(self):
-        return self.tradesup
 
-    def getSimuTable(self):
-        return self.simutable
-    
-    def getResultPath(self):
-        return self.outputpath
-        
-    def getNumBest(self):
-        return self.nmuBest
-    '''           
     def usage(self):
         print "marketscan.py -f <portfolio_file> -g strategy&parameter=value -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
         print 'run marketscan.py -g "st_perf" -i 1,2,3 --loadmd -h'
@@ -145,7 +133,8 @@ class MarketScan:
     '''
     strategy_name&parameter=value
     st_rsi&cl=14,st_macd&f=10&s=5
-    ms_pvm&download&pe<20&mc>1000
+    ms_pvm&download&$pe<20&mc>1000
+    evaluate string start with $
     '''    
     def parseStrategy(self,arg):
         l_sgy = {}
@@ -154,16 +143,17 @@ class MarketScan:
             param = {}
             for token in item.split("&"):
                 if idx == 0:                    
-                    l_sgy[token] = param
+                    l_sgy[token] = param #first one is strategy
                 else:
-                    '''
-                    k= token.split('=')
-                    if (len(k)>1):
-                        param[k[0]] = k[1]
+                    if (token[0]!='$'):#split by '=' again 
+                        k= token.split('=')
+                        if (len(k)>1):
+                            param[k[0]] = k[1]
+                        else:
+                            param[k[0]] = ""
                     else:
-                        param[k[0]] = ""
-                    '''
-                    param[token] = ""
+                        token = token[1:]
+                        param[token] = ""
                 idx += 1
         print l_sgy
         return l_sgy
@@ -380,6 +370,12 @@ class MarketScan:
                 print "screening ",sgyname
                 sgx = self.sgyInx[sgyname]
                 table = sgx.runScan(table)
+        
+        # daily report file
+        reportfile = open("dailyreport.txt", "w")
+        print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
+        print >>reportfile, table
+
         print table
         
         #save filted csv file
@@ -398,37 +394,27 @@ class MarketScan:
         
     def loadOhlc(self,symbol):
         filename = self.cachepath + symbol + "_ohlc.csv"
-        ohlc = pandas.read_csv(filename,index_col=['Date'])
-        # filter as start and end date
-#        ohlc = ohlc.loc[self.startdate:self.enddate]
-        ohlc.index = pandas.to_datetime(ohlc.index)  
-        date1 = datetime.datetime.strptime(self.startdate,'%Y-%m-%d')
-        date2 = datetime.datetime.strptime(self.enddate,'%Y-%m-%d')
-        #lst = pandas.date_range(self.startdate, self.enddate, freq='B')
-        #print lst[0],lst[-1]
-        
-        #ohlc = ohlc.loc['2015-01-02':'2015-10-23']
-        #print ohlc.index
-        #print type(ohlc.index[0])
-        
-        start = -1
-        end = -1
-        for idx,item in enumerate(ohlc.index):
-            #print item,type(item)
-            if (start==-1 and item >= date1):
-                start = idx
-                #print "start",item                
-            if item >= date2:
-                end = idx
-                print "end",item
-                break
+        try:
+            ohlc = pandas.read_csv(filename,index_col=['Date'])
+            ohlc.index = pandas.to_datetime(ohlc.index)  
+            date1 = datetime.datetime.strptime(self.startdate,'%Y-%m-%d')
+            date2 = datetime.datetime.strptime(self.enddate,'%Y-%m-%d')
+            #unable to get next business day
+            start = -1
+            end = -1
+            for idx,item in enumerate(ohlc.index):
+                #print item,type(item)
+                if (start==-1 and item >= date1):
+                    start = idx
+                    #print "start",item                
+                if item >= date2:
+                    end = idx
+                    print "end",item
+                    break
                 
-        #if (end==-1):
-        #    end = idx-1
-        #print start,end
-        ohlc = ohlc.iloc[start:end]
-        #print ohlc.index
-        #sys.exit()
+            ohlc = ohlc.iloc[start:end]
+        except:
+            ohlc = pandas.DataFrame()
         return ohlc
         
     def runIndicator(self, table):
@@ -440,6 +426,9 @@ class MarketScan:
             print "processing ",index, symbol
             if (self.loadmd):
                 ohlc = self.loadOhlc(symbol)
+                if ohlc.empty:
+                    print symbol," marketdata is not in cache, skip it"
+                    continue             
             else:
                 try:
                     ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)

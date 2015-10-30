@@ -3,7 +3,7 @@ trade support
 '''
 
 class TradeSupport:
-    def getLastSignal(self,buysg,sellsg):
+    def getLastSignal(self,buysg,sellsg,indct,buykey,sellkey):
         buyidx = 100000
         for idx,sig in enumerate(buysg[::-1]):
             if (sig!=""):
@@ -14,10 +14,13 @@ class TradeSupport:
             if (sig!=""):
                 sellidx = idx
                 break;
-        #print buyidx,sellidx
+        
         if (sellidx < buyidx):
+            indct[sellkey] = int(sellidx)
             return sellidx,"sell"
         else:
+            indct[buykey] = int(buyidx)
             return buyidx,"buy"
+        
 
         

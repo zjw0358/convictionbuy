@@ -44,7 +44,7 @@ class MarketData:
         items = line.split(",") #update ticklist only 
         tdict = {}
         for t in items:
-            td = t.split(".")
+            td = t.split("#") #delimiter for exchange
             tick = td[0]
             if len(td)>1:
                 exg = td[1]
@@ -224,6 +224,8 @@ class MarketData:
         return df
         
     #version2
+    #colsin - column to display
+    #param a dict,key is criteria string
     def evalCriteria(self, df, param, colsin):
         criteria = []
         outputcol = []
@@ -242,7 +244,7 @@ class MarketData:
             
         # filter by dynamic criteria string
         crstr = ""
-        pattern1 = "([a-z][a-z0-9-]*)"
+        pattern1 = "([a-z][a-z0-9-_]*)"
         pattern2 = "[></]"
         #pattern1 = "([\w]+)([><])([-+]?[0-9]*\.?[0-9]+)"  #cppettm < 20.00 (float)
         #pattern2 = "([\d\D]+)([><])([^[A-Za-z0-9_]+$])"  #saleqtr0 > saleqtr1

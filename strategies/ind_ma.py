@@ -63,5 +63,7 @@ class ind_ma(BaseIndPx):
         self.close_px = ohlc['Adj Close']
         self.algoFunc(self.close_px)     
 
+    '''
     def runScan(self,table):
         return table
+    '''

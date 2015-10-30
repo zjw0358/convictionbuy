@@ -5,6 +5,7 @@ http://fs.591hx.com/Article/2012-03-31/0000034983s.shtml
 from ind_dmi import ind_dmi
 from st_pattern import StrategyPattern
 from trade_support import TradeSupport
+import marketdata
 
 #move to st_pattern
 def mergeSignal(b,s,c):
@@ -18,8 +19,12 @@ def mergeSignal(b,s,c):
         return ""
 
 class st_dmi(ind_dmi):
+    def __init__(self):
+        self.mtd = marketdata.MarketData()
+        
     def usage(self):
         return "dmi=length"
+
 
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):        
@@ -39,7 +44,7 @@ class st_dmi(ind_dmi):
         #To be deleted
         #ohlc['buy'] = buysg
         #ohlc['sell'] = sellsg
-
+        #this is for backtest
         signal = map(mergeSignal, buysg,sellsg,closesg)
         ohlc['signal'] = signal
         
@@ -52,18 +57,33 @@ class st_dmi(ind_dmi):
             ohlc['adx'] = self.adx
             print ohlc
         '''
-        #print buysg
-        #print ["%s\n" % item  for item in buysg]        
-        #print sellsg
-        
-        idx,sig = tsup.getLastSignal(buysg,sellsg)
-        sigstr = "%s(%d)" % (sig,idx)
-        if (sig=="buy"):            
-            self.ind['dmi_buy'] = sigstr
-        else:
-            self.ind['dmi_sell'] = sigstr
+
+        tsup.getLastSignal(buysg,sellsg, self.ind,'dmi_buy','dmi_sell')
         pass    
 
-    def runScan(self,table):
+    #difficult to directly use criteria string
+    #criteria doesn't know 'or'
+    # buy<20 | sell<30
+    def runScan0(self,table):
+        mode = 0
+        if 'buy' in self.param:
+            bl = int(self.param['buy'])
+            mode = mode|1
+        if 'sell' in self.param:
+            sl = int(self.param['sell'])
+            mode = mode|2
+            
+        if (mode==1):
+            table = table[(table['dmi_buy'] < bl)]
+        elif (mode==2):
+            table = table[(table['dmi_sell'] < sl)]
+        elif (mode==3):
+            table = table[(table['dmi_buy'] < bl) | (table['dmi_sell'] < sl)]
+
         return table
-        
+
+    # evaluate criteria string is more convenient   
+    def runScan(self,df):
+        col = df.columns.values 
+        df = self.mtd.evalCriteria(df,self.param,col) 
+        return df        

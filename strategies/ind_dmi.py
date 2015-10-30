@@ -48,16 +48,6 @@ def calcDX2(pdi,ndi):
 class ind_dmi(BaseIndPx):
     def usage(self):
         return "dmi=length"
-    '''
-    def setupParam(self,param):
-        return    
-       
-    def trueRange(self,high,close,low):
-        return max(max(high-low,abs(high-close)),abs(low-close))
-
-    def movingAverage(self,data,length):
-        return pandas.stats.moments.rolling_mean(data,length) #.tolist()      
-    ''' 
   
     #slow implementation        
     def algoFunc1(self,df0):
