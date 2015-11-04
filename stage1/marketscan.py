@@ -4,6 +4,7 @@
 import getopt
 import datetime
 import sys
+import os
 sys.path.insert(0, "../strategies/")
 #sys.path.insert(0, "../screen/")
 
@@ -15,6 +16,7 @@ import ms_csvchart
 import ms_backtest
 import pandas
 import xlsxwriter
+
 #sys.path.insert(0, "../src/")
 
 '''
@@ -388,7 +390,12 @@ class MarketScan:
         
     #save ohlc to csv file
     def saveOhlc(self, symbol, ohlc):
+        #delete file firstly
         filename = self.cachepath + symbol + "_ohlc.csv"
+        try:
+            os.remove(filename)
+        except:
+            pass
         ohlc.to_csv(filename,sep=',')
         pass
         
