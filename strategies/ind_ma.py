@@ -9,11 +9,6 @@ class ind_ma(BaseIndPx):
     def usage(self):
         return "ma=length"
 
-  
-    # chart pattern recognize
-    # move to standard package
-    #def cpr(self):
-    #    return
         
     '''
     ma10,ma50,ma200

@@ -16,7 +16,7 @@ import ms_csvchart
 import ms_backtest
 import pandas
 import xlsxwriter
-
+from sinaapi import SinaMarketData
 #sys.path.insert(0, "../src/")
 
 '''
@@ -43,7 +43,6 @@ class MarketScan:
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
         self.mtd = marketdata.MarketData()
-        # draw chart
         self.csvchart = ms_csvchart.ms_csvchart()
         self.hasBackTest = False
         self.haschart = False
@@ -54,6 +53,7 @@ class MarketScan:
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         self.savemd = False
         self.loadmd = False
+        self.feed = "yahoo"  #feeder
         
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
@@ -71,7 +71,7 @@ class MarketScan:
         self.ticklist=[]
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest"])
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -105,7 +105,8 @@ class MarketScan:
                 self.savemd = True
             elif opt in ("--loadmd"):
                 self.loadmd = True
-
+            elif opt in ("--feed"):
+                self.feed = arg
                 
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -130,8 +131,11 @@ class MarketScan:
         print "load marketdata", self.loadmd
         print "save marketdata", self.savemd
         print "backtest", self.hasBackTest
+        print "feeder", self.feed
         print "=========================="
         
+        if ("sina" in self.feed):
+            self.sinaapi = SinaMarketData()
     '''
     strategy_name&parameter=value
     st_rsi&cl=14,st_macd&f=10&s=5
@@ -438,7 +442,11 @@ class MarketScan:
                     continue             
             else:
                 try:
-                    ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+                    if ("sina" in self.feed):
+                        ohlc = self.sinaapi.reqHisData(symbol)
+                    else:
+                        ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+                        
                     if (self.savemd):
                         self.saveOhlc(symbol,ohlc)
                 except:
