@@ -4,7 +4,20 @@ import numpy
 class StrategyPattern(object):
     def __init__(self):
         pass
-    
+  
+
+    def mergeSignal(self, b,s,c):
+        if (b!=""):
+            return b
+        elif (s!=""):
+            return s
+        elif (c!=""):
+            return c
+        else:
+            return ""
+
+    #fast cross above slow line  - buy
+    #fast cross below slow line  - buy
     def cross(self, fast, slow, nbar):
         prevFast = fast[0]
         prevSlow = slow[0]
@@ -57,7 +70,65 @@ class StrategyPattern(object):
             
         return buysg,sellsg
 
-    # fast and slow covergency
+    #e.g rsi crossabove 30 means buy signal
+    # rsi crossabove 70 means sell signal
+    def crossValue(self, bline, sline, buyValue, sellValue, nbar):
+        prevBuy = bline[0]
+        prevSell = sline[0]
+        buysg = []
+        buyflag = False        
+        buycount = 1
+        
+        sellsg = []
+        sellflag = False        
+        sellcount = 1
+        
+        
+        for idx, currentBuy in enumerate(bline):
+            buysignal = ""
+            sellsignal = ""
+            
+            currentSell = sline[idx]
+                        
+            if (buyflag):
+                #second round check
+                if (currentBuy > buyValue):
+                    buycount+=1
+                    if (buycount == nbar):
+                        buysignal = "buy"
+                        buyflag = False
+                        buycount = 1
+                else:
+                    buyflag = False
+                    buycount = 1
+                pass
+            else:
+                if (prevBuy < buyValue) and (currentBuy > buyValue) :
+                    buyflag = True
+
+            if (sellflag):
+                 if (currentSell < sellValue):                
+                     sellcount+=1
+                     if (sellcount == nbar):
+                        sellsignal = "sell"
+                        sellcount = 1
+                        sellflag = False
+                 else:
+                     sellcount = 1
+                     sellflag = False
+            else:            
+                if (prevSell > sellValue) and (currentSell < sellValue):                
+                    sellflag = True      
+          
+                                        
+            prevBuy = currentBuy
+            prevSell = currentSell
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)
+            
+        return buysg,sellsg
+
+    # fast and slow covergency, used to find 'close' signal
     def covergency(self,fast,slow,nbar):
         prevFast = fast[0]
         prevSlow = slow[0]
@@ -226,5 +297,6 @@ class StrategyPattern(object):
             ema.append(tmp)
     
         return ema
+    
     
     

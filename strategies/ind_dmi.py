@@ -48,64 +48,7 @@ def calcDX2(pdi,ndi):
 class ind_dmi(BaseIndPx):
     def usage(self):
         return "dmi=length"
-  
-    #slow implementation        
-    def algoFunc1(self,df0):
-        length = 14
-        prevHigh = 0.
-        prevLow = 0.
-        plusDM = 0.
-        minusDM = 0.
-        index = 0
-        self.inddf = df0[['Adj Close']]
-        #start = time.time()
-        for row_index, row in df0.iterrows():
-            #print index
-            close = row['Adj Close']
-            high = row['High']
-            low = row['Low']            
-
-            #tr.append(self.trueRange(high, close, low))
-            self.inddf.loc[row_index,'tr'] = self.trueRange(high, close, low)     
-            
-            if (index>0):
-                hiDiff = high - prevHigh
-                loDiff = prevLow - low
-                if hiDiff > loDiff and hiDiff > 0:
-                    plusDM = hiDiff
-                else:
-                    plusDM = 0;
-                    
-                if loDiff > hiDiff and loDiff > 0:
-                    minusDM = loDiff
-                else:
-                    minusDM = 0;
-                #print row_index, index, high,prevHigh, low, prevLow,hiDiff,loDiff,plusDM
-                self.inddf.loc[row_index,'pdm'] = plusDM   
-                self.inddf.loc[row_index,'ndm'] = minusDM          
-                #pdm.append(plusDM)
-                #ndm.append(minusDM)
-            else:
-                self.inddf.loc[row_index,'pdm'] = 0   
-                self.inddf.loc[row_index,'ndm'] = 0    
-            prevHigh = high
-            prevLow = low
-            index+=1
-        #end = time.time()
-        atr = self.movingAverage(self.inddf['tr'],length)
-        pdi = 100*self.movingAverage(self.inddf['pdm'],length) / atr
-        ndi = 100*self.movingAverage(self.inddf['ndm'],length) / atr
-        self.inddf['pdi'] = pdi          
-        self.inddf['ndi'] = ndi 
-
-        self.inddf['dx'] = self.inddf.apply(calcDX,axis=1)
-        adx = self.movingAverage(self.inddf['dx'],length)
-        self.inddf['adx'] = adx
-        self.inddf = self.inddf[['Adj Close','pdi','ndi','adx']]
-        #print self.inddf
-        print end - start
-        pass  
-
+ 
     #much faster
     def algoFunc(self,df0):
         length = 14

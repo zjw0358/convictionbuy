@@ -12,7 +12,7 @@ class SinaMarketData:
         url = "http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?symbol=%s&type=60&___qn=3" % (symbol)
         df = pandas.read_json(url)
         df.rename(columns={'d': 'Date','c': 'Close','h':'High','l':'Low','o':'Open','v':'Volume'}, inplace=True)
-        df['Adj CLose'] = df['Close']
+        df['Adj Close'] = df['Close']
         df.set_index('Date',inplace=True)
         return df        
         

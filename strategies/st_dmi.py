@@ -7,6 +7,7 @@ from st_pattern import StrategyPattern
 from trade_support import TradeSupport
 import marketdata
 
+'''
 #move to st_pattern
 def mergeSignal(b,s,c):
     if (b!=""):
@@ -17,6 +18,7 @@ def mergeSignal(b,s,c):
         return c
     else:
         return ""
+'''
 
 class st_dmi(ind_dmi):
     def __init__(self):
@@ -41,10 +43,7 @@ class st_dmi(ind_dmi):
         buysg,sellsg = sp.divergencyCross(self.pdi, self.ndi, 2)
         closesg = sp.covergency(self.pdi, self.ndi, 2)
         
-        #To be deleted
-        #ohlc['buy'] = buysg
-        #ohlc['sell'] = sellsg
-        #this is for backtest
+        #process these signale for backtest
         signal = map(mergeSignal, buysg,sellsg,closesg)
         ohlc['signal'] = signal
         

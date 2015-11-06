@@ -53,7 +53,7 @@ class MarketScan:
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         self.savemd = False
         self.loadmd = False
-        self.feed = "yahoo"  #feeder
+        self.feed = "yahoo"  # yahoo feeder
         
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
@@ -71,7 +71,7 @@ class MarketScan:
         self.ticklist=[]
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed"])
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed="])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -395,7 +395,7 @@ class MarketScan:
     #save ohlc to csv file
     def saveOhlc(self, symbol, ohlc):
         #delete file firstly
-        filename = self.cachepath + symbol + "_ohlc.csv"
+        filename = self.cachepath + symbol + "_ohlc_" + self.feed + ".csv"
         try:
             os.remove(filename)
         except:
@@ -404,7 +404,7 @@ class MarketScan:
         pass
         
     def loadOhlc(self,symbol):
-        filename = self.cachepath + symbol + "_ohlc.csv"
+        filename = self.cachepath + symbol + "_ohlc_" + self.feed + ".csv"
         try:
             ohlc = pandas.read_csv(filename,index_col=['Date'])
             ohlc.index = pandas.to_datetime(ohlc.index)  
