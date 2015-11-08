@@ -44,7 +44,7 @@ class st_dmi(ind_dmi):
         closesg = sp.covergency(self.pdi, self.ndi, 2)
         
         #process these signale for backtest
-        signal = map(mergeSignal, buysg,sellsg,closesg)
+        signal = map(sp.mergeSignal, buysg,sellsg,closesg)
         ohlc['signal'] = signal
         
         '''

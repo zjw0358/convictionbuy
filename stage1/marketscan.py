@@ -434,7 +434,7 @@ class MarketScan:
         #mergedf = pandas.DataFrame()       
         for index, row in table.iterrows():
             symbol = row['symbol']
-            print "processing ",index, symbol
+            print "downloading ",index, symbol
             if (self.loadmd):
                 ohlc = self.loadOhlc(symbol)
                 if ohlc.empty:
@@ -465,6 +465,7 @@ class MarketScan:
                 sgx = self.sgyInx[sgyname]
                 if sgx.needPriceData()==True:
                     sgx.cleanup()
+                    print "processing",symbol
                     sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname])
                     
                     #TODO if backtest skip this?
