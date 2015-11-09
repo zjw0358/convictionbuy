@@ -5,6 +5,7 @@ import getopt
 import datetime
 import sys
 import os
+from timeit import default_timer as timer
 sys.path.insert(0, "../strategies/")
 #sys.path.insert(0, "../screen/")
 
@@ -435,6 +436,7 @@ class MarketScan:
         for index, row in table.iterrows():
             symbol = row['symbol']
             print "downloading ",index, symbol
+            start = timer()
             if (self.loadmd):
                 ohlc = self.loadOhlc(symbol)
                 if ohlc.empty:
@@ -455,17 +457,18 @@ class MarketScan:
                     if numError>3:
                         print "too many errors when downloading symbol data, exit now"
                         sys.exit()
-                    continue
-                    
+                    continue            
+            end = timer()  
+            print "\ttime",round(end - start,3)
             #add 'px' column
             table.loc[index,'px'] = ohlc['Adj Close'][-1]
-                        
+            start = timer()
+            print "processing",symbol
             for sgyname in self.sgyInx:
                 #if not sgyname in self.sgyInfo:
                 sgx = self.sgyInx[sgyname]
                 if sgx.needPriceData()==True:
                     sgx.cleanup()
-                    print "processing",symbol
                     sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname])
                     
                     #TODO if backtest skip this?
@@ -478,6 +481,8 @@ class MarketScan:
                     if (self.hasBackTest):
                         self.backtest.runBackTest(symbol,ohlc)
                         pass
+            end = timer()  
+            print "\ttime",round(end - start,3)
         if (self.hasBackTest):
             backtestDf = self.backtest.getBackTestResult()
             print "========================="

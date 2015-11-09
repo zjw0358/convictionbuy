@@ -15,10 +15,94 @@ class StrategyPattern(object):
             return c
         else:
             return ""
+            
+    def combineAndSignal(self,*signals):
+        siglen = len(signals)
+        if (siglen ==1):
+            return signals[0]
+        if (len(signals) <1):
+            return None
 
+        newSigLst = []
+        length = len(signals[0])
+
+        for index in range(0, length):
+            sigstr = signals[0][index]
+            for sgidx in range(1, siglen):
+                tocomp = signals[sgidx][index]
+                if (tocomp!=sigstr):
+                    print index,"not equal",sigstr,tocomp
+                    sigstr=""
+                    break;
+            newSigLst.append(sigstr)
+            
+        return newSigLst
+        
+    #simplicity compare the two lines, fast>slow -> buy,verse vice sell
+    def compare(self, fast, slow, offset, nbar=1):
+        prevFast = fast[0]
+        prevSlow = slow[0]
+        buysg = []
+        sellsg = []
+        buyflag = False
+        buycount = 1
+        sellflag = False
+        sellcount = 1
+        
+        for idx, curSlow in enumerate(slow):
+            buysignal = ""
+            sellsignal = ""            
+            currentFast = fast[idx]
+            if idx>=offset:
+                if (buyflag):
+                    #second round check
+                    if (currentFast > curSlow):
+                        buycount+=1
+                        if (buycount == nbar):
+                            buysignal = "buy"
+                            buyflag = False
+                            buycount = 1
+                    else:
+                        buyflag = False
+                        buycount = 1
+                    pass
+                else:
+                    if (currentFast > curSlow) :
+                        if (buycount == nbar):
+                            buysignal = "buy"
+                            buyflag = False
+                            buycount = 1
+                        else:
+                            buyflag = True
+    
+                if (sellflag):
+                    if (currentFast < curSlow):                
+                        sellcount+=1
+                        if (sellcount == nbar):
+                            sellsignal = "sell"
+                            sellcount = 1
+                            sellflag = False
+                    else:
+                        sellcount = 1
+                        sellflag = False
+                else:            
+                    if (currentFast < curSlow):
+                        if (sellcount == nbar):
+                            sellsignal = "sell"
+                            sellcount = 1
+                            sellflag = False
+                        sellflag = True      
+                                        
+            prevFast = currentFast
+            prevSlow = curSlow
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)
+            
+        return buysg,sellsg
+        
     #fast cross above slow line  - buy
-    #fast cross below slow line  - buy
-    def cross(self, fast, slow, nbar):
+    #fast cross below slow line  - sell
+    def cross(self, fast, slow, offset, nbar):
         prevFast = fast[0]
         prevSlow = slow[0]
         buysg = []
@@ -32,36 +116,36 @@ class StrategyPattern(object):
             buysignal = ""
             sellsignal = ""
             currentFast = fast[idx]
-            
-            if (buyflag):
-                #second round check
-                if (currentFast > curSlow):
-                    buycount+=1
-                    if (buycount == nbar):
-                        buysignal = "buy"
+            if (idx>=offset):
+                if (buyflag):
+                    #second round check
+                    if (currentFast > curSlow):
+                        buycount+=1
+                        if (buycount == nbar):
+                            buysignal = "buy"
+                            buyflag = False
+                            buycount = 1
+                    else:
                         buyflag = False
                         buycount = 1
+                    pass
                 else:
-                    buyflag = False
-                    buycount = 1
-                pass
-            else:
-                if (prevFast < prevSlow) and (currentFast > curSlow) :
-                    buyflag = True
-
-            if (sellflag):
-                 if (currentFast < curSlow):                
-                     sellcount+=1
-                     if (sellcount == nbar):
-                        sellsignal = "sell"
+                    if (prevFast < prevSlow) and (currentFast > curSlow) :
+                        buyflag = True
+    
+                if (sellflag):
+                    if (currentFast < curSlow):                
+                        sellcount+=1
+                        if (sellcount == nbar):
+                            sellsignal = "sell"
+                            sellcount = 1
+                            sellflag = False
+                    else:
                         sellcount = 1
                         sellflag = False
-                 else:
-                     sellcount = 1
-                     sellflag = False
-            else:            
-                if (prevFast > prevSlow) and (currentFast < curSlow):                
-                    sellflag = True      
+                else:            
+                    if (prevFast > prevSlow) and (currentFast < curSlow):                
+                        sellflag = True      
                                         
             prevFast = currentFast
             prevSlow = curSlow
@@ -297,6 +381,23 @@ class StrategyPattern(object):
             ema.append(tmp)
     
         return ema
+
+    #TODO not try this method yet
+    def moving_average(self,x, n, type='simple'):
+        """
+        compute an n period moving average.    
+        type is 'simple' | 'exponential'    
+        """
+        x = np.asarray(x)
+        if type=='simple':
+            weights = np.ones(n)
+        else:
+            weights = np.exp(np.linspace(-1., 0., n))
     
+        weights /= weights.sum()
+        
+        a =  np.convolve(x, weights, mode='full')[:len(x)]
+        a[:n] = a[n]        
+        return a
     
     
