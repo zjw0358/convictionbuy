@@ -263,6 +263,39 @@ class StrategyPattern(object):
             
         return closesg
         
+    # fast and slow covergency, used to find 'close' signal
+    # fast and slow drop, but fast drop further
+    def covergency1(self,fast,slow):
+        prevFast = fast[0]
+        prevSlow = slow[0]
+        closesg = []
+        closeflag = False
+        difftgr = 0.3
+        fstgr = 0.999
+        
+        for idx, curSlow in enumerate(slow): 
+            closesignal = ""
+            currentFast = fast[idx]
+            prevDiff = abs(prevFast-prevSlow)
+            curDiff = abs(currentFast-curSlow)            
+            '''
+            and curDiff/prevDiff < error
+            and currentFast/prevFast < error
+            and curSlow/prevSlow < error
+            '''      
+            if (curDiff < prevDiff and currentFast < prevFast and curSlow < prevSlow 
+                and curDiff/prevDiff < difftgr
+                and currentFast/prevFast < fstgr
+                and curSlow/prevSlow < fstgr):
+                #print curDiff/prevDiff,currentFast/prevFast,curSlow < prevSlow
+                #closesignal = "close%f,%f,%f" %(curDiff/prevDiff,currentFast/prevFast,curSlow/prevSlow)
+                closesignal = " close"
+            prevFast = currentFast
+            prevSlow = curSlow
+            closesg.append(closesignal)
+            
+        return closesg
+         
     #fast cross above slow, and keep divengency moving at least n bars 
     #divergency cross
     def divergencyCross(self, fast, slow, nbar):

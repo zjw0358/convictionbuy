@@ -38,15 +38,17 @@ class st_aeoas(ind_aeoas):
         buysg2,sellsg2 = sp.compare(ohlc['Close'], ohlc['Open'])
         buysg = sp.combineAndSignal(buysg1,buysg2) 
         sellsg = sp.combineAndSignal(sellsg1,sellsg2)
-        signal = map(sp.mergeSignal, buysg,sellsg,[])
+        closesg = sp.covergency1(self.avgTypEmaLst, self.avgHacEmaLst)
+        signal = map(sp.mergeSignal, buysg,sellsg,closesg)
                 
         ohlc['signal'] = signal
-        ohlc['buy1'] = buysg1
-        ohlc['buy2'] = buysg2
+        #ohlc['buy1'] = buysg1
+        #ohlc['buy2'] = buysg2
         ohlc['buy3'] = buysg
-        ohlc['sell1'] = sellsg1
-        ohlc['sell2'] = sellsg2
+        #ohlc['sell1'] = sellsg1
+        #ohlc['sell2'] = sellsg2
         ohlc['sell3'] = sellsg
+        ohlc['close'] = closesg
 
         print ohlc
         
