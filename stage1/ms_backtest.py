@@ -14,6 +14,8 @@ class Ordermg:
         self.win = 0
         self.winrate = 0.
         self.gainreturn = 0.
+        self.maxgainp = 0.
+        self.maxlossp = 0.
         
     def endTrade(self,row,index):
         avgpx = (row['High']+row['Low']+row['Close']+row['Open'])/4
@@ -23,11 +25,18 @@ class Ordermg:
         else:
             self.winrate = round(float(self.win)/self.totalTrade,2)
         self.gainreturn = round(self.gainloss/self.power,2)
-        print self.totalTrade,self.winrate,self.gainloss, self.gainreturn
+        print "================================"
+        print "Total Trade",self.totalTrade
+        print "Win Rate%",round(self.winrate*100,2)
+        print "Gain/Loss",self.gainloss
+        print "Return%",round(self.gainreturn*100,2)
+        print "Max Gain%",round(self.maxgainp,2)
+        print "Max Loss%",round(self.maxlossp,2)
+        print "================================"
+        #print self.totalTrade,self.winrate,self.gainloss, self.gainreturn, self.maxgainp, self.maxlossp
         
     # close a position
     def closePos(self,index,avgpx,close,adjclose):
-        #print avgpx,close,adjclose
         if (self.shares > 0):  
             if ((abs(avgpx-adjclose)/adjclose*100)>5):
                 #check if stock split
@@ -38,6 +47,11 @@ class Ordermg:
             self.totalTrade += 1
             if gl>0:
                 self.win += 1
+                gp = gl*100/self.power
+                self.maxgainp = max(gp,self.maxgainp)
+            else:
+                gp = gl*(-100)/self.power
+                self.maxlossp = max(gp,self.maxlossp)
             self.gainloss += gl
             self.shares = 0
             self.position = "sell"
@@ -52,7 +66,8 @@ class Ordermg:
         print "buy@",index,"px=",avgpx
         self.shares = self.power / avgpx
         self.position = "buy"
-        pass                    
+        pass    
+                
     def procPendingOrder(self,row,index):       
         avgpx = (row['High']+row['Low']+row['Close']+row['Open'])/4
         if (self.pendingOrder != ""):
@@ -145,3 +160,4 @@ class ms_backtest:
         return pandas.DataFrame({'symbol':self.symbols,'total trade':self.totalTrade,'win rate':self.winrate,'gain':self.gain,'return%':self.gainreturn},columns=\
         ['symbol','total trade','win rate','gain','return%'])
         pass
+        

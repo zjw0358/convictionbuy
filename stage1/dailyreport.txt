@@ -3,4 +3,4 @@
 ====  scan_st_aeoas_  =====
 
   symbol exg     px
-0    ABT     45.180
+0    ABT     45.070

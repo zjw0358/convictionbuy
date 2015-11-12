@@ -39,7 +39,7 @@ class StrategyPattern(object):
         return newSigLst
         
     #simplicity compare the two lines, fast>slow -> buy,verse vice sell
-    def compare(self, fast, slow, offset, nbar=1):
+    def compare(self, fast, slow, nbar = 1, offset = 0):
         prevFast = fast[0]
         prevSlow = slow[0]
         buysg = []
@@ -91,7 +91,8 @@ class StrategyPattern(object):
                             sellsignal = "sell"
                             sellcount = 1
                             sellflag = False
-                        sellflag = True      
+                        else:
+                            sellflag = True      
                                         
             prevFast = currentFast
             prevSlow = curSlow
@@ -102,7 +103,7 @@ class StrategyPattern(object):
         
     #fast cross above slow line  - buy
     #fast cross below slow line  - sell
-    def cross(self, fast, slow, offset, nbar):
+    def cross(self, fast, slow, nbar = 1,offset = 0):
         prevFast = fast[0]
         prevSlow = slow[0]
         buysg = []
@@ -131,7 +132,13 @@ class StrategyPattern(object):
                     pass
                 else:
                     if (prevFast < prevSlow) and (currentFast > curSlow) :
-                        buyflag = True
+                        if (buycount == nbar):
+                            buysignal = "buy"
+                            buyflag = False
+                            buycount = 1
+                        else:
+                            buyflag = True
+
     
                 if (sellflag):
                     if (currentFast < curSlow):                
@@ -145,7 +152,12 @@ class StrategyPattern(object):
                         sellflag = False
                 else:            
                     if (prevFast > prevSlow) and (currentFast < curSlow):                
-                        sellflag = True      
+                        if (sellcount == nbar):
+                            sellsignal = "sell"
+                            sellcount = 1
+                            sellflag = False
+                        else:
+                            sellflag = True       
                                         
             prevFast = currentFast
             prevSlow = curSlow

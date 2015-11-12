@@ -1,4 +1,5 @@
 '''
+zack module, update zack data from website: www.zacks.com
 run zack_data.py -f symbollist.txt -t starttick -u update_tick_list -r zack_result_csvfile"
 '''
 
@@ -37,11 +38,46 @@ class zack_data:
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
         
-
+    def parseOption(self):
+        self.ticklist=[]
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:h", ["filename", "ticklist","zackfile","pid","merge"])
+        except getopt.GetoptError:
+            print "parameter error"
+            sys.exit()
+        for opt, arg in opts:
+            if opt in ("-f", "--filename"):
+                self.fileName = arg
+            #elif opt in ("-t", "--start"):
+            #    self.starttick = arg
+            elif opt in ("-t","--ticklist"):
+                tdict = self.mtd.parseTickLst(arg)
+                #print tdict
+                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+                for co in self.columns:
+                    self.tickdf[co]=""
+                #print self.tickdf
+            elif opt in ("-r","--zackfile"):
+                self.zackfile = arg
+            elif opt in ("-i","--pid"):
+                idLst = arg.split(",")
+                self.pid = self.mtd.parsePidLst(idLst)
+            elif opt in ("-h"):
+                self.usage()
+                sys.exit()
+            elif opt in ("--merge"):
+                self.option = "merge" #merge zackfile with others in symbolfile
+                
+        print "symbolfile=",self.fileName
+        print "ticklist==="
+        if not self.tickdf.empty:
+            print self.tickdf
+        print "zackfile=",self.zackfile
+        return
         
     def usage(self):
         print "run zack_data.py -t aapl " #update aapl only
-        print "run zack_data.py -r zackfile -t aapl -m" #merge with zackfile
+        print "run zack_data.py -r zackfile -t aapl --merge" #merge with zackfile
         print "run zack_data.py -i 1,2,3 "
 
 
@@ -253,42 +289,7 @@ class zack_data:
         #print dct
         return dct
                 
-    def parseOption(self):
-        self.ticklist=[]
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:hm", ["filename", "ticklist","zackfile","pid"])
-        except getopt.GetoptError:
-            print "parameter error"
-            sys.exit()
-        for opt, arg in opts:
-            if opt in ("-f", "--filename"):
-                self.fileName = arg
-            #elif opt in ("-t", "--start"):
-            #    self.starttick = arg
-            elif opt in ("-t","--ticklist"):
-                tdict = self.mtd.parseTickLst(arg)
-                #print tdict
-                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
-                for co in self.columns:
-                    self.tickdf[co]=""
-                #print self.tickdf
-            elif opt in ("-r","--zackfile"):
-                self.zackfile = arg
-            elif opt in ("-i","pid"):
-                idLst = arg.split(",")
-                self.pid = self.mtd.parsePidLst(idLst)
-            elif opt in ("-h"):
-                self.usage()
-                sys.exit()
-            elif opt in ("-m"):
-                self.option = "merge" #merge zackfile with others in symbolfile
-                
-        print "symbolfile=",self.fileName
-        print "ticklist==="
-        if not self.tickdf.empty:
-            print self.tickdf
-        print "zackfile=",self.zackfile
-        return
+   
   
     #load zack csv file
     def loadZackCsvFile(self,fileName):
@@ -333,33 +334,9 @@ class zack_data:
             print "Missing list:",missLst
             
     # update tick list,dfnc - df not change, dfup - df to update 
-    def updateTickLst(self,dfnc,dfup):
-        #add column for tickdf dataframe
-        '''
-        for co in self.columns:
-            self.tickdf[co]=""
-
-        if zackFile!="":
-            zackTable = self.loadZackCsvFile(zackFile)
-        else:
-            zackTable = tickdf
-            
-        if tickdf.empty:
-            if not zackTable.empty:
-                tickdf =  zackTable
-            else:
-                print "both zackCsvFile and tickdf are empty,exit"
-                return
-           
-        updatelst = tickdf['symbol']
-        lenticklst = len(tickdf.index)    
-        lf =  zackTable[~zackTable['symbol'].isin(updatelst)]
-        
-        '''
-        lenticklst = len(dfup.index)    
-        
+    def updateTickLst(self,dfnc,dfup):      
+        lenticklst = len(dfup.index)  
         allLst = {}
-        #allCol = ['symbol','exg'] + self.columns
         allCol = self.allcols
         for key in allCol:
             lst = []
@@ -425,24 +402,31 @@ class zack_data:
         if self.zackfile!="":
             zackTable = self.loadZackCsvFile(self.zackfile)
     
+        symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+        df = symbolTable[symbolTable['rank']>0]
+        df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
             
         if self.zackfile!="":
             if self.option == "merge":
                 zackList = zackTable['symbol']
                 if self.tickdf.empty:
-                    print "merge current zackfile with others from symbolfile"
-                    symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
-                    df = symbolTable[symbolTable['rank']>0]
-                    df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+                    print "keep current zackfile and merge with others from symbolfile(marketdata)"                    
                     dfup = df[~df['symbol'].isin(zackList)]
                     for co in self.columns:
                         dfup[co]=""
                 else:
                     print "merge current zackfile with others from ticklist"
-                    dfup = self.tickdf[~self.tickdf['symbol'].isin(zackList)]
+                    #dfup = self.tickdf[~self.tickdf['symbol'].isin(zackList)]
+                    ticklist = self.tickdf['symbol']
+                    dfup = df[df['symbol'].isin(ticklist)]                          
+                    for co in self.columns:
+                        dfup[co]=""                    
+                        #dfup.loc[0,co] = ""
+                    dfnc = zackTable[~zackTable['symbol'].isin(ticklist)] 
                     #print dfup
-                    #return
-                self.updateTickLst(zackTable,dfup)
+                    #print dfnc
+                    #sys.exit()
+                self.updateTickLst(dfnc,dfup)
             else:
                 print "update current zackfile only"
                 dfnc = pandas.DataFrame({},columns=self.allcols)
@@ -463,126 +447,11 @@ class zack_data:
                 dfnc = pandas.DataFrame({},columns=self.allcols)
                 self.updateTickLst(dfnc,self.tickdf)
                         
-    '''    
-    def write2File(self,zackranks):
-        fileName=self.outputpath + "zackrank_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
-        fp = open(fileName,'w',-1)
-        fp.writelines(["%s,%d\n" % (item,zackranks[item])  for item in zackranks])
-        fp.close()
-    '''
-    '''
-    def test(self):
-        #txt= '<div class="zr_rankbox">\n<p>Zacks Rank : 2-Buy <sup class=xxx\nmmk\n'
-        #pattern = '[\d\D]*Zacks[ETF|\s]?Rank[\s]?: (.)[\d\D]*'
-        pattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
-        #txt = '<p>Zacks Rank : 2-Buy <sup class='
-        txt = '<p>Zacks Rank : NA <sup clas'
-        #txt = '<p>Zacks Rank : 2-Buy <sup class='
-        #txt = 'Zacks ETF Rank: 2 - Buy'
-        an = re.match(pattern,txt)
-        if an!=None:
-            str1=an.group(1)
-            print str1
-        print an
-        
-    def testRank(self):
-        self.getSymbolRank('QQQ')   # 2 ETF
-        self.getSymbolRank('AAPL')  # 2 Buy
-        self.getSymbolRank('HUSA')  # 0 NR
-        self.getSymbolRank('GNMA')  # 0 NR ETF        
-        
-    def testAbr(self):
-        print self.getBrokerRecom('AAPL')
-        print self.getBrokerRecom('spy')
-        
-    def test(self):
-        return
-     # update tick list    
-    def updateTickLst(self,zackFile,tickdf):
-        #add column for tickdf dataframe
-        for co in self.columns:
-            self.tickdf[co]=""
-
-        if zackFile!="":
-            zackTable = self.loadZackCsvFile(zackFile)
-        else:
-            zackTable = tickdf
-            
-        if tickdf.empty:
-            if not zackTable.empty:
-                tickdf =  zackTable
-            else:
-                print "both zackCsvFile and tickdf are empty,exit"
-                return
-           
-        updatelst = tickdf['symbol']
-        lenticklst = len(tickdf.index)    
-        lf =  zackTable[~zackTable['symbol'].isin(updatelst)]
-
-        allLst = {}
-        allCol = ['symbol','exg'] + self.columns
-        for key in allCol:
-            lst = []
-            allLst[key] = lst
-        #print "len of allLst",len(allLst)                 
-        print "total",lenticklst,"ticks to be updated",len(lf.index),"to keep unchanged"
-
-        if lenticklst>100: 
-            outputfn = self.outputfn+"_bak"
-            outputfp = open(outputfn,'w',-1)         
-            header = 'symbol,exg,' + ', '.join(self.columns) + "\n"
-            outputfp.write(header)
-       
-       
-        for index, row in tickdf.iterrows():
-            #rowLst = []
-            print "downloading ",index,row['symbol'],row['exg']
-            rowdct = self.getZackData(row['symbol'])
-            if rowdct==None:
-                continue
-            line = row['symbol'] + ',' + row['exg']
-            if len(rowdct)>0:
-                self.verifyCol(rowdct)  
-                for key in self.columns:
-                    lst = allLst[key]
-                    if key in rowdct:
-                        lst.append(rowdct[key])
-                        line = line + "," + rowdct[key]
-                    else:
-                        lst.append("")   
-                        line = line + "," + ""
-                                     
-                allLst['symbol'].append(row['symbol'])
-                allLst['exg'].append(row['exg'])
-                #write to disk is ticks length > 100
-                if lenticklst>100:                 
-                    line = line + "\n"
-                    outputfp.write(line)
-                    if index%10 == 0:
-                        outputfp.flush()
-                                    
-            else:
-                print "No zack information,skip ",row['symbol'],row['exg']
-        
-        if lenticklst>100:
-            outputfp.close()
-        rf = pandas.DataFrame(allLst,columns = allCol)
-        #print lf
-        #print rf
-        mf = lf.append(rf)
-        #print mf
-        mf.to_csv(self.outputfn,sep=',',index=False)
-    '''
-       
+         
     def process(self):
         self.parseOption()
         self.updateData()
         print "Done,exit..."
-    '''    
-    def needPriceData(self):
-        return False
-    ''' 
-
   
         
 ################################################################################        

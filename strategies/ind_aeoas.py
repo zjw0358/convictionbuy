@@ -57,7 +57,7 @@ class ind_aeoas(BaseIndPx):
                 haOpen = (prevAvg + haopenLst[index-1])/2
                 avgTyp = typical * self.typema1 + self.typema2 * self.avgTypEmaLst[index-1]
             else:
-                haOpen = 0
+                haOpen = openv
                 avgTyp = typical
 
             haC = (currAvg + haOpen + max(highv,haOpen) + min(lowv, haOpen)) / 4

@@ -34,9 +34,9 @@ class st_aeoas(ind_aeoas):
         sp = StrategyPattern()
         tsup = TradeSupport()
 
-        buysg1,sellsg1 = sp.compare(self.avgTypEmaLst, self.avgHacEmaLst, self.hacWin*2)        
-        buysg2,sellsg2 = sp.compare(ohlc['Close'], ohlc['Open'], self.hacWin*2)
-        buysg = sp.combineAndSignal(buysg1,buysg2)
+        buysg1,sellsg1 = sp.cross(self.avgTypEmaLst, self.avgHacEmaLst) #offset=0        
+        buysg2,sellsg2 = sp.compare(ohlc['Close'], ohlc['Open'])
+        buysg = sp.combineAndSignal(buysg1,buysg2) 
         sellsg = sp.combineAndSignal(sellsg1,sellsg2)
         signal = map(sp.mergeSignal, buysg,sellsg,[])
                 
