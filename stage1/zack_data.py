@@ -12,7 +12,8 @@ import getopt
 import sys
 import datetime
 import marketdata
-
+from timeit import default_timer as timer
+        
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 
@@ -217,6 +218,7 @@ class zack_data:
         
     #first try             
     def getEstimate(self, symbol):
+        start = timer()
         self.isEtf = False #reset
         url = "http://www.zacks.com/stock/quote/" + symbol + "/detailed-estimates"
         try:
@@ -224,7 +226,9 @@ class zack_data:
         except:
             print "unable to get",symbol,"estimate,skip"
             return None
-            
+        end = timer()
+        print "\tget estimate data",(end-start)
+        start = timer()
         soup = BeautifulSoup(page)
         epsEstmDct = {}
         isetf = self.parseETF(soup)        
@@ -261,6 +265,9 @@ class zack_data:
             if idx < tdlen:
                 epsEstmDct[self.cqestCol[idx]] = tdLst[idx].string
         '''
+        end = timer()
+        print "\tparse estimate data",(end-start)
+
         return epsEstmDct
     
     '''
@@ -272,21 +279,23 @@ class zack_data:
         for key in self.columns:
             dct[key]=""
         #dct['etf']="0"
-          
+
+
+
         estdct = self.getEstimate(symbol)
         if self.isEtf:
             return None
-            
+
         if estdct!=None:    
             dct.update(estdct)        
         else:
             return None #not proceding further
-                
+        start = timer()
         abrdct = self.getBrokerRecom(symbol)
         if abrdct!=None:
             dct.update(abrdct)
-            
-        #print dct
+        end = timer()    
+        print "\tbroker recom",(end-start) 
         return dct
                 
    
@@ -352,28 +361,28 @@ class zack_data:
        
         idx = 0
         for index, row in dfup.iterrows():
-            print "downloading ",index,row['symbol'],row['exg']
+            print "downloading ",idx,row['symbol'],row['exg']
             idx += 1
             rowdct = self.getZackData(row['symbol'])
             if rowdct==None:
                 continue
-            line = row['symbol'] + ',' + row['exg']
+            #line = row['symbol'] + ',' + row['exg']
+            line = ""
             rowdct['symbol'] = row['symbol']
             rowdct['exg'] = row['exg']
-            if len(rowdct)>0:
-                self.verifyCol(rowdct)  
-                for key in self.allcols:
-                    lst = allLst[key]
-                    if key in rowdct:
-                        lst.append(rowdct[key])
-                        line = line + "," + rowdct[key]
-                    else:
-                        lst.append("")   
-                        line = line + "," + ""
-                                     
-                #allLst['symbol'].append(row['symbol'])
-                #allLst['exg'].append(row['exg'])
-                
+            if (len(rowdct)==2):
+                print "No zack information",row['symbol'],row['exg']
+
+            self.verifyCol(rowdct)  
+            for key in self.allcols:
+                lst = allLst[key]
+                if key in rowdct:
+                    lst.append(rowdct[key])
+                    line = line + "," + rowdct[key]
+                else:
+                    lst.append("")   
+                    line = line + "," + ""
+                    
                 #write to disk is ticks length > 100
                 if lenticklst>100:                 
                     line = line + "\n"
@@ -381,14 +390,12 @@ class zack_data:
                     if idx%10 == 0:
                         outputfp.flush()
                                     
-            else:
-                print "No zack information,skip ",row['symbol'],row['exg']
+
         
         if lenticklst>100:
             outputfp.close()
-        #print allLst
-        #print "===="
-        #print allCol
+        
+        #delete bak file?        
         rf = pandas.DataFrame(allLst,columns = allCol)
         #print dfnc
         #print rf
