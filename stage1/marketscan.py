@@ -17,7 +17,7 @@ import ms_csvchart
 import ms_backtest
 import pandas
 import xlsxwriter
-from sinaapi import SinaMarketData
+from feed_sina import SinaMarketData
 #sys.path.insert(0, "../src/")
 
 '''
@@ -152,7 +152,8 @@ class MarketScan:
                 if idx == 0:                    
                     l_sgy[token] = param #first one is strategy
                 else:
-                    if (token[0]!='$'):#split by '=' again 
+                    print "debug_test",token
+                    if (token[0]!='%'):#split by '=' again 
                         k= token.split('=')
                         if (len(k)>1):
                             param[k[0]] = k[1]
