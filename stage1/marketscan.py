@@ -18,6 +18,7 @@ import ms_backtest
 import pandas
 import xlsxwriter
 from feed_sina import SinaMarketData
+import ms_paramparser
 #sys.path.insert(0, "../src/")
 
 '''
@@ -37,25 +38,25 @@ class MarketScan:
                 
         self.outputpath = "../result/"
         self.cachepath = "../cache/"
-        self.enddate = ""
-        self.startdate = ""
-        self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
-        self.symbolLstFile = "./marketdata.csv"  #default marketdata file
-        self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
+        #self.enddate = ""
+        #self.startdate = ""
+        ##self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
+        #self.symbolLstFile = "./marketdata.csv"  #default marketdata file
+        #self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.mscfg = "./marketscan.cfg"
         self.mtd = marketdata.MarketData()
         self.csvchart = ms_csvchart.ms_csvchart()
-        self.hasBackTest = False
-        self.haschart = False
+        #self.hasBackTest = False
+        #self.haschart = False
         self.sp500 = "^GSPC"
         self.nmuBest = 1 #??
-        self.help = False
-        self.sgyparam = {}
+        #self.help = False
+        #self.sgyparam = {}
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
-        self.savemd = False
-        self.loadmd = False
-        self.feed = "yahoo"  # yahoo feeder
-        
+        #self.savemd = False
+        #self.loadmd = False
+        #self.feed = "yahoo"  # yahoo feeder
+        self.params = ms_paramparser.ms_paramparser()
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
         # TODO put this info in config file later
@@ -68,8 +69,9 @@ class MarketScan:
         print 'run marketscan.py -g "st_perf" -i 1,2,3 --loadmd -h'
  
     def parseOption(self):
+        '''
         print "=========================="
-        self.ticklist=[]
+        #self.ticklist=[]
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
                 ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed="])
@@ -137,12 +139,26 @@ class MarketScan:
         
         if ("sina" in self.feed):
             self.sinaapi = SinaMarketData()
+        '''
+        params = self.params
+        params.parseOption()
+        if ("sina" in params.feed):
+            self.sinaapi = SinaMarketData()
+        if (params.hasBackTest):
+            self.backtest = ms_backtest.ms_backtest()
+            
+        if not params.sgyparam:
+            #params.sgyparam = self.loadCfg(self.mscfg)
+            pass
+        else:        
+            self.loadStrategy(params.sgyparam)           
     '''
     strategy_name&parameter=value
     st_rsi&cl=14,st_macd&f=10&s=5
     ms_pvm&download&$pe<20&mc>1000
     evaluate string start with $
     '''    
+    '''
     def parseStrategy(self,arg):
         l_sgy = {}
         for item in arg.split(","):
@@ -165,7 +181,7 @@ class MarketScan:
                 idx += 1
         print l_sgy
         return l_sgy
-        
+    '''    
 
     '''
     the 'marketscan.cfg' would be 
@@ -200,7 +216,7 @@ class MarketScan:
             myobject = c() # construct module
             print "created strategy=",sgy
             self.sgyInx[sgy] = myobject
-            if self.help == True:
+            if self.params.help == True:
                 print sgy,myobject.usage()
                 
         return 
@@ -336,8 +352,8 @@ class MarketScan:
     def procMarketData(self):
         if self.tickdf.empty:
             print "loading from symbolfile..."
-            df = self.loadSymbolLstFile(self.symbolLstFile)
-            df1 = self.mtd.getSymbolByPid(df,self.pid)[['symbol']]
+            df = self.loadSymbolLstFile(self.params.symbolLstFile)
+            df1 = self.mtd.getSymbolByPid(df,self.params.pid)[['symbol']]
             ticklist = df1['symbol']
         else:
             print "using ticklist from command line..."            
@@ -349,7 +365,7 @@ class MarketScan:
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==False:
                 print "total", len(df1.index),"symbols selected to be processed by",sgyname
-                tblout = sgx.process(df1,self.sgyparam[sgyname])
+                tblout = sgx.process(df1,self.params.sgyparam[sgyname])
                 #merge tblout & df1
                 df1 = pandas.merge(tblout,df1,how='inner')
                     
@@ -358,7 +374,7 @@ class MarketScan:
                         
         print "==================================================="
         print "total", len(df1.index),"symbols selected"
-        if self.hasPriceDataModule()==False and self.haschart==False:
+        if self.hasPriceDataModule()==False and self.params.haschart==False:
             self.saveTableFile(df1,"raw")
             print df1
             print "No more pricedata module to be processed, exit..."
@@ -397,7 +413,7 @@ class MarketScan:
     #save ohlc to csv file
     def saveOhlc(self, symbol, ohlc):
         #delete file firstly
-        filename = self.cachepath + symbol + "_ohlc_" + self.feed + ".csv"
+        filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
         try:
             os.remove(filename)
         except:
@@ -406,7 +422,7 @@ class MarketScan:
         pass
         
     def loadOhlc(self,symbol):
-        filename = self.cachepath + symbol + "_ohlc_" + self.feed + ".csv"
+        filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
         try:
             ohlc = pandas.read_csv(filename,index_col=['Date'])
             ohlc.index = pandas.to_datetime(ohlc.index)  
@@ -438,19 +454,19 @@ class MarketScan:
             symbol = row['symbol']
             print "downloading ",index, symbol
             start = timer()
-            if (self.loadmd):
+            if (self.params.loadmd):
                 ohlc = self.loadOhlc(symbol)
                 if ohlc.empty:
                     print symbol," marketdata is not in cache, skip it"
                     continue             
             else:
                 try:
-                    if ("sina" in self.feed):
+                    if ("sina" in self.params.feed):
                         ohlc = self.sinaapi.reqHisData(symbol)
                     else:
-                        ohlc = web.get_data_yahoo(symbol, self.startdate, self.enddate)
+                        ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)
                         
-                    if (self.savemd):
+                    if (self.params.savemd):
                         self.saveOhlc(symbol,ohlc)
                 except:
                     numError += 1
@@ -479,12 +495,12 @@ class MarketScan:
                         table.loc[index,cn] = indarr[cn]
                     
                     # if backtest...
-                    if (self.hasBackTest):
+                    if (self.params.hasBackTest):
                         self.backtest.runBackTest(symbol,ohlc)
                         pass
             end = timer()  
             print "\ttime",round(end - start,3)
-        if (self.hasBackTest):
+        if (self.params.hasBackTest):
             backtestDf = self.backtest.getBackTestResult()
             print "========================="
             print backtestDf
