@@ -31,6 +31,9 @@ class BaseIndPx(object):
         return
         
     def runScan(self,df):
+        #print self.param
+        if not self.param:
+            return df
         col = df.columns.values 
         df = self.mtd.evalCriteria(df,self.param,col) 
         return df 
