@@ -47,25 +47,9 @@ class Console:
                 if key in self._argdct:
                     line ="%s%s" % (self._argdct[key],dct[key])
                     cmdlst.append(line)
-            #cmdlst.append('marketscan.py')
-            #print cmd
-            #os.popen(cmd)
-
-            #can work
-            #print cmdlst
-            #cmdlst.append(sys.executable)
-            #subprocess.Popen(cmdlst)
             cmdstr = dct['cmd']
-            print cmdstr
             process = subprocess.Popen("python "+cmdstr)                        
             
-            #sys.argv = ['-g "ms_zack&%rank<=2" -i 1,2,3 --savemd']
-            #sys.argv = cmdlst
-            #exec(open("marketscan.py").read(), globals())
-
-#            subprocess.Popen(['python','marketscan.py'],shell = True)
-            
-            #subprocess.call(['python test1.py'])
             '''
             unable to import?
             sys.argv = cmdlst

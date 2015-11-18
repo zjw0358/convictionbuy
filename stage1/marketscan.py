@@ -405,7 +405,7 @@ class MarketScan:
         #save filted csv file
         self.saveTableFile(table)
         # trigger csv chart
-        if self.haschart:
+        if self.params.haschart:
             print "=== csv chart ==="
             self.csvchart.drawChart(table,self.chartparam)
         return       
@@ -486,7 +486,7 @@ class MarketScan:
                 sgx = self.sgyInx[sgyname]
                 if sgx.needPriceData()==True:
                     sgx.cleanup()
-                    sgx.runIndicator(symbol,ohlc,self.sgyparam[sgyname])
+                    sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
                     
                     #TODO if backtest skip this?
                     #strategy should only return 1 buy signal column
