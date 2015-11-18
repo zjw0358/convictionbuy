@@ -52,3 +52,20 @@ class st_rsi(ind_rsi):
             print "weak", weak/num
         
         return table
+        
+        '''            
+    def runStrategy(self):
+        offset = 14
+        OVERSELL = 30
+        OVERBUY = 70
+        prev = self.rsi[-offset]
+        #print self.rsi
+        #print "==============================="
+        for idx, rs in enumerate(self.rsi[-offset:]):            
+            if (prev < OVERSELL) and (rs > OVERSELL) :
+                self.ind['rsi_buy'] = "True(%d)" % (offset-idx)
+            if (prev > OVERBUY) and (rs < OVERBUY):                
+                self.ind['rsi_sell'] = "True(%d)" % (offset-idx)
+            prev = rs
+        return
+    '''    

@@ -72,6 +72,6 @@ class GoogleFinanceAPI:
         
 if __name__ == "__main__":
     c = GoogleFinanceAPI()    
-    quote = c.get_rtpx("QCOM","O")
+    quote = c.get_rtpx("AAPL","O")
     print quote
     #print quote

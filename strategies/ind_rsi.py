@@ -1,27 +1,21 @@
 '''
 RSI indicator
 '''
-from collections import OrderedDict
+#from collections import OrderedDict
+from ind_base_px import BaseIndPx
 import numpy as np
 
-class ind_rsi:
-    def __init__(self):
-        self.cleanup()
-        self.stname = "rsi" #strategy name        
-    
-    def cleanup(self):
-        self.ind = OrderedDict()
-        self.rsi = []
-        return    
-    
+class ind_rsi(BaseIndPx):
     def usage(self):
         return "length=14"
     
+    #override func
     def setupParam(self,param):
-        # default parameter
+        BaseIndPx.setupParam(self,param)  
         self.cl = 14  
         if 'cl' in param:
             self.cl = int(param['length'])
+            
         
     def algoFunc(self, prices):
         deltas = np.diff(prices)
@@ -50,44 +44,19 @@ class ind_rsi:
         # get the last one
         self.ind['rsi'] = self.rsi[-1]
         
-    
-    #it is price data module(need real price data)
-    def needPriceData(self):        
-        return True
-    
+        
     # main process routine, 
     # symbol - stock name
     # ohlc - candle style price,open,high,low,close
     # param - parameters
     def runIndicator(self,symbol,ohlc,param={}):
-        #print "I am in ind_rsi"
         self.setupParam(param)     
         close_px = ohlc['Adj Close']
         self.algoFunc(close_px)        
-        #self.runStrategy()
-
-    def getIndicators(self):
-        return self.ind
-    '''            
-    def runStrategy(self):
-        offset = 14
-        OVERSELL = 30
-        OVERBUY = 70
-        prev = self.rsi[-offset]
-        #print self.rsi
-        #print "==============================="
-        for idx, rs in enumerate(self.rsi[-offset:]):            
-            if (prev < OVERSELL) and (rs > OVERSELL) :
-                self.ind['rsi_buy'] = "True(%d)" % (offset-idx)
-            if (prev > OVERBUY) and (rs < OVERBUY):                
-                self.ind['rsi_sell'] = "True(%d)" % (offset-idx)
-            prev = rs
-        return
-    '''    
-
 
 #===============================================================================        
     # RSI strategy
+    '''
     def runScan(self,table): 
         #summary statistics
         if 'rsi' in table:
@@ -106,3 +75,30 @@ class ind_rsi:
             print "weak", weak/num
         
         return table
+    ''' 
+    '''            
+    def runStrategy(self):
+        offset = 14
+        OVERSELL = 30
+        OVERBUY = 70
+        prev = self.rsi[-offset]
+        #print self.rsi
+        #print "==============================="
+        for idx, rs in enumerate(self.rsi[-offset:]):            
+            if (prev < OVERSELL) and (rs > OVERSELL) :
+                self.ind['rsi_buy'] = "True(%d)" % (offset-idx)
+            if (prev > OVERBUY) and (rs < OVERBUY):                
+                self.ind['rsi_sell'] = "True(%d)" % (offset-idx)
+            prev = rs
+        return
+    '''  
+    '''
+    def __init__(self):
+        self.cleanup()
+        self.stname = "rsi" #strategy name            
+
+    def cleanup(self):
+        self.ind = OrderedDict()
+        self.rsi = []
+        return    
+    ''' 
