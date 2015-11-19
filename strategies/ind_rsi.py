@@ -7,14 +7,14 @@ import numpy as np
 
 class ind_rsi(BaseIndPx):
     def usage(self):
-        return "length=14"
+        return "cl=14"
     
     #override func
     def setupParam(self,param):
         BaseIndPx.setupParam(self,param)  
         self.cl = 14  
         if 'cl' in param:
-            self.cl = int(param['length'])
+            self.cl = int(param['cl'])
             
         
     def algoFunc(self, prices):

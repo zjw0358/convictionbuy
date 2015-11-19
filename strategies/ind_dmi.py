@@ -32,12 +32,13 @@ from collections import OrderedDict
 from ind_base_px import BaseIndPx
 from st_pattern import StrategyPattern
 
+'''
 def calcDX(row):
     if (row['pdi']+row['ndi'] > 0):
         return 100 * abs(row['pdi']-row['ndi'])/(row['pdi']-row['ndi'])
     else:
         return 0
-
+'''
 def calcDX2(pdi,ndi):
     if (pdi+ndi > 0):
         return 100 * abs(pdi-ndi)/(pdi-ndi)

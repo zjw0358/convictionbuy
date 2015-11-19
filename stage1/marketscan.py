@@ -52,7 +52,7 @@ class MarketScan:
         self.nmuBest = 1 #??
         #self.help = False
         #self.sgyparam = {}
-        self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
+        #self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         #self.savemd = False
         #self.loadmd = False
         #self.feed = "yahoo"  # yahoo feeder
@@ -350,14 +350,14 @@ class MarketScan:
     main entry
     '''        
     def procMarketData(self):
-        if self.tickdf.empty:
+        if self.params.tickdf.empty:
             print "loading from symbolfile..."
             df = self.loadSymbolLstFile(self.params.symbolLstFile)
             df1 = self.mtd.getSymbolByPid(df,self.params.pid)[['symbol']]
             ticklist = df1['symbol']
         else:
             print "using ticklist from command line..."            
-            df1 = self.tickdf            
+            df1 = self.params.tickdf            
             #ticklist = self.ticklist     
         
         #load prescan module
@@ -425,25 +425,27 @@ class MarketScan:
         filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
         try:
             ohlc = pandas.read_csv(filename,index_col=['Date'])
-            ohlc.index = pandas.to_datetime(ohlc.index)  
-            date1 = datetime.datetime.strptime(self.startdate,'%Y-%m-%d')
-            date2 = datetime.datetime.strptime(self.enddate,'%Y-%m-%d')
-            #unable to get next business day
-            start = -1
-            end = -1
-            for idx,item in enumerate(ohlc.index):
-                #print item,type(item)
-                if (start==-1 and item >= date1):
-                    start = idx
-                    #print "start",item                
-                if item >= date2:
-                    end = idx
-                    print "end",item
-                    break
-                
-            ohlc = ohlc.iloc[start:end]
         except:
             ohlc = pandas.DataFrame()
+            return ohlc
+        
+        ohlc.index = pandas.to_datetime(ohlc.index)  
+        date1 = datetime.datetime.strptime(self.params.startdate,'%Y-%m-%d')
+        date2 = datetime.datetime.strptime(self.params.enddate,'%Y-%m-%d')
+        #unable to get next business day
+        start = -1
+        end = -1
+        for idx,item in enumerate(ohlc.index):
+            #print item,type(item)
+            if (start==-1 and item >= date1):
+                start = idx
+                #print "start",item                
+            if item >= date2:
+                end = idx
+                print "end",item
+                break
+            
+        ohlc = ohlc.iloc[start:end]
         return ohlc
         
     def runIndicator(self, table):

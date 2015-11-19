@@ -21,6 +21,7 @@ class ms_paramparser:
         self.hasBackTest = False
         self.feed = "yahoo"  # yahoo feeder
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
+        self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         self.sgyparam = {}
         pass
 
