@@ -23,13 +23,14 @@ class ms_paramparser:
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         self.sgyparam = {}
+        self.verbose = False #print ohlc?
         pass
 
     def parseOption(self):
         print "=========================="
         try:
             opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed="])
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed=","vb"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -65,6 +66,8 @@ class ms_paramparser:
                 self.loadmd = True
             elif opt in ("--feed"):
                 self.feed = arg
+            elif opt in ("--vb"):
+                self.verbose = True
                 
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")

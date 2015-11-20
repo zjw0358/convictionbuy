@@ -489,7 +489,8 @@ class MarketScan:
                 if sgx.needPriceData()==True:
                     sgx.cleanup()
                     sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
-                    
+                    if (self.params.verbose):
+                        print ohlc
                     #TODO if backtest skip this?
                     #strategy should only return 1 buy signal column
                     indarr = sgx.getIndicators()

@@ -1,6 +1,6 @@
 
 
-====  scan_ind_sctr_st_perf_  =====
+====  scan_ind_kdj_  =====
 
-  symbol exg      px   sctr    p1d    p1w   p4w   p12w   p24w   pmax
-0    MCD     110.940 13.250 -0.110 -1.760 7.960 14.690 14.470 34.990
+  symbol exg      px
+0   AAPL     113.690
