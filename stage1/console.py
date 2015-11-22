@@ -27,12 +27,27 @@ class Console:
     _argdct = {"pid":"-i","feed":"--feed","savemd":"","loadmd":"--loadmd","strategy":"-g"}
     def __init__(self):
         self.configFile = "cb_config.cfg"
-        self.cbparser = ConfigParser.ConfigParser()        
+        self.cbparser = ConfigParser.RawConfigParser()        
         #self.cbparser = ConfigParser.RawConfigParser(None, multidict)
         pass
         
+    def saveConfig(self):
+        cbp = self.cbparser
+        cbp.add_section('Section1')
+        cbp.set('Section1', 'an_int', '15')
+        cbp.set('Section1', 'a_bool', 'true')
+        # Writing our configuration file to 'example.cfg'
+        with open(self.configFile, 'wb') as configfile:
+            cbp.write(configfile)
+    
+
+        pass
+        
     def process(self):
-        print os.environ['zackfile']
+        #unable to pass environment variable between process
+        #print os.environ['zackfile']
+        #sys.exit()
+        self.saveConfig()
         sys.exit()
         #config = ConfigParser.ConfigParser()
         cbp = self.cbparser

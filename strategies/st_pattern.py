@@ -430,7 +430,8 @@ class StrategyPattern(object):
     def lastWeightMovAvg(self,lst,period):
         data = np.average(lst[-period:], weights=range(period,0,-1))
         return data
-        
+
+    #generate temporary list
     def weightMovAvg(self,lst,period):
         data = []
         for index in range(0,len(lst)):
@@ -442,7 +443,20 @@ class StrategyPattern(object):
                 data.append(d)
                 #print index,"add",d
         return pandas.Series(data)
-           
+        
+    def weightMovAvg0(self,lst,period):
+        
+        data = []
+        for index in range(0,len(lst)):
+            if index < (period-1):
+                #print index,"add nan"
+                data.append(float('nan'))
+            else:
+                d = np.average(lst[index+1-period:index+1], weights=range(period,0,-1))
+                data.append(d)
+                #print index,"add",d
+        return pandas.Series(data)
+                   
     #TODO not try this method yet
     def moving_average(self,x, n, type='simple'):
         """

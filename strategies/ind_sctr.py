@@ -51,14 +51,16 @@ class ind_sctr(BaseIndPx):
         ema26 = pandas.ewma(ohlc['Adj Close'], span=26)
         macd = ema12 - ema26
         ppo = (ema12 - ema26)/ema26*100;
+        '''
         print "1 ==================="
         print ema12
         print "2 ==================="
         print ema26
         print "3 ==================="
-        print ppo
+        print ppo        
         return 1.2
         '''
+        
         p1 = self.pt.weightMovAvg(ppo,3)
         p2 = pandas.Series(pandas.rolling_mean(ppo,3).tolist())
         #p2 = pandas.rolling_mean(ppo,3).reset_index(0).drop('index',axis=1)
@@ -71,9 +73,21 @@ class ind_sctr(BaseIndPx):
         #print type(shppo),shppo
         #print type(shppo.get(len(shppo)-1))
         #get last element
+        #print chgratio[-10:-1],
+        #print ppolinear
+        '''
+        ohlc['ppo']=ppo
+        ohlc['p1']=p1.tolist()
+        ohlc['p2']=p2.tolist()
+        ohlc['ppolinear']=ppolinear.tolist()
+        print ohlc
+        '''
+        #print p1
+        #print "============="
+        #print shppo[-10:-1]*0.05
         return (shppo.get(len(shppo)-1))
         '''
-        '''
+        
         print "1 ==================="
         print netChgAvg
         print "2 ==================="
