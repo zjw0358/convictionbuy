@@ -13,7 +13,7 @@ import marketdata
 import datetime
 import sys
 import csv
-
+import ms_config
 
 class ReuterFunda:
     def __init__(self):
@@ -23,11 +23,13 @@ class ReuterFunda:
         #pandas.set_option('display.height', 1500)
         pandas.set_option('display.max_rows', 1500)
         self.mtd = marketdata.MarketData()
-        self.outputpath = "./"
-        self.outputfn = self.outputpath + "msdata_reuter_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
-        self.fileName = "./marketdata.csv"
+        self.cfg = ms_config.MsDataCfg()
+        self.outputpath = "cache/"
+        self.outputfn = self.outputpath + "msdata_reuter_" + self.cfg.getCsvFileSurfix()
+        self.fileName = self.cfg.getDataConfig("marketdata","./marketdata.csv")
+
+        
         self.reuterFile = ""
-        #self.starttick = ""
         self.option = ""
         self.tickdf = pandas.DataFrame()
         self.columns = [
@@ -922,7 +924,7 @@ class ReuterFunda:
         rf = pandas.DataFrame(allLst,columns = allCol)
         mf = dfnc.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
-  
+        self.cfg.saveDataConfig("reuter",self.outputfn)
     #update reuter data
     def updateData(self): 
         if self.reuterFile!="":

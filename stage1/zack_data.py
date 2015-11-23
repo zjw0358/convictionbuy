@@ -12,6 +12,7 @@ import getopt
 import sys
 import datetime
 import marketdata
+import ms_config
 from timeit import default_timer as timer
         
 from bs4 import BeautifulSoup
@@ -32,12 +33,13 @@ class zack_data:
             'abr3m','numbr'] + self.cqestCol
         self.allcols = ['symbol','exg'] + self.columns
         self.pid = 0
-        self.fileName = "./marketdata.csv"
-        self.outputfn = "./msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
+        self.outputfn = "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
         self.zackfile = ""
         self.option = ""
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
+        self.cfg = ms_config.MsDataCfg()
+        self.fileName=self.cfg.getDataConfig("marketdata") #"./marketdata.csv"
         
     def parseOption(self):
         self.ticklist=[]
@@ -402,6 +404,8 @@ class zack_data:
         mf = dfnc.append(rf)
         print mf
         mf.to_csv(self.outputfn,sep=',',index=False)
+        #update dataconfig
+        self.cfg.saveDataConfig("zack",self.outputfn)
 
       
     # update tick data    

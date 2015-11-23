@@ -7,13 +7,16 @@ use case:
 import zack_data
 import marketdata
 import pandas
+import ms_config
 from collections import OrderedDict
 
 class ms_zack:
     def __init__(self):
         self.zack = zack_data.zack_data()
-        self.zackfile = "./msdata_zack.csv"
+        #self.zackfile = "./msdata_zack.csv"
         self.mtd = marketdata.MarketData()
+        self.cfg = ms_config.MsDataCfg()
+        self.zackfile = self.cfg.getDataConfig("zack")
         return    
         
     def usage(self):
