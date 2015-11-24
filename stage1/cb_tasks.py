@@ -2,11 +2,13 @@
 this is the main portal of conviction buy program
 
 '''
-import 
-import os
+
+#import os
 import subprocess
-import sys
+#import sys
 import marketscan
+import ms_config
+
 '''
 class multidict(dict):
     _unique = 0
@@ -23,11 +25,20 @@ class multidict(dict):
 '''
 
 class CbTasks:
-    _argdct = {"pid":"-i","feed":"--feed","savemd":"","loadmd":"--loadmd","strategy":"-g"}
+    #_argdct = {"pid":"-i","feed":"--feed","savemd":"","loadmd":"--loadmd","strategy":"-g"}
     def __init__(self):
-        self.configFile = "cb_config.cfg"
-        self.cbparser = ConfigParser.RawConfigParser()        
+        #self.configFile = "cb_config.cfg"
+        #self.cbparser = ConfigParser.RawConfigParser()        
         #self.cbparser = ConfigParser.RawConfigParser(None, multidict)
+        self.msconfig = ms_config.MsDataCfg("tasks")
+        pass
+        
+    def process(self):
+        for sect in self.msconfig.getSections():
+            cmdstr = self.msconfig.getDataConfig(sect,'cmd')
+            if (cmdstr!=""):
+                process = subprocess.Popen("python "+cmdstr)                        
+            
         pass
     '''   
     def saveConfig(self):

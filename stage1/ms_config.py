@@ -2,32 +2,43 @@ import ConfigParser
 import datetime
 
 class MsDataCfg:
-    def __init__(self,section="",file=""):
-        if (section==""):
-            self.sectDataFile = "datafile"
+    def __init__(self,file="",section=""):
+        if (file == ""):
+            self.sectName = "datafile"
             self.configFile = "cb_config.cfg"
         else:
-            self.sectDataFile = "datafile"
-            self.configFile = "cb_config.cfg"
+            print "cb_task.cfg"
+            self.sectName = "cbtask"
+            self.configFile = "cb_task.cfg"
         self.cbparser = ConfigParser.SafeConfigParser()  
         self.cbparser.read(self.configFile)      
         pass
-   
-    def getDataConfig(self,key,default=""):
+        
+    def getSections(self):
+        print self.cbparser.sections()
+        return self.cbparser.sections()
+        pass
+        
+    def getDataConfig(self,sectName,key,default=""):
         cbp = self.cbparser
         try:
-            value = cbp.get(self.sectDataFile, key)
+            if sectName=="":
+                sectName = self.sectName
+            value = cbp.get(sectName, key)
         except:
             value = default
         return value
         
-    def saveDataConfig(self,key,value):
+    def saveDataConfig(self,key,value,sectName):
         print "save config file",key,value
-        cbp = self.cbparser        
-        cbp.set(self.sectDataFile, key, value)
+        cbp = self.cbparser
+        if (sectName  ==""):
+            sectName = self.sectName
+        cbp.set(sectName, key, value)
         # Writing our configuration file to 'example.cfg'
         with open(self.configFile, 'wb') as configfile:
             cbp.write(configfile)
+            
     def getCsvFileSurfix(self):
         return datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'   
 if __name__ == "__main__":

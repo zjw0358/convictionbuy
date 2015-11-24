@@ -39,7 +39,7 @@ class zack_data:
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg()
-        self.fileName=self.cfg.getDataConfig("marketdata") #"./marketdata.csv"
+        self.fileName=self.cfg.getDataConfig("datafile","marketdata") #"./marketdata.csv"
         
     def parseOption(self):
         self.ticklist=[]
