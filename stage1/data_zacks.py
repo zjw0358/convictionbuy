@@ -33,13 +33,16 @@ class zack_data:
             'abr3m','numbr'] + self.cqestCol
         self.allcols = ['symbol','exg'] + self.columns
         self.pid = 0
-        self.outputfn = "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
 
         self.option = ""
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg()  # default = datafile, cb_config.cfg
         self.mkdataFile=self.cfg.getDataConfig("","marketdata") #"./marketdata.csv"
+        folder = self.cfg.getDataConfig("","cache")
+        self.outputfn = folder + "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
+
+
         #self.zackfile = self.cfg.getDataConfig("","zack") #"./marketdata.csv"
         #print self.mkdataFile
         #sys.exit()
@@ -404,17 +407,17 @@ class zack_data:
                 lst = allLst[key]
                 if key in rowdct:
                     lst.append(rowdct[key])
-                    line = line + "," + rowdct[key]
+                    line = line + rowdct[key] + ","
                 else:
                     lst.append("")   
-                    line = line + "," + ""
+                    line = line + "" + ","
                     
-                #write to disk is ticks length > 100
-                if lenticklst>100:                 
-                    line = line + "\n"
-                    outputfp.write(line)
-                    if idx%10 == 0:
-                        outputfp.flush()
+            #write to disk is ticks length > 100
+            if lenticklst>100:                 
+                line = line + "\n"
+                outputfp.write(line)
+                if idx%10 == 0:
+                    outputfp.flush()
                                     
 
         
