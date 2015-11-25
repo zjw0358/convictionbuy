@@ -2,14 +2,13 @@ import ConfigParser
 import datetime
 
 class MsDataCfg:
-    def __init__(self,file="",section=""):
-        if (file == ""):
+    def __init__(self,cfgFile=""):
+        if (cfgFile == ""):
             self.sectName = "datafile"
             self.configFile = "cb_config.cfg"
-        else:
-            print "cb_task.cfg"
+        else:            
             self.sectName = "cbtask"
-            self.configFile = "cb_task.cfg"
+            self.configFile = cfgFile #"cb_task.cfg"
         self.cbparser = ConfigParser.SafeConfigParser()  
         self.cbparser.read(self.configFile)      
         pass
@@ -21,6 +20,7 @@ class MsDataCfg:
         
     def getDataConfig(self,sectName,key,default=""):
         cbp = self.cbparser
+        print cbp.sections()
         try:
             if sectName=="":
                 sectName = self.sectName
@@ -29,8 +29,8 @@ class MsDataCfg:
             value = default
         return value
         
-    def saveDataConfig(self,key,value,sectName):
-        print "save config file",key,value
+    def saveDataConfig(self,sectName, key,value):
+        #print "save config file",key,value
         cbp = self.cbparser
         if (sectName  ==""):
             sectName = self.sectName

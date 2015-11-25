@@ -39,9 +39,9 @@ class zack_data:
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg()  # default = datafile, cb_config.cfg
-        self.fileName=self.cfg.getDataConfig("","marketdata") #"./marketdata.csv"
-        self.zackfile = self.cfg.getDataConfig("","zack") #"./marketdata.csv"
-        #print self.fileName
+        self.mkdataFile=self.cfg.getDataConfig("","marketdata") #"./marketdata.csv"
+        #self.zackfile = self.cfg.getDataConfig("","zack") #"./marketdata.csv"
+        #print self.mkdataFile
         #sys.exit()
     def parseOption(self):
         self.ticklist=[]
@@ -52,7 +52,7 @@ class zack_data:
             sys.exit()
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
-                self.fileName = arg
+                self.mkdataFile = arg
             #elif opt in ("-t", "--start"):
             #    self.starttick = arg
             elif opt in ("-t","--ticklist"):
@@ -73,11 +73,11 @@ class zack_data:
             elif opt in ("--merge"):
                 self.option = "merge" #merge zackfile with others in symbolfile
                 
-        print "symbolfile=",self.fileName
+        print "symbolfile=",self.mkdataFile
         print "ticklist==="
         if not self.tickdf.empty:
             print self.tickdf
-        print "zackfile=",self.zackfile
+        #print "zackfile=",self.zackfile
         return
         
     def usage(self):
@@ -344,18 +344,40 @@ class zack_data:
             missLst.append("Current ABR")
             
         if len(missLst)>0:
-            print "Missing list:",missLst
+            print "Missing list:",missLst            
+  
+      
+    def updateData(self):     
+        symbolTable = self.mtd.loadSymbolLstFile(self.mkdataFile)
+        df = symbolTable[symbolTable['rank']>0]
+        df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
             
-    # update tick list,dfnc - df not change, dfup - df to update 
-    def updateTickLst(self,dfnc,dfup):      
+        
+        if self.tickdf.empty:
+            print "update symbolfile pid=",self.pid
+            symbolTable = self.mtd.loadSymbolLstFile(self.mkdataFile)
+            df = symbolTable[symbolTable['rank']>0]
+            df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+            dfup = df[['symbol','exg']]
+            for co in self.columns:
+                dfup[co]=""
+            #dfnc = pandas.DataFrame({},columns=self.allcols)
+            #self.updateTickLst(dfnc,dfup)
+        else:
+            print "update ticklist only"
+            dfup = self.tickdf
+            #dfnc = pandas.DataFrame({},columns=self.allcols)
+            #self.updateTickLst(dfnc,self.tickdf)
+      
+      ## process the update list
         lenticklst = len(dfup.index)  
         allLst = {}
         allCol = self.allcols
         for key in allCol:
             lst = []
             allLst[key] = lst
-        #print "len of allLst",len(allLst)                 
-        print "total",lenticklst,"ticks to be updated",len(dfnc.index),"to keep unchanged"
+
+        print "total",lenticklst,"ticks to be updated"
 
         if lenticklst>100: 
             outputfn = self.outputfn+"_bak"
@@ -400,66 +422,11 @@ class zack_data:
             outputfp.close()
         
         #delete bak file?        
-        rf = pandas.DataFrame(allLst,columns = allCol)
-        #print dfnc
-        #print rf
-        mf = dfnc.append(rf)
+        mf = pandas.DataFrame(allLst,columns = allCol)        
         print mf
         mf.to_csv(self.outputfn,sep=',',index=False)
         #update dataconfig
-        self.cfg.saveDataConfig("","zack",self.outputfn)
-
-      
-    def updateData(self): 
-        if self.zackfile!="":
-            zackTable = self.loadZackCsvFile(self.zackfile)
-    
-        symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
-        df = symbolTable[symbolTable['rank']>0]
-        df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
-            
-        if self.zackfile!="":
-            if self.option == "merge":
-                zackList = zackTable['symbol']
-                if self.tickdf.empty:
-                    print "keep current zackfile and merge with others from symbolfile(marketdata)"                    
-                    dfup = df[~df['symbol'].isin(zackList)]
-                    for co in self.columns:
-                        dfup[co]=""
-                    #dfnc = zackTable[~zackTable['symbol'].isin(ticklist)] 
-                else:
-                    print "merge current zackfile with others from ticklist"
-                    #dfup = self.tickdf[~self.tickdf['symbol'].isin(zackList)]
-                    ticklist = self.tickdf['symbol']
-                    dfup = df[df['symbol'].isin(ticklist)]                          
-                    for co in self.columns:
-                        dfup[co]=""                    
-                        #dfup.loc[0,co] = ""
-                    dfnc = zackTable[~zackTable['symbol'].isin(ticklist)] 
-                    #print dfup
-                    #print dfnc
-                    #sys.exit()
-                self.updateTickLst(dfnc,dfup)
-            else:
-                print "update current zackfile only"
-                dfnc = pandas.DataFrame({},columns=self.allcols)
-                self.updateTickLst(dfnc,zackTable)
-        else:
-            if self.tickdf.empty:
-                print "update symbolfile"
-                symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
-                df = symbolTable[symbolTable['rank']>0]
-                df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
-                dfup = df[['symbol','exg']]
-                for co in self.columns:
-                    dfup[co]=""
-                dfnc = pandas.DataFrame({},columns=self.allcols)
-                self.updateTickLst(dfnc,dfup)
-            else:
-                print "update ticklist only"
-                dfnc = pandas.DataFrame({},columns=self.allcols)
-                self.updateTickLst(dfnc,self.tickdf)
-                        
+        self.cfg.saveDataConfig("","zack",self.outputfn)              
          
     def process(self):
         self.parseOption()
