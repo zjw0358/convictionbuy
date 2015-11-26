@@ -30,63 +30,31 @@ class CbTasks:
         #self.configFile = "cb_config.cfg"
         #self.cbparser = ConfigParser.RawConfigParser()        
         #self.cbparser = ConfigParser.RawConfigParser(None, multidict)
-        self.msconfig = ms_config.MsDataCfg("tasks")
+        self.msconfig = ms_config.MsDataCfg("cb_task.cfg") #file name
+        self.datacfg = ms_config.MsDataCfg("")
         pass
         
     def process(self):
+        #save daily output filename
+        output = "dailyreport_" + self.datacfg.getFileSurfix() + ".txt"
+        self.datacfg.saveDataConfig('output_report',output)
+        of = self.datacfg.getDataConfig("output_report")
+        
+        with open(of, "w") as myfile:
+            myfile.write("===== Daily Report =====")
+    
+        
         for sect in self.msconfig.getSections():
-            cmdstr = self.msconfig.getDataConfig(sect,'cmd')
+            cmdstr = self.msconfig.getConfig(sect,'cmd')
+            print cmdstr
             if (cmdstr!=""):
-                process = subprocess.Popen("python "+cmdstr)                        
+                process = subprocess.Popen("python "+cmdstr)
+                #wait until it complete?     
+                process.wait()
+                print('Finished process %s' % cmdstr)               
             
         pass
-    '''   
-    def saveConfig(self):
-        cbp = self.cbparser
-        cbp.add_section('Section1')
-        cbp.set('Section1', 'an_int', '15')
-        cbp.set('Section1', 'a_bool', 'true')
-        # Writing our configuration file to 'example.cfg'
-        with open(self.configFile, 'wb') as configfile:
-            cbp.write(configfile)
-        pass
-    '''
-     
-    def process0(self):
-        #unable to pass environment variable between process
-        #print os.environ['zackfile']
-        #sys.exit()
-        self.saveConfig()
-        sys.exit()
-        #config = ConfigParser.ConfigParser()
-        cbp = self.cbparser
-        cbp.read(self.configFile)
-        #print cbp.sections()
-
-        for sect in cbp.sections():
-            cmdlst = ['python','marketscan.py']
-            
-            dct = cbp._sections[sect]
-            for key in dct:
-                if key in self._argdct:
-                    line ="%s%s" % (self._argdct[key],dct[key])
-                    cmdlst.append(line)
-            cmdstr = dct['cmd']
-            process = subprocess.Popen("python "+cmdstr)                        
-            
-            '''
-            unable to import?
-            sys.argv = cmdlst
-            execfile('marketscan.py')
-            '''
-            #subprocess.call(cmdlst)
-                    #print type(dct)
-            #pid = cbp.get(sect,'pid')
-            #print pid
-            pass
-        #print self.cbparser['task']['pid']
-
-        pass
+ 
                 
 if __name__ == "__main__":
     obj = CbTasks()

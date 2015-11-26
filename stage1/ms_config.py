@@ -7,7 +7,7 @@ class MsDataCfg:
             self.sectName = "datafile"
             self.configFile = "cb_config.cfg"
         else:            
-            self.sectName = "cbtask"
+            self.sectName = "cbtask" #ignore
             self.configFile = cfgFile #"cb_task.cfg"
         self.cbparser = ConfigParser.SafeConfigParser()  
         self.cbparser.read(self.configFile)      
@@ -18,18 +18,19 @@ class MsDataCfg:
         return self.cbparser.sections()
         pass
         
-    def getDataConfig(self,sectName,key,default=""):
+    def getConfig(self,sectName,key,default=""):
         cbp = self.cbparser
-        print cbp.sections()
-        try:
-            if sectName=="":
-                sectName = self.sectName
-            value = cbp.get(sectName, key)
-        except:
-            value = default
+        #try:
+        if sectName=="":
+            sectName = self.sectName
+        value = cbp.get(sectName, key)
+
+        #except:
+            #value = default
+        print sectName,value
         return value
         
-    def saveDataConfig(self,sectName, key,value):
+    def saveConfig(self,sectName, key,value):
         #print "save config file",key,value
         cbp = self.cbparser
         if (sectName  ==""):
@@ -39,8 +40,36 @@ class MsDataCfg:
         with open(self.configFile, 'wb') as configfile:
             cbp.write(configfile)
             
-    def getCsvFileSurfix(self):
-        return datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'   
+    def getFileSurfix(self):
+        return datetime.datetime.now().strftime("%Y-%m-%d")
+        
+    #below are only for data config     
+    #e.g. "[datafile] xx=yy
+    def getDataConfig(self,key,default=""):
+        cbp = self.cbparser
+        sectName = self.sectName
+        folder = ""
+        try:
+            value = cbp.get(sectName, key)
+            if (key=="folder"):
+                return value
+            else:
+                folder = cbp.get(sectName, "folder")
+                value = folder + value
+        except:
+            value = default
+
+        return value
+
+    def saveDataConfig(self,key,value):
+        #print "save config file",key,value
+        cbp = self.cbparser
+        sectName = self.sectName
+        cbp.set(sectName, key, value)
+        with open(self.configFile, 'wb') as configfile:
+            cbp.write(configfile)
+            
+            
 if __name__ == "__main__":
     obj = MsDataCfg()
     obj.saveConfig("zack","msdata_zack.csv")    

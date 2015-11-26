@@ -19,6 +19,7 @@ import pandas
 import xlsxwriter
 from feed_sina import SinaMarketData
 import ms_paramparser
+import ms_config
 #sys.path.insert(0, "../src/")
 
 '''
@@ -37,26 +38,30 @@ class MarketScan:
         pandas.set_option('display.float_format', lambda x: '%.3f' % x)
                 
         self.outputpath = "../result/"
-        self.cachepath = "../cache/"
+
+        self.mscfg = "./marketscan.cfg"
+        self.mtd = marketdata.MarketData()
+        self.csvchart = ms_csvchart.ms_csvchart()
+        self.params = ms_paramparser.ms_paramparser()
+        self.datacfg = ms_config.MsDataCfg("")
+        self.cachepath = self.datacfg.getDataConfig("folder","../cache/")        
+        self.sp500 = "^GSPC"
+        self.nmuBest = 1 #??
+        
         #self.enddate = ""
         #self.startdate = ""
         ##self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
         #self.symbolLstFile = "./marketdata.csv"  #default marketdata file
         #self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
-        self.mscfg = "./marketscan.cfg"
-        self.mtd = marketdata.MarketData()
-        self.csvchart = ms_csvchart.ms_csvchart()
+                
         #self.hasBackTest = False
         #self.haschart = False
-        self.sp500 = "^GSPC"
-        self.nmuBest = 1 #??
         #self.help = False
         #self.sgyparam = {}
         #self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         #self.savemd = False
         #self.loadmd = False
-        #self.feed = "yahoo"  # yahoo feeder
-        self.params = ms_paramparser.ms_paramparser()
+        #self.feed = "yahoo"  # yahoo feeder   
         # strategy info, 0 - run before download price;        
         # module run before scan aka FA module
         # TODO put this info in config file later
@@ -396,10 +401,15 @@ class MarketScan:
                 table = sgx.runScan(table)
         
         # daily report file
+        of = self.datacfg.getDataConfig("output_report")        
+        with open(of, "a") as reportfile:
+            print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
+            print >>reportfile, table
+        '''
         reportfile = open("dailyreport.txt", "w")
         print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
         print >>reportfile, table
-
+        '''
         print table
         
         #save filted csv file

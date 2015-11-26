@@ -407,7 +407,7 @@ class StrategyPattern(object):
         returns a numeric array of the exponential
         moving average
         """
-        s = numpy.array(s)
+        s = np.array(s)
         ema = []
         j = 1
     
