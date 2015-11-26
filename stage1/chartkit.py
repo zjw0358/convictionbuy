@@ -15,6 +15,7 @@ class ChartKit:
             p0 = row['Adj Close']
             if lastpx==0:
                 lastpx = p0
+                lastpx_idx = index
                 print "first pivot",p0
                 df.loc[index,zzcol] = p0
             else:
@@ -60,10 +61,34 @@ class ChartKit:
         df.loc[lastpx_idx,zzcol] = lastpx                         
         return df
         
+    def compare(self,df1,df2):
+        df1 = self.calcZigzag(df1)
+        df1 = df1['zz'].dropna()      
+        x2= pd.date_range(df1.index[0],df1.index[-1],freq='D')
+        df1=df1.reindex(x2)
+        df1=df1.interpolate()
+        
+        df2 = self.calcZigzag(df2)
+        df2 = df2['zz'].dropna()      
+        x2= pd.date_range(df2.index[0],df2.index[-1],freq='D')
+        df2=df2.reindex(x2)
+        df2=df2.interpolate()
+        
+        
+
+                
+        pass  
     def doubletop(self,df):
-        df1 = self.calcZigzag(df,10)
-        df1 = df1.dropna()
-        print df1
+        df1 = self.calcZigzag(df)
+        df1 = df1['zz'].dropna()
+        #print df1.index[0],df1.index[-1]
+        
+        x2= pd.date_range(df1.index[0],df1.index[-1],freq='D')
+        df2=df1.reindex(x2)
+        print df2.interpolate()
+        #print df1.interpolate()
+        #print df1
+        '''
         pattern={}
         patime={}
         ptidx = 0
@@ -78,6 +103,7 @@ class ChartKit:
             return True
         else:
             return False
+        '''
         '''
         for idx in reversed(df1.index):
             if ptidx==0:

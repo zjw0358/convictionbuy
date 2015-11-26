@@ -3,6 +3,32 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import chartkit
 from scipy.stats.stats import pearsonr 
+import numpy as np
+from scipy.interpolate import interp1d
+
+import math
+
+def average(x):
+    assert len(x) > 0
+    return float(sum(x)) / len(x)
+
+def pearson_def(x, y):
+    assert len(x) == len(y)
+    n = len(x)
+    assert n > 0
+    avg_x = average(x)
+    avg_y = average(y)
+    diffprod = 0
+    xdiff2 = 0
+    ydiff2 = 0
+    for idx in range(n):
+        xdiff = x[idx] - avg_x
+        ydiff = y[idx] - avg_y
+        diffprod += xdiff * ydiff
+        xdiff2 += xdiff * xdiff
+        ydiff2 += ydiff * ydiff
+
+    return diffprod / math.sqrt(xdiff2 * ydiff2)
 
 class StockChart:
     def __init__(self):
@@ -78,7 +104,7 @@ class StockChart:
         px_rets.plot()
 
         #print px
-        self.calcZigzag(df)
+        self.chartkit.calcZigzag(df)
         #print df
         zzpx = df['zz'].dropna()
         zz_rets = self.calcPercent(zzpx)
@@ -96,7 +122,7 @@ class StockChart:
         sampleDict = {}
         for symbol in symbolLst:
             df = web.get_data_yahoo(symbol, '2015-01-01')
-            df = self.calcZigzag(df)
+            df = self.chartkit.calcZigzag(df)
             zzpx = df['zz'].dropna()
             zz_rets = self.calcPercent(zzpx)
             sampleDict[symbol] = zz_rets
@@ -141,12 +167,63 @@ class StockChart:
     def process2(self):
         #goog
         #df1 = web.get_data_yahoo('GOOG', '2015-02-15','2015-03-31')
-        df1 = web.get_data_yahoo('AAL', '2015-01-7','2015-04-8')
+        df1 = web.get_data_yahoo('AAL', '2014-12-15','2015-05-8')
         ret = self.chartkit.doubletop(df1)
         print ret
+        
         return
+    def process3(self):
+        #s1 = web.get_data_yahoo('AAL', '2014-12-15','2015-05-8')['Adj Close']
+        s1 = web.get_data_yahoo('INTC', '2014-10-10','2015-01-21')['Adj Close']
+        s2 = web.get_data_yahoo('AAL', '2015-06-09','2015-07-27')['Adj Close']
+        n1 = np.array(s1.tolist())
+        n2 = np.array(s2.tolist())
+        
+        print len(n1),len(n2)
+        if (len(n2)<len(n1)):
+            steps = (len(n2)*1.0-1.0)/(len(n1)-len(n2))
+            x1 = np.arange(1,len(n2)+1)
+            f = interp1d(x1, n2)
+            print n2
+            x_fake = np.arange(1.1, len(n2), steps)
+            print len(x_fake)
+            print x_fake
+            c = np.sort(np.concatenate((x1, x_fake)))
+            print c
+            y1 = np.array([f(i) for i in c])
+            print y1
                 
+        #s1=s1.reindex(index=np.arange(len(s1)))
+        #print s1
+        '''
+        if (len(s2)<len(s1)):
+            x2= pd.date_range(s1.index[0],s1.index[-1],freq='D')
+            s2=s2.reindex(x2) 
+        print s2
+        '''
+        a = pd.Series(n1)
+        b = pd.Series(y1)
+        rets1 = a.pct_change()
+        rets2 = b.pct_change()
+        
+        rets1[0] = 0
+        rets2[0] = 0
+        
+        print rets1
+        print rets2 
+        '''
+        print type(rets1)
+        corr = pd.rolling_corr(rets1, rets2, 10)
+        print type(corr),corr
+        cor,pval = pearsonr(rets1,rets2)
+        print "pearsonr",str(cor),pval
+        '''
+        cor,pval = pearsonr(rets1,rets2)
+        print "pearsonr",str(cor),pval
+        print "def2",pearson_def(rets1,rets2)
+        
+        pass        
 if __name__ == "__main__":
     obj = StockChart()
-    obj.process2()    
+    obj.process3()    
     #obj.drawChart('VMW','2015-01-01')
