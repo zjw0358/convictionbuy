@@ -5,7 +5,7 @@ import chartkit
 from scipy.stats.stats import pearsonr 
 import numpy as np
 from scipy.interpolate import interp1d
-
+import mlpy
 import math
 
 def average(x):
@@ -222,6 +222,9 @@ class StockChart:
         print "pearsonr",str(cor),pval
         print "def2",pearson_def(rets1,rets2)
         
+        ##
+        dist, cost, path = mlpy.dtw_std(rets1, rets2, dist_only=False)
+        print "dist",dist
         pass        
 if __name__ == "__main__":
     obj = StockChart()
