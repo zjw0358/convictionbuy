@@ -41,7 +41,7 @@ def calcDX(row):
 '''
 def calcDX2(pdi,ndi):
     if (pdi+ndi > 0):
-        return 100 * abs(pdi-ndi)/(pdi-ndi)
+        return 100 * abs(pdi-ndi)/(pdi+ndi)
     else:
         return 0
 
@@ -61,8 +61,15 @@ class ind_dmi(BaseIndPx):
         tr=[]
         pdm=[]
         ndm=[]
+        ratio=[]
         sp = StrategyPattern()
+        #debug
+        length = len(df0)-1
+        lastpx = df0['Adj Close'].iloc[len(df0)-1]
+
+        ###
         #start = time.time()
+
         for row_index, row in df0.iterrows():
             #print index
             close = row['Adj Close']
@@ -70,6 +77,13 @@ class ind_dmi(BaseIndPx):
             low = row['Low']            
             tr.append(sp.trueRange(high, close, low))
             
+            ###
+            if (close>lastpx):
+                r = (high-lastpx)/(length-index)
+                ratio.append(r)
+            else:
+                ratio.append(0.)
+            ####
             if (index>0):
                 hiDiff = high - prevHigh
                 loDiff = prevLow - low
@@ -109,17 +123,15 @@ class ind_dmi(BaseIndPx):
         self.ndi = [100*ai/bi for ai,bi in zip(tmpNdi,atr)]
         dx = map(calcDX2, self.pdi,self.ndi)
         self.adx = atr1 + sp.wma(dx,length)
-        print dx
-        print self.adx
+        #debug
+        df0['ang'] = ratio
         '''
-        print len(df0.index)
-        print len(self.adx)
-        print len(atr1)
-        print len(atr2)
-        print len(tmpPdi)
-        print len(pdm)
-        print len(ndm)
+        df0['di+']=self.pdi
+        df0['di-']=self.ndi
+        df0['dx'] = dx
+
         '''
+        print df0
         pass  
         
     #main process routine
