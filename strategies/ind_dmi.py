@@ -109,6 +109,8 @@ class ind_dmi(BaseIndPx):
         self.ndi = [100*ai/bi for ai,bi in zip(tmpNdi,atr)]
         dx = map(calcDX2, self.pdi,self.ndi)
         self.adx = atr1 + sp.wma(dx,length)
+        print dx
+        print self.adx
         '''
         print len(df0.index)
         print len(self.adx)
