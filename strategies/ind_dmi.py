@@ -28,7 +28,7 @@ ADX.SetDefaultColor(GetColor(5));
 '''
 import pandas
 #import time #to measure performance
-from collections import OrderedDict
+#from collections import OrderedDict
 from ind_base_px import BaseIndPx
 from st_pattern import StrategyPattern
 
@@ -72,14 +72,15 @@ class ind_dmi(BaseIndPx):
 
         for row_index, row in df0.iterrows():
             #print index
-            close = row['Adj Close']
+            aclose = row['Adj Close']
+            close = row['Close']
             high = row['High']
             low = row['Low']            
-            tr.append(sp.trueRange(high, close, low))
+            tr.append(sp.trueRange(high, aclose, low))
             
             ###
             if (close>lastpx):
-                r = (high-lastpx)/(length-index)
+                r = (close-lastpx)/(length-index)
                 ratio.append(r)
             else:
                 ratio.append(0.)
@@ -143,3 +144,4 @@ class ind_dmi(BaseIndPx):
 
     def runScan(self,table):
         return table
+        
