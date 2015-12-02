@@ -18,11 +18,11 @@ class ind_trend(BaseIndPx):
             self.zzp = int(param['zzp'])           
     
         
-    def isDownTrend(self,df):
+    def isDownTrend(self,df,lastpx):
         if (len(df) < 2):
             return False
         gap = 1
-        minoffset = 10
+        minoffset = 5
         r1v = df['ang'].iloc[0]
         r1o = df['offset'].iloc[0]
         r2v = df['ang'].iloc[1]
@@ -31,8 +31,20 @@ class ind_trend(BaseIndPx):
         flag2 = (r1o > minoffset)
         flag3 = (r2o-r1o) > r1o
         #print "\t",flag1,flag2,flag3,r1v,r2v,r1o,r2o
-        print df
-        return (flag1 and flag2 and flag3)
+        #print df
+        flag = (flag1 and flag2 and flag3)
+        if (not flag):
+            df0 = df.sort_index(by='zz',ascending=False)
+            r2p = df0['Adj Close'].iloc[0]
+            r1p = df0['Adj Close'].iloc[1]
+            r2o = df0['offset'].iloc[0]
+            r1o = df0['offset'].iloc[1]
+            #print r2p,r1p,r2o,r1o
+            lastpxt = (r2p*r1o-r1p*r2o)/(r1o-r2o)
+            #print lastpxt
+            if (lastpx>lastpxt):
+                return True
+        return flag
 
     def findTrend(self, df):
         df0 = df.iloc[::-1]
@@ -43,10 +55,10 @@ class ind_trend(BaseIndPx):
         for row_index, row in df0.iterrows():
             if (start < maxStartOffset):
                 lastpx = df0['Adj Close'].loc[row_index]
-                #print "test",start,row_index,lastpx
+                print "test",row_index
                 df0['ang']=float('nan')
                 toplst = self.calcAngle(df0,lastpx,start)
-                flag = self.isDownTrend(toplst)
+                flag = self.isDownTrend(toplst,lastpx)
                 if (flag):
                     print row_index,lastpx,"found downtrend breakout"
                     return True;
