@@ -23,10 +23,14 @@ class ind_kdj(BaseIndPx):
         slowk = d
         slowd = pd.rolling_mean(slowk, 3)
         j = 3 * d - 2 * k
-        px['k'] = k
-        px['d'] = d
-        px['j'] = j
-
+        #px['j'] = j
+        '''
+        px['fast_k'] = k
+        px['fast_d'] = d        
+        px['slow_d'] = slowd
+        '''        
+        #print px
+        self.ind['slow_d'] = slowd[-1]
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         self.setupParam(param)

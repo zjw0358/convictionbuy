@@ -46,12 +46,18 @@ class CbTasks:
         
         for sect in self.msconfig.getSections():
             cmdstr = self.msconfig.getConfig(sect,'cmd')
+
+            with open(of, "a") as reportfile:
+                print >>reportfile, "\n\n[ ",sect," ]\n"
+                print >>reportfile, cmdstr
+                
+            print sect
             print cmdstr
             if (cmdstr!=""):
                 process = subprocess.Popen("python "+cmdstr)
                 #wait until it complete?     
                 process.wait()
-                print('Finished process %s' % cmdstr)               
+                print('Finished process')               
             
         pass
  
@@ -59,6 +65,7 @@ class CbTasks:
 if __name__ == "__main__":
     obj = CbTasks()
     obj.process()
+ 
  
  
  

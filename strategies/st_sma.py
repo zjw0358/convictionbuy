@@ -27,12 +27,10 @@ class st_sma(ind_ma):
             buysg,sellsg = sp.divergencyCross(self.close_px, self.ma50, 2)
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50_buy','ma50_sell')            
                 
-        #too lag, how about px cross MA50
-        '''
+        #too lag, how about px cross MA50        
         if (self.ma50 and self.ma200):
-            sp.initData(self.ma50, self.ma200, 200)
-            self.ind['ma50_200_buy'] = sp.crossAbove()
-            self.ind['ma50_200_sell'] = sp.crossBelow()
-        '''    
+            #print "test golder and death"
+            buysg,sellsg = sp.cross(self.ma50, self.ma200, 2)
+            tsup.getLastSignal(buysg,sellsg, self.ind,'ma50_200_buy','ma50_200_sell')          
         pass
 

@@ -39,6 +39,8 @@ def calcChg(netchg, totchg):
     
 class ind_sctr(BaseIndPx):
     def __init__(self):
+        # must call base class init
+        BaseIndPx.__init__(self)
         self.ind_ma = ind_ma.ind_ma()
         self.ind_rsi = ind_rsi.ind_rsi()
         self.pt = st_pattern.StrategyPattern()

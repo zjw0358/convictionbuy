@@ -101,7 +101,7 @@ def TRIX(df, n):
     return df
 
 #Average Directional Movement Index
-def ADX(df, n, n_ADX):
+def ADX0(df, n, n_ADX):
     i = 0
     UpI = []
     DoI = []
@@ -119,10 +119,21 @@ def ADX(df, n, n_ADX):
         i = i + 1
     i = 0
     TR_l = [0]
+    '''
     while i < df.index[-1]:
         TR = max(df.get_value(i + 1, 'High'), df.get_value(i, 'Close')) - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))
         TR_l.append(TR)
         i = i + 1
+    '''
+    idx = 0
+    length = len(df)-1
+    for row_index, row in df.iterrows():
+        if (idx<length):
+            TR = max(df.get_value(idx + 1, 'High'), df.get_value(idx, 'Close')) - min(df.get_value(idx + 1, 'Low'), df.get_value(idx, 'Close'))
+            TR_l.append(TR)
+        idx = idx + 1
+        
+                
     TR_s = Series(TR_l)
     ATR = Series(ewma(TR_s, span = n, min_periods = n))
     UpI = Series(UpI)
@@ -131,6 +142,58 @@ def ADX(df, n, n_ADX):
     NegDI = Series(ewma(DoI, span = n, min_periods = n - 1) / ATR)
     ADX = Series(ewma(abs(PosDI - NegDI) / (PosDI + NegDI), span = n_ADX, min_periods = n_ADX - 1), name = 'ADX_' + str(n) + '_' + str(n_ADX))
     df = df.join(ADX)
+    return df
+
+# original code don't support df with time index
+def ADX(df, n, n_ADX):
+    i = 0
+    UpI = []
+    DoI = []
+    #while i + 1 <= df.index[-1]:
+    idx = 0
+    length = len(df)-1
+    for row_index, row in df.iterrows():
+        if (idx<length):
+            print idx,length
+            UpMove = df['High'].iloc[idx + 1] - df['High'].iloc[idx]
+            DoMove = df['Low'].iloc[idx] - df['Low'].iloc[idx + 1]
+            if UpMove > DoMove and UpMove > 0:
+                UpD = UpMove
+            else: UpD = 0
+            UpI.append(UpD)
+            if DoMove > UpMove and DoMove > 0:
+                DoD = DoMove
+            else: DoD = 0
+            DoI.append(DoD)
+        idx = idx + 1
+        
+    i = 0
+    TR_l = [0]
+    '''
+    while i < df.index[-1]:
+        TR = max(df.get_value(i + 1, 'High'), df.get_value(i, 'Close')) - min(df.get_value(i + 1, 'Low'), df.get_value(i, 'Close'))
+        TR_l.append(TR)
+        i = i + 1
+    '''
+    idx = 0
+    length = len(df)-1
+    for row_index, row in df.iterrows():
+        if (idx<length):
+            TR = max(df['High'].iloc[idx + 1], df['Close'].iloc[idx]) - min(df['Low'].iloc[idx + 1], df['Close'].iloc[idx])
+            TR_l.append(TR)
+        idx = idx + 1
+        
+                
+    TR_s = Series(TR_l)
+    ATR = Series(ewma(TR_s, span = n, min_periods = n))
+    UpI = Series(UpI)
+    DoI = Series(DoI)
+    PosDI = Series(ewma(UpI, span = n, min_periods = n - 1) / ATR)
+    NegDI = Series(ewma(DoI, span = n, min_periods = n - 1) / ATR)
+    #print PosDI,NegDI
+    ADX = Series(ewma(abs(PosDI - NegDI) / (PosDI + NegDI), span = n_ADX, min_periods = n_ADX - 1), name = 'ADX_' + str(n) + '_' + str(n_ADX))
+    #df = df.join(ADX)
+    df['CBADX'] = ADX.tolist()
     return df
 
 #MACD, MACD Signal and MACD difference

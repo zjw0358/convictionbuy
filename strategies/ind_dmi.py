@@ -61,11 +61,11 @@ class ind_dmi(BaseIndPx):
         tr=[]
         pdm=[]
         ndm=[]
-        ratio=[]
+        #ratio=[]
         sp = StrategyPattern()
         #debug
-        length = len(df0)-1
-        lastpx = df0['Adj Close'].iloc[len(df0)-1]
+        #length = len(df0)-1
+        #lastpx = df0['Adj Close'].iloc[len(df0)-1]
 
         ###
         #start = time.time()
@@ -79,11 +79,13 @@ class ind_dmi(BaseIndPx):
             tr.append(sp.trueRange(high, aclose, low))
             
             ###
+            '''
             if (close>lastpx):
                 r = (close-lastpx)/(length-index)
                 ratio.append(r)
             else:
                 ratio.append(0.)
+            '''
             ####
             if (index>0):
                 hiDiff = high - prevHigh
@@ -125,14 +127,13 @@ class ind_dmi(BaseIndPx):
         dx = map(calcDX2, self.pdi,self.ndi)
         self.adx = atr1 + sp.wma(dx,length)
         #debug
-        df0['ang'] = ratio
+        #df0['ang'] = ratio
         '''
         df0['di+']=self.pdi
         df0['di-']=self.ndi
-        df0['dx'] = dx
-
         '''
-        print df0
+        df0['adx'] = self.adx        
+        #print df0
         pass  
         
     #main process routine

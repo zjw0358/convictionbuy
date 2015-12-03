@@ -5,15 +5,17 @@ Base Indication class need price data
 from collections import OrderedDict
 import marketdata
 
-class BaseIndPx(object):
+class BaseIndPx(object):        
     def __init__(self):
+        print "BaseIndPx init"
         self.mtd = marketdata.MarketData()
         self.cleanup()
-        
+    
     def cleanup(self):
         #print "BaseIndPx cleanup"
         self.ind = OrderedDict()
         self.debug = False   
+        self.param = {}
              
     def getIndicators(self):
         return self.ind
@@ -25,6 +27,12 @@ class BaseIndPx(object):
         return "This is Base indicator with Price data needed"
         
     def setupParam(self,param):
+        '''        
+        print "setup baseIndPx"
+        self.mtd = marketdata.MarketData()
+        self.param = {}
+        self.cleanup()
+        '''
         self.param = param
         if ('debug' in param):
             self.debug = True
