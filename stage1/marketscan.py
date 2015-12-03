@@ -427,6 +427,7 @@ class MarketScan:
         try:
             os.remove(filename)
         except:
+            print "unable to delete file",filename
             pass
         ohlc.to_csv(filename,sep=',')
         pass

@@ -12,6 +12,7 @@ class TradeSupport:
         sellidx = float('nan')
         for idx,sig in enumerate(sellsg[::-1]):
             if (sig!=""):
+                #print idx,sig
                 sellidx = idx
                 break;
                 

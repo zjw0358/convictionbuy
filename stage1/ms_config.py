@@ -49,16 +49,24 @@ class MsDataCfg:
         cbp = self.cbparser
         sectName = self.sectName
         folder = ""
+        #print "read",sectName,key
+        #value = cbp.get(sectName, key)
+        #print "read",sectName,value
+
+        
         try:
             value = cbp.get(sectName, key)
+
+            '''
             if (key=="folder"):
                 return value
             else:
                 folder = cbp.get(sectName, "folder")
                 value = folder + value
+            '''
         except:
             value = default
-
+        
         return value
 
     def saveDataConfig(self,key,value):

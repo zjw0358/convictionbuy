@@ -38,8 +38,8 @@ class zack_data:
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg()  # default = datafile, cb_config.cfg
-        self.mkdataFile=self.cfg.getDataConfig("","marketdata") #"./marketdata.csv"
-        folder = self.cfg.getDataConfig("","cache")
+        self.mkdataFile=self.cfg.getDataConfig("marketdata") #"./marketdata.csv"
+        folder = self.cfg.getDataConfig("cache")
         self.outputfn = folder + "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
 
 
@@ -351,6 +351,7 @@ class zack_data:
   
       
     def updateData(self):     
+        print "Loading marketdata file",self.mkdataFile
         symbolTable = self.mtd.loadSymbolLstFile(self.mkdataFile)
         df = symbolTable[symbolTable['rank']>0]
         df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
@@ -429,7 +430,7 @@ class zack_data:
         print mf
         mf.to_csv(self.outputfn,sep=',',index=False)
         #update dataconfig
-        self.cfg.saveDataConfig("","zack",self.outputfn)              
+        self.cfg.saveDataConfig("zack",self.outputfn)              
          
     def process(self):
         self.parseOption()

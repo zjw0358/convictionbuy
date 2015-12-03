@@ -12,25 +12,25 @@ class ind_kdj(BaseIndPx):
     #override func
     def setupParam(self,param):
         BaseIndPx.setupParam(self,param)  
-        self.cl = 14  
+        self.cl = 5 
         if 'cl' in param:
             self.cl = int(param['length'])
     def algoFunc(self, px):
         l = pd.rolling_min(px['Low'], self.cl) 
         h = pd.rolling_max(px['High'], self.cl)
-        k = 100 * (px['Close'] - l) / (h-l)
-        d = pd.rolling_mean(k, 3)
-        slowk = d
-        slowd = pd.rolling_mean(slowk, 3)
-        j = 3 * d - 2 * k
+        fastk = 100 * (px['Close'] - l) / (h-l)
+        fullk = pd.rolling_mean(fastk, 3)
+        d = pd.rolling_mean(fullk, 1)
+        #slowk = d
+        #slowd = pd.rolling_mean(slowk, 1)
+        #j = 3 * d - 2 * k
         #px['j'] = j
-        '''
-        px['fast_k'] = k
-        px['fast_d'] = d        
-        px['slow_d'] = slowd
-        '''        
-        #print px
-        self.ind['slow_d'] = slowd[-1]
+        
+        px['k'] = fullk
+        px['d'] = d        
+        #px['slow_d'] = slowd               
+        print px
+        self.ind['slow_d'] = d[-1]
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         self.setupParam(param)
