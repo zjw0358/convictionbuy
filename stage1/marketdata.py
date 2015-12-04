@@ -13,10 +13,12 @@ load market data
 '''
 class MarketData:
     def __init__(self):
+        '''
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False)
         pandas.set_option('display.max_rows', 1500)
+        '''
         #pandas.set_option('display.max_columns', 50)
         #pandas.set_option('display.precision', 3)
         #pandas.set_option('display.expand_frame_repr', False)

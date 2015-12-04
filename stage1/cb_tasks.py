@@ -36,7 +36,8 @@ class CbTasks:
         
     def process(self):
         #save daily output filename
-        output = "dailyreport_" + self.datacfg.getFileSurfix() + ".txt"
+        folder = self.datacfg.getDataConfig("folder","../cache/")        
+        output = folder + "dailyreport_" + self.datacfg.getFileSurfix() + ".txt"
         self.datacfg.saveDataConfig('output_report',output)
         of = self.datacfg.getDataConfig("output_report")
         

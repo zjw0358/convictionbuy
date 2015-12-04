@@ -32,119 +32,29 @@ class MarketScan:
     def __init__(self):
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
-        pandas.set_option('display.expand_frame_repr', False)
-
+        pandas.set_option('display.expand_frame_repr', False) #expand wide dataframe
+        #pandas.set_option('display.width', 100)
+        #pandas.set_option('max_colwidth', 600)
         #pandas.options.display.float_format = '{:,.2f}%'.format
         pandas.set_option('display.float_format', lambda x: '%.3f' % x)
                 
         self.outputpath = "../result/"
 
-        self.mscfg = "./marketscan.cfg"
+        self.mscfg = "./marketscan.cfg" #??
         self.mtd = marketdata.MarketData()
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/")        
-        self.sp500 = "^GSPC"
-        self.nmuBest = 1 #??
-        
-        #self.enddate = ""
-        #self.startdate = ""
-        ##self.symbolLstFileCol = ['symbol','rank','name','sector','industry','pid','exg'] 
-        #self.symbolLstFile = "./marketdata.csv"  #default marketdata file
-        #self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
-                
-        #self.hasBackTest = False
-        #self.haschart = False
-        #self.help = False
-        #self.sgyparam = {}
-        #self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
-        #self.savemd = False
-        #self.loadmd = False
-        #self.feed = "yahoo"  # yahoo feeder   
-        # strategy info, 0 - run before download price;        
-        # module run before scan aka FA module
-        # TODO put this info in config file later
-        #self.sgyInfo = {'ms_pvm':0,"ms_reuter":0,"zack_data":0}
-        
+        self.sp500 = "^GSPC" #?
+        self.nmuBest = 1 #??        
         return
 
     def usage(self):
         print "marketscan.py -f <portfolio_file> -g strategy&parameter=value -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
         print 'run marketscan.py -g "st_perf" -i 1,2,3 --loadmd -h'
  
-    def parseOption(self):
-        '''
-        print "=========================="
-        #self.ticklist=[]
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed="])
-        except getopt.GetoptError:
-            print "parse option error"
-            sys.exit()
-
-        for opt, arg in opts:
-            if opt in ("-f", "--filename"):
-                self.symbolLstFile = arg
-                #self.option = 1
-            elif opt in ("-t", "--ticklist"):
-                tdict = self.mtd.parseTickLst(arg)
-                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])                
-            elif opt in ("-s", "--startdate"):
-                self.startdate = arg
-            elif opt in ("-e", "--enddate"):
-                self.enddate = arg
-            elif opt in ("-i", "--pid"):
-                idLst = arg.split(",")
-                self.pid = self.mtd.parsePidLst(idLst)
-            elif opt in ("-g", "--strategy"):
-                self.sgyparam = self.parseStrategy(arg)
-            elif opt in ("-h", "--help"):
-                self.usage()
-                self.help=True                                   
-            elif opt in ("-c","--chart"):
-                self.haschart = True
-                self.chartparam = arg
-            elif opt in ("--backtest"):
-                self.hasBackTest = True
-                self.backtest = ms_backtest.ms_backtest()
-            elif opt in ("--savemd"):
-                self.savemd = True
-            elif opt in ("--loadmd"):
-                self.loadmd = True
-            elif opt in ("--feed"):
-                self.feed = arg
-                
-        if self.enddate == "":
-            self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
-            if not self.startdate:
-                startday = datetime.date.today() - datetime.timedelta(days=365)
-                self.startdate = startday.strftime("%Y-%m-%d")
-
-        if not self.sgyparam:
-            self.sgyparam = self.loadCfg(self.mscfg)
-        #load strategy
-        self.loadStrategy(self.sgyparam)           
-        if self.help == True:
-            sys.exit()
-
-        print "use ", self.symbolLstFile
-        print "start date", self.startdate
-        print "end date", self.enddate
-        print "portfolio id mask ",self.pid
-        print "use chart",self.haschart
-        if (self.haschart):
-            print "chart param",self.chartparam
-        print "load marketdata", self.loadmd
-        print "save marketdata", self.savemd
-        print "backtest", self.hasBackTest
-        print "feeder", self.feed
-        print "=========================="
-        
-        if ("sina" in self.feed):
-            self.sinaapi = SinaMarketData()
-        '''
+    def parseOption(self):      
         params = self.params
         params.parseOption()
         if ("sina" in params.feed):
@@ -157,37 +67,7 @@ class MarketScan:
             pass
         else:        
             self.loadStrategy(params.sgyparam)           
-    '''
-    strategy_name&parameter=value
-    st_rsi&cl=14,st_macd&f=10&s=5
-    ms_pvm&download&$pe<20&mc>1000
-    evaluate string start with $
-    '''    
-    '''
-    def parseStrategy(self,arg):
-        l_sgy = {}
-        for item in arg.split(","):
-            idx = 0
-            param = {}
-            for token in item.split("&"):
-                if idx == 0:                    
-                    l_sgy[token] = param #first one is strategy
-                else:
-                    print "debug_test",token
-                    if (token[0]!='%'):#split by '=' again 
-                        k= token.split('=')
-                        if (len(k)>1):
-                            param[k[0]] = k[1]
-                        else:
-                            param[k[0]] = ""
-                    else:
-                        token = token[1:]
-                        param[token] = ""
-                idx += 1
-        print l_sgy
-        return l_sgy
-    '''    
-
+   
     '''
     the 'marketscan.cfg' would be 
     st_rsi,xxx=1&yyy=1
@@ -401,15 +281,13 @@ class MarketScan:
                 table = sgx.runScan(table)
         
         # daily report file
-        of = self.datacfg.getDataConfig("output_report")        
+        #folder = self.datacfg.getDataConfig("folder")
+        of = self.datacfg.getDataConfig("output_report")
+        #of = folder+fp
         with open(of, "a") as reportfile:
             print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
-            print >>reportfile, table
-        '''
-        reportfile = open("dailyreport.txt", "w")
-        print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
-        print >>reportfile, table
-        '''
+            print >>reportfile, table.to_string(index=False)
+            
         print table
         
         #save filted csv file
@@ -443,11 +321,13 @@ class MarketScan:
         ohlc.index = pandas.to_datetime(ohlc.index)  
         date1 = datetime.datetime.strptime(self.params.startdate,'%Y-%m-%d')
         date2 = datetime.datetime.strptime(self.params.enddate,'%Y-%m-%d')
+        #print date1,date2
         #unable to get next business day
         start = -1
         end = -1
         for idx,item in enumerate(ohlc.index):
             #print item,type(item)
+            #print idx,item
             if (start==-1 and item >= date1):
                 start = idx
                 #print "start",item                
@@ -455,7 +335,10 @@ class MarketScan:
                 end = idx
                 print "end",item
                 break
-            
+
+        if (end==-1):
+            end=len(ohlc.index)
+        #print start,end
         ohlc = ohlc.iloc[start:end]
         return ohlc
         
@@ -491,6 +374,7 @@ class MarketScan:
             end = timer()  
             print "\ttime",round(end - start,3)
             #add 'px' column
+            #print "intc",ohlc['Adj Close']
             table.loc[index,'px'] = ohlc['Adj Close'][-1]
             start = timer()
             print "processing",symbol
