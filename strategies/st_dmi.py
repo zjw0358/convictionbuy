@@ -63,6 +63,7 @@ class st_dmi(ind_dmi):
     #difficult to directly use criteria string
     #criteria doesn't know 'or'
     # buy<20 | sell<30
+    '''
     def runScan0(self,table):
         mode = 0
         if 'buy' in self.param:
@@ -80,7 +81,7 @@ class st_dmi(ind_dmi):
             table = table[(table['dmi_buy'] < bl) | (table['dmi_sell'] < sl)]
 
         return table
-
+    '''
     # evaluate criteria string is more convenient   
     def runScan(self,df):
         col = df.columns.values 

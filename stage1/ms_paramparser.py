@@ -26,15 +26,15 @@ class ms_paramparser:
         self.verbose = False #print ohlc?
         pass
 
-    def parseOption(self):
-        print "=========================="
+    def parseOption(self, params):
+        print "==========================",params
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:s:e:i:g:c:h", \
+            opts, args = getopt.getopt(params, "f:t:s:e:i:g:c:h", \
                 ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed=","vb"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
-
+        print "list",opts
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.symbolLstFile = arg

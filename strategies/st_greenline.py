@@ -30,9 +30,9 @@ class st_greenline(BaseIndPx):
         
         #self.ind_dmi.runIndicator(symbol,ohlc,param)
         #print self.ind_kdj.
-        df = STO(ohlc,5)
+        #df = STO(ohlc,5)
         #df = ADX(ohlc,14,14)
-        print df
+        #print df
         #self.algoStrategy(ohlc)
         pass
         

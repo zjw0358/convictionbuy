@@ -1,2 +1,9 @@
-1. convert txt to pdf
-2. email pdf
+2015-12-05
+golder cross death cross indicate < 10days
+末尾 放置所有symbol的sctr/ma均线/perf/px的参考，以何为序？symbol? 
+一个单独用于下载数据的task,不加任何strategy
+
+
+2015-12-04
+1. convert txt to pdf -- done
+2. email pdf -- done

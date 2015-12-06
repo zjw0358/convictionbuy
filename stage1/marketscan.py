@@ -7,7 +7,7 @@ import sys
 import os
 from timeit import default_timer as timer
 sys.path.insert(0, "../strategies/")
-#sys.path.insert(0, "../screen/")
+
 
 import pandas.io.data as web
 import pandas
@@ -22,6 +22,7 @@ import ms_paramparser
 import ms_config
 #sys.path.insert(0, "../src/")
 
+
 '''
 historical price
 http://ichart.finance.yahoo.com/table.csv?s=xle&a=01&b=19&c=2014&d=01&e=19&f=2015&g=d&ignore=.csv
@@ -33,6 +34,7 @@ class MarketScan:
         pandas.set_option('display.max_columns', 50)
         pandas.set_option('display.precision', 3)
         pandas.set_option('display.expand_frame_repr', False) #expand wide dataframe
+        pandas.set_option('display.max_rows', 1500)
         #pandas.set_option('display.width', 100)
         #pandas.set_option('max_colwidth', 600)
         #pandas.options.display.float_format = '{:,.2f}%'.format
@@ -45,18 +47,20 @@ class MarketScan:
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
-        self.cachepath = self.datacfg.getDataConfig("folder","../cache/")        
+        self.cachepath = self.datacfg.getDataConfig("folder","../cache/")  
+        self.sgyInx={}
         self.sp500 = "^GSPC" #?
-        self.nmuBest = 1 #??        
+        self.nmuBest = 1 #??      
+          
         return
 
     def usage(self):
         print "marketscan.py -f <portfolio_file> -g strategy&parameter=value -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
         print 'run marketscan.py -g "st_perf" -i 1,2,3 --loadmd -h'
  
-    def parseOption(self):      
+    def parseOption(self,args):         
         params = self.params
-        params.parseOption()
+        params.parseOption(args)
         if ("sina" in params.feed):
             self.sinaapi = SinaMarketData()
         if (params.hasBackTest):
@@ -94,8 +98,10 @@ class MarketScan:
         
     def loadStrategy(self,sgyLst):
         #load all strategy
-        self.sgyInx = {}
+        #sys.path.insert(0, "../strategies/")
+        #self.sgyInx = {}
         for sgy in sgyLst:
+            print sgy
             module_meta = __import__(sgy, globals(), locals(), [sgy])
             c = getattr(module_meta, sgy) 
             myobject = c() # construct module
@@ -259,12 +265,15 @@ class MarketScan:
                         
         print "==================================================="
         print "total", len(df1.index),"symbols selected"
+        '''
+        allow to download data even that no price module
         if self.hasPriceDataModule()==False and self.params.haschart==False:
             self.saveTableFile(df1,"raw")
             print df1
             print "No more pricedata module to be processed, exit..."
             return
-
+        '''
+        
         # process pricedata module 
         table = self.runIndicator(df1)
 
@@ -281,14 +290,17 @@ class MarketScan:
                 table = sgx.runScan(table)
         
         # daily report file
-        #folder = self.datacfg.getDataConfig("folder")
         of = self.datacfg.getDataConfig("output_report")
-        #of = folder+fp
+
         with open(of, "a") as reportfile:
             print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
             print >>reportfile, table.to_string(index=False)
             
-        print table
+        print table #stdout
+         
+        #self.genPdf(table)
+        
+        #try to pdf
         
         #save filted csv file
         self.saveTableFile(table)
@@ -296,7 +308,7 @@ class MarketScan:
         if self.params.haschart:
             print "=== csv chart ==="
             self.csvchart.drawChart(table,self.chartparam)
-        return       
+        return table     
         
     #save ohlc to csv file
     def saveOhlc(self, symbol, ohlc):
@@ -345,7 +357,7 @@ class MarketScan:
     def runIndicator(self, table):
         #TODO if no post-module, should return immediately
         numError = 0
-        #mergedf = pandas.DataFrame()       
+        #print "runIndicator"
         for index, row in table.iterrows():
             symbol = row['symbol']
             print "downloading ",index, symbol
@@ -375,7 +387,7 @@ class MarketScan:
             print "\ttime",round(end - start,3)
             #add 'px' column
             #print "intc",ohlc['Adj Close']
-            table.loc[index,'px'] = ohlc['Adj Close'][-1]
+            table.loc[index,'px'] = round(ohlc['Adj Close'][-1],2)
             start = timer()
             print "processing",symbol
             for sgyname in self.sgyInx:
@@ -405,10 +417,15 @@ class MarketScan:
             print "========================="
             self.saveExcelFile(backtestDf,self.getSaveFileName(),1) #offset=1
         return table
-        
-    def process(self):
-        self.parseOption()
-        self.procMarketData()
+   
+
+    def process(self, args=""):
+        if (args==""):
+            self.parseOption(sys.argv[1:])
+        else:
+            self.parseOption(args.split())
+            
+        return self.procMarketData()
         
 if __name__ == "__main__":
     obj = MarketScan()

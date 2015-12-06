@@ -37,16 +37,11 @@ class ind_ma(BaseIndPx):
             #self.ma200 = pandas.stats.moments.rolling_mean(px,200).tolist()
             self.ma200 = pandas.rolling_mean(px,200).tolist()
             self.ind['ma200'] = round(self.ma200[-1],2)
-            #df['ma200'] = self.ma200
-           
-        #print df
+            #df['ma200'] = self.ma200           
+       
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
         self.setupParam(param)     
         #self.close_px = ohlc['Adj Close']
         self.algoFunc(ohlc)     
 
-    '''
-    def runScan(self,table):
-        return table
-    '''

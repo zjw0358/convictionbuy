@@ -26,10 +26,10 @@ class ind_kdj(BaseIndPx):
         #j = 3 * d - 2 * k
         #px['j'] = j
         
-        px['k'] = fullk
-        px['d'] = d        
+        #px['k'] = fullk
+        #px['d'] = d        
         #px['slow_d'] = slowd               
-        print px
+        #print px
         self.ind['slow_d'] = d[-1]
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
