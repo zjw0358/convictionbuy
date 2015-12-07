@@ -143,6 +143,8 @@ class ind_dmi(BaseIndPx):
         #self.close_px = ohlc['Adj Close']
         self.algoFunc(ohlc)        
 
+    '''
     def runScan(self,table):
         return table
+    '''
         

@@ -20,7 +20,8 @@ import xlsxwriter
 from feed_sina import SinaMarketData
 import ms_paramparser
 import ms_config
-#sys.path.insert(0, "../src/")
+from collections import OrderedDict
+
 
 
 '''
@@ -280,27 +281,34 @@ class MarketScan:
         #save raw csv file        
         self.saveTableFile(table,"raw")
         print table
+        
         #filter work
         print "=== screening ===="
+        #outputCol = OrderedDict()
+        outputCol = ['symbol','px']
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==True:
                 print "screening ",sgyname
                 sgx = self.sgyInx[sgyname]
-                table = sgx.runScan(table)
+                table,cls = sgx.runScan(table)
+                #outputCol.append(cls)
+                for key in cls:
+                    outputCol.append(key)#[key]=1
         
+        #colLst = table.columns.values
+        print "output column list",outputCol
+        table = table[outputCol]
         # daily report file
         of = self.datacfg.getDataConfig("output_report")
 
         with open(of, "a") as reportfile:
             print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
             print >>reportfile, table.to_string(index=False)
-            
-        print table #stdout
-         
-        #self.genPdf(table)
         
-        #try to pdf
+        #get columne we need only!    
+
+        print table          
         
         #save filted csv file
         self.saveTableFile(table)

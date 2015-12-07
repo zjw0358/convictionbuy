@@ -21,9 +21,10 @@ def mergeSignal(b,s,c):
 '''
 
 class st_dmi(ind_dmi):
+    '''
     def __init__(self):
         self.mtd = marketdata.MarketData()
-        
+    '''    
     def usage(self):
         return "dmi=length"
 
@@ -59,31 +60,11 @@ class st_dmi(ind_dmi):
 
         tsup.getLastSignal(buysg,sellsg, self.ind,'dmi_buy','dmi_sell')
         pass    
-
-    #difficult to directly use criteria string
-    #criteria doesn't know 'or'
-    # buy<20 | sell<30
-    '''
-    def runScan0(self,table):
-        mode = 0
-        if 'buy' in self.param:
-            bl = int(self.param['buy'])
-            mode = mode|1
-        if 'sell' in self.param:
-            sl = int(self.param['sell'])
-            mode = mode|2
-            
-        if (mode==1):
-            table = table[(table['dmi_buy'] < bl)]
-        elif (mode==2):
-            table = table[(table['dmi_sell'] < sl)]
-        elif (mode==3):
-            table = table[(table['dmi_buy'] < bl) | (table['dmi_sell'] < sl)]
-
-        return table
-    '''
+        
     # evaluate criteria string is more convenient   
+    '''
     def runScan(self,df):
         col = df.columns.values 
         df = self.mtd.evalCriteria(df,self.param,col) 
         return df        
+    '''

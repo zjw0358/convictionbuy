@@ -236,7 +236,9 @@ class MarketData:
         #for op in param:
         #    criteria.append(op)
         criteria = param.keys()
-    
+        #print "criteria",criteria
+        #criteria ['dmi_buy<20']
+
         if not criteria:
             print "criteria is empty,...return original table"
             return df
@@ -262,38 +264,31 @@ class MarketData:
                 else:
                     crstr = crstr + "& (" + cr0 + ") "
             # add column to display
+            # print "collst",collst
+            # e.g. only 'dmi_buy', not dmi_sell
             for col in collst:
-                coldict[col] = 0
+                coldict[col] = 1  #enable the col output
                 
                                                         
         #crstr += "(1)"
         print "to evaluate criteria = ", crstr
         outputcol = coldict.keys()
+        filteredCols = []
+        # get enable columns only list
+        for col in coldict:
+            if (coldict[col]==1):
+                filteredCols.append(col)
+                
         if crstr == "":
             df = df[outputcol]
-        else:
+        else:            
             df = df[eval(crstr)][outputcol]
-        return df
-        
-    #save table
-    '''
-    def saveTableFile(self,table,addstr=""):
-        saveFileName = "mdscan_"
-        for sgyname in self.sgyInx:
-            saveFileName += sgyname
-            saveFileName +="_"
-            
-        if addstr != "":
-            saveFileName = saveFileName + addstr + "_"
-            
-    
-        outputFn = self.outputpath + saveFileName + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'
-        try:
-            table.to_csv(outputFn,sep=',',index=False)
-            print "Finish wrote to ",outputFn
-        except:
-            print "exception when write to csv ",outputFn
-    '''     
+        #print df
+        return df,filteredCols
+
+    def getCriteriaCols():
+        return
+                
     def saveTable(self,df1,path):
         try:
             df1.to_csv(path,sep=',',index=False)
