@@ -38,8 +38,8 @@ class MarketScan:
         pandas.set_option('display.max_rows', 1500)
         #pandas.set_option('display.width', 100)
         #pandas.set_option('max_colwidth', 600)
-        #pandas.options.display.float_format = '{:,.2f}%'.format
-        pandas.set_option('display.float_format', lambda x: '%.3f' % x)
+        
+        #pandas.set_option('display.float_format', lambda x: '%.3f' % x)
                 
         self.outputpath = "../result/"
 
@@ -284,8 +284,8 @@ class MarketScan:
         
         #filter work
         print "=== screening ===="
-        #outputCol = OrderedDict()
-        outputCol = ['symbol','px']
+        outputCol = OrderedDict()
+        #outputCol = ['symbol','px']
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==True:
@@ -294,11 +294,11 @@ class MarketScan:
                 table,cls = sgx.runScan(table)
                 #outputCol.append(cls)
                 for key in cls:
-                    outputCol.append(key)#[key]=1
+                    outputCol[key] = 1#.append(key)#[key]=1
         
         #colLst = table.columns.values
-        print "output column list",outputCol
-        table = table[outputCol]
+        #print "output column list",outputCol
+        table = table[outputCol.keys()]
         # daily report file
         of = self.datacfg.getDataConfig("output_report")
 

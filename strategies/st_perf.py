@@ -28,7 +28,7 @@ class st_perf(BaseIndPx):
             self.sgy = 5
         if "sort1" in param:
             self.sgy = 6
-        if "reversal" in param:
+        if "sorts" in param:
             self.sgy = 7
         return
           
@@ -100,9 +100,7 @@ class st_perf(BaseIndPx):
             top24w = table.sort_index(by='p24w',ascending=False).head(24)['symbol']
             df = table[(table['symbol'].isin(top4w)) & (table['symbol'].isin(top12w)) & (table['symbol'].isin(top24w))]
         elif self.sgy == 3:
-            '''
-            sort 24week
-            '''
+            #sort 24 week            
             df = table.sort_index(by='p24w',ascending=False)
         elif self.sgy == 4:            
             #sort 12 week
@@ -113,9 +111,11 @@ class st_perf(BaseIndPx):
         elif self.sgy == 6:            
             #sort 1 week
             df = table.sort_index(by='p1w',ascending=False)
-        elif self.sgy == 7:#doesn't help
-            df = table[(table['p4w']-table['p12w']>1) &(table['p4w']-table['p12w']<3) & (table['p4w']>2) & (table['p4w']<5)]
+        elif self.sgy == 7:
+            df = table.sort_index(by='symbol',ascending=True)
+            #df = table[(table['p4w']-table['p12w']>1) &(table['p4w']-table['p12w']<3) & (table['p4w']>2) & (table['p4w']<5)]
             pass
-        return  df
+        cols = df.columns.values 
+        return  df,cols
         
       
