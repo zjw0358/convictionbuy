@@ -6,6 +6,10 @@ from ind_ma import ind_ma
 from st_pattern import StrategyPattern
 from trade_support import TradeSupport
 
+def foo(row):
+    
+    pass
+    
 class st_sma(ind_ma):
     def usage(self):
         return "px>ma200"
@@ -49,4 +53,29 @@ class st_sma(ind_ma):
             #print sellsg
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50200b','ma50200s')          
         pass
-
+    def merge(self,df):
+        coldict = {"ma10b":"ma10s","ma50b":"ma50s",'ma1050b':'ma1050s','ma50200b':'ma50200s'}
+        lst=[]
+        for index, row in df.iterrows():
+            for key in coldict:
+                c1 = key
+                c2 = coldict[key]
+                lst.append(c1)
+                lst.append(c2)
+                colm = c1+'s'
+                if (row[c1] < row[c2]):
+                    df.loc[index,colm] = row[c1]
+                else:
+                    df.loc[index,colm] = -row[c2]
+        df.drop(lst, axis=1, inplace=True)        
+        return df
+        
+    def runScan(self, df):
+        col = df.columns.values 
+        if not self.param:
+            return df,col
+        if 'merge' in self.param:
+            df = self.merge(df)
+        col = df.columns.values 
+        return df,col
+        pass

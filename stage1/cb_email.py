@@ -10,7 +10,14 @@ import mimetypes
 
 def send_mail(attachment):
     test_str="daily report"
-    me="wirelesser@hotmail.com"
+    #me="wirelesser@hotmail.com"
+    serverAddr = "smtp.gmail.com:587"
+    #serverAddr = "smtp.qq.com"
+    # serverAddr = "smtp.live.com"
+    #serverAddr = "65.55.163.152"
+    #me="zhour@garena.com"
+    me="wirelesser@gmail.com"
+    #me_password="cv80faqq"
     me_password="Cv60faqq"
     you="wirelesser@gmail.com"
     msg = MIMEMultipart()
@@ -53,8 +60,10 @@ def send_mail(attachment):
     with open(attachment) as f:
         msg.attach(MIMEText(f.read()))
     '''
-    smtp_conn = smtplib.SMTP("smtp.live.com", timeout=10)
+    smtp_conn = smtplib.SMTP(serverAddr)
     print "connection stablished"
+    smtp_conn.set_debuglevel(1)
+    smtp_conn.ehlo()
     smtp_conn.starttls()
     smtp_conn.ehlo_or_helo_if_needed()
     smtp_conn.login(me, me_password)
@@ -62,4 +71,4 @@ def send_mail(attachment):
     smtp_conn.quit()
 
 if __name__ == "__main__":
-    send_mail()
+    send_mail("../cache/dailyreport_2015-12-08.pdf")

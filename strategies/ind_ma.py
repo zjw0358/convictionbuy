@@ -43,5 +43,4 @@ class ind_ma(BaseIndPx):
     def runIndicator(self,symbol,ohlc,param={}):
         self.setupParam(param)     
         #self.close_px = ohlc['Adj Close']
-        self.algoFunc(ohlc)     
-
+        self.algoFunc(ohlc)
