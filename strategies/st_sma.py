@@ -25,11 +25,16 @@ class st_sma(ind_ma):
         tsup = TradeSupport()
         px = ohlc['Adj Close']
         if (self.ma10):
-            buysg,sellsg = sp.divergencyCross(px, self.ma10, 2)
+            # not using divergencyCross 
+            buysg,sellsg = sp.cross(px, self.ma10, 2)
             tsup.getLastSignal(buysg,sellsg,self.ind,'ma10b','ma10s')
-        
+            '''
+            ohlc['ma10b']=buysg
+            ohlc['ma10s']=sellsg
+            ohlc['ma10']=self.ma10
+            '''
         if (self.ma50):
-            buysg,sellsg = sp.divergencyCross(px, self.ma50, 2)
+            buysg,sellsg = sp.cross(px, self.ma50, 2)
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50b','ma50s')            
 
         if (self.ma50 and self.ma10):
@@ -52,6 +57,7 @@ class st_sma(ind_ma):
             buysg,sellsg = sp.cross(self.ma50, self.ma200, 2)
             #print sellsg
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50200b','ma50200s')          
+        #print ohlc
         pass
     def merge(self,df):
         coldict = {"ma10b":"ma10s","ma50b":"ma50s",'ma1050b':'ma1050s','ma50200b':'ma50200s'}
@@ -76,6 +82,7 @@ class st_sma(ind_ma):
             return df,col
         if 'merge' in self.param:
             df = self.merge(df)
-        col = df.columns.values 
-        return df,col
-        pass
+            col = df.columns.values 
+            return df,col
+        else:
+            return ind_ma.runScan(self,df)

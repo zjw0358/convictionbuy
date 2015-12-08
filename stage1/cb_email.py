@@ -8,8 +8,8 @@ import mimetypes
 #import sys
 
 
-def send_mail(attachment):
-    test_str="daily report"
+def send_mail(attachment,filedate):
+    test_str="CB_daily_report_"+filedate
     #me="wirelesser@hotmail.com"
     serverAddr = "smtp.gmail.com:587"
     #serverAddr = "smtp.qq.com"
@@ -62,7 +62,7 @@ def send_mail(attachment):
     '''
     smtp_conn = smtplib.SMTP(serverAddr)
     print "connection stablished"
-    smtp_conn.set_debuglevel(1)
+    #smtp_conn.set_debuglevel(1)
     smtp_conn.ehlo()
     smtp_conn.starttls()
     smtp_conn.ehlo_or_helo_if_needed()

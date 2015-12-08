@@ -100,7 +100,7 @@ class MarketScan:
     def loadStrategy(self,sgyLst):
         #load all strategy
         #sys.path.insert(0, "../strategies/")
-        #self.sgyInx = {}
+        self.sgyInx = {}
         for sgy in sgyLst:
             print sgy
             module_meta = __import__(sgy, globals(), locals(), [sgy])
@@ -284,7 +284,7 @@ class MarketScan:
         
         #filter work
         print "=== screening ===="
-        outputCol = OrderedDict()
+        outputCol = OrderedDict({'symbol':1,'px':1})
         #outputCol = ['symbol','px']
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
@@ -398,6 +398,7 @@ class MarketScan:
             table.loc[index,'px'] = round(ohlc['Adj Close'][-1],2)
             start = timer()
             print "processing",symbol
+            #print self.sgyInx
             for sgyname in self.sgyInx:
                 #if not sgyname in self.sgyInfo:
                 sgx = self.sgyInx[sgyname]

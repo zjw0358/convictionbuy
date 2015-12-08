@@ -149,7 +149,7 @@ class CbTasks:
             df = self.dfdict[key]
             self.writePdf(key,df)
         self.closePdf()
-        send_mail(self.output)
+        send_mail(self.output,self.datacfg.getFileSurfix())
         pass
         
 if __name__ == "__main__":
