@@ -442,7 +442,7 @@ class StrategyPattern(object):
                 d = np.average(lst[index+1-period:index+1], weights=range(period,0,-1))
                 data.append(d)
                 #print index,"add",d
-        return pandas.Series(data)
+        return pandas.Series(data,index=lst.index)
         
     def weightMovAvg0(self,lst,period):
         

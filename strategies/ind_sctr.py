@@ -49,8 +49,8 @@ class ind_sctr(BaseIndPx):
         return "N/A"
         
     def calcPPO(self,ohlc):
-        ema12 = pandas.ewma(ohlc['Adj Close'], span=12)
-        ema26 = pandas.ewma(ohlc['Adj Close'], span=26)
+        ema12 = pandas.ewma(ohlc['Close'], span=12)
+        ema26 = pandas.ewma(ohlc['Close'], span=26)
         macd = ema12 - ema26
         ppo = (ema12 - ema26)/ema26*100;
         '''
@@ -64,13 +64,15 @@ class ind_sctr(BaseIndPx):
         '''
         
         p1 = self.pt.weightMovAvg(ppo,3)
-        p2 = pandas.Series(pandas.rolling_mean(ppo,3).tolist())
+        #p2 = pandas.Series(pandas.rolling_mean(ppo,3).tolist())
+        p2 = pandas.rolling_mean(ppo,3)
+
         #p2 = pandas.rolling_mean(ppo,3).reset_index(0).drop('index',axis=1)
         ppolinear = 6*(p1-p2)/(3-1)
         ppodiff = ppolinear - ppolinear.shift(1)        
         netChgAvg = pandas.rolling_mean(ppodiff, 3);
         totChgAvg = pandas.rolling_mean(abs(ppodiff), 3);        
-        chgratio = pandas.Series(map(calcChg, netChgAvg,totChgAvg))
+        chgratio = pandas.Series(map(calcChg, netChgAvg,totChgAvg),index=ppo.index)
         shppo = 50 * (chgratio + 1) / 100;
         #print type(shppo),shppo
         #print type(shppo.get(len(shppo)-1))
@@ -84,10 +86,11 @@ class ind_sctr(BaseIndPx):
         ohlc['ppolinear']=ppolinear.tolist()
         print ohlc
         '''
-        #print p1
         #print "============="
         #print shppo[-10:-1]*0.05
-        return (shppo.get(len(shppo)-1))
+        #return (shppo.get(len(shppo)-1))
+        #print shppo
+        return shppo
         '''
         
         print "1 ==================="
@@ -109,7 +112,7 @@ class ind_sctr(BaseIndPx):
         self.setupParam(param) #parent func
         self.algoFunc(ohlc)
                 
-    def algoFunc(self,ohlc):        
+    def algoFunc0(self,ohlc):        
         lti200 = (ohlc['Adj Close'][-1] / self.ind_ma.ind['ma200'] -1)*100*0.3
         lti125 = (ohlc['Adj Close'][-1] / ohlc['Adj Close'][-125] -1)*100*0.3
         mti50 =  (ohlc['Adj Close'][-1] / self.ind_ma.ind['ma50'] -1)*100*0.15
@@ -119,7 +122,36 @@ class ind_sctr(BaseIndPx):
         
         score = lti200 + lti125 + mti50 + mti20 + stirsi + stippo
         #print "\t",lti200,lti125,mti50,mti20,stirsi,stippo
-        self.ind['sctr'] = score
+        self.ind['sctr'] = score        
         return
+
+    def algoFunc(self,ohlc):        
+        lti200 = (ohlc['Close'] / self.ind_ma.ma200 -1)*100*0.3        
+        lti125 = (ohlc['Close'] / ohlc['Close'].shift(125) -1)*100*0.3
+        #lt = lti200+lti125
+        
+        mti50 =  (ohlc['Close'] / self.ind_ma.ma50 -1)*100*0.15
+        mti20 =  (ohlc['Close'] / ohlc['Close'].shift(20) -1)*100*0.15
+        stirsi = self.ind_rsi.rsi*0.05
+        stippo = self.calcPPO(ohlc)*0.05
+        
+        score = lti200 + lti125 + mti50 + mti20 + stirsi + stippo
+        #print "\t",lti200,lti125,mti50,mti20,stirsi,stippo
+        self.ind['sctr'] = score[-1]
+        '''
+        print self.ind_ma.ma200[-5:]
+        print lti200[-3:]
+        print lti125[-3:]
+        print mti50[-3:]
+        print mti20[-3:]        
+        print stirsi[-3:]
+        print stippo[-3:]        
+        '''
+        #print score
+        #print stippo
+        #print mti50
+        #print mti20
+        return
+        
         
         

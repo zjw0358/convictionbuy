@@ -15,11 +15,8 @@ class ind_ma(BaseIndPx):
     '''
     def algoFunc(self, df):
         plen = len(df)  
-        px = df['Adj Close']
-        #self.ma10 = []
-        #self.ma50 = []
-        #self.ma100 = []
-        #self.ma200 = []
+        #px = df['Adj Close']
+        px = df['Close']
         
         # pandas.core.series.Series()
         if plen >= 10:
@@ -36,7 +33,7 @@ class ind_ma(BaseIndPx):
             self.ind['ma100'] = round(self.ma100[-1],2)
         if plen >= 200:
             #self.ma200 = pandas.stats.moments.rolling_mean(px,200).tolist()
-            self.ma200 = pandas.rolling_mean(px,200).tolist()
+            self.ma200 = pandas.rolling_mean(px,200)
             self.ind['ma200'] = round(self.ma200[-1],2)
             #df['ma200'] = self.ma200           
         #print df
