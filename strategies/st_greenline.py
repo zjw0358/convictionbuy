@@ -44,10 +44,11 @@ class st_greenline(BaseIndPx):
         
     def runScan(self,df):
         if not self.param:
-            return df
+            col = df.columns.values 
+            return df,col
         total = len(df)
         df['sctrrank'] = df['sctr'].rank(ascending=1)/total*100
         df.sort_index(by="sctrrank",inplace=True,ascending=False)
         col = df.columns.values 
-        df = self.mtd.evalCriteria(df,self.param,col) 
-        return df 
+        df,fcols = self.mtd.evalCriteria(df,self.param,col) 
+        return df,fcols

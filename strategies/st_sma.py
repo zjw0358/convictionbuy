@@ -52,7 +52,7 @@ class st_sma(ind_ma):
                 self.ind['ma1050e']=0
             
         #too lag, how about px cross MA50        
-        if (self.ma50 and self.ma200):
+        if (self.ma50 and not self.ma200.empty):
             #print "test golder and death"
             buysg,sellsg = sp.cross(self.ma50, self.ma200, 2)
             #print sellsg

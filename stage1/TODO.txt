@@ -1,7 +1,10 @@
+2015-12-10
+使用一个marketscan支持多个策略，这样就不用反复下在数据了
+一次跑完
+
 2015-12-08
 NOC-3年多一直沿ma50上行,未碰过ma200
 ntes策略 -2年多沿ma200上行,碰过一次后上涨
-
 
 2015-12-05
 golder cross death cross indicate < 10days
@@ -12,3 +15,9 @@ golder cross death cross indicate < 10days
 2015-12-04
 1. convert txt to pdf -- done
 2. email pdf -- done
+
+==
+case
+avgo 15-11-24 sctr cross 0, px上穿ma200,dmi 露头，breakout downtrend line,之前盘整了几个月(如何判断?)
+jah 15-12-7短线升幅过大
+emc 15-12-2 maa50,ma200收敛,px上行，如何建模？
