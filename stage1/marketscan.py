@@ -390,7 +390,9 @@ class MarketScan:
                     if numError>3:
                         print "too many errors when downloading symbol data, exit now"
                         sys.exit()
-                    continue            
+                    continue
+            # adjust adj close price.
+            ohlc = self.mtd.adjClosePrice(ohlc)       
             end = timer()  
             print "\ttime",round(end - start,3)
             #add 'px' column

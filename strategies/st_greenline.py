@@ -7,6 +7,8 @@ from ind_sctr import ind_sctr
 from ind_kdj import ind_kdj
 from ind_cbbase import *
 from ind_dmi import ind_dmi
+from st_pattern import StrategyPattern
+from trade_support import TradeSupport
 
 class st_greenline(BaseIndPx):
     def __init__(self): 
@@ -14,6 +16,8 @@ class st_greenline(BaseIndPx):
         self.ind_sctr = ind_sctr()
         self.ind_kdj = ind_kdj()
         self.ind_dmi = ind_dmi()
+        self.sp = StrategyPattern()
+        self.tsup = TradeSupport()
         pass
         
     #main process routine
@@ -27,7 +31,9 @@ class st_greenline(BaseIndPx):
         self.ind_kdj.runIndicator(symbol,ohlc,param)
         self.ind['money_wave'] = self.ind_kdj.ind['slow_d']        
         
-        
+        buysg,sellsg = self.sp.crossValue(self.ind_sctr.score, self.ind_sctr.score,0,0,2)
+        self.tsup.getLastSignal(buysg,sellsg, self.ind,'sctr_buy','sctr_sell')
+
         #self.ind_dmi.runIndicator(symbol,ohlc,param)
         #print self.ind_kdj.
         #df = STO(ohlc,5)

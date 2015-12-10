@@ -135,9 +135,9 @@ class ind_sctr(BaseIndPx):
         stirsi = self.ind_rsi.rsi*0.05
         stippo = self.calcPPO(ohlc)*0.05
         
-        score = lti200 + lti125 + mti50 + mti20 + stirsi + stippo
+        self.score = lti200 + lti125 + mti50 + mti20 + stirsi + stippo
         #print "\t",lti200,lti125,mti50,mti20,stirsi,stippo
-        self.ind['sctr'] = score[-1]
+        self.ind['sctr'] = self.score[-1]
         '''
         print self.ind_ma.ma200[-5:]
         print lti200[-3:]
@@ -147,7 +147,8 @@ class ind_sctr(BaseIndPx):
         print stirsi[-3:]
         print stippo[-3:]        
         '''
-        #print score
+        #ohlc['sctr'] = score
+        #print ohlc
         #print stippo
         #print mti50
         #print mti20

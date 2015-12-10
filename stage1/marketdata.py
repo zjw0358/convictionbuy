@@ -286,8 +286,19 @@ class MarketData:
         #print df
         return df,filteredCols
 
-    def getCriteriaCols():
-        return
+    def adjClosePrice(self, df):
+        error1 = 1.05
+        error2 = 0.95
+        for index, row in df.iterrows():
+            adjc = row['Adj Close']
+            cl =  row['Close']
+            ratio = adjc/cl
+            if (ratio>error1 or ratio<error2):                
+                df.loc[index,'High'] = row['High']*ratio
+                df.loc[index,'Low'] = row['Low']*ratio
+                df.loc[index,'Open'] = row['Open']*ratio
+                df.loc[index,'Close'] = row['Close']*ratio                
+        return df
                 
     def saveTable(self,df1,path):
         try:
