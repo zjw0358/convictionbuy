@@ -1,10 +1,15 @@
+2015-12-15
+获取dividend/季报信息 -- yahoo
+获取next earning date - zacks?
+
+
 2015-12-11
 对px,ma50,ma200收敛进行建模,看看是否有其他信号确认
 MACD?
 aws scheduler
 以及对trader中的using simple mv一文进行建模
 支持sina的数据，看看能否利用.sina spx代号为.inx
-获取dividend信息
+
 
 2015-12-10
 使用一个marketscan支持多个策略，这样就不用反复下载数据了, 一次跑完
