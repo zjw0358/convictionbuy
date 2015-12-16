@@ -92,13 +92,18 @@ class zack_data:
         content = '['+content.replace('\\\"', '')+']'
         #print content        
         outer = json.loads(content)
-        print outer[0]['Date']
-        #inner = json.dumps(outer[0])
+        erlst=[]
+        if (len(outer)>0):
+            for idx in range(0,len(outer)):
+                erlst.append(outer[idx]['Date'])
+
+        return erlst
+        
     #get earning date
     def getERD(self,symbol):
         url = "http://www.zacks.com/stock/research/"+symbol+"/earnings-announcements"
         page =urllib2.urlopen(url)
-        soup = BeautifulSoup(page.read())
+        soup = BeautifulSoup(page.read(),"html.parser")
         allitems = soup.findAll('script')
         for index,item in enumerate(allitems):
             txt = item.string
@@ -109,24 +114,15 @@ class zack_data:
             an = re.match(self.erdPattern,txt)
             if an!=None:
                 str1=an.group(1)
-                erlst=[]
                 #print str1
-                self.parseJson(str1)
-                '''
-                for pairstr in str1.split(','):
-                    name,value = pairstr.split(':')
-                    name=re.sub('[{} "]','',name)
-                    #print name,value
-                    if name=='Date':
-                        value=re.sub('[ "]','',value)
-                        #d = datetime.datetime.strptime(value, '%m/%d/%Y')
-                        erlst.append(value)
-                self.saveErdFile(symbol,erlst)
-                '''
-                return
-        print "\tEarning date not found"
-                #print erlst 
-                    
+                erlst = self.parseJson(str1)
+                if (len(erlst)!=0):
+                    self.saveErdFile(symbol,erlst)
+                    return
+
+        print "\tEarning date not found"    
+        return
+     
     def saveErdFile(self,symbol,erlst):
         fileName=self.cachefolder+symbol+"_erdate.erd"
         #print "saveErdFile",fileName
@@ -452,8 +448,8 @@ class zack_data:
 ################################################################################            
 if __name__ == "__main__":
     obj = zack_data()
-    #obj.process()
-    obj.getERD('MGM')    
+    obj.process()
+    #obj.getERD('MGM')    
     
 
 

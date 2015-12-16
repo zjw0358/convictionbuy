@@ -1,6 +1,7 @@
 2015-12-15
 获取dividend/季报信息 -- yahoo
-获取next earning date - zacks?
+获取next earning date - zacks? - done
+可能需要加入条件dmi_buy,突破后不能过分缩小diff
 
 
 2015-12-11
