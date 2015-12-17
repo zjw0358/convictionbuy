@@ -1,3 +1,25 @@
+2015-12-17
+MA混合信号
+     symbol      px  ma10s  ma10b  ma50s  ma50b  ma1050s  ma1050b
+492    CIEN   19.30      6     16      3     42        1       42
+949     MGM   22.08      8     14      3     36        0       42
+1351    AAL   43.20      2     10      2     10        0        3
+1433      C   53.90      5      7      4     37        1       37
+1484   SBUX   60.35      2      7      2      7        1       60
+1622    MAN   86.67      9     13      4     20        2       36
+3149   ORCL   38.91      6     17      3      7        1       42
+3578   KITE   66.48     11     30      4     43        2       45
+4847   AAPL  111.34      4      7      2      7        0       37
+4904   VIAV    5.96      9     16      4     51        0       45
+5446    MJN   78.48     16     42      4     37        0       35
+6120    PLD   42.32      9     18      4      7        1       48
+6153   SIVB  124.84      9     15      2     33        0       31
+Finish wrote to  ../result/scan_st_sma_2015-12-17.csv
+run marketscan.py -g st_sma&ma10s<20&ma10b>ma10s&ma50s<5&ma50b>ma50s&ma1050s<5&ma1050b>ma1050s -i 1,2,3 --loadmd -s 2013-01-01
+
+
+
+
 2015-12-15
 获取dividend/季报信息 -- yahoo
 获取next earning date - zacks? - done
