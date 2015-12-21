@@ -6,6 +6,7 @@ import sys
 import pandas
 import datetime
 import marketdata
+import ms_config
 
 class ms_paramparser:
     def __init__(self):
@@ -14,7 +15,8 @@ class ms_paramparser:
         self.enddate = ""
         self.startdate = ""
         self.help = False
-        self.symbolLstFile = "./marketdata.csv"  #default marketdata file
+        self.cfg = ms_config.MsDataCfg("") 
+        self.symbolLstFile = self.cfg.getDataConfig("marketdata") 
         self.haschart = False
         self.savemd = False
         self.loadmd = False

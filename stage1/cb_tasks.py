@@ -97,12 +97,12 @@ class CbTasks:
                 print >>reportfile, cmdstr
                 
             print sect
-            #print paramstr
+            
             if (cmdstr!=""):
                 df = self.scaner.process(paramstr)
                 self.dfdict[sect] = df
                 print('Finished process')               
-     
+            
         self.printPdf()
         pass
         

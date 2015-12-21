@@ -3,19 +3,26 @@ import getopt
 import sys
 import datetime
 import pandas
+import ms_config
 
 class SymbolTool:
     def __init__(self):
         self.mkt = marketdata.MarketData()
-        self.basefile = "./marketdata.csv"
+
         self.portfoliofile = ""
         self.googlefile = ""
         self.option = ""
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])
         self.saveToFile = False
         self.pid = 1
-        self.outputpath = "./marketdata" + datetime.datetime.now().strftime("_%Y-%m-%d.csv")
-        
+
+        self.cfg = ms_config.MsDataCfg("")
+        self.cachefolder = self.cfg.getDataConfig("folder","../cache/") 
+        self.outputpath = self.cachefolder + "marketdata_" + self.cfg.getFileSurfix() + ".csv"
+        self.basefile = self.cfg.getDataConfig("marketdata","../cache/marketdata.csv") 
+        #"./marketdata.csv"                
+        #datetime.datetime.now().strftime("_%Y-%m-%d.csv")
+                       
         return
         
     def usage(self):
@@ -155,21 +162,10 @@ class SymbolTool:
             self.mkt.saveTable(df1,self.outputpath)
         elif self.saveToFile:
             self.mkt.saveTable(df1,self.outputpath)
+        #save back to cfg file
+        self.cfg.saveDataConfig("marketdata",self.outputpath)              
         return
            
 if __name__ == "__main__":
     obj = SymbolTool()
     obj.process()
-'''
-    def addPid0(self,df,pid):
-        if len(self.ticklist)==0:
-            self.ticklist = self.mkt.loadPortfolioFile(self.portfoliofile)
-            
-        for index, row in df.iterrows():
-            if row['symbol'] in self.ticklist:
-                newpid = int(row['pid'])|(pid)
-                df.loc[index,'pid']  = newpid
-                print row['symbol'],newpid
-        print "number=",len(df.index)
-        return df
-'''        

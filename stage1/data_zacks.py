@@ -30,7 +30,7 @@ class zack_data:
         self.rankPattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
         self.erdPattern = '^window.app_data_earnings[\d\D]*\\"data\\"[ :\\[]*(.*)]'
         self.cqestCol = ['cq0','cq7','cq30','cq60','cq90']
-
+        self.erdonly = False
         self.columns = ['rank','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
             'abr3m','numbr'] + self.cqestCol
         self.allcols = ['symbol','exg'] + self.columns
@@ -47,7 +47,7 @@ class zack_data:
     def parseOption(self):
         self.ticklist=[]
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:h", ["filename", "ticklist","zackfile","pid","merge"])
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:h", ["filename", "ticklist","zackfile","pid","merge","erd"])
         except getopt.GetoptError:
             print "parameter error"
             sys.exit()
@@ -73,7 +73,8 @@ class zack_data:
                 sys.exit()
             elif opt in ("--merge"):
                 self.option = "merge" #merge zackfile with others in symbolfile
-                
+            elif opt in ("--erd"):
+                self.erdonly = True                
         print "symbolfile=",self.mkdataFile
         print "ticklist==="
         if not self.tickdf.empty:
@@ -95,7 +96,8 @@ class zack_data:
         erlst=[]
         if (len(outer)>0):
             for idx in range(0,len(outer)):
-                erlst.append(outer[idx]['Date'])
+                if 'Date' in outer[idx]:
+                    erlst.append(outer[idx]['Date'])
 
         return erlst
         
@@ -190,6 +192,8 @@ class zack_data:
         '''
         
         magntable = soup.find("section", {'id':'quote_brokerage_recomm'})
+        if (magntable==None):
+            return None
         tdLst = magntable.findAll('td')
 
         tdlen = len(tdLst)
@@ -249,8 +253,8 @@ class zack_data:
         epsEstmDct['rank'] = self.parseRank(page)
         magntable = soup.find("section", {'id':'magnitude_estimate'})
         if magntable==None:
-            print "estimation information"
-            return epsEstmDct
+            print "\testimation information not found"
+            return None #epsEstmDct
             
         tdLst = magntable.findAll('td')
         
@@ -286,9 +290,10 @@ class zack_data:
     '''    
     def getZackData(self,symbol):
         dct = OrderedDict()
+        
+
         for key in self.columns:
             dct[key]=""
-        #dct['etf']="0"
         
         estdct = self.getEstimate(symbol)
         if self.isEtf:
@@ -303,12 +308,7 @@ class zack_data:
         if abrdct!=None:
             dct.update(abrdct)
         end = timer()    
-        print "\tbroker recom",(end-start) 
-
-        start = timer()
-        self.getERD(symbol)
-        end = timer()    
-        print "\tearning date",(end-start) 
+        print "\tbroker recom",(end-start)             
 
         return dct
   
@@ -353,7 +353,7 @@ class zack_data:
             
         if len(missLst)>0:
             print "Missing list:",missLst            
-  
+    
       
     def updateData(self):     
         print "Loading marketdata file",self.mkdataFile
@@ -398,6 +398,11 @@ class zack_data:
         for index, row in dfup.iterrows():
             print "downloading ",idx,row['symbol'],row['exg']
             idx += 1
+
+            self.getERD(row['symbol'])
+            if (self.erdonly):
+                continue 
+                
             rowdct = self.getZackData(row['symbol'])
             if rowdct==None:
                 continue
@@ -426,7 +431,10 @@ class zack_data:
                     outputfp.flush()
                                     
 
-        
+        if (self.erdonly):
+            print "ERD download complete"
+            return
+            
         if lenticklst>100:
             outputfp.close()
         
@@ -449,7 +457,7 @@ class zack_data:
 if __name__ == "__main__":
     obj = zack_data()
     obj.process()
-    #obj.getERD('MGM')    
+    #obj.getERD('BBL')    
     
 
 
