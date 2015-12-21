@@ -13,6 +13,7 @@ http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?sym
 import pandas
 
 class SinaMarketData:
+    #only hour data until yesterday close
     def reqHisData(self,symbol):
         url = "http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?symbol=%s&type=60&___qn=3" % (symbol)
         df = pandas.read_json(url)

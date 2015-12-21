@@ -18,6 +18,7 @@ from timeit import default_timer as timer
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 
+import json
 
 class zack_data:
     def __init__(self):
@@ -27,6 +28,7 @@ class zack_data:
         #self.rankPattern = '[\d\D]*Zacks[\D]*Rank[/s]*: (.)[\d\D]*'
 
         self.rankPattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
+        self.erdPattern = '^window.app_data_earnings[\d\D]*\\"data\\"[ :\\[]*(.*)]'
         self.cqestCol = ['cq0','cq7','cq30','cq60','cq90']
 
         self.columns = ['rank','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
@@ -37,15 +39,11 @@ class zack_data:
         self.option = ""
         self.tickdf = pandas.DataFrame()            
         self.mtd = marketdata.MarketData()
-        self.cfg = ms_config.MsDataCfg()  # default = datafile, cb_config.cfg
+        self.cfg = ms_config.MsDataCfg("")  # default = datafile, cb_config.cfg
         self.mkdataFile=self.cfg.getDataConfig("marketdata") #"./marketdata.csv"
-        folder = self.cfg.getDataConfig("cache")
-        self.outputfn = folder + "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv' 
+        self.cachefolder = self.cfg.getDataConfig("folder","../cache/")
+        self.outputfn = self.cachefolder + "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'         
 
-
-        #self.zackfile = self.cfg.getDataConfig("","zack") #"./marketdata.csv"
-        #print self.mkdataFile
-        #sys.exit()
     def parseOption(self):
         self.ticklist=[]
         try:
@@ -88,46 +86,53 @@ class zack_data:
         print "run zack_data.py -r zackfile -t aapl --merge" #merge with zackfile
         print "run zack_data.py -i 1,2,3 "
 
+    def parseJson(self,content):
+        #remove \"
+        #content = re.sub("\\", 'abcd', content)
+        content = '['+content.replace('\\\"', '')+']'
+        #print content        
+        outer = json.loads(content)
+        erlst=[]
+        if (len(outer)>0):
+            for idx in range(0,len(outer)):
+                erlst.append(outer[idx]['Date'])
 
-
-    '''    
-    def getRank(self,ticklist):
-        zackranks = {}
-        for symbol in ticklist:
-            url = "http://www.zacks.com/stock/quote/"+symbol
-            htmltxt =urllib2.urlopen(url).read()
-            an = re.match(self.rankPattern, htmltxt)
+        return erlst
+        
+    #get earning date
+    def getERD(self,symbol):
+        url = "http://www.zacks.com/stock/research/"+symbol+"/earnings-announcements"
+        page =urllib2.urlopen(url)
+        soup = BeautifulSoup(page.read(),"html.parser")
+        allitems = soup.findAll('script')
+        for index,item in enumerate(allitems):
+            txt = item.string
+            if txt==None:
+                continue
+            '''else:
+                print index,"=",txt'''
+            an = re.match(self.erdPattern,txt)
             if an!=None:
                 str1=an.group(1)
-                if str1=='N':
-                    zrank = 0
-                else:
-                    zrank = int(str1[0])
-                print symbol, zrank
-                zackranks[symbol] = zrank
-        return zackranks
-    '''
-    '''
-    def getSymbolRank(self,symbol):
-        zrank = -1
-        url = "http://www.zacks.com/stock/quote/"+symbol
-        try:            
-            htmltxt =urllib2.urlopen(url).read()
-        except:
-            print symbol," Not found"
-            return zrank
-        an = re.match(self.rankPattern, htmltxt)
-        if an!=None:
-            str1=an.group(1)
-            if str1=='N':
-                zrank = 0
-            else:
-                zrank = int(str1[0])
-        print symbol, zrank    
-        return zrank
-    '''
+                #print str1
+                erlst = self.parseJson(str1)
+                if (len(erlst)!=0):
+                    self.saveErdFile(symbol,erlst)
+                    return
+
+        print "\tEarning date not found"    
+        return
+     
+    def saveErdFile(self,symbol,erlst):
+        fileName=self.cachefolder+symbol+"_erdate.erd"
+        #print "saveErdFile",fileName
+        fp = open(fileName,'w',-1)
+        #pickle.dump(erlst, fp)
+        #fp.writelines(erlst)
+        fp.writelines(["%s\n" % item  for item in erlst])
+        fp.close()
   
-        
+    #obselete  
     def parseRank(self,htmltxt):
         an = re.match(self.rankPattern, htmltxt)
         if an!=None:
@@ -221,8 +226,6 @@ class zack_data:
         #print symbol,abr
         return abr
         
-   
-        
     #first try             
     def getEstimate(self, symbol):
         start = timer()
@@ -286,9 +289,7 @@ class zack_data:
         for key in self.columns:
             dct[key]=""
         #dct['etf']="0"
-
-
-
+        
         estdct = self.getEstimate(symbol)
         if self.isEtf:
             return None
@@ -303,9 +304,13 @@ class zack_data:
             dct.update(abrdct)
         end = timer()    
         print "\tbroker recom",(end-start) 
+
+        start = timer()
+        self.getERD(symbol)
+        end = timer()    
+        print "\tearning date",(end-start) 
+
         return dct
-                
-   
   
     #load zack csv file
     def loadZackCsvFile(self,fileName):
@@ -444,10 +449,7 @@ class zack_data:
 if __name__ == "__main__":
     obj = zack_data()
     obj.process()
-    #zr.getEstimate('intc')
-    #zr.getBrokerRecom('intc')
-    #zr.getPriceSale('intc')
-    #obj.process()
-
+    #obj.getERD('MGM')    
+    
 
 
