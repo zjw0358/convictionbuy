@@ -1,0 +1,35 @@
+===== Daily Report =====
+
+[  short term dmi_buy,px>ma10,px>ma200,dmi_buy<20  ]
+
+marketscan.py
+
+
+[  short term sell/close BY mixed MA  ]
+
+marketscan.py
+
+
+[  green line  ]
+
+marketscan.py
+
+
+[  greenline buy  ]
+
+marketscan.py
+
+
+[  golden cross  ]
+
+marketscan.py
+
+
+[  death cross  ]
+
+marketscan.py
+
+
+[  performance reference  ]
+
+marketscan.py
