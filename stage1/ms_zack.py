@@ -13,10 +13,11 @@ from collections import OrderedDict
 class ms_zack:
     def __init__(self):
         self.zack = zack_data.zack_data()
-        #self.zackfile = "./msdata_zack.csv"
         self.mtd = marketdata.MarketData()
-        self.cfg = ms_config.MsDataCfg()
+        self.cfg = ms_config.MsDataCfg("")
         self.zackfile = self.cfg.getDataConfig("zack")
+        self.cachefolder = self.cfg.getDataConfig("folder")
+        #print self.cachefolder
         return    
         
     def usage(self):
@@ -29,6 +30,19 @@ class ms_zack:
     # no need real price data
     def needPriceData(self):
         return False
+        
+    def loadNextErd(self,df):
+        for index, row in df.iterrows():
+            symbol = row['symbol']
+            fn = self.cachefolder + symbol + "_erdate.erd"
+            try:
+                print "\topen file",fn
+                with open(fn, "r") as fp:
+                    erd = fp.readline()
+                    df.loc[index,'erd'] = erd[:-1]
+            except:
+                df.loc[index,'erd'] = ""
+        return df
         
     def process(self,tablein,param0):
         #"$eracc2":"epsq1e/epsqtr-3>epsqtr0/epsqtr-4&epsqtr0/epsqtr-4>epsqtr-1/epsqtr-5&epsqtr-1/epsqtr-5>epsqtr-2/epsqtr-6",
@@ -57,9 +71,10 @@ class ms_zack:
         if len(param)==0:
             df = df[col]
         else:
-            df = self.mtd.evalCriteria(df,param,col)        
+            df,cols = self.mtd.evalCriteria(df,param,col)        
         df1 = pandas.merge(tablein,df,how='inner')
-                
+        # erd
+        df1 = self.loadNextErd(df1)
         return df1  
         
 ################################################################################        
