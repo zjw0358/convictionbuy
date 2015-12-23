@@ -12,9 +12,14 @@ def foo(row):
     
 class st_sma(ind_ma):
     def usage(self):
-        return "px>ma200"
+        return "nbar=3"
    
     def runIndicator(self,symbol,ohlc,param={}):
+        if 'nbar' in param:
+            self.nbar = int(param['nbar'])
+        else:
+            self.nbar = 2
+            
         ind_ma.runIndicator(self,symbol,ohlc,param)
         self.algoStrategy(ohlc)
         pass
@@ -26,7 +31,7 @@ class st_sma(ind_ma):
         px = ohlc['Adj Close']
         if (self.ma10):
             # not using divergencyCross 
-            buysg,sellsg = sp.cross(px, self.ma10, 2)
+            buysg,sellsg = sp.cross(px, self.ma10, self.nbar)
             tsup.getLastSignal(buysg,sellsg,self.ind,'ma10b','ma10s')
             '''
             ohlc['ma10b']=buysg
@@ -34,11 +39,11 @@ class st_sma(ind_ma):
             ohlc['ma10']=self.ma10
             '''
         if (self.ma50):
-            buysg,sellsg = sp.cross(px, self.ma50, 2)
+            buysg,sellsg = sp.cross(px, self.ma50, self.nbar)
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50b','ma50s')            
 
         if (self.ma50 and self.ma10):
-            buysg,sellsg = sp.cross(self.ma10, self.ma50, 2)
+            buysg,sellsg = sp.cross(self.ma10, self.ma50, self.nbar)
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma1050b','ma1050s')            
             # ready to cross above
             flag1 = (self.ma10[-1] > self.ma50[-1]*0.97)
@@ -54,7 +59,7 @@ class st_sma(ind_ma):
         #too lag, how about px cross MA50        
         if (self.ma50 and not self.ma200.empty):
             #print "test golder and death"
-            buysg,sellsg = sp.cross(self.ma50, self.ma200, 2)
+            buysg,sellsg = sp.cross(self.ma50, self.ma200, self.nbar)
             #print sellsg
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50200b','ma50200s')          
         #print ohlc

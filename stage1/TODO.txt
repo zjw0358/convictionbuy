@@ -1,3 +1,12 @@
+2015-12-23
+针对持有股票,找出颓势的close position
+可能要加入p4w 涨幅为条件,否则误报率太大？
+对所有ma10 x ma50的，累计2次px x ma10,发出close 信号，难以描述ma10 x ma50
+ma1050b < 66, 并且两次触碰ma50 (信号太慢)
+
+run marketscan.py -g st_sma&nbar=3&ma10s<10&ma10b>ma10s -i 1 --loadmd -s 2013-01-01
+
+
 2015-12-17
 MA混合信号
      symbol      px  ma10s  ma10b  ma50s  ma50b  ma1050s  ma1050b
@@ -44,7 +53,7 @@ ntes策略 -2年多沿ma200上行,碰过一次后上涨
 2015-12-05
 golder cross death cross indicate < 10days  -- done
 末尾 放置所有symbol的sctr/ma均线/perf/px的参考，以何为序？symbol?  --done
-一个单独用于下载数据的task,不加任何strategy ?
+一个单独用于下载数据的task,不加任何strategy ? -- pending
 
 
 2015-12-04

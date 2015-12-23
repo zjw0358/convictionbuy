@@ -267,7 +267,8 @@ class MarketData:
             # print "collst",collst
             # e.g. only 'dmi_buy', not dmi_sell
             for col in collst:
-                coldict[col] = 1  #enable the col output
+                if col in colsin: #skip parameter which is not column name
+                    coldict[col] = 1  #enable the col output
                 
                                                         
         #crstr += "(1)"
