@@ -155,13 +155,41 @@ class StockChart:
         corr.plot()
 
     def process1(self):
+        '''
         df1 = web.get_data_yahoo('GOOG', '2015-01-01')['Adj Close']
         df2 = web.get_data_yahoo('IBM', '2015-01-01')['Adj Close']
+        '''
+        df1 = web.get_data_yahoo('himx', '2014-07-24','2015-05-13')['Adj Close']
+        df2 = web.get_data_yahoo('axp', '2014-02-05','2014-08-06')['Adj Close']
+        #df1 = df1.set_index()
+        #print df1
+        df1 = pd.DataFrame({'Adj Close':df1.tolist()},index=np.arange(len(df1)))
+        df2 = pd.DataFrame({'Adj Close':df2.tolist()},index=np.arange(len(df2)))
+        
+        '''        
         s1_rets = self.calcPercent(df1)
         s2_rets = self.calcPercent(df2)
-        s1_rets.plot()
-        s2_rets.plot()
+        
+        df['pct_change'] = df.price.pct_change()
+        df['log_ret'] = np.log(df.price) - np.log(df.price.shift(1))
+        '''
+        s1_rets = df1.pct_change()
+        s2_rets = df2.pct_change()
+        #print s1_rets
+        s2_rets.iloc[0] = 0 #,'Adj Close') = 0
+        s1_rets.iloc[0] = 0
+        
+        plt.plot(s1_rets)
+        plt.plot(s2_rets)
+        #s1_rets.plot()
+        #s2_rets.plot()
         plt.show()
+        minlen = min(len(s1_rets),len(s2_rets))        
+         
+        cor,pval = pearsonr(s1_rets[:minlen],s1_rets[:minlen])
+        print "pearsonr",str(cor),pval
+        
+        
         
     #find double top
     def process2(self):
@@ -174,13 +202,14 @@ class StockChart:
         return
     def process3(self):
         #s1 = web.get_data_yahoo('AAL', '2014-12-15','2015-05-8')['Adj Close']
-        s1 = web.get_data_yahoo('INTC', '2014-10-10','2015-01-21')['Adj Close']
-        s2 = web.get_data_yahoo('AAL', '2015-06-09','2015-07-27')['Adj Close']
+        s1 = web.get_data_yahoo('INTC', '2014-10-15','2015-02-03')['Adj Close']
+        s2 = web.get_data_yahoo('ibm', '2015-02-23','2015-04-06')['Adj Close']
         n1 = np.array(s1.tolist())
         n2 = np.array(s2.tolist())
         
         print len(n1),len(n2)
         if (len(n2)<len(n1)):
+            print "interpolate"
             steps = (len(n2)*1.0-1.0)/(len(n1)-len(n2))
             x1 = np.arange(1,len(n2)+1)
             f = interp1d(x1, n2)
@@ -208,9 +237,10 @@ class StockChart:
         
         rets1[0] = 0
         rets2[0] = 0
-        
+        '''
         print rets1
         print rets2 
+        '''
         '''
         print type(rets1)
         corr = pd.rolling_corr(rets1, rets2, 10)
@@ -223,10 +253,15 @@ class StockChart:
         print "def2",pearson_def(rets1,rets2)
         
         ##
+        '''
+        rets3 = rets1.shift(5)
+        rets3.fillna(0,inplace=True)#method='ffill')
+        print rets3
+        '''
         dist, cost, path = mlpy.dtw_std(rets1, rets2, dist_only=False)
         print "dist",dist
         pass        
 if __name__ == "__main__":
     obj = StockChart()
-    obj.process3()    
+    obj.process1()    
     #obj.drawChart('VMW','2015-01-01')

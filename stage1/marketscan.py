@@ -16,7 +16,7 @@ import marketdata
 import ms_csvchart
 import ms_backtest
 import pandas
-import xlsxwriter
+#import xlsxwriter
 from feed_sina import SinaMarketData
 import ms_paramparser
 import ms_config
