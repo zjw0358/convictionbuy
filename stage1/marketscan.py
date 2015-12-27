@@ -253,6 +253,7 @@ class MarketScan:
             #ticklist = self.ticklist     
         
         #load prescan module
+        noPxModule = True
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==False:
@@ -260,12 +261,20 @@ class MarketScan:
                 tblout = sgx.process(df1,self.params.sgyparam[sgyname])
                 #merge tblout & df1
                 df1 = pandas.merge(tblout,df1,how='inner')
-                    
+            else:
+                noPxModule = False
+                        
         #TODO not add index
         #self.addSP500(df1)
-                        
+                    
         print "==================================================="
-        print "total", len(df1.index),"symbols selected"
+        if (noPxModule):
+            #save raw csv file        
+            self.saveTableFile(df1,"raw")
+            print df1
+            return df1
+
+        print "total", len(df1.index),"symbols selected to run indicator/strategy"
         '''
         allow to download data even that no price module
         if self.hasPriceDataModule()==False and self.params.haschart==False:
