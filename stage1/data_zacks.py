@@ -387,7 +387,7 @@ class zack_data:
             allLst[key] = lst
 
         print "total",lenticklst,"ticks to be updated"
-
+        # backup data
         if lenticklst>100: 
             outputfn = self.outputfn+"_bak"
             outputfp = open(outputfn,'w',-1)         
