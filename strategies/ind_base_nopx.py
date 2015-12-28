@@ -7,7 +7,7 @@ import marketdata
 
 class BaseIndNoPx(object):        
     def __init__(self):
-        print "BaseIndPx init"
+        print "BaseIndNoPx init"
         self.mtd = marketdata.MarketData()
         self.cleanup()
     
@@ -37,14 +37,17 @@ class BaseIndNoPx(object):
         if ('debug' in param):
             self.debug = True
         return
-    #return df & column list    
-    
+
+    def runIndicator(self,symbol,ohlc,param={}):
+        self.setupParam(param)    
+        
+        
     def runScan(self,df):
         #print "self.param===",self.param
         col = df.columns.values 
         #print col,type(col)
-        if not self.param:
-            return df,col
+        #if not self.param:
+        #    return df,col
 
         df,fcols = self.mtd.evalCriteria(df,self.param,col) 
         return df,fcols

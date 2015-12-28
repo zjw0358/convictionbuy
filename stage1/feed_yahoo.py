@@ -42,6 +42,8 @@ class FeederYahoo:
         freq = "d"
         if ("week" in param):
             freq = "w"
+        elif ("month" in param):
+            freq = "m"
         else:
             return self.reqDailydata(symbol,startdate,enddate)
             

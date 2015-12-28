@@ -297,14 +297,14 @@ class MarketScan:
         #outputCol = ['symbol','px']
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
-            if sgx.needPriceData()==True:
-                print "screening ",sgyname
-                sgx = self.sgyInx[sgyname]
-                table,cls = sgx.runScan(table)
-                #outputCol.append(cls)
-                for key in cls:
-                    outputCol[key] = 1#.append(key)#[key]=1
-        
+            #if sgx.needPriceData()==True: allow ms_zack to run scan
+            print "screening ",sgyname
+            sgx = self.sgyInx[sgyname]
+            table,cls = sgx.runScan(table)
+            #outputCol.append(cls)
+            for key in cls:
+                outputCol[key] = 1#.append(key)#[key]=1
+    
         #colLst = table.columns.values
         #print "output column list",outputCol
         table = table[outputCol.keys()]
@@ -413,21 +413,21 @@ class MarketScan:
             for sgyname in self.sgyInx:
                 #if not sgyname in self.sgyInfo:
                 sgx = self.sgyInx[sgyname]
-                if sgx.needPriceData()==True:
-                    sgx.cleanup()
-                    sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
-                    if (self.params.verbose):
-                        print ohlc
-                    #TODO if backtest skip this?
-                    #strategy should only return 1 buy signal column
-                    indarr = sgx.getIndicators()
-                    for cn in indarr:
-                        table.loc[index,cn] = indarr[cn]
-                    
-                    # if backtest...
-                    if (self.params.hasBackTest):
-                        self.backtest.runBackTest(symbol,ohlc)
-                        pass
+                #if sgx.needPriceData()==True:
+                sgx.cleanup()
+                sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
+                if (self.params.verbose):
+                    print ohlc
+                #TODO if backtest skip this?
+                #strategy should only return 1 buy signal column
+                indarr = sgx.getIndicators()
+                for cn in indarr:
+                    table.loc[index,cn] = indarr[cn]
+                
+                # if backtest...
+                if (self.params.hasBackTest):
+                    self.backtest.runBackTest(symbol,ohlc)
+                    pass
             end = timer()  
             print "\ttime",round(end - start,3)
         if (self.params.hasBackTest):

@@ -9,15 +9,16 @@ import marketdata
 import pandas
 import ms_config
 from collections import OrderedDict
+from ind_base_nopx import BaseIndNoPx
 
-class ms_zack:
+class ms_zack(BaseIndNoPx):
     def __init__(self):
         self.zack = zack_data.zack_data()
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg("")
         self.zackfile = self.cfg.getDataConfig("zack")
         self.cachefolder = self.cfg.getDataConfig("folder")
-        #print self.cachefolder
+        BaseIndNoPx.__init__(self)
         return    
         
     def usage(self):
