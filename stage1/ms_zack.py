@@ -71,8 +71,7 @@ class ms_zack(BaseIndNoPx):
         col = ['symbol']            
         df = self.loadData(self.zackfile)
         df = self.loadNextErd(df)
-        print df
-        sys.exit()
+        
         #no criteria
         if len(param)==0:
             df = df[col]
