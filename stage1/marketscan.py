@@ -18,6 +18,7 @@ import ms_backtest
 import pandas
 #import xlsxwriter
 from feed_sina import SinaMarketData
+from feed_yahoo import FeederYahoo
 import ms_paramparser
 import ms_config
 from collections import OrderedDict
@@ -64,6 +65,9 @@ class MarketScan:
         params.parseOption(args)
         if ("sina" in params.feed):
             self.sinaapi = SinaMarketData()
+        if ("yahoo" in params.feed):
+            self.yahoofeed = FeederYahoo()
+            
         if (params.hasBackTest):
             self.backtest = ms_backtest.ms_backtest()
             
@@ -341,6 +345,7 @@ class MarketScan:
         
     def loadOhlc(self,symbol):
         filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
+        print "loading",filename
         try:
             ohlc = pandas.read_csv(filename,index_col=['Date'])
         except:
@@ -388,6 +393,8 @@ class MarketScan:
                 try:
                     if ("sina" in self.params.feed):
                         ohlc = self.sinaapi.reqHisData(symbol)
+                    elif ("yahoo" in self.params.feed):
+                        ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
                     else:
                         ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)
                         

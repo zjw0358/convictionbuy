@@ -40,6 +40,7 @@ class FeederYahoo:
         endt = datetime.datetime.strptime(enddate,'%Y-%m-%d')
         startt = datetime.datetime.strptime(startdate,'%Y-%m-%d')
         freq = "d"
+        
         if ("week" in param):
             freq = "w"
         elif ("month" in param):
@@ -77,12 +78,12 @@ class FeederYahoo:
                     continue
                 #print row
                 dateLst.append(row[0])
-                openLst.append(row[1])
-                highLst.append(row[2])
-                lowLst.append(row[3])
-                closeLst.append(row[4])
-                volumeLst.append(row[5])
-                adjCloseLst.append(row[6])
+                openLst.append(float(row[1]))
+                highLst.append(float(row[2]))
+                lowLst.append(float(row[3]))
+                closeLst.append(float(row[4]))
+                volumeLst.append(int(row[5]))
+                adjCloseLst.append(float(row[6]))
                 idx += 1
         except:
             print "error when reading csv data, exit..."
@@ -97,6 +98,7 @@ class FeederYahoo:
         ohlc = pandas.DataFrame({'Open':openLst,'High':highLst,'Low':lowLst,\
             'Close':closeLst,'Volume':volumeLst,'Adj Close':adjCloseLst},\
             columns=['Open','High','Low','Close','Volume','Adj Close'],index = dateLst)        
+        ohlc.index.name = 'Date'
         return ohlc
         
     def reqDailydata(self,symbol,startdate,enddate):
