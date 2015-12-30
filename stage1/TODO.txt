@@ -1,5 +1,8 @@
+2015-12-30
+另一个短线指标，不强制要求大于MA200,像最近QCOM的上穿MA10后3个bar,并且要趋势十分强烈,VRX,SCTY,NTES等等
+
 2015-12-25
-考虑MA50穿越,结合其他条件，市值,>MA200,SCTR>0?上穿次数(MA50的方向)
+中线指标,考虑MA50穿越,结合其他条件，市值,>MA200,SCTR>0?上穿次数(MA50的方向)
 run marketscan.py -g st_sma&ma50b<20&ma50b<ma50s&ma10b<10,st_dmi&dmi_buy<20,st_greenline&sctr_buy<30 -i 1,2,3 --loadmd -s 2013-01-01
 
 sctr没有意思，考虑穿越次数，或者接近支撑次数
@@ -44,8 +47,7 @@ run marketscan.py -g st_sma&ma10s<20&ma10b>ma10s&ma50s<5&ma50b>ma50s&ma1050s<5&m
 
 
 2015-12-11
-对px,ma50,ma200收敛进行建模,看看是否有其他信号确认
-MACD?
+对px,ma50,ma200收敛进行建模,看看是否有其他信号确认,MACD?
 aws scheduler
 以及对trader中的using simple mv一文进行建模
 支持sina的数据，看看能否利用.sina spx代号为.inx
@@ -68,7 +70,8 @@ golder cross death cross indicate < 10days  -- done
 1. convert txt to pdf -- done
 2. email pdf -- done
 
-==
+
+===
 case
 avgo 15-11-24 sctr cross 0, px上穿ma200,dmi 露头，breakout downtrend line,之前盘整了几个月(如何判断?)
 jah 15-12-7短线升幅过大
