@@ -1,3 +1,6 @@
+TOP TASK
+buy signal 的同时显示ERD和dividend date
+
 2015-12-30
 另一个短线指标，不强制要求大于MA200,像最近QCOM的上穿MA10后3个bar,并且要趋势十分强烈,VRX,SCTY,NTES等等
 

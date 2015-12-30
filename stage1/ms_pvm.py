@@ -15,15 +15,23 @@ import csv
 import pandas
 import re
 import marketdata
-from ms_base_npx import MsBaseNPx
+import ms_config
+from ind_base_nopx import BaseIndNoPx
+#from ms_base_npx import MsBaseNPx
 
 
-class ms_pvm(MsBaseNPx):
+class ms_pvm(BaseIndNoPx):
     def __init__(self):
         self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg','dividend']
         self.colcode = "&f=sp5j1a2l1r5y"
         self.outputFileName = "./msdata_pvm.csv"
-        self.mtd = marketdata.MarketData()
+        self.cfg = ms_config.MsDataCfg("")
+        self.zackfile = self.cfg.getDataConfig("zack")
+        self.cachefolder = self.cfg.getDataConfig("folder")
+
+
+        BaseIndNoPx.__init__(self)
+        #self.mtd = marketdata.MarketData()
         return        
 
     #data from yahoo,limit=200               

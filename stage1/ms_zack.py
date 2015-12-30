@@ -30,8 +30,8 @@ class ms_zack(BaseIndNoPx):
         return df
         
     # no need real price data
-    def needPriceData(self):
-        return False
+    #def needPriceData(self):
+    #    return False
         
     def loadNextErd(self,df):
         for index, row in df.iterrows():
@@ -47,8 +47,9 @@ class ms_zack(BaseIndNoPx):
                 print "\tset erd with empty value"
                 df.loc[index,'erd'] = ""
         return df
-        
+    #TODO change to runIndicator?   
     def process(self,tablein,param0):
+        self.setupParam(param0)
         #"$eracc2":"epsq1e/epsqtr-3>epsqtr0/epsqtr-4&epsqtr0/epsqtr-4>epsqtr-1/epsqtr-5&epsqtr-1/epsqtr-5>epsqtr-2/epsqtr-6",
         ticklist = tablein['symbol']
         param = OrderedDict()
@@ -70,8 +71,6 @@ class ms_zack(BaseIndNoPx):
         
         col = ['symbol']            
         df = self.loadData(self.zackfile)
-        df = self.loadNextErd(df)
-        
         #no criteria
         if len(param)==0:
             df = df[col]
@@ -79,7 +78,7 @@ class ms_zack(BaseIndNoPx):
             df,cols = self.mtd.evalCriteria(df,param,col)        
         df1 = pandas.merge(tablein,df,how='inner')
         # erd
-        # df1 = self.loadNextErd(df1)
+        df1 = self.loadNextErd(df1)
         return df1  
         
 ################################################################################        

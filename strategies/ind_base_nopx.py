@@ -7,7 +7,7 @@ import marketdata
 
 class BaseIndNoPx(object):        
     def __init__(self):
-        print "BaseIndNoPx init"
+        #print "BaseIndNoPx init"
         self.mtd = marketdata.MarketData()
         self.cleanup()
     
