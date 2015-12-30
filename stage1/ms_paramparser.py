@@ -73,9 +73,9 @@ class ms_paramparser:
                 
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
-            if not self.startdate:
-                startday = datetime.date.today() - datetime.timedelta(days=365)
-                self.startdate = startday.strftime("%Y-%m-%d")
+        if not self.startdate:
+            startday = datetime.date.today() - datetime.timedelta(days=365)
+            self.startdate = startday.strftime("%Y-%m-%d")
 
         #if not self.sgyparam:
         #    self.sgyparam = self.loadCfg(self.mscfg)
