@@ -174,7 +174,8 @@ class MarketData:
                 allMask |= 2**(theid-1)
         return allMask
         
-    #old version1      
+    #old version1 
+    '''     
     def evalCriteria1(self, df, param, colsin):
         criteria = []
         outputcol = []
@@ -224,15 +225,16 @@ class MarketData:
         else:
             df = df[eval(crstr)][outputcol]
         return df
-        
+    '''
+      
     #version2
     #colsin - column to display
     #param a dict,key is criteria string
     def evalCriteria(self, df, param, colsin):
         criteria = []
         outputcol = []
-        coldict = OrderedDict()
-            
+        coldict = OrderedDict() #this is output columns
+        allcols = df.columns.values
         #for op in param:
         #    criteria.append(op)
         criteria = param.keys()
@@ -241,8 +243,9 @@ class MarketData:
 
         if not criteria:
             print "criteria is empty,...return original table"
-            return df
-        # construct unique column name    
+            return df,allcols # TODO
+            
+        # create output column list and ensure they are unique in this list
         for colnm in colsin:
             coldict[colnm] = 0
             
@@ -263,11 +266,10 @@ class MarketData:
                     crstr = crstr + "(" + cr0 + ") "
                 else:
                     crstr = crstr + "& (" + cr0 + ") "
-            # add column to display
-            # print "collst",collst
-            # e.g. only 'dmi_buy', not dmi_sell
+            # extract column from criteria, then add column for display
+            # e.g. only 'dmi_buy', not dmi_sell -> TODO see how to do this later
             for col in collst:
-                if col in colsin: #skip parameter which is not column name
+                if col in allcols: #skip parameter which is not column name
                     coldict[col] = 1  #enable the col output
                 
                                                         

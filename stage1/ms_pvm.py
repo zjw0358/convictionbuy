@@ -16,20 +16,20 @@ import pandas
 import re
 import marketdata
 import ms_config
+import ms_paramparser
+import sys
 from ind_base_nopx import BaseIndNoPx
 #from ms_base_npx import MsBaseNPx
 
 
 class ms_pvm(BaseIndNoPx):
     def __init__(self):
-        self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg','dividend']
-        self.colcode = "&f=sp5j1a2l1r5y"
-        self.outputFileName = "./msdata_pvm.csv"
+        self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg','dividend','divdate']
+        self.colcode = "&f=sp5j1a2l1r5yq"
+        #self.outputFileName = "./msdata_pvm.csv"
         self.cfg = ms_config.MsDataCfg("")
-        self.zackfile = self.cfg.getDataConfig("zack")
+        self.pvmfile = self.cfg.getDataConfig("pvm")
         self.cachefolder = self.cfg.getDataConfig("folder")
-
-
         BaseIndNoPx.__init__(self)
         #self.mtd = marketdata.MarketData()
         return        
@@ -84,7 +84,7 @@ class ms_pvm(BaseIndNoPx):
                             dataLst[rowid].append(self.mtd.tofloat(item))
                 
             table=pandas.DataFrame(dataDct,columns=self.columns)
-            table.to_csv(self.outputFileName,sep=',',index=False)
+            table.to_csv(self.pvmfile,sep=',',index=False)
         except:
             print "System/Network Error when retrieving data, return..."
         return table
@@ -117,7 +117,7 @@ class ms_pvm(BaseIndNoPx):
                     if item=="":
                         item=0
                     #print item
-                    lst.append(float(item))
+                    lst.append(item)
                 else:
                     lst.append(item)
             idx += 1
@@ -126,13 +126,10 @@ class ms_pvm(BaseIndNoPx):
         table = pandas.DataFrame(allLst,columns=self.columns)
         return table
      
-    ''' # no need real price data
-    def needPriceData(self):
-        return False
-    '''
         
     #main routine       
     def process(self,tablein,param):
+        self.setupParam(param)
         download = 0  #default = download
         ticklist = tablein['symbol']
         #extract 'download' option
@@ -146,18 +143,40 @@ class ms_pvm(BaseIndNoPx):
         if (download == 1):
             df = self.downloadData(ticklist)            
         else:
-            df = self.loadData(self.outputFileName)                    
+            df = self.loadData(self.pvmfile)                    
 
         if df.empty:
             print "error happened, unable to process ms_pvm, return original table"
             return tablein
             
-        col = ['symbol']
-        df = self.mtd.evalCriteria(df,param1,col)        
+        col = ['symbol'] # df.columns.values  #
+        # the output would be symbol + column in criteria
+        df,cols = self.mtd.evalCriteria(df,param1,col)        
         #df1 = df[df['symbol'].isin(ticklist)]
         #merge df1 & tablein
         df1 = pandas.merge(tablein,df,how='inner')
         return df1
-       
-    
+
+    # move to marketdata later   
+    def main(self):
+        params = ms_paramparser.ms_paramparser()
+        params.parseOption(sys.argv[1:])
+        if (params.tickdf.empty):
+            df = self.mtd.loadSymbolLstFile(params.symbolLstFile)
+            df = self.mtd.getSymbolByPid(df,params.pid)[['symbol']]
+        else:
+            df = params.tickdf
+        if (not 'ms_pvm' in params.sgyparam):
+            args = dict((k,'') for k in self.columns)
+        else:
+            args = params.sgyparam['ms_pvm']
+        df = self.process(df,args)
+        print df
+        pass  
+################################################################################        
+# main routine
+################################################################################            
+if __name__ == "__main__":
+    obj = ms_pvm()
+    obj.main()    
     

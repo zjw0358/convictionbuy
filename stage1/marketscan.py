@@ -44,7 +44,7 @@ class MarketScan:
                 
         self.outputpath = "../result/"
 
-        self.mscfg = "./marketscan.cfg" #??
+        #self.mscfg = "./marketscan.cfg" #??
         self.mtd = marketdata.MarketData()
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
@@ -118,6 +118,7 @@ class MarketScan:
         return 
         
     #TODO move to marketdata module?  
+    '''
     def loadSymbolLstFile(self,fileName):
         #symbol,rank,name,sector,industry,pid,exg
         fp = open(fileName,'r',-1)
@@ -151,7 +152,7 @@ class MarketScan:
             'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst},\
             columns=['symbol','rank','name','sector','industry','pid','exg'])
         return table
-
+    '''
          
     #def getSymbolLstCol(self):
     #    return self.symbolLstFileCol
@@ -248,7 +249,8 @@ class MarketScan:
     def procMarketData(self):
         if self.params.tickdf.empty:
             print "loading from symbolfile..."
-            df = self.loadSymbolLstFile(self.params.symbolLstFile)
+            #df = self.loadSymbolLstFile(self.params.symbolLstFile) move to mtd
+            df = self.mtd.loadSymbolLstFile(self.params.symbolLstFile)
             df1 = self.mtd.getSymbolByPid(df,self.params.pid)[['symbol']]
             ticklist = df1['symbol']
         else:
