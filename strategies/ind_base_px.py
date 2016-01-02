@@ -25,7 +25,8 @@ class BaseIndPx(object):
 
     def usage(self):
         return "This is Base indicator with Price data needed"
-        
+    
+    # called in marketscan.py?
     def setupParam(self,param):
         '''        
         print "setup baseIndPx"

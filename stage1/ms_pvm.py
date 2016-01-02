@@ -18,15 +18,17 @@ import marketdata
 import ms_config
 import ms_paramparser
 import sys
+sys.path.insert(0, "../strategies/")
 from ind_base_nopx import BaseIndNoPx
 #from ms_base_npx import MsBaseNPx
 
 
 class ms_pvm(BaseIndNoPx):
     def __init__(self):
+        # TODO move to common module
+        pandas.set_option('display.expand_frame_repr', False) #expand wide dataframe
         self.columns = ['symbol','pricesale','marketcap','avgvol','px','peg','dividend','divdate']
         self.colcode = "&f=sp5j1a2l1r5yq"
-        #self.outputFileName = "./msdata_pvm.csv"
         self.cfg = ms_config.MsDataCfg("")
         self.pvmfile = self.cfg.getDataConfig("pvm")
         self.cachefolder = self.cfg.getDataConfig("folder")

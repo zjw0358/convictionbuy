@@ -424,6 +424,7 @@ class MarketScan:
                 sgx = self.sgyInx[sgyname]
                 #if sgx.needPriceData()==True:
                 sgx.cleanup()
+                sgx.setupParam(self.params.sgyparam[sgyname])
                 sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
                 if (self.params.verbose):
                     print ohlc

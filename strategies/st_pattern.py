@@ -183,7 +183,7 @@ class StrategyPattern(object):
         for idx, currentBuy in enumerate(bline):
             buysignal = ""
             sellsignal = ""
-            
+            #print "pattern",idx,currentBuy
             currentSell = sline[idx]
                         
             if (buyflag):
@@ -200,7 +200,13 @@ class StrategyPattern(object):
                 pass
             else:
                 if (prevBuy < buyValue) and (currentBuy > buyValue) :
-                    buyflag = True
+                    if (buycount == nbar):
+                            buysignal = "buy"
+                            buyflag = False
+                            buycount = 1
+                    else:
+                        buyflag = True
+                    
 
             if (sellflag):
                  if (currentSell < sellValue):                
@@ -213,8 +219,14 @@ class StrategyPattern(object):
                      sellcount = 1
                      sellflag = False
             else:            
-                if (prevSell > sellValue) and (currentSell < sellValue):                
-                    sellflag = True      
+                if (prevSell > sellValue) and (currentSell < sellValue):     
+                    if (sellcount == nbar):
+                            sellsignal = "sell"
+                            sellcount = 1
+                            sellflag = False
+                    else:
+                        sellflag = True                  
+         
           
                                         
             prevBuy = currentBuy

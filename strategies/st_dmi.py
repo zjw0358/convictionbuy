@@ -43,7 +43,7 @@ class st_dmi(ind_dmi):
         tsup = TradeSupport()
         buysg,sellsg = sp.divergencyCross(self.pdi, self.ndi, 2)
         closesg = sp.covergency(self.pdi, self.ndi, 2)
-        
+        #diff = self.pdi/self.ndi
         #process these signale for backtest
         signal = map(sp.mergeSignal, buysg,sellsg,closesg)
         ohlc['signal'] = signal
@@ -57,7 +57,7 @@ class st_dmi(ind_dmi):
             ohlc['adx'] = self.adx
             print ohlc
         '''
-
+        self.ind['dmi_dif'] = self.pdi[-1]/self.ndi[-1]
         tsup.getLastSignal(buysg,sellsg, self.ind,'dmi_buy','dmi_sell')
         pass    
         
