@@ -24,8 +24,8 @@ class ReuterFunda:
         pandas.set_option('display.max_rows', 1500)
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg()
-        self.outputpath = "cache/"
-        self.outputfn = self.outputpath + "msdata_reuter_" + self.cfg.getCsvFileSurfix()
+        self.outputpath = self.cfg.getDataConfig("folder","../cache/")
+        self.outputfn = self.outputpath + "msdata_reuter_" + self.cfg.getFileSurfix() +".csv"
         self.fileName = self.cfg.getDataConfig("marketdata","./marketdata.csv")
 
         
@@ -925,8 +925,9 @@ class ReuterFunda:
         mf = dfnc.append(rf)
         mf.to_csv(self.outputfn,sep=',',index=False)
         self.cfg.saveDataConfig("reuter",self.outputfn)
-    #update reuter data
-    def updateData(self): 
+        
+    # move to a merge tool
+    def updateData0(self): 
         if self.reuterFile!="":
             reuterTable = self.loadReuterCsvFile(self.reuterFile)
         # reuterdata csv file is presence
@@ -980,7 +981,72 @@ class ReuterFunda:
                 dfnc = pandas.DataFrame({},columns=self.allcols)
                 self.updateTickLst(dfnc,self.tickdf) 
             
-
+    # new implementation
+    def updateData(self): 
+        print "Loading marketdata file",self.mkdataFile
+        symbolTable = self.mtd.loadSymbolLstFile(self.mkdataFile)
+        df = symbolTable[symbolTable['rank']>0]
+        df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+        
+        if self.tickdf.empty:
+                print "update symbolfile pid=",self.pid
+                #symbolTable = self.mtd.loadSymbolLstFile(self.fileName)
+                #df = symbolTable[symbolTable['rank']>0]
+                #df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','exg']]   
+                dfup = df[['symbol','exg']]
+                for co in self.columns:
+                    dfup[co]=""
+                #dfnc = pandas.DataFrame({},columns=self.allcols)
+                #self.updateTickLst(dfnc,dfup)
+        else:
+            print "update ticklist only"
+            dfup = self.tickdf
+                
+        
+        # update
+         #updatelst = tickdf['symbol']
+        lenticklst = len(dfup.index)    
+        allLst = {}
+        allCol = self.allcols
+        for key in allCol:
+            lst = []
+            allLst[key] = lst
+            
+        print "total",lenticklst,"ticks to be updated"
+        
+        idx = 0
+        for index, row in dfup.iterrows():
+            #rowLst = []
+            print "downloading ",idx,row['symbol'],row['exg']
+            idx += 1
+            rowdct = self.getEarningData(row['symbol']+"."+row['exg'])
+            line = row['symbol'] + ',' + row['exg']
+            if len(rowdct)>0:
+                self.verifyCol(rowdct)  
+                for key in self.columns:
+                    lst = allLst[key]
+                    if key in rowdct:
+                        lst.append(rowdct[key])
+                        line = line + "," + rowdct[key]
+                    else:
+                        lst.append("")   
+                        line = line + "," + ""
+                                     
+                allLst['symbol'].append(row['symbol'])
+                allLst['exg'].append(row['exg'])
+                
+                                    
+            else:
+                print "No financials information,skip ",row['symbol'],row['exg']
+        
+        
+        mf = pandas.DataFrame(allLst,columns = allCol)
+        print mf
+        mf.to_csv(self.outputfn,sep=',',index=False)
+        self.cfg.saveDataConfig("reuter",self.outputfn)
+       
+            
+            
     #usage
     def usage(self):
         print "reuterfunda.py -f symbollist.txt -t starttick -u update_tick_list -r reuter_result_csvfile"
