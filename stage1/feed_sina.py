@@ -20,11 +20,22 @@ class SinaMarketData:
         df.rename(columns={'d': 'Date','c': 'Close','h':'High','l':'Low','o':'Open','v':'Volume'}, inplace=True)
         df['Adj Close'] = df['Close']
         df.set_index('Date',inplace=True)
-        return df        
-        
+        return df
+                
+    def reqLastDataRT(self,symbol):
+        url = "http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?symbol=%s&type=5&___qn=3" % (symbol)
+        df = pandas.read_json(url)
+        df.rename(columns={'d': 'Date','c': 'Close','h':'High','l':'Low','o':'Open','v':'Volume'}, inplace=True)
+        df['Adj Close'] = df['Close']
+        df.set_index('Date',inplace=True)
+        row = df.tail(1)
+        print row
+        return row
+        pass
 ################################################################################        
 # main routine
 ################################################################################            
 if __name__ == "__main__":
     obj = SinaMarketData()
-    obj.reqHisData("aapl")
+    #obj.reqHisData("aapl")
+    obj.reqLastDataRT("aapl")

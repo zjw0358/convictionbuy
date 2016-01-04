@@ -45,6 +45,8 @@ class FeederYahoo:
             freq = "w"
         elif ("month" in param):
             freq = "m"
+        elif ("drt" in param): # daily realtime
+            return self.reqDailydataRT(symbol,startdate,enddate)            
         else:
             return self.reqDailydata(symbol,startdate,enddate)
             
@@ -111,7 +113,20 @@ class FeederYahoo:
                 print "too many errors when downloading symbol data, exit now"
                 sys.exit()
         return ohlc
-
+        
+    def reqDailydataRT(self,symbol,startdate,enddate):
+        try:
+            ohlc = web.get_data_yahoo(symbol, startdate, enddate)
+        except:
+            self.numError += 1
+            print "System/Network Error when retrieving ",symbol," skip it"
+            if self.numError>3:
+                print "too many errors when downloading symbol data, exit now"
+                sys.exit()
+        # real time data from sina
+        
+        return ohlc
+        
 ################################################################################        
 # main routine
 ################################################################################            
