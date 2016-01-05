@@ -1,4 +1,4 @@
-symbol,rank,name,sector,industry,pid,exg
+symbol,rank,name,sector,industry,pid,exg,reuter_symbol,zack_symbol
 ^GSPC,1,S&P 500,,,0,N
 SPP,0,Sanchez Production Partners LLC,Energy,Oil & Gas Production,0,A
 SPR,1,Spirit Aerosystems Holdings Inc.,Capital Goods,Military/Government/Technical,0,N
@@ -6240,3 +6240,5 @@ PTRY,2,The Pantry Inc.,Consumer Durables,Automotive Aftermarket,0,O
 QDEL,3,Quidel Corporation,Health Care,Biotechnology: In Vitro & In Vivo Diagnostic Substances,0,O
 ONVO,0,Organovo Holdings Inc.,Health Care,Biotechnology: Biological Products (No Diagnostic Substances),0,A
 RDS-A,3,Royal Dutch Shell plc (ADR),Energy,Integrated oil Companies,6,N
+G3B.SI,3,Nikko AM STI ETF,etf,etf,6,SI,nise.si,
+DBSM.SI,3,DBS bank,Finance,Major Banks,6,SI,D05.SI,

@@ -15,11 +15,13 @@ import datetime
 import urllib2
 import csv
 import sys
+import feed_sina
 
 class FeederYahoo:
     def __init__(self):
         self.numError = 0
-        
+        self.sina = feed_sina.SinaMarketData()
+    '''   
     def reqHisData0(self,symbol,startdate="",enddate=""):
         ohlc = web.get_data_yahoo(symbol, startdate, enddate)
         print ohlc
@@ -27,7 +29,7 @@ class FeederYahoo:
         print ohlc
         return
         ohlc
-        
+    '''    
     def reqHisData(self,symbol,param="",startdate="",enddate=""):
         #http://ichart.finance.yahoo.com/table.csv?s=xle&a=01&b=19&c=2014&d=01&e=19&f=2015&g=d&ignore=.csv
         if (enddate == ""):
@@ -114,7 +116,9 @@ class FeederYahoo:
                 sys.exit()
         return ohlc
         
+    # history data + latest RT data    
     def reqDailydataRT(self,symbol,startdate,enddate):
+        df1 = self.sina.reqLastDataRT(symbol)
         try:
             ohlc = web.get_data_yahoo(symbol, startdate, enddate)
         except:
@@ -123,8 +127,10 @@ class FeederYahoo:
             if self.numError>3:
                 print "too many errors when downloading symbol data, exit now"
                 sys.exit()
-        # real time data from sina
         
+        # real time data from sina
+        #print df1
+        ohlc = ohlc.append(df1)
         return ohlc
         
 ################################################################################        
@@ -132,4 +138,5 @@ class FeederYahoo:
 ################################################################################            
 if __name__ == "__main__":
     obj = FeederYahoo()
-    print obj.reqHisData("abt","week","2015-10-01","2015-11-11")
+    #print obj.reqHisData("abt","week","2015-10-01","2015-11-11")
+    print obj.reqDailydataRT("abt","2015-10-01","2016-01-03")

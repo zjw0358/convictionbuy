@@ -38,7 +38,7 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 
 2016-01-04
 某些symbol需要调整
-G3B.SG  STI ETF - yahoo
+G3B.Si  nikko-am STI ETF - yahoo
 DBSM.SI - reuter / d05.si - yahoo
 nise.si - reuter nikko -sti etf
 

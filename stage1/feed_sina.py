@@ -29,7 +29,7 @@ class SinaMarketData:
         df['Adj Close'] = df['Close']
         df.set_index('Date',inplace=True)
         row = df.tail(1)
-        print row
+        #print row
         return row
         pass
 ################################################################################        
