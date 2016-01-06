@@ -7,6 +7,10 @@ import ms_config
 
 class SymbolTool:
     def __init__(self):
+        pandas.set_option('display.max_columns', 50)
+        pandas.set_option('display.precision', 3)
+        pandas.set_option('display.expand_frame_repr', False)
+        pandas.set_option('display.max_rows', 1500)
         self.mkt = marketdata.MarketData()
 
         self.portfoliofile = ""
@@ -160,10 +164,11 @@ class SymbolTool:
             
         if self.option=="add" or self.option=="clear":
             self.mkt.saveTable(df1,self.outputpath)
+            #save back to cfg file
+            self.cfg.saveDataConfig("marketdata",self.outputpath)    
         elif self.saveToFile:
             self.mkt.saveTable(df1,self.outputpath)
-        #save back to cfg file
-        self.cfg.saveDataConfig("marketdata",self.outputpath)              
+            self.cfg.saveDataConfig("marketdata",self.outputpath)    
         return
            
 if __name__ == "__main__":

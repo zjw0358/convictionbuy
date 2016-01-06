@@ -1,0 +1,7 @@
+
+
+====  scan_st_sma_st_dmi_  =====
+
+symbol      px    ma50   ma200  ma10s  ma10b  dmi_dif  dmi_buy
+   COH   33.97   31.50   33.69      2      0     1.96       12
+   KMB  129.08  122.09  113.03     16     13     1.66       13

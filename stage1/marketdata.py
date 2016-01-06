@@ -61,7 +61,8 @@ class MarketData:
         return pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
 
       
-    #google style portfolio file       
+    #google style portfolio file
+    #???  
     def parseGooglePortfolio(self,line):
         stocklist = {}
         for item in line.split():      
@@ -91,9 +92,10 @@ class MarketData:
         fp.close()   
         tickdf = pandas.DataFrame(list(stocklist.iteritems()),columns=['symbol','exg'])           
         return tickdf
-        
+ 
+    # load the marketdata.csv   
     def loadSymbolLstFile(self,fileName):
-        #symbol,rank,name,sector,industry,pid,exg
+        #symbol,rank,name,sector,industry,pid,exg,
         fp = open(fileName,'r',-1)
         symbolLst = []
         rankLst = []
@@ -102,6 +104,8 @@ class MarketData:
         industryLst = []
         pidLst = []
         exgLst = []
+        reuter = []
+        zack = []
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         try:
@@ -116,14 +120,21 @@ class MarketData:
                 industryLst.append(row[4])
                 pidLst.append(row[5])
                 exgLst.append(row[6])
+                collen = len(row)
+                if collen == 9:
+                    reuter.append(row[7])
+                    zack.append(row[8])
+                else:
+                    reuter.append("")
+                    zack.append("")
                 idx += 1
         except:
             print "error when reading symbol list file, exit..."
             sys.exit()
         fp.close()      # closing
         table = pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,'name':nameLst,\
-            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst},\
-            columns=['symbol','rank','name','sector','industry','pid','exg'])
+            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst,'reuter':reuter,'zack':zack},\
+            columns=['symbol','rank','name','sector','industry','pid','exg','reuter','zack'])
         return table
 
     def tofloat(self,item):
@@ -174,58 +185,7 @@ class MarketData:
                 allMask |= 2**(theid-1)
         return allMask
         
-    #old version1 
-    '''     
-    def evalCriteria1(self, df, param, colsin):
-        criteria = []
-        outputcol = []
-        coldict = OrderedDict()
-            
-        for op in param:
-            criteria.append(op)
-            
-        if not criteria:
-            print "criteria is empty,...return original table"
-            return df
-        # construct unique column name    
-        for colnm in colsin:
-            coldict[colnm] = 0
-            
-        # filter by dynamic criteria string
-        crstr = ""
-        pattern1 = "([\w]+)([><])([-+]?[0-9]*\.?[0-9]+)"  #cppettm < 20.00 (float)
-        pattern2 = "([\d\D]+)([><])([^[A-Za-z0-9_]+$])"  #saleqtr0 > saleqtr1
-        #pattern3 = "([a-z][a-z0-9-]*)" # select column only
-
-        for cr in criteria:            
-            an = re.match(pattern1,cr)            
-            if an!=None:
-                print "criteria matched lvalue <> float"
-                cr0 = "(df['%s']%s%s) & " % (an.group(1),an.group(2),an.group(3))
-                crstr += cr0
-                coldict[an.group(1)] = 0
-            else:
-                an = re.match(pattern2,cr)
-                if an!=None:
-                    print "criteria matched lvalue <> string"
-                    rstr = an.group(3)
-                    print float(rstr)
-                    cr0 = "(df['%s']%sdf['%s']) & " % (an.group(1),an.group(2),an.group(3))
-                    crstr += cr0
-                    coldict[an.group(1)] = 0
-                    coldict[an.group(3)] = 0
-                else: #select column
-                    coldict[cr] = 0
-                                                        
-        crstr += "(1)"
-        print "to evaluate criteria = ", crstr
-        outputcol = coldict.keys()
-        if crstr == "(1)":
-            df = df[outputcol]
-        else:
-            df = df[eval(crstr)][outputcol]
-        return df
-    '''
+  
       
     #version2
     #colsin - column to display
