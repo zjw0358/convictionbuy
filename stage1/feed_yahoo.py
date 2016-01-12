@@ -123,7 +123,7 @@ class FeederYahoo:
             ohlc = web.get_data_yahoo(symbol, startdate, enddate)
         except:
             self.numError += 1
-            print "System/Network Error when retrieving ",symbol," skip it"
+            print "System/Network(sina) Error when retrieving ",symbol," skip it"
             if self.numError>3:
                 print "too many errors when downloading symbol data, exit now"
                 sys.exit()
