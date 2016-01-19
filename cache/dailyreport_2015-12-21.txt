@@ -39,3 +39,10 @@ symbol      px  ma50s  ma50b
   NFLX  115.10      9      5
    HCA   67.84     44      5
    SAP   78.61     47      5
+
+
+====  scan_st_sma_  =====
+
+symbol     px  ma10s  ma10b
+   NOK   7.16     24      4
+     D  68.88     55      6

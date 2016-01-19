@@ -19,6 +19,7 @@ TOP TASK
 5940   NVDA   27.26   23.32   21.74     15     10     4.00       13
 
 ====
+使用如下算法
 run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_buy<20&dmi_dif>1.5 -i 1,2,3 --loadmd -s 2013-01-01 -e 2015-10-15
 
 1114   MSFT   46.37   44.82     15      9      7     1.64        9
@@ -35,6 +36,12 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 5714   GOOG  651.16  566.77     15      7      6     1.60        7
 
 **merge reuter／zack 前后文件的工具
+
+2016-01-19
+短线3 bar突破ma10
+run marketscan.py -g st_sma&nbar=3&ma10b<10&ma10b<ma10s&ma10s>20 -i 1,2,3 --savemd -s 2013-01-01
+sina 1H 下载很慢，是否考虑多线程
+
 
 2016-01-04
 某些symbol需要调整
