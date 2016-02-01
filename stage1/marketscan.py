@@ -21,6 +21,7 @@ from feed_sina import SinaMarketData
 from feed_yahoo import FeederYahoo
 import ms_paramparser
 import ms_config
+import ms_feed
 from collections import OrderedDict
 
 
@@ -46,6 +47,7 @@ class MarketScan:
 
         #self.mscfg = "./marketscan.cfg" #??
         self.mtd = marketdata.MarketData()
+        self.mfeed = ms_feed.ms_feed()
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
@@ -332,7 +334,7 @@ class MarketScan:
             print "=== csv chart ==="
             self.csvchart.drawChart(table,self.chartparam)
         return table     
-        
+    '''   
     #save ohlc to csv file
     def saveOhlc(self, symbol, ohlc):
         #delete file firstly
@@ -344,7 +346,7 @@ class MarketScan:
             pass
         ohlc.to_csv(filename,sep=',')
         pass
-        
+      
     def loadOhlc(self,symbol):
         filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
         print "loading",filename
@@ -377,15 +379,20 @@ class MarketScan:
         #print start,end
         ohlc = ohlc.iloc[start:end]
         return ohlc
-        
+    '''      
     def runIndicator(self, table):
         #TODO if no post-module, should return immediately
         numError = 0
-        #print "runIndicator"
+        id = 0
+        self.mfeed.initOption(self.params)
+        
         for index, row in table.iterrows():
             symbol = row['symbol']
-            print "downloading ",index, symbol
+            #print "downloading ",id, symbol
+            id+=1
+            '''
             start = timer()
+            
             if (self.params.loadmd):
                 ohlc = self.loadOhlc(symbol)
                 if ohlc.empty:
@@ -404,15 +411,16 @@ class MarketScan:
                         self.saveOhlc(symbol,ohlc)
                 except:
                     numError += 1
-                    print "System/Network Error when retrieving ",symbol," skip it"
-                    if numError>3:
-                        print "too many errors when downloading symbol data, exit now"
-                        sys.exit()
+                    print "System/Network Error when retrieving ",symbol," skip it"                    
                     continue
             # adjust adj close price.
             ohlc = self.mtd.adjClosePrice(ohlc)       
             end = timer()  
             print "\ttime",round(end - start,3)
+            '''
+            ohlc = self.mfeed.getOhlc(symbol)
+            if (ohlc is None):
+                continue
             #add 'px' column
             #print "intc",ohlc['Adj Close']
             table.loc[index,'px'] = round(ohlc['Adj Close'][-1],2)

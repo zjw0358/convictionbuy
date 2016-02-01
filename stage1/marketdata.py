@@ -106,6 +106,7 @@ class MarketData:
         exgLst = []
         reuter = []
         zack = []
+        sina = []
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         try:
@@ -121,20 +122,22 @@ class MarketData:
                 pidLst.append(row[5])
                 exgLst.append(row[6])
                 collen = len(row)
-                if collen == 9:
+                if collen == 10:
                     reuter.append(row[7])
                     zack.append(row[8])
+                    sina.append(row[9])
                 else:
                     reuter.append("")
                     zack.append("")
+                    sina.append("")
                 idx += 1
         except:
             print "error when reading symbol list file, exit..."
             sys.exit()
         fp.close()      # closing
         table = pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,'name':nameLst,\
-            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst,'reuter':reuter,'zack':zack},\
-            columns=['symbol','rank','name','sector','industry','pid','exg','reuter','zack'])
+            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst,'reuter':reuter,'zack':zack,'sina':sina},\
+            columns=['symbol','rank','name','sector','industry','pid','exg','reuter','zack','sina'])
         return table
 
     def tofloat(self,item):
