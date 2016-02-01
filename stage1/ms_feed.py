@@ -27,6 +27,8 @@ class ms_feed:
 
     # for self run 
     def process(self):
+        print "I am in!"
+        #sys.exit()
         args = sys.argv[1:]
         params = ms_paramparser.ms_paramparser()
         params.parseOption(args)

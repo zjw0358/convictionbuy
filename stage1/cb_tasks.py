@@ -5,10 +5,10 @@ this is the main portal of conviction buy program
 
 #import os
 #import sys
-#from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE
 import subprocess
 import marketscan
-import marketscan
+#import ms_feed
 import ms_config
 from collections import OrderedDict
 from cb_email import send_mail
@@ -19,7 +19,7 @@ from reportlab.platypus import *
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, inch, landscape
 import pandas as pd
-
+import sys
 
 '''
 class multidict(dict):
@@ -46,7 +46,7 @@ class CbTasks:
         self.scaner = marketscan.MarketScan()
         self.dfdict=OrderedDict()
         pass
-        
+    '''  
     def process0(self):
         #save daily output filename
         folder = self.datacfg.getDataConfig("folder","../cache/")        
@@ -77,8 +77,13 @@ class CbTasks:
                 print('Finished process')               
             
         pass
- 
+    '''
     def process(self):
+        #p = subprocess.Popen(['python','ms_feed.py'],stdin=PIPE, stderr=PIPE,stdout=PIPE) #stdout=PIPE, 
+        #out = p.communicate()[0]
+        #output = str(out)
+        #print output
+        #sys.exit()
         #save daily output filename
         folder = self.datacfg.getDataConfig("folder","../cache/")        
         output = folder + "dailyreport_" + self.datacfg.getFileSurfix() + ".txt"
@@ -98,12 +103,29 @@ class CbTasks:
                 
             print sect
             
-            if (cmdstr!=""):
+            if (cmdstr!="marketscan.py"):
+                cmdlist=['python',cmdstr]
+                paramlst = paramstr.split()
+                for item in paramlst:
+                    cmdlist.append(item)
+                print cmdlist
+                
+                fullcmd = "python "+cmdstr + " " + paramstr
+                print "\nfullcmd=",fullcmd
+                #p = subprocess.Popen(['python','ms_feed.py'],stdin=PIPE, stderr=PIPE,stdout=PIPE)
+                p = subprocess.Popen(cmdlist,stdin=PIPE, stderr=PIPE,stdout=PIPE)
+                out = p.communicate()[0]
+                output = str(out)
+                print output
+                sys.exit()
+            else:
+                '''
                 df = self.scaner.process(paramstr)
                 self.dfdict[sect] = df
+                '''
                 print('Finished process')               
             
-        self.printPdf()
+        #self.printPdf()
         pass
         
     def openPdf(self):
