@@ -26,10 +26,12 @@ class ms_feed:
             self.yahoofeed = FeederYahoo()
 
     # for self run 
-    def process(self):
-        print "I am in!"
+    def process(self, args=""):
+        #print "I am in!"
         #sys.exit()
-        args = sys.argv[1:]
+        #args = sys.argv[1:]
+        if (args==""):
+            args = sys.argv[1:]        
         params = ms_paramparser.ms_paramparser()
         params.parseOption(args)
         self.initOption(params)

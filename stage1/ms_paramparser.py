@@ -27,7 +27,7 @@ class ms_paramparser:
         self.sgyparam = {}
         self.verbose = False #print ohlc?
         pass
-
+    #params = array(split)
     def parseOption(self, params):
         print "==========================",params
         try:

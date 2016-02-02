@@ -8,6 +8,7 @@ this is the main portal of conviction buy program
 from subprocess import Popen, PIPE
 import subprocess
 import marketscan
+import ms_feed
 #import ms_feed
 import ms_config
 from collections import OrderedDict
@@ -44,6 +45,7 @@ class CbTasks:
         self.msconfig = ms_config.MsDataCfg("cb_task.cfg") #file name
         self.datacfg = ms_config.MsDataCfg("")
         self.scaner = marketscan.MarketScan()
+        self.feeder = ms_feed.ms_feed()
         self.dfdict=OrderedDict()
         pass
     '''  
@@ -78,6 +80,20 @@ class CbTasks:
             
         pass
     '''
+    '''
+    
+    if (cmdstr!="marketscan.py"):
+                cmdlist=['python',cmdstr] + paramstr.split()
+                #print cmdlist
+                
+
+                
+                p = subprocess.Popen(cmdlist,stdin=PIPE, stderr=PIPE,stdout=PIPE)
+                out = p.communicate()[0]
+                output = str(out)
+                print output                
+                sys.exit()
+    '''
     def process(self):
         #p = subprocess.Popen(['python','ms_feed.py'],stdin=PIPE, stderr=PIPE,stdout=PIPE) #stdout=PIPE, 
         #out = p.communicate()[0]
@@ -94,38 +110,30 @@ class CbTasks:
             myfile.write("===== Daily Report =====")    
         
         for sect in self.msconfig.getSections():
-            cmdstr = self.msconfig.getConfig(sect,'cmd')
-            paramstr = self.msconfig.getConfig(sect,'param')
-            
+            try:
+                cmdstr = self.msconfig.getConfig(sect,'cmd')
+                paramstr = self.msconfig.getConfig(sect,'param')
+            except:
+                cmdstr=""
+                paramstr=""
+                pass 
+            if (paramstr==""):
+                continue           
             with open(of, "a") as reportfile:
                 print >>reportfile, "\n\n[ ",sect," ]\n"
                 print >>reportfile, cmdstr
                 
             print sect
             
-            if (cmdstr!="marketscan.py"):
-                cmdlist=['python',cmdstr]
-                paramlst = paramstr.split()
-                for item in paramlst:
-                    cmdlist.append(item)
-                print cmdlist
-                
-                fullcmd = "python "+cmdstr + " " + paramstr
-                print "\nfullcmd=",fullcmd
-                #p = subprocess.Popen(['python','ms_feed.py'],stdin=PIPE, stderr=PIPE,stdout=PIPE)
-                p = subprocess.Popen(cmdlist,stdin=PIPE, stderr=PIPE,stdout=PIPE)
-                out = p.communicate()[0]
-                output = str(out)
-                print output
-                sys.exit()
-            else:
-                '''
+            if (cmdstr=="ms_feed.py"):
+                #self.feeder.process(paramstr.split())
+                print('Finished feeder process')   
+            else:                
                 df = self.scaner.process(paramstr)
-                self.dfdict[sect] = df
-                '''
+                self.dfdict[sect] = df                
                 print('Finished process')               
             
-        #self.printPdf()
+        self.printPdf()
         pass
         
     def openPdf(self):
