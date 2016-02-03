@@ -126,7 +126,7 @@ class CbTasks:
             print sect
             
             if (cmdstr=="ms_feed.py"):
-                #self.feeder.process(paramstr.split())
+                self.feeder.process(paramstr.split())
                 print('Finished feeder process')   
             else:                
                 df = self.scaner.process(paramstr)
