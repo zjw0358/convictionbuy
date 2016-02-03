@@ -336,3 +336,38 @@ symbol      px  ma50s  ma50b  dmi_buy         erd
   ALLY   16.09     19      8        8    2/4/2016
   TRMB   19.28     19      4        1    2/9/2016
   SIVB  102.62     14      7        8   1/28/2016
+
+
+====  scan_st_sma_st_dmi_ms_zack_  =====
+
+symbol      px  ma50s  ma50b  dmi_dif  dmi_buy        erd
+   BSX   17.89     36      8     1.83        2   2/3/2016
+  ALLY   16.09     19      8     1.77        8   2/4/2016
+  SIVB  102.62     14      7     2.34        8  1/28/2016
+
+
+====  scan_st_sma_st_dmi_ms_zack_  =====
+
+symbol      px  ma50s  ma50b  dmi_dif  dmi_buy        erd
+   BSX   17.89     36      8     1.83        2   2/3/2016
+  ALLY   16.09     19      8     1.77        8   2/4/2016
+  SIVB  102.62     14      7     2.34        8  1/28/2016
+
+
+====  scan_st_sma_st_dmi_ms_zack_  =====
+
+symbol      px  ma50s  ma50b  dmi_dif  dmi_buy        erd
+    FB  114.61     20      2     2.03        2  1/27/2016
+   COH   37.15     10      4     2.32        4   2/4/2016
+    VZ   49.91     17      7     3.33        7  1/21/2016
+   HCA   71.96     13      4     1.54        3   2/2/2016
+  CRUS   34.03     22      2     2.27        2  1/27/2016
+
+
+====  scan_st_sma_  =====
+
+symbol      px  ma10b  ma50s  ma50b  ma1050b
+   UNH  113.88      1     17      1       29
+    PG   80.22      7     17      4        1
+    VZ   49.91      7     17      7        3
+   WMT   66.86      6     29     27       29

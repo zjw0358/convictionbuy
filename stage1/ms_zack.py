@@ -4,7 +4,7 @@ fileter zack data file by abr(average broker recommadation) and ER estimate
 use case:
     
 '''
-import zack_data
+import data_zacks
 import marketdata
 import pandas
 import ms_config
@@ -14,7 +14,7 @@ from ind_base_nopx import BaseIndNoPx
 
 class ms_zack(BaseIndNoPx):
     def __init__(self):
-        self.zack = zack_data.zack_data()
+        self.zack = data_zacks.data_zacks()
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg("")
         self.zackfile = self.cfg.getDataConfig("zack")

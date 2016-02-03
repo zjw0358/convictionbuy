@@ -20,7 +20,7 @@ from collections import OrderedDict
 
 import json
 
-class zack_data:
+class data_zacks:
     def __init__(self):
         #self.rankPattern = '[\d\D]*Zacks.*Rank[/s]*: (.*) <sup class=[\d\D]*'
         #self.rankPattern = '[\d\D]*Zacks.*Rank[/s]*: (.*)[\n]*<sup class=[\d\D]*'
