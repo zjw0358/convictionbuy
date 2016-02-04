@@ -86,8 +86,6 @@ class CbTasks:
                 cmdlist=['python',cmdstr] + paramstr.split()
                 #print cmdlist
                 
-
-                
                 p = subprocess.Popen(cmdlist,stdin=PIPE, stderr=PIPE,stdout=PIPE)
                 out = p.communicate()[0]
                 output = str(out)
@@ -101,7 +99,7 @@ class CbTasks:
         #print output
         #sys.exit()
         #save daily output filename
-        folder = self.datacfg.getDataConfig("folder","../cache/")        
+        folder = self.datacfg.getDataConfig("result","../result/")        
         output = folder + "dailyreport_" + self.datacfg.getFileSurfix() + ".txt"
         self.datacfg.saveDataConfig('output_report',output)
         of = self.datacfg.getDataConfig("output_report")
@@ -128,7 +126,7 @@ class CbTasks:
             if (cmdstr=="ms_feed.py"):
                 self.feeder.process(paramstr.split())
                 print('Finished feeder process')   
-            else:                
+            elif (cmdstr=="marketscan.py"):                
                 df = self.scaner.process(paramstr)
                 self.dfdict[sect] = df                
                 print('Finished process')               
@@ -137,7 +135,7 @@ class CbTasks:
         pass
         
     def openPdf(self):
-        folder = self.datacfg.getDataConfig("folder","../cache/")        
+        folder = self.datacfg.getDataConfig("result","../result/")        
         self.output = folder + "dailyreport_" + self.datacfg.getFileSurfix() + ".pdf"
         self.elements = []
         self.styles = getSampleStyleSheet()

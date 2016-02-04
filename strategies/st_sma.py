@@ -62,8 +62,14 @@ class st_sma(ind_ma):
             buysg,sellsg = sp.cross(self.ma50, self.ma200, self.nbar)
             #print sellsg
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50200b','ma50200s')          
+        
+        #support line
+        buysg,sellsg = sp.supportline(px, self.ma50, self.nbar)
+        tsup.getLastSignal(buysg,sellsg, self.ind,'sup50b','sup50bs')          
         #print ohlc
         pass
+
+    # column is too long
     def merge(self,df):
         coldict = {"ma10b":"ma10s","ma50b":"ma50s",'ma1050b':'ma1050s','ma50200b':'ma50200s'}
         lst=[]

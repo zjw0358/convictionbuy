@@ -65,11 +65,12 @@ class MarketScan:
     def parseOption(self,args):         
         params = self.params
         params.parseOption(args)
+        '''
         if ("sina" in params.feed):
             self.sinaapi = SinaMarketData()
         if ("yahoo" in params.feed):
             self.yahoofeed = FeederYahoo()
-            
+        ''' 
         if (params.hasBackTest):
             self.backtest = ms_backtest.ms_backtest()
             

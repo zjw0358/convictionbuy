@@ -100,8 +100,52 @@ class StrategyPattern(object):
             sellsg.append(sellsignal)
             
         return buysg,sellsg
+  
+    def supportline(self,pxlst,suppline,nbar=2):
+        buyflag = False
+        prevPx = pxlst[0]
+        prevSup = suppline[0]
+        upper=2.0
+        lower=0.0
+        buycount = 1
+        buysg = []
+        sellsg = []
+        if (nbar<2):
+            nbar=2
         
-    #fast cross above slow line  - buy
+        for idx, curSupp in enumerate(suppline):
+            curPx = pxlst[idx]
+            curSupp = suppline[idx]
+            buysignal = ""
+            sellsignal = ""            
+            if (buyflag):
+                #second round check
+                gap = (curPx-curSupp)*100/curSupp
+                if (gap>lower): # simplicy px>support line
+                    buycount+=1
+                    if (buycount==nbar):
+                        buysignal = "buy"
+                        buyflag = False
+                        buycount = 1
+                else: #can't support at line
+                        buyflag = False
+                        buycount = 1
+                pass
+            else:
+                if (prevPx>prevSup):
+                    gap = (curPx-curSupp)*100/curSupp
+                    if (gap<upper) and (gap>lower):
+                        buyflag = True
+                    pass
+                    
+            prevPx = curPx
+            prevSup = curSupp
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)
+
+        return buysg,sellsg
+        
+    #fast cross above slow line  - buy (and keep n bar)
     #fast cross below slow line  - sell
     def cross(self, fast, slow, nbar = 1,offset = 0):
         prevFast = fast[0]

@@ -12,16 +12,20 @@ class ms_paramparser:
     def __init__(self):
         #TODO move parse pid here later
         self.mtd = marketdata.MarketData()
+        self.cfg = ms_config.MsDataCfg("") 
+        self.symbolLstFile = self.cfg.getDataConfig("marketdata") 
+        self.initParams()
+        pass
+        
+    def initParams(self):
         self.enddate = ""
         self.startdate = ""
         self.help = False
-        self.cfg = ms_config.MsDataCfg("") 
-        self.symbolLstFile = self.cfg.getDataConfig("marketdata") 
         self.haschart = False
         self.savemd = False
         self.loadmd = False
         self.hasBackTest = False
-        self.feed = "yahoo"  # yahoo feeder
+        self.feed = ""  # yahoo feeder
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
         self.sgyparam = {}
@@ -30,6 +34,8 @@ class ms_paramparser:
     #params = array(split)
     def parseOption(self, params):
         print "==========================",params
+        self.initParams()
+                
         try:
             opts, args = getopt.getopt(params, "f:t:s:e:i:g:c:h", \
                 ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed=","vb"])

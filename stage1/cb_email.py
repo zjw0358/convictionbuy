@@ -136,4 +136,4 @@ def send_mail0(attachment,filedate):
     smtp_conn.quit()
 
 if __name__ == "__main__":
-    send_gmail("../cache/dailyreport_2015-12-11.pdf","2015-12-11")
+    send_mail0("../cache/dailyreport_2016-02-04.pdf","2016-02-04")

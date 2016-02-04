@@ -111,9 +111,11 @@ class FeederYahoo:
         except:
             self.numError += 1
             print "System/Network Error when retrieving ",symbol," skip it"
+            '''
             if self.numError>3:
                 print "too many errors when downloading symbol data, exit now"
                 sys.exit()
+            '''
         return ohlc
         
     # history data + latest RT data    
