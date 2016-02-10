@@ -65,7 +65,7 @@ class st_sma(ind_ma):
         
         #support line
         buysg,sellsg = sp.supportline(px, self.ma50, self.nbar)
-        tsup.getLastSignal(buysg,sellsg, self.ind,'sup50b','sup50bs')          
+        tsup.getLastSignal(buysg,sellsg, self.ind,'sup50','res50')          
         #print ohlc
         pass
 
@@ -93,7 +93,9 @@ class st_sma(ind_ma):
             return df,col
         if 'merge' in self.param:
             df = self.merge(df)
+            default_col = ['ma10','ma50','ma200','ma10bs','ma50bs','ma1050bs','ma50200bs']
             col = df.columns.values 
-            return df,col
+            #return df,col
+            return df,default_col
         else:
             return ind_ma.runScan(self,df)

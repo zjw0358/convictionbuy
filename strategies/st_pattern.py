@@ -100,14 +100,18 @@ class StrategyPattern(object):
             sellsg.append(sellsignal)
             
         return buysg,sellsg
-  
+    '''
+    support line & resistance line
+    '''
     def supportline(self,pxlst,suppline,nbar=2):
         buyflag = False
+        sellflag = False
         prevPx = pxlst[0]
         prevSup = suppline[0]
         upper=2.0
         lower=0.0
         buycount = 1
+        sellcount = 1
         buysg = []
         sellsg = []
         if (nbar<2):
@@ -128,8 +132,8 @@ class StrategyPattern(object):
                         buyflag = False
                         buycount = 1
                 else: #can't support at line
-                        buyflag = False
-                        buycount = 1
+                    buyflag = False
+                    buycount = 1
                 pass
             else:
                 if (prevPx>prevSup):
@@ -138,6 +142,25 @@ class StrategyPattern(object):
                         buyflag = True
                     pass
                     
+            if (sellflag):
+                #second round check
+                gap = (curSupp-curPx)*100/curPx
+                if (gap>lower): #resist line work
+                    sellcount+=1
+                    if (sellcount==nbar):
+                        sellsignal = "sell"
+                        sellflag = False
+                        sellcount = 1
+                else:
+                    sellflag = False
+                    sellcount = 1 
+                pass
+            else:
+                if (prevPx<prevSup):
+                    gap = (curSupp-curPx)*100/curPx
+                    if (gap<upper) and (gap>lower):
+                        sellflag=True
+                    pass
             prevPx = curPx
             prevSup = curSupp
             buysg.append(buysignal)

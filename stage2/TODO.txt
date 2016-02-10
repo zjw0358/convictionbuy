@@ -1,0 +1,141 @@
+TOP TASK
+========
+**buy signal 的同时显示ERD和dividend date — done
+2015-10-15的买入指标，macd 
+1114   MSFT   46.37   44.83   44.82     15      9     1.64        9 ok
+1390    MCD  102.02   98.25   96.61     17      9     2.21        8 突破前高
+1440    CRM   75.58   71.18   68.38     11      8     1.91        8 相比没有ma200 buy
+1497    PSX   81.97   79.38   77.68     21      8     1.54        8 平台前高回落，但最终又突破
+2210    EMC   26.99   25.19   26.51     17      9     2.53        7 直到大于ma200才发出信号，而且短期升幅过大，为了更敏感可以去掉nbar限制
+2546   SINA   43.31   39.36   40.76     15      9     2.04        9 10/2就出现信号，上穿ma200
+3064   NTES  128.83  121.87  122.89     17     10     1.87       10
+3607   FSLR   51.95   47.79   50.95     18      7     2.01        6 突破ma200后有一个回测ma20/50的动作
+4416  GOOGL  680.41  659.78  583.12     15      7     1.66        7 >ma200已有3个月，macd穿0轴不久
+4660     GE   27.40   25.51   25.90     17      9     1.74        6 10/5突破ma50,200不回头，显得趋势很强，macd露头，是否考虑ma10>ma50,ma10[1]>ma10[0],ma50[1]>ma50[0],px>ma10>ma50,px>ma200
+
+4746    SAP   72.78   67.44   70.40     17      9     2.67        6  前低反弹20%，macd露头，上升较快，gap较多，和emc有点类似，sctr 转正，ma200情况稍好非下降趋势
+5714   GOOG  651.16  629.80  566.77     15      7     1.60        7
+5796    NKE   62.77   57.69   52.09     24      3     1.68       19
+5940   NVDA   27.26   23.32   21.74     15     10     4.00       13
+
+====
+使用如下算法
+run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_buy<20&dmi_dif>1.5 -i 1,2,3 --loadmd -s 2013-01-01 -e 2015-10-15
+
+1114   MSFT   46.37   44.82     15      9      7     1.64        9
+1390    MCD  102.02   96.61     17      9      9     2.21        8
+1440    CRM   75.58   68.38     11      8      8     1.91        8
+1497    PSX   81.97   77.68     21      8      7     1.54        8
+2210    EMC   26.99   26.51     17      9      6     2.53        7
+2546   SINA   43.31   40.76     15      9      9     2.04        9
+3064   NTES  128.83  122.89     17     10      6     1.87       10
+3607   FSLR   51.95   50.95     18      7      5     2.01        6
+4416  GOOGL  680.41  583.12     15      7      6     1.66        7
+4660     GE   27.40   25.90     17      9      7     1.74        6
+4746    SAP   72.78   70.40     17      9      3     2.67        6
+5714   GOOG  651.16  566.77     15      7      6     1.60        7
+
+**merge reuter／zack 前后文件的工具
+2016-02-10
+daemon
+查看当前缓存中的data数据.
+
+2016-02-04
+研究WMT自1月以来的突破指标
+
+
+2016-01-30
+cb task 加入ms_feed的支持，读取cmd，如果是ms_feed则不显示结果.. partial done,显示备注？memo
+加入短线close 搜索..done
+
+
+2016-01-19
+短线3 bar突破ma10
+run marketscan.py -g st_sma&nbar=3&ma10b<10&ma10b<ma10s&ma10s>20 -i 1,2,3 --savemd -s 2013-01-01
+sina 1H 下载很慢，是否考虑多线程
+
+
+2016-01-04
+某些symbol需要调整
+G3B.Si  nikko-am STI ETF - yahoo
+DBSM.SI - reuter / d05.si - yahoo
+nise.si - reuter nikko -sti etf
+
+2015-12-30
+另一个短线指标，不强制要求大于MA200,像最近QCOM的上穿MA10后3个bar,并且要趋势十分强烈,VRX,SCTY,NTES等等
+
+2015-12-25
+中线指标,考虑MA50穿越,结合其他条件，市值,>MA200,SCTR>0?上穿次数(MA50的方向)
+run marketscan.py -g st_sma&ma50b<20&ma50b<ma50s&ma10b<10,st_dmi&dmi_buy<20,st_greenline&sctr_buy<30 -i 1,2,3 --loadmd -s 2013-01-01
+
+sctr没有意思，考虑穿越次数，或者接近支撑次数
+run marketscan.py -g st_sma&ma50b<20&ma50b<ma50s&ma10b<10&px>ma200 -i 1,2,3 --loadmd -s 2013-01-01
+
+
+2015-12-23
+针对持有股票,找出颓势的close position
+可能要加入p4w 涨幅为条件,否则误报率太大？
+对所有ma10 x ma50的，累计2次px x ma10,发出close 信号，难以描述ma10 x ma50
+ma1050b < 66, 并且两次触碰ma50 (信号太慢)
+平仓信号
+run marketscan.py -g st_sma&nbar=3&ma10s<10&ma10b>ma10s -i 1 --loadmd -s 2013-01-01
+
+
+2015-12-17
+MA混合信号
+     symbol      px  ma10s  ma10b  ma50s  ma50b  ma1050s  ma1050b
+492    CIEN   19.30      6     16      3     42        1       42
+949     MGM   22.08      8     14      3     36        0       42
+1351    AAL   43.20      2     10      2     10        0        3
+1433      C   53.90      5      7      4     37        1       37
+1484   SBUX   60.35      2      7      2      7        1       60
+1622    MAN   86.67      9     13      4     20        2       36
+3149   ORCL   38.91      6     17      3      7        1       42
+3578   KITE   66.48     11     30      4     43        2       45
+4847   AAPL  111.34      4      7      2      7        0       37
+4904   VIAV    5.96      9     16      4     51        0       45
+5446    MJN   78.48     16     42      4     37        0       35
+6120    PLD   42.32      9     18      4      7        1       48
+6153   SIVB  124.84      9     15      2     33        0       31
+Finish wrote to  ../result/scan_st_sma_2015-12-17.csv
+run marketscan.py -g st_sma&ma10s<20&ma10b>ma10s&ma50s<5&ma50b>ma50s&ma1050s<5&ma1050b>ma1050s -i 1,2,3 --loadmd -s 2013-01-01
+
+
+
+
+2015-12-15
+获取dividend/季报信息 -- yahoo
+获取next earning date - zacks? - done
+可能需要加入条件dmi_buy,突破后不能过分缩小diff
+
+
+2015-12-11
+对px,ma50,ma200收敛进行建模,看看是否有其他信号确认,MACD?
+aws scheduler
+以及对trader中的using simple mv一文进行建模
+支持sina的数据，看看能否利用.sina spx代号为.inx
+
+
+2015-12-10
+使用一个marketscan支持多个策略，这样就不用反复下载数据了, 一次跑完
+
+2015-12-08
+NOC-3年多一直沿ma50上行,未碰过ma200
+ntes策略 -2年多沿ma200上行,碰过一次后上涨
+
+2015-12-05
+golder cross death cross indicate < 10days  -- done
+末尾 放置所有symbol的sctr/ma均线/perf/px的参考，以何为序？symbol?  --done
+一个单独用于下载数据的task,不加任何strategy ? -- pending
+
+
+2015-12-04
+1. convert txt to pdf -- done
+2. email pdf -- done
+
+
+===
+case
+avgo 15-11-24 sctr cross 0, px上穿ma200,dmi 露头，breakout downtrend line,之前盘整了几个月(如何判断?)
+jah 15-12-7短线升幅过大
+emc 15-12-2 maa50,ma200收敛,px上行，如何建模？

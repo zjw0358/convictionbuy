@@ -15,7 +15,7 @@ class st_perf(BaseIndPx):
     #override func
     def setupParam(self,param):
         BaseIndPx.setupParam(self,param)                
-        self.sgy = 1
+        self.sgy = 0
         #print param
         if 'topperf' in param:
             self.sgy = 1
@@ -31,7 +31,7 @@ class st_perf(BaseIndPx):
             self.sgy = 6
         if "sorts" in param:
             self.sgy = 7
-            #print "select sorts"
+        
         return
           
     def algoFunc(self, px):
@@ -118,7 +118,12 @@ class st_perf(BaseIndPx):
             df = table.sort_index(by='symbol',ascending=True)
             #df = table[(table['p4w']-table['p12w']>1) &(table['p4w']-table['p12w']<3) & (table['p4w']>2) & (table['p4w']<5)]
             pass
-        cols = df.columns.values 
+        else:            
+            df,cols = BaseIndPx.runScan(self,table)
+            df = df.sort_index(by='symbol',ascending=True)
+        #return own columns only
+        #cols = df.columns.values 
+        cols = ['p1d','p1w','p4w','p12w','p24w','pmax']
         return  df,cols
         
       
