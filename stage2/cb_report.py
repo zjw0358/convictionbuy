@@ -30,7 +30,8 @@ class CbReport:
 
         reportlab.rl_config.warnOnMissingFontGlyphs = 0
         #pdfmetrics.registerFont(TTFont('song', 'SURSONG.TTF'))
-        pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
+        #pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
+        pdfmetrics.registerFont(TTFont('hei', 'D:\\Windows\\fonts\\simkai.ttf'))
 
 
         #fonts.addMapping('song', 0, 0, 'song')

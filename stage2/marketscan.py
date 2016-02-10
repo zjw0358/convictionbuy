@@ -195,7 +195,7 @@ class MarketScan:
         start = timer()
         for index, row in symboldf.iterrows():
             symbol = row['symbol']            
-            ohlc = self.mfeed.getOhlc(symbol)
+            ohlc = self.mfeed.getOhlc(symbol,False)
             if (ohlc is None):
                 continue
             feedData.ohlc[symbol] = ohlc
@@ -225,16 +225,22 @@ class MarketScan:
         self.parseOption(args.split())  
         df1 = self.params.getSymbolDf()
 #        tickdct = df1.set_index('symbol').to_dict()
-        tickdct = df1['symbol'].to_dict()
-        print tickdct
-        print "==========================="
-        print df1
-        sys.exit()
+        tickdct = {}
+        for symbol in df1['symbol']:
+            tickdct[symbol]=1
+            
+        #print tickdct
+        #print "==========================="
+        #print df1
+        #sys.exit()
+        
         try:
             feedData = self.rawData[self.params.feed]      
         except:
             #not load yest
-            feedData = self.loadDataTask(args)
+            #feedData = self.loadDataTask(args)
+            print "you need to load data firstly. e.g.(load1d)"
+            return
             
         #feedData.table = df1 #deepcopy?  TODO
         
@@ -242,7 +248,7 @@ class MarketScan:
         table = feedData.table
         # no price module
         # load prescan module
-        '''
+        
         noPxModule = True
         for sgyname in self.sgyInx:
             sgx = self.sgyInx[sgyname]
@@ -254,7 +260,7 @@ class MarketScan:
             else:
                 noPxModule = False
         
-        '''
+        
         print "total", len(table.index),"symbols selected to run indicator/strategy"
         
         # indicator 
@@ -265,6 +271,9 @@ class MarketScan:
                 print "skip",symbol
                 continue
             #ohlc = self.mfeed.getOhlc(symbol)
+            if (symbol not in feedData.ohlc):
+                continue
+                
             ohlc = feedData.ohlc[symbol]
             
             if (ohlc is None):
@@ -320,6 +329,7 @@ class MarketScan:
             #if sgx.needPriceData()==True: allow ms_zack to run scan
             print "screening ",sgyname
             sgx = self.sgyInx[sgyname]
+            print "screen param",self.params.sgyparam[sgyname]
             sgx.setupParam(self.params.sgyparam[sgyname])
             table,cls = sgx.runScan(table)
             

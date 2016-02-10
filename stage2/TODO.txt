@@ -39,6 +39,7 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 2016-02-10
 daemon
 查看当前缓存中的data数据.
+loaddata-是否调整日期
 
 2016-02-04
 研究WMT自1月以来的突破指标

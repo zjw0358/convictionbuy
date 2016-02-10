@@ -47,7 +47,7 @@ class ms_feed:
         self.getOhlcAll(df1, params)
  
     # API for marketscan
-    def getOhlc(self, symbol):
+    def getOhlc(self, symbol,adjust=True):
         start = timer()
         
         self.ohlcid += 1
@@ -80,7 +80,8 @@ class ms_feed:
                     sys.exit()
                 '''
         # adjust adj close price.
-        ohlc = self.mtd.adjClosePrice(ohlc)       
+        if (adjust):
+            ohlc = self.mtd.adjClosePrice(ohlc)       
         end = timer()  
         print "\ttime",round(end - start,3)
         return ohlc
