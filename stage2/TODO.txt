@@ -36,6 +36,13 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 5714   GOOG  651.16  566.77     15      7      6     1.60        7
 
 **merge reuter／zack 前后文件的工具
+2016-02-11
+sina5m 延时达30分钟
+使用http://www.google.com/finance/getprices?i=300&p=10d&f=d,o,h,l,c,v&q=AAPL
+＋sina？
+http://www.quantshare.com/sa-426-6-ways-to-download-free-intraday-and-tick-data-for-the-us-stock-market
+download1d的时候就调整价格
+
 
 2016-02-10
 daemon..done

@@ -61,7 +61,7 @@ class ms_feed:
             print "downloading ",self.ohlcid, symbol       
             try:
                 if ("sina" in self.params.feed):
-                    ohlc = self.sinaapi.reqHisData(symbol)
+                    ohlc = self.sinaapi.reqHisData(symbol,self.params.feed)
                 elif ("yahoo" in self.params.feed):
                     ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
                 else:
@@ -113,7 +113,8 @@ class ms_feed:
             #print "\ttime",round(end - start,3)
         return table
         pass
-        
+    
+    # TODO, if time range is null then load all  
     def loadOhlc(self,symbol):
         filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
         print "loading",filename
@@ -123,7 +124,7 @@ class ms_feed:
             ohlc = pandas.DataFrame()
             return ohlc
             
-        #for sina 1H data, load all
+        #for sina 1H/5m data, load all
         if ("sina" in self.params.feed):
             return ohlc
         ohlc.index = pandas.to_datetime(ohlc.index)  

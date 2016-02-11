@@ -6,7 +6,7 @@ import datetime
 import sys
 import os
 from timeit import default_timer as timer
-sys.path.insert(0, "../strategies/")
+#sys.path.insert(0, "../strategies/")
 
 
 import pandas.io.data as web
@@ -198,7 +198,7 @@ class MarketScan:
         start = timer()
         for index, row in symboldf.iterrows():
             symbol = row['symbol']            
-            ohlc = self.mfeed.getOhlc(symbol,False)
+            ohlc = self.mfeed.getOhlc(symbol)
             if (ohlc is None):
                 continue
             feedData.ohlc[symbol] = ohlc

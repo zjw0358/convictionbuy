@@ -16,14 +16,19 @@ import pandas
 
 class SinaMarketData:
     #only hour data until yesterday close
-    def reqHisData(self,symbol):
-        url = "http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?symbol=%s&type=60&___qn=3" % (symbol)
+    def reqHisData(self,symbol,param=""):
+        freq='60'
+        if ("5m" in param):
+            freq = "5"
+        
+        url = "http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?symbol=%s&type=%s&___qn=3" % (symbol,freq)
+        #print param,url
         df = pandas.read_json(url)
         df.rename(columns={'d': 'Date','c': 'Close','h':'High','l':'Low','o':'Open','v':'Volume'}, inplace=True)
         df['Adj Close'] = df['Close']
         df.set_index('Date',inplace=True)
         return df
-                
+                   
     def reqLastDataRT(self,symbol):
         url = "http://stock.finance.sina.com.cn/usstock/api/json.php/US_MinKService.getMinK?symbol=%s&type=5&___qn=3" % (symbol)
         df = pandas.read_json(url)
