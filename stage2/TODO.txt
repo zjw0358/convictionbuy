@@ -36,10 +36,12 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 5714   GOOG  651.16  566.77     15      7      6     1.60        7
 
 **merge reuter／zack 前后文件的工具
+
 2016-02-10
-daemon
+daemon..done
 查看当前缓存中的data数据.
-loaddata-是否调整日期
+loaddata-是否调整日期 .. done
+缓存st_zack数据.
 
 2016-02-04
 研究WMT自1月以来的突破指标
@@ -140,3 +142,6 @@ case
 avgo 15-11-24 sctr cross 0, px上穿ma200,dmi 露头，breakout downtrend line,之前盘整了几个月(如何判断?)
 jah 15-12-7短线升幅过大
 emc 15-12-2 maa50,ma200收敛,px上行，如何建模？
+
+==
+test case

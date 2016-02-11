@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import mimetypes
-#import sys
+import sys
 
 def send_gmail(attachment,filedate):
     test_str="CB_daily_report_"+filedate
@@ -71,7 +71,11 @@ def send_gmail(attachment,filedate):
 
 
 def send_mail(attachment,filedate):
-    send_gmail(attachment,filedate)
+    try:
+        send_gmail(attachment,filedate)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
+        pass
     
 def send_mail0(attachment,filedate):
     test_str="CB_daily_report_"+filedate

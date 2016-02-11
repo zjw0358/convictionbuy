@@ -19,7 +19,7 @@ class MsDataCfg:
         pass
         
     def getSections(self):
-        print self.cbparser.sections()
+        #print self.cbparser.sections()
         return self.cbparser.sections()
         pass
 

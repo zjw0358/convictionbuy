@@ -27,12 +27,13 @@ class CbReport:
         self.datacfg = ms_config.MsDataCfg("")
         folder = self.datacfg.getDataConfig("result","../result/")        
         self.output = folder + "dailyreport_" + self.datacfg.getFileSurfix() + ".pdf"
-
+        pass
+        
+    def initFont(self):
         reportlab.rl_config.warnOnMissingFontGlyphs = 0
         #pdfmetrics.registerFont(TTFont('song', 'SURSONG.TTF'))
-        #pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
-        pdfmetrics.registerFont(TTFont('hei', 'D:\\Windows\\fonts\\simkai.ttf'))
-
+        pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
+        #pdfmetrics.registerFont(TTFont('hei', 'D:\\Windows\\fonts\\simkai.ttf'))
 
         #fonts.addMapping('song', 0, 0, 'song')
         #fonts.addMapping('song', 0, 1, 'song')
@@ -42,8 +43,7 @@ class CbReport:
         fonts.addMapping('hei', 0, 1, 'hei')
         fonts.addMapping('hei', 1, 0, 'hei')
         fonts.addMapping('hei', 1, 1, 'hei')
-        pass
-        
+
     def addTable(self,title,desc,df):
         self.dfdict[title] = desc,df
         

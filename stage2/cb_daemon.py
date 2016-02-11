@@ -15,7 +15,7 @@ class CbDaemon:
             self.funcstr=""
             self.descstr=""
             self.paramstr=""
-            #self.retstr=""
+            self.typestr=""
             self.title=""
             pass
             
@@ -29,13 +29,15 @@ class CbDaemon:
         self.interactive = False
         self.report = cb_report.CbReport()
         self.loadConfig()
-        self.internalcmd = {'list':(self.listCmd,"list task"),'help':(self.help,"help"),'exit':(self.exit,'exit program')}
+        self.typelst = ["download","load",""]
+        self.internalcmd = {'list':(self.listCmd,"list task"),'help':(self.help,"help"),'exit':(self.exit,'exit program'),
+        'runtype':(self.runtype,"run tasks by type")}
         pass
         
     def parseOption(self):
         params = sys.argv[1:]
         try:
-            opts, args = getopt.getopt(params, "i", \
+            opts, args = getopt.getopt(params, "iw", \
                 ["interactive"])
         except getopt.GetoptError:
             print "parse option error"
@@ -43,6 +45,9 @@ class CbDaemon:
         for opt, arg in opts:
             if opt in ("-i", "--interactive"):
                 self.interactive = True  
+            elif opt in ("-w", "--interactive"):
+                #self.windows = True
+                self.report.initFont()
         if (self.interactive):
             print "Interactive Mode..."     
 
@@ -57,6 +62,8 @@ class CbDaemon:
             cmd.funcstr = self.msconfig.getConfig(sect,'func')
             cmd.paramstr = self.msconfig.getConfig(sect,'param')
             cmd.descstr = self.msconfig.getConfig(sect,'desc')#.encode('utf-8')
+            cmd.typestr = self.msconfig.getConfig(sect,'type')#.encode('utf-8')
+            
             #print cmd.descstr
             #print unicode(cmd.descstr,'utf-8')
             #print cmd.descstr.decode('utf-8')
@@ -107,7 +114,7 @@ class CbDaemon:
             self.report.addTable(cmd.title,cmd.descstr,ret)
             pass
     
-    def flytask(self,cmdstr):
+    def flytask0(self,cmdstr):
         pattern = "([\w\.]*) ([\w]*) ([\d\D]*)"
         an = re.match(pattern,cmdstr)
         if an!=None:
@@ -122,6 +129,35 @@ class CbDaemon:
                 cmd.paramstr = param
                 self.runCmd(cmd)
                 return True
+        return False
+
+    def runtype(self,param=""):
+        print "run task by type",param        
+        typelst=param.split()
+        self.onetime(typelst)
+        
+    def flytask(self,cmdstr):
+        pattern = "([\w\.]*) ([\d\D]*)"
+        an = re.match(pattern,cmdstr)
+        if an!=None:
+            command = an.group(1)
+            if (command in self.cmdlst):
+                cmd = self.cmdlst[command]
+                newcmd = CbDaemon.Command()
+                param = an.group(2)                
+                newcmd.cmdstr = cmd.cmdstr
+                newcmd.title = "flytask"
+                newcmd.funcstr = cmd.funcstr
+                newcmd.paramstr = param
+                self.runCmd(newcmd)                
+                return True
+            else:
+                #internal command with param
+                if command in self.internalcmd:
+                    param = an.group(2)  
+                    func,desc=self.internalcmd[command] 
+                    func(param)                                                 
+                    return True
         return False
 
     # interactive mode
@@ -143,9 +179,12 @@ class CbDaemon:
 
         pass 
     #run once
-    def onetime(self):
+    def onetime(self,typelst):
         for cmd in self.cmdlst:
-            self.runCmd(self.cmdlst[cmd])
+            task = self.cmdlst[cmd]
+            if (task.typestr not in typelst):
+                continue
+            self.runCmd(task)
         self.report.printPdf()
         pass
                  
@@ -154,7 +193,7 @@ class CbDaemon:
         if (self.interactive):
             self.daemon()
         else:
-            self.onetime()
+            self.onetime(self.typelst)
                      
         
 

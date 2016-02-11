@@ -39,7 +39,8 @@ class BaseIndNoPx(object):
         return
 
     def runIndicator(self,symbol,ohlc,param={}):
-        self.setupParam(param)    
+        #self.setupParam(param)
+        pass
         
         
     def runScan(self,df):
