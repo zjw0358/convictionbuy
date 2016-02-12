@@ -27,7 +27,7 @@ class ms_paramparser:
         self.hasBackTest = False
         self.feed = ""  # yahoo feeder
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
-        self.tickdf = pandas.DataFrame({},columns=['symbol','exg'])                
+        self.tickdf = pandas.DataFrame({},columns=['symbol','exg','sina','goog','googexg'])                
         self.sgyparam = {}
         self.verbose = False #print ohlc?
         pass
@@ -48,8 +48,9 @@ class ms_paramparser:
                 self.symbolLstFile = arg
                 #self.option = 1
             elif opt in ("-t", "--ticklist"):
-                tdict = self.mtd.parseTickLst(arg)
-                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])                
+                #tdict = self.mtd.parseTickLst(arg)
+                #self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])                
+                self.tickdf = self.mtd.parseTickLstDf(arg)
             elif opt in ("-s", "--startdate"):
                 self.startdate = arg
             elif opt in ("-e", "--enddate"):
@@ -134,7 +135,7 @@ class ms_paramparser:
         if self.tickdf.empty:
             print "loading from symbolfile..."
             df = self.mtd.loadSymbolLstFile(self.symbolLstFile)
-            df = self.mtd.getSymbolByPid(df,self.pid)[['symbol']]
+            df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','sina','goog','googexg']]
         else:
             print "using ticklist from command line..."            
             df = self.tickdf  

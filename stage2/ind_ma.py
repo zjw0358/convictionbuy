@@ -36,7 +36,7 @@ class ind_ma(BaseIndPx):
             self.ind['ma100'] = round(self.ma100[-1],2)
         if plen >= 200:
             #self.ma200 = pandas.stats.moments.rolling_mean(px,200).tolist()
-            self.ma200 = pandas.rolling_mean(px,200)
+            self.ma200 = pandas.rolling_mean(px,200).tolist()
             self.ind['ma200'] = round(self.ma200[-1],2)
             #df['ma200'] = self.ma200           
         #print df

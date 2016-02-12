@@ -36,17 +36,24 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 5714   GOOG  651.16  566.77     15      7      6     1.60        7
 
 **merge reuter／zack 前后文件的工具
+
 2016-02-11
-sina5m 延时达30分钟
+sina5m 延时达30分钟 ..改用goog done
 使用http://www.google.com/finance/getprices?i=300&p=10d&f=d,o,h,l,c,v&q=AAPL
 ＋sina？
 http://www.quantshare.com/sa-426-6-ways-to-download-free-intraday-and-tick-data-for-the-us-stock-market
-download1d的时候就调整价格
+
+download1d的时候就调整价格..done
+分离 ms_feed中的download 和 loadcache .. done
+支持更短的命令搜索
+
+测试单次执行 -- 尚可，需要优化font以及smtp发送失败
+
 
 
 2016-02-10
 daemon..done
-查看当前缓存中的data数据.
+查看当前缓存中的data数据.ohlc -t JNJ --feed goog15m
 loaddata-是否调整日期 .. done
 缓存st_zack数据.
 
@@ -127,7 +134,7 @@ aws scheduler
 
 
 2015-12-10
-使用一个marketscan支持多个策略，这样就不用反复下载数据了, 一次跑完
+使用一个marketscan支持多个策略，这样就不用反复下载数据了, 一次跑完...on going
 
 2015-12-08
 NOC-3年多一直沿ma50上行,未碰过ma200

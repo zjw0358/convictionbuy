@@ -57,8 +57,13 @@ class MarketData:
         
     #return dataframe
     def parseTickLstDf(self,line):
-        tdict = self.parseTickLst(line)
-        return pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+        tdict = self.parseTickLst(line)        
+        df = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+        lst=['']*len(tdict)
+        df['sina']=lst
+        df['goog']=lst
+        df['googexg']=lst
+        return df
 
       
     #google style portfolio file
@@ -107,6 +112,8 @@ class MarketData:
         reuter = []
         zack = []
         sina = []
+        goog = []
+        googexg = []
         reader = csv.reader(fp)  # creates the reader object
         idx = 0
         try:
@@ -122,22 +129,32 @@ class MarketData:
                 pidLst.append(row[5])
                 exgLst.append(row[6])
                 collen = len(row)
-                if collen == 10:
+                if collen == 12:
                     reuter.append(row[7])
                     zack.append(row[8])
                     sina.append(row[9])
+                    if (row[10]==""):
+                        goog.append(row[0])
+                    else:                        
+                        goog.append(row[10])
+                    googexg.append(row[11])
                 else:
                     reuter.append("")
                     zack.append("")
                     sina.append("")
+                    goog.append("")
+                    googexg.append("")
+
                 idx += 1
         except:
             print "error when reading symbol list file, exit..."
             sys.exit()
         fp.close()      # closing
         table = pandas.DataFrame({'symbol':symbolLst,'rank':rankLst,'name':nameLst,\
-            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst,'reuter':reuter,'zack':zack,'sina':sina},\
-            columns=['symbol','rank','name','sector','industry','pid','exg','reuter','zack','sina'])
+            'sector':sectorLst,'industry':industryLst,'pid':pidLst,'exg':exgLst,\
+            'reuter':reuter,'zack':zack,'sina':sina,'goog':goog,'googexg':googexg},\
+            columns=['symbol','rank','name','sector','industry','pid','exg','reuter',\
+            'zack','sina','goog','googexg'])
         return table
 
     def tofloat(self,item):

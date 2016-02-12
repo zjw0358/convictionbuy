@@ -75,6 +75,11 @@ class st_sma(ind_ma):
             tsup.getLastSignal(buysg,sellsg, self.ind,'ma50200b','ma50200s')          
         
         #support line
+        #l1=len(px)
+        #l2=len(self.ma50)
+        #print l1,l2
+        #print ohlc
+        
         buysg,sellsg = sp.supportline(px, self.ma50, self.nbar)
         tsup.getLastSignal(buysg,sellsg, self.ind,'sup50','res50')          
         #print ohlc

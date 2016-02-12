@@ -70,7 +70,7 @@ class MarketScan:
         #print "parse option"        
         params = self.params
         params.parseOption(args)
-        self.mfeed.initOption(params)
+        self.mfeed.initOption(params) # must change feed params
         if (params.hasBackTest):
             self.backtest = ms_backtest.ms_backtest()
             
@@ -197,11 +197,26 @@ class MarketScan:
         print "Loading task, feed=",self.params.feed
         start = timer()
         for index, row in symboldf.iterrows():
-            symbol = row['symbol']            
-            ohlc = self.mfeed.getOhlc(symbol)
+            symbol = row['symbol']
+            goog = row['goog']
+            googexg = row['googexg']
+            sina =  row['sina']
+            '''
+            try:
+                goog = row['goog']
+                googexg = row['googexg']
+                sina =  row['sina']
+            except:
+                goog = symbol
+                googexg=""
+                sina=symbol
+            '''
+            ohlc = self.mfeed.getOhlc(symbol,sina,goog,googexg)
             if (ohlc is None):
+                print symbol,"doesn't have ohlc data"
                 continue
             feedData.ohlc[symbol] = ohlc
+
        
         end = timer()  
         print "\ttime",round(end - start,3)        
@@ -290,6 +305,7 @@ class MarketScan:
             return table
             
         print "total", len(feedData.table.index),"symbols selected to run indicator/strategy"
+        #print feedData.table
         #sys.exit()         
         # indicator 
         # loop each symbol
@@ -300,6 +316,7 @@ class MarketScan:
                 continue
             #ohlc = self.mfeed.getOhlc(symbol)
             if (symbol not in feedData.ohlc):
+                print symbol,"not in cache"
                 continue
                 
             ohlc = feedData.ohlc[symbol]
@@ -309,7 +326,9 @@ class MarketScan:
             #    continue                
             
             #modify the original table
-            feedData.table.loc[index,'px'] = round(ohlc['Adj Close'][-1],2)
+            #print index,symbol,len(ohlc) #ohlc['Adj Close'][-1]
+            #print ohlc['Adj Close'].iloc[-1]
+            feedData.table.loc[index,'px'] = round(ohlc['Adj Close'].iloc[-1],2)
                         
             start = timer()
             
@@ -410,16 +429,27 @@ class MarketScan:
         pass
   
     def printOhlcTask(self,arg):
-        feed=""
-        symbol = arg.upper()
+        #feed=""
+        #symbol = arg.upper()
+        print arg
+        print "======================"
+        self.parseOption(arg.split())
+        feed = self.params.feed
+        
+        #print feed
+        #print self.params.tickdf
+        
         if (feed not in self.rawData):
             print "Not loaded data yet"            
             return
         feedData = self.rawData[feed]
-        if (symbol in feedData.ohlc):
-            print feedData.ohlc[symbol]
-        else:
-            print "Not found"
+        
+        for index, row in self.params.tickdf.iterrows():
+            symbol = row['symbol']
+            if (symbol in feedData.ohlc):
+                print feedData.ohlc[symbol]                
+            else:
+                print "Not found"        
         pass
           
     def procMarketData(self):

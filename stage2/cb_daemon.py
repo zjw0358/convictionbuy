@@ -11,7 +11,7 @@ import re
 class CbDaemon:
     class Command:
         def __init__(self):
-            self.cmdstr=""
+            self.modulestr=""
             self.funcstr=""
             self.descstr=""
             self.paramstr=""
@@ -57,7 +57,7 @@ class CbDaemon:
         #print self.msconfig.getSections()
         for sect in self.msconfig.getSections():
             cmd = CbDaemon.Command()
-            cmd.cmdstr = self.msconfig.getConfig(sect,'cmd')
+            cmd.modulestr = self.msconfig.getConfig(sect,'cmd')
             cmd.title = sect
             cmd.funcstr = self.msconfig.getConfig(sect,'func')
             cmd.paramstr = self.msconfig.getConfig(sect,'param')
@@ -69,7 +69,7 @@ class CbDaemon:
             #print cmd.descstr.decode('utf-8')
             #print isinstance(cmd.descstr,unicode)
             #cmd.retstr = self.msconfig.getConfig(sect,'ret')
-            if (cmd.cmdstr!=""):
+            if (cmd.modulestr!=""):
                 self.cmdlst[sect.lower()] = cmd
             #self.report.process(cmd.descstr)
             #sys.exit()
@@ -97,14 +97,11 @@ class CbDaemon:
         pass
         
     def runCmd(self,cmd):
-        #cmd = self.cmdlst[cmdstr]
-        #print cmd.funcstr
-        #print cmd.funcstr
         try:
-            module = self.modulelst[cmd.cmdstr]
+            module = self.modulelst[cmd.modulestr]
             ptrfunc = getattr(module,cmd.funcstr) 
         except:
-            print "Not a valid func",cmd.cmdstr,cmd.funcstr
+            print "Not a valid func",cmd.modulestr,cmd.funcstr
             return
         ret=ptrfunc(cmd.paramstr)
 
@@ -114,45 +111,37 @@ class CbDaemon:
             self.report.addTable(cmd.title,cmd.descstr,ret)
             pass
     
-    def flytask0(self,cmdstr):
-        pattern = "([\w\.]*) ([\w]*) ([\d\D]*)"
-        an = re.match(pattern,cmdstr)
-        if an!=None:
-            module = an.group(1)
-            func = an.group(2)
-            param = an.group(3)
-            if (module!="" and func!="" and param!=""):
-                cmd = CbDaemon.Command()
-                cmd.cmdstr = module
-                cmd.title = "flytask"
-                cmd.funcstr = func
-                cmd.paramstr = param
-                self.runCmd(cmd)
-                return True
-        return False
-
     def runtype(self,param=""):
         print "run task by type",param        
         typelst=param.split()
         self.onetime(typelst)
+
+    def findCmdOrFunc(self,arg):
+        if (arg in self.cmdlst):
+            return self.cmdlst[arg]
+        else:
+            for cmd in self.cmdlst:
+                if arg == cmd.funcstr:
+                    return cmd
+        return None
         
     def flytask(self,cmdstr):
         pattern = "([\w\.]*) ([\d\D]*)"
         an = re.match(pattern,cmdstr)
         if an!=None:
             command = an.group(1)
-            if (command in self.cmdlst):
-                cmd = self.cmdlst[command]
+            cmd = self.findCmdOrFunc(command)
+            if (cmd is not None):
                 newcmd = CbDaemon.Command()
                 param = an.group(2)                
-                newcmd.cmdstr = cmd.cmdstr
+                newcmd.modulestr = cmd.modulestr
                 newcmd.title = "flytask"
                 newcmd.funcstr = cmd.funcstr
                 newcmd.paramstr = param
                 self.runCmd(newcmd)                
                 return True
             else:
-                #internal command with param
+                #internal command with param,e.g. runtype
                 if command in self.internalcmd:
                     param = an.group(2)  
                     func,desc=self.internalcmd[command] 

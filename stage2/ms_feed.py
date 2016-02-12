@@ -1,5 +1,6 @@
 from feed_sina import SinaMarketData
 from feed_yahoo import FeederYahoo
+from feed_google import FeederGoogle
 import pandas.io.data as web
 import pandas
 from timeit import default_timer as timer
@@ -17,17 +18,65 @@ class ms_feed:
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/") 
         self.sinaapi = SinaMarketData()
         self.yahoofeed = FeederYahoo()
+        self.googfeed = FeederGoogle()
         pass
      
     def initOption(self, params):
         print "ms_feed initOption"
         self.params = params
         self.ohlcid = 0;   
+    
+
+    def _downloadOhlc(self,symbol,sinasymbol,googsymbol,googexg):
+        start = timer()        
+        self.downloadid += 1        
+
+        print "downloading ",self.downloadid, symbol       
+        try:
+            if ("sina" in self.params.feed):
+                ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
+            elif ("yahoo" in self.params.feed):
+                ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
+            elif ("goog" in self.params.feed):
+                ohlc = self.googfeed.reqMarketData(googsymbol,googexg,self.params.feed)
+            else:
+                ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)        
         
+            self.saveOhlc(symbol,ohlc,self.params.feed)
+            
+        except:
+            self.numError += 1
+            print "System/Network Error when retrieving ",symbol," skip it"
+            return None
+            '''
+            if numError>3:
+                print "too many errors when downloading symbol data, exit now"
+                sys.exit()
+            '''
+
+        end = timer()  
+        print "\ttime",round(end - start,3)
+        return ohlc
+        
+    # download the whole table , for self run program           
+    def _downloadAll(self, table):
+        self.numError = 0
+        self.downloadid = 0
+        for index, row in table.iterrows():
+            symbol = row['symbol']
+            goog = row['goog']
+            googexg = row['googexg']
+            sina =  row['sina']            
+            ohlc = self._downloadOhlc(symbol,sina,goog,googexg)  
+            #if (ohlc is None):
+            #    continue            
+        return table
+        pass        
 
     # argstr is a string
     # split it
-    def process(self, argstr=""):
+    # TODO should be savemd by default
+    def download(self, argstr=""):
         if (argstr==""):
             args = sys.argv[1:]
         else:
@@ -35,19 +84,34 @@ class ms_feed:
         params = ms_paramparser.ms_paramparser()
         params.parseOption(args)
         self.initOption(params)
+        '''
         if params.tickdf.empty:
             print "loading from symbolfile..."
             df = self.mtd.loadSymbolLstFile(params.symbolLstFile)
-            df1 = self.mtd.getSymbolByPid(df,params.pid)[['symbol']]
+            df1 = self.mtd.getSymbolByPid(df,params.pid)[['symbol','sina','goog','googexg']]
             #ticklist = df1['symbol']
         else:
             print "using ticklist from command line..."            
             df1 = params.tickdf  
-        #if (params.savemd):
-        self.getOhlcAll(df1, params)
+        '''
+        df1 = params.getSymbolDf()
+        self._downloadAll(df1)
  
+    def getOhlc(self,symbol,sinasymbol,googsymbol,googexg):
+        start = timer()        
+        self.ohlcid += 1
+        print "loading from cache ",self.ohlcid, symbol  
+        ohlc = self.loadOhlc(symbol)
+        if ohlc.empty:
+            print symbol," marketdata is not in cache, skip it"
+            return None
+        end = timer()  
+        print "\ttime",round(end - start,3)
+        return ohlc
+
+
     # API for marketscan
-    def getOhlc(self, symbol,adjust=True):
+    def getOhlc0(self,symbol,sinasymbol,googsymbol,googexg):
         start = timer()
         
         self.ohlcid += 1
@@ -61,9 +125,11 @@ class ms_feed:
             print "downloading ",self.ohlcid, symbol       
             try:
                 if ("sina" in self.params.feed):
-                    ohlc = self.sinaapi.reqHisData(symbol,self.params.feed)
+                    ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
                 elif ("yahoo" in self.params.feed):
                     ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
+                elif ("goog" in self.params.feed):
+                    ohlc = self.googfeed.reqMarketData(googsymbol,googexg,self.params.feed)
                 else:
                     ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)
             
@@ -80,37 +146,27 @@ class ms_feed:
                     sys.exit()
                 '''
         # adjust adj close price.
-        if (adjust):
-            ohlc = self.mtd.adjClosePrice(ohlc)       
+        '''
+        ohlc = self.mtd.adjClosePrice(ohlc)       
+        '''
         end = timer()  
         print "\ttime",round(end - start,3)
         return ohlc
         
     # download the whole table , for self run program           
-    def getOhlcAll(self, table, params):
+    def getOhlcAll(self, table):
          #TODO if no post-module, should return immediately
         self.numError = 0
         #id = 0
         for index, row in table.iterrows():
             symbol = row['symbol']
-            #print "downloading ",id, symbol
-            #id+=1
-            #start = timer()
+            goog = row['goog']
+            googexg = row['googexg']
+            sina =  row['sina']
             
-            ohlc = self.getOhlc(symbol)  
+            ohlc = self.getOhlc(symbol,sina,goog,googexg)  
             if (ohlc is None):
-                continue
-            # adjust adj close price.
-            #ohlc = self.mtd.adjClosePrice(ohlc)       
-            #end = timer()  
-            #print "\ttime",round(end - start,3)
-            #add 'px' column
-            #print "intc",ohlc['Adj Close']
-            #table.loc[index,'px'] = round(ohlc['Adj Close'][-1],2)
-            #start = timer()
-            #print "processing",symbol            
-            #end = timer()  
-            #print "\ttime",round(end - start,3)
+                continue            
         return table
         pass
     
@@ -125,7 +181,7 @@ class ms_feed:
             return ohlc
             
         #for sina 1H/5m data, load all
-        if ("sina" in self.params.feed):
+        if ("sina" in self.params.feed or "goog" in self.params.feed):
             return ohlc
         ohlc.index = pandas.to_datetime(ohlc.index)  
         date1 = datetime.datetime.strptime(self.params.startdate,'%Y-%m-%d')
@@ -154,16 +210,17 @@ class ms_feed:
     #save ohlc to csv file
     def saveOhlc(self, symbol, ohlc, feedname):
         #delete file firstly
+        ohlc = self.mtd.adjClosePrice(ohlc)
         filename = self.cachepath + symbol + "_ohlc_" + feedname + ".csv"
         try:
             os.remove(filename)
         except:
-            print "unable to delete file",filename
+            #print "unable to delete file",filename
             pass
         ohlc.to_csv(filename,sep=',')
         pass
         
 if __name__ == "__main__":
     obj = ms_feed()
-    obj.process()
+    obj.download()
          

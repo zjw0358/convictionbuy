@@ -27,6 +27,7 @@ class CbReport:
         self.datacfg = ms_config.MsDataCfg("")
         folder = self.datacfg.getDataConfig("result","../result/")        
         self.output = folder + "dailyreport_" + self.datacfg.getFileSurfix() + ".pdf"
+        self.windows = False
         pass
         
     def initFont(self):
@@ -43,7 +44,8 @@ class CbReport:
         fonts.addMapping('hei', 0, 1, 'hei')
         fonts.addMapping('hei', 1, 0, 'hei')
         fonts.addMapping('hei', 1, 1, 'hei')
-
+        self.windows = True
+        
     def addTable(self,title,desc,df):
         self.dfdict[title] = desc,df
         
@@ -52,6 +54,11 @@ class CbReport:
         self.styles = getSampleStyleSheet()
         self.doc = SimpleDocTemplate(self.output, pagesize=A4, rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
         self.doc.pagesize = landscape(A4)
+        if (self.windows):
+            self.descStyle = copy.deepcopy(self.styles['Normal'])
+            self.descStyle.fontName ='hei'
+            self.descStyle.fontSize = 12
+
 
     def writePdf(self,title, desc, df):      
         self.elements.append(Paragraph(title, self.styles['Title']))
@@ -63,15 +70,12 @@ class CbReport:
         text = "<para alignment=\"center\">%s</para>" % desc
         #text=desc
         #print text
-        #styleText = self.styles['Normal']
-        
-        normalStyle = copy.deepcopy(self.styles['Normal'])
-        normalStyle.fontName ='hei'
-        normalStyle.fontSize = 12
+        #styleText = self.styles['Normal']        
 
-        #styleText.wordWrap='CJK'
-        #self.elements.append(Paragraph(text, styleText))
-        self.elements.append(Paragraph(text, normalStyle))
+        if (self.windows):            
+            self.elements.append(Paragraph(text, self.descStyle))
+
+        
         self.elements.append(Spacer(1, 12))
         if len(df)==0:
             return
@@ -100,7 +104,7 @@ class CbReport:
             desc,df = self.dfdict[key]
             self.writePdf(key,desc,df)
         self.closePdf()
-        send_mail(self.output,self.datacfg.getFileSurfix())
+        send_mail(self.output,self.datacfg.getFileSurfix(),self.windows)
         pass
         
     def process(self,desc):
