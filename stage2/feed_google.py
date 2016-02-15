@@ -30,7 +30,7 @@ class FeederGoogle:
     DATA=
     TIMEZONE_OFFSET=480
     2.6,2.6,2.6,2.6,100
-    http://www.google.com/finance/getprices?i=3600&p=30d&f=d,o,h,l,c,v&df=cpct&q=MOS
+    http://www.google.com/finance/getprices?i=3600&p=30d&f=d,o,h,l,c,v&df=cpct&q=AAPL
     '''
     def reqMarketData(self,symbol,exg,param=""):
         freq = '300'
@@ -38,6 +38,9 @@ class FeederGoogle:
         if ('1h' in param):
             freq='3600'
             duration='30d'
+        elif ('15m' in param):
+            freq='900'
+            duration='20d'
         
         url = "http://www.google.com/finance/getprices?i=%s&p=%s&f=o,h,l,c,v&df=cpct&q=%s" % (freq,duration,symbol)
         #exg = self.googdict[symbol]
@@ -75,10 +78,10 @@ class FeederGoogle:
                         continue
 
                 dateLst.append(idx)
-                openLst.append(float(row[0]))
+                closeLst.append(float(row[3]))
                 highLst.append(float(row[1]))
                 lowLst.append(float(row[2]))
-                closeLst.append(float(row[3]))
+                openLst.append(float(row[0]))
                 volumeLst.append(int(row[4]))
                 adjCloseLst.append(float(row[3]))
                 idx += 1

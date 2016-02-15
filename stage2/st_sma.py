@@ -81,7 +81,9 @@ class st_sma(ind_ma):
         #print ohlc
         
         buysg,sellsg = sp.supportline(px, self.ma50, self.nbar)
-        tsup.getLastSignal(buysg,sellsg, self.ind,'sup50','res50')          
+        tsup.getLastSignal(buysg,sellsg, self.ind,'sup50','res50')  
+        #debug
+        #ohlc['ma50']=self.ma50        
         #print ohlc
         pass
 

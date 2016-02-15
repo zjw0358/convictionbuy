@@ -20,18 +20,22 @@ class CbDaemon:
             pass
             
     def __init__(self):
-        self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg") #file name
+        self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg")
         self.datacfg = ms_config.MsDataCfg("")
-        self.scaner = marketscan.MarketScan()
+        #self.scaner = marketscan.MarketScan()
         self.feeder = ms_feed.ms_feed()
         self.cmdlst = OrderedDict()
-        self.modulelst = {'marketscan.py':self.scaner,'ms_feed.py':self.feeder}
+        #self.modulelst = {'marketscan.py':self.scaner,'ms_feed.py':self.feeder}
+        self.moduledct = {}
         self.interactive = False
         self.report = cb_report.CbReport()
         self.loadConfig()
         self.typelst = ["download","load",""]
-        self.internalcmd = {'list':(self.listCmd,"list task"),'help':(self.help,"help"),'exit':(self.exit,'exit program'),
-        'runtype':(self.runtype,"run tasks by type")}
+        self.internalcmd = {'list':(self.listCmd,"list task"),
+        'help':(self.help,"help"),
+        'exit':(self.exit,'exit program'),
+        'runtype':(self.runtype,"run tasks by type"),
+        'reload':(self.reload,'reload config')}
         pass
         
     def parseOption(self):
@@ -52,7 +56,13 @@ class CbDaemon:
             print "Interactive Mode..."     
 
         pass
-           
+
+    def reload(self):
+        self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg")
+        self.cmdlst.clear()
+        self.loadConfig()
+        print "reload done"
+        
     def loadConfig(self):
         #print self.msconfig.getSections()
         for sect in self.msconfig.getSections():
@@ -62,20 +72,10 @@ class CbDaemon:
             cmd.funcstr = self.msconfig.getConfig(sect,'func')
             cmd.paramstr = self.msconfig.getConfig(sect,'param')
             cmd.descstr = self.msconfig.getConfig(sect,'desc')#.encode('utf-8')
-            cmd.typestr = self.msconfig.getConfig(sect,'type')#.encode('utf-8')
+            cmd.typestr = self.msconfig.getConfig(sect,'type')#.encode('utf-8')            
             
-            #print cmd.descstr
-            #print unicode(cmd.descstr,'utf-8')
-            #print cmd.descstr.decode('utf-8')
-            #print isinstance(cmd.descstr,unicode)
-            #cmd.retstr = self.msconfig.getConfig(sect,'ret')
             if (cmd.modulestr!=""):
-                self.cmdlst[sect.lower()] = cmd
-            #self.report.process(cmd.descstr)
-            #sys.exit()
-
-        #self.report.process(cmd.descstr)
-        #sys.exit()
+                self.cmdlst[sect.lower()] = cmd            
         pass
         
     def help(self):
@@ -97,12 +97,19 @@ class CbDaemon:
         pass
         
     def runCmd(self,cmd):
-        try:
-            module = self.modulelst[cmd.modulestr]
-            ptrfunc = getattr(module,cmd.funcstr) 
-        except:
-            print "Not a valid func",cmd.modulestr,cmd.funcstr
-            return
+        #try:
+        #module = self.modulelst[cmd.modulestr]
+        if (cmd.modulestr not in self.moduledct):
+            module_meta = __import__(cmd.modulestr, globals(), locals(), [cmd.modulestr])
+            c = getattr(module_meta, cmd.modulestr) 
+            module = c() # construct module
+            self.moduledct[cmd.modulestr] = module
+        else:
+            module = self.moduledct[cmd.modulestr]
+        ptrfunc = getattr(module,cmd.funcstr) 
+    #except:
+        #    print cmd.modulestr,"Not a valid func",cmd.funcstr
+        #    return
         ret=ptrfunc(cmd.paramstr)
 
         #if (cmd.retstr=='table'):
@@ -120,9 +127,9 @@ class CbDaemon:
         if (arg in self.cmdlst):
             return self.cmdlst[arg]
         else:
-            for cmd in self.cmdlst:
-                if arg == cmd.funcstr:
-                    return cmd
+            for cmd in self.cmdlst:                
+                if arg == self.cmdlst[cmd].funcstr:
+                    return self.cmdlst[cmd]
         return None
         
     def flytask(self,cmdstr):

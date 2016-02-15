@@ -37,6 +37,28 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 
 **merge reuter／zack 前后文件的工具
 
+2016-02-13
+TOP task
+策略-
+加入dividend
+验证上面的策略
+
+daemon-
+-v 和 -vv输出更多信息
+reload daemon.cfg  .. done
+
+ms-
+使用整个-g作为buy signal(即组合指标)
+pvm数据很滞后
+
+动态执行命令-
+动态测试任意策略
+执行command的时候允许替换部分参数
+
+-
+可以用输出作为下次的输入
+
+
 2016-02-11
 sina5m 延时达30分钟 ..改用goog done
 使用http://www.google.com/finance/getprices?i=300&p=10d&f=d,o,h,l,c,v&q=AAPL

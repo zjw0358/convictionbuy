@@ -247,9 +247,6 @@ class MarketScan:
         
     #support one arg only
     def scanTask(self,args=""):
-        #print "Scan task, filter=",args
-        #table = pandas.DataFrame()
-        
         if (args!=""): #called by daemon
             self.parseOption(args.split())  
             
@@ -257,15 +254,7 @@ class MarketScan:
         tickdct = {}
         for symbol in df1['symbol']:
             tickdct[symbol]=1
-            
-        try:
-            feedData = self.rawData[self.params.feed]      
-        except:
-            #not load yest
-            #feedData = self.loadDataTask(args)
-            print "you need to load data firstly. e.g.(load1d)"
-            return
-      
+        
         outputCol = OrderedDict({'symbol':1,'px':1})  
         #feedData.table = df1 #deepcopy?  TODO
         #table = feedData.table
@@ -289,7 +278,15 @@ class MarketScan:
             else:
                 noPxModule = False
         
-
+    
+        try:
+            feedData = self.rawData[self.params.feed]      
+        except:
+            #not load yest
+            #feedData = self.loadDataTask(args)
+            print "you need to load data firstly. e.g.(load1d)"
+            return
+      
         #merge prescan df with table, possible to save to original table?(save time)
         #TODO
         if (noPxModule):
