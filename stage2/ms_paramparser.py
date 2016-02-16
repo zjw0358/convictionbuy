@@ -29,7 +29,7 @@ class ms_paramparser:
         self.pid = 1 #0-dow30,1-zr focus list,2-jpm/zack list
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg','sina','goog','googexg'])                
         self.sgyparam = {}
-        self.verbose = False #print ohlc?
+        self.verbose = 0
         pass
     #params = array(split)
     def parseOption(self, params):
@@ -37,8 +37,8 @@ class ms_paramparser:
         self.initParams()
                 
         try:
-            opts, args = getopt.getopt(params, "f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed=","vb"])
+            opts, args = getopt.getopt(params, "v:f:t:s:e:i:g:c:h", \
+                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed=","verbose"])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -75,8 +75,8 @@ class ms_paramparser:
                 self.loadmd = True
             elif opt in ("--feed"):
                 self.feed = arg
-            elif opt in ("--vb"):
-                self.verbose = True
+            elif opt in ("-v","--verbose"):
+                self.verbose = int(arg)
                 
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -103,6 +103,7 @@ class ms_paramparser:
         print "save marketdata", self.savemd
         print "backtest", self.hasBackTest
         print "feeder", self.feed
+        print "verbose", self.verbose
         print "=========================="
         
         #if ("sina" in self.feed):

@@ -37,15 +37,16 @@ class st_zack(BaseIndNoPx):
     def loadNextErd(self,df):
         for index, row in df.iterrows():
             symbol = row['symbol']
-            print "reading erd",symbol
+            #print "reading erd",symbol
             fn = self.cachefolder + symbol + "_erdate.erd"
             try:
-                print "\topen file",fn
+                if (self.verbose>1):
+                    print "reading erd",symbol,"\ttopen file",fn
                 with open(fn, "r") as fp:
                     erd = fp.readline()
                     df.loc[index,'erd'] = erd[:-1]
             except:
-                print "\tset erd with empty value"
+                print symbol,"no earning date, set it with empty value"
                 df.loc[index,'erd'] = ""
         return df
 

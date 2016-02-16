@@ -14,24 +14,29 @@ import os
 class ms_feed:
     def __init__(self):
         self.mtd = marketdata.MarketData()
-        self.datacfg = ms_config.MsDataCfg("")
-        self.cachepath = self.datacfg.getDataConfig("folder","../cache/") 
         self.sinaapi = SinaMarketData()
         self.yahoofeed = FeederYahoo()
         self.googfeed = FeederGoogle()
+        print "ms_feed initOption"
+        self.datacfg = ms_config.MsDataCfg("")
+        self.cachepath = self.datacfg.getDataConfig("folder","../cache/") 
         pass
      
-    def initOption(self, params):
-        print "ms_feed initOption"
+    def initOption(self, params):        
+        #self.verbose = int(self.datacfg.getDataConfig("verbose","0")) 
+        #print "verbose=",self.verbose
         self.params = params
         self.ohlcid = 0;   
     
 
     def _downloadOhlc(self,symbol,sinasymbol,googsymbol,googexg):
-        start = timer()        
         self.downloadid += 1        
-
-        print "downloading ",self.downloadid, symbol       
+        if (self.params.verbose > 0): 
+            start = timer()
+            s = 'downloading %d %s' %(self.downloadid , symbol)
+            sys.stdout.write(s)      
+            #print "downloading ",self.downloadid, symbol       
+        
         try:
             if ("sina" in self.params.feed):
                 ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
@@ -53,9 +58,10 @@ class ms_feed:
                 print "too many errors when downloading symbol data, exit now"
                 sys.exit()
             '''
-
-        end = timer()  
-        print "\ttime",round(end - start,3)
+        if (self.params.verbose > 0): 
+            end = timer()
+            print "\ttime",round(end - start,3)
+            
         return ohlc
         
     # download the whole table , for self run program           
@@ -84,29 +90,26 @@ class ms_feed:
         params = ms_paramparser.ms_paramparser()
         params.parseOption(args)
         self.initOption(params)
-        '''
-        if params.tickdf.empty:
-            print "loading from symbolfile..."
-            df = self.mtd.loadSymbolLstFile(params.symbolLstFile)
-            df1 = self.mtd.getSymbolByPid(df,params.pid)[['symbol','sina','goog','googexg']]
-            #ticklist = df1['symbol']
-        else:
-            print "using ticklist from command line..."            
-            df1 = params.tickdf  
-        '''
         df1 = params.getSymbolDf()
         self._downloadAll(df1)
  
-    def getOhlc(self,symbol,sinasymbol,googsymbol,googexg):
-        start = timer()        
+    def getOhlc(self,symbol,sinasymbol,googsymbol,googexg):   
         self.ohlcid += 1
-        print "loading from cache ",self.ohlcid, symbol  
+        if (self.params.verbose > 1): 
+            start = timer()
+            s = "loading from cache %d %s." % (self.ohlcid, symbol)
+            sys.stdout.write(s)      
+
+        #print "loading from cache ",self.ohlcid, symbol  
+        
         ohlc = self.loadOhlc(symbol)
         if ohlc.empty:
             print symbol," marketdata is not in cache, skip it"
             return None
-        end = timer()  
-        print "\ttime",round(end - start,3)
+        if (self.params.verbose > 1):             
+            end = timer()  
+            print "\ttime",round(end - start,3)
+            
         return ohlc
 
     
@@ -130,7 +133,10 @@ class ms_feed:
     # TODO, if time range is null then load all  
     def loadOhlc(self,symbol):
         filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
-        print "loading",filename
+        if (self.params.verbose > 1): 
+            sys.stdout.write(filename) 
+            #print "loading",filename
+
         try:
             ohlc = pandas.read_csv(filename,index_col=['Date'])
         except:

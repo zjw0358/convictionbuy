@@ -1,5 +1,4 @@
-import marketscan
-import ms_feed
+import traceback
 import ms_config
 import sys
 import getopt
@@ -23,7 +22,7 @@ class CbDaemon:
         self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg")
         self.datacfg = ms_config.MsDataCfg("")
         #self.scaner = marketscan.MarketScan()
-        self.feeder = ms_feed.ms_feed()
+        #self.feeder = ms_feed.ms_feed()
         self.cmdlst = OrderedDict()
         #self.modulelst = {'marketscan.py':self.scaner,'ms_feed.py':self.feeder}
         self.moduledct = {}
@@ -31,11 +30,18 @@ class CbDaemon:
         self.report = cb_report.CbReport()
         self.loadConfig()
         self.typelst = ["download","load",""]
+        self.globalsetting = ""
+        #self.setting = {'verbose':'0','timer':'1'}
+        #for key in self.setting:
+        #    self.setting[key] = self.datacfg.getDataConfig(key,self.setting[key])
+            
         self.internalcmd = {'list':(self.listCmd,"list task"),
         'help':(self.help,"help"),
         'exit':(self.exit,'exit program'),
         'runtype':(self.runtype,"run tasks by type"),
-        'reload':(self.reload,'reload config')}
+        'reload':(self.reload,'reload config'),
+        'config':(self.config,'config running parameter')}
+        
         pass
         
     def parseOption(self):
@@ -53,10 +59,35 @@ class CbDaemon:
                 #self.windows = True
                 self.report.initFont()
         if (self.interactive):
-            print "Interactive Mode..."     
+            print "Interactive Mode..."    
 
         pass
 
+    def config(self, args=""):
+        self.globalsetting = " " + args
+        print "global setting", self.globalsetting
+        '''
+        flag = False
+        allsetting = args.split(',')
+        for pair in allsetting:
+            #print pair
+            token = pair.split('=')
+            if len(token)==2:
+                key = token[0].strip()
+                value = token[1].strip()
+                #print key,value
+                if (key in self.setting):
+                    self.setting[key] = value                    
+                    flag = True
+            pass
+            
+        for key in self.setting:
+            print key,"=",self.setting[key]
+            #if (flag):
+            #    self.datacfg.saveDataConfig(key,self.setting[key])        
+        '''
+        pass
+        
     def reload(self):
         self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg")
         self.cmdlst.clear()
@@ -97,20 +128,31 @@ class CbDaemon:
         pass
         
     def runCmd(self,cmd):
-        #try:
+        try:
         #module = self.modulelst[cmd.modulestr]
-        if (cmd.modulestr not in self.moduledct):
-            module_meta = __import__(cmd.modulestr, globals(), locals(), [cmd.modulestr])
-            c = getattr(module_meta, cmd.modulestr) 
-            module = c() # construct module
-            self.moduledct[cmd.modulestr] = module
-        else:
-            module = self.moduledct[cmd.modulestr]
-        ptrfunc = getattr(module,cmd.funcstr) 
-    #except:
-        #    print cmd.modulestr,"Not a valid func",cmd.funcstr
-        #    return
-        ret=ptrfunc(cmd.paramstr)
+            if (cmd.modulestr not in self.moduledct):
+                module_meta = __import__(cmd.modulestr, globals(), locals(), [cmd.modulestr])
+                c = getattr(module_meta, cmd.modulestr) 
+                module = c() # construct module
+                self.moduledct[cmd.modulestr] = module
+            else:
+                module = self.moduledct[cmd.modulestr]
+            
+            ptrfunc = getattr(module,cmd.funcstr) 
+        except:
+            print cmd.modulestr,"Not a valid func",cmd.funcstr
+            return
+            
+        print "Running",cmd.title
+        arg = cmd.paramstr + self.globalsetting
+        
+        try:
+            ret=ptrfunc(arg)
+        except Exception as err:
+            #traceback.print_tb(err.__traceback__)
+            print(traceback.format_exc())
+            sys.exit()
+        
 
         #if (cmd.retstr=='table'):
         #    pass

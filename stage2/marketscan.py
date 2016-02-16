@@ -6,7 +6,6 @@ import datetime
 import sys
 import os
 from timeit import default_timer as timer
-#sys.path.insert(0, "../strategies/")
 
 
 import pandas.io.data as web
@@ -26,7 +25,7 @@ from collections import OrderedDict
 
 
 
-class MarketScan:
+class marketscan:
     class RawData:
         def __init__(self):
             print "raw data init"
@@ -54,6 +53,7 @@ class MarketScan:
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/")  
+        #self.verbose = int(self.datacfg.getDataConfig("verbose","0"))  
         self.sgyInx={}
         self.rawData = {} #MarketScan.RawData()
         
@@ -91,7 +91,7 @@ class MarketScan:
             c = getattr(module_meta, sgy) 
             myobject = c() # construct module
             print "created strategy=",sgy
-            self.sgyInx[sgy] = myobject
+            self.sgyInx[sgy] = myobject            
             if self.params.help == True:
                 print sgy,myobject.usage()
                 
@@ -191,7 +191,7 @@ class MarketScan:
             #called by daemon
             self.parseOption(args.split())
         symboldf = self.params.getSymbolDf()
-        self.rawData[self.params.feed] = MarketScan.RawData()
+        self.rawData[self.params.feed] = marketscan.RawData()
         feedData = self.rawData[self.params.feed]
         feedData.table = symboldf 
         print "Loading task, feed=",self.params.feed
@@ -201,17 +201,9 @@ class MarketScan:
             goog = row['goog']
             googexg = row['googexg']
             sina =  row['sina']
-            '''
-            try:
-                goog = row['goog']
-                googexg = row['googexg']
-                sina =  row['sina']
-            except:
-                goog = symbol
-                googexg=""
-                sina=symbol
-            '''
+            
             ohlc = self.mfeed.getOhlc(symbol,sina,goog,googexg)
+            
             if (ohlc is None):
                 print symbol,"doesn't have ohlc data"
                 continue
@@ -244,7 +236,14 @@ class MarketScan:
     ''' 
     def debug(self):
         pass
-        
+
+    def scanTask0(self,args=""):        
+        try:
+            self._scanTask(args)
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            pass
+
     #support one arg only
     def scanTask(self,args=""):
         if (args!=""): #called by daemon
@@ -294,22 +293,16 @@ class MarketScan:
             feedData.table = pandas.merge(feedData.table,df1,how='outer')
             table = pandas.merge(feedData.table,df1,how='inner') #create new table
             print table
-            #print "============================"
-            #print table
-            #print type(table),id(table)
-            #print type(feedData.table),id(feedData.table)
-            #print self.rawData[self.params.feed].table
             return table
             
         print "total", len(feedData.table.index),"symbols selected to run indicator/strategy"
-        #print feedData.table
-        #sys.exit()         
-        # indicator 
+        
+        
         # loop each symbol
         for index, row in feedData.table.iterrows():
             symbol = row['symbol']
             if (symbol not in tickdct):
-                print "skip",symbol
+                #print "skip",symbol
                 continue
             #ohlc = self.mfeed.getOhlc(symbol)
             if (symbol not in feedData.ohlc):
@@ -327,16 +320,19 @@ class MarketScan:
             #print ohlc['Adj Close'].iloc[-1]
             feedData.table.loc[index,'px'] = round(ohlc['Adj Close'].iloc[-1],2)
                         
-            start = timer()
+
             
-            #print self.sgyInx
-            print "processing",symbol
+            if (self.params.verbose > 1): 
+                start = timer()
+                print "processing",symbol
+                
             for sgyname in self.sgyInx:                    
                 sgysymbol = self.getStrategyCache(feedData, symbol, sgyname)
                 if not sgysymbol: 
                     sgx = self.sgyInx[sgyname]                    
                     if (sgx.needPriceData()):
-                        print "\t",sgyname
+                        if (self.params.verbose > 1): 
+                            print "\t",sgyname
                         sgx.cleanup()
                         sgx.setupParam(self.params.sgyparam[sgyname])
                         sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
@@ -349,30 +345,27 @@ class MarketScan:
                     #indarr = sgysymbol  
                     pass # do noting                      
 
-                
 
-                if (self.params.verbose):
-                    print ohlc                   
-                
+                if (self.params.verbose > 0):
+                    print ohlc
+
                 
                 # if backtest...
                 if (self.params.hasBackTest):
                     self.backtest.runBackTest(symbol,ohlc)
                     pass
             
-            end = timer()  
-            print "\ttime",round(end - start,3)     
+            if (self.params.verbose > 1): 
+                end = timer()  
+                print "\ttime",round(end - start,3)     
         
 
         #filter work
         #table=feedData.table[(feedData.table['symbol'].isin(df1['symbol']))]
         #merge here -- because there is no only NoPriceModule.
         table = pandas.merge(feedData.table,df1,how='inner')
-        #print table
-        #print "================="
-        #print feedData.table
-        #sys.exit()
         print "=== screening ===="
+        
         #outputCol = OrderedDict({'symbol':1,'px':1})
         #outputCol = ['symbol','px']
         
@@ -449,140 +442,7 @@ class MarketScan:
                 print "Not found"        
         pass
           
-    def procMarketData(self):
-        if self.params.tickdf.empty:
-            print "loading from symbolfile..."
-            #df = self.loadSymbolLstFile(self.params.symbolLstFile) move to mtd
-            df = self.mtd.loadSymbolLstFile(self.params.symbolLstFile)
-            df1 = self.mtd.getSymbolByPid(df,self.params.pid)[['symbol']]
-            ticklist = df1['symbol']
-        else:
-            print "using ticklist from command line..."            
-            df1 = self.params.tickdf            
-            #ticklist = self.ticklist     
-        
-        #load prescan module
-        noPxModule = True
-        for sgyname in self.sgyInx:
-            sgx = self.sgyInx[sgyname]
-            if sgx.needPriceData()==False:
-                print "total", len(df1.index),"symbols selected to be processed by",sgyname
-                tblout = sgx.process(df1,self.params.sgyparam[sgyname])
-                #merge tblout & df1
-                df1 = pandas.merge(tblout,df1,how='inner')
-            else:
-                noPxModule = False
-                        
-        #TODO not add index
-        #self.addSP500(df1)
-                    
-        print "==================================================="
-        if (noPxModule):
-            #save raw csv file        
-            self.saveTableFile(df1,"raw")
-            print df1
-            return df1
-
-        print "total", len(df1.index),"symbols selected to run indicator/strategy"
-        '''
-        allow to download data even that no price module
-        if self.hasPriceDataModule()==False and self.params.haschart==False:
-            self.saveTableFile(df1,"raw")
-            print df1
-            print "No more pricedata module to be processed, exit..."
-            return
-        '''
-        
-        # process pricedata module 
-        table = self.runIndicator(df1)
-
-        #save raw csv file        
-        self.saveTableFile(table,"raw")
-        print table
-        
-        #filter work
-        print "=== screening ===="
-        outputCol = OrderedDict({'symbol':1,'px':1})
-        #outputCol = ['symbol','px']
-        for sgyname in self.sgyInx:
-            sgx = self.sgyInx[sgyname]
-            #if sgx.needPriceData()==True: allow ms_zack to run scan
-            print "screening ",sgyname
-            sgx = self.sgyInx[sgyname]
-            table,cls = sgx.runScan(table)
-            #outputCol.append(cls)
-            for key in cls:
-                outputCol[key] = 1#.append(key)#[key]=1
-    
-        #colLst = table.columns.values
-        #print "output column list",outputCol
-        table = table[outputCol.keys()]
-        # daily report file
-        of = self.datacfg.getDataConfig("output_report")
-
-        with open(of, "a") as reportfile:
-            print >>reportfile, "\n\n==== ",self.getSaveFileName()," =====\n"
-            print >>reportfile, table.to_string(index=False)
-        
-        #get columne we need only!    
-
-        print table          
-        
-        #save filted csv file
-        self.saveTableFile(table)
-        # trigger csv chart
-        if self.params.haschart:
-            print "=== csv chart ==="
-            self.csvchart.drawChart(table,self.chartparam)
-        return table     
-       
-    def runIndicator(self, table):
-        #TODO if no post-module, should return immediately
-        numError = 0
-        id = 0
-        self.mfeed.initOption(self.params)
-        
-        for index, row in table.iterrows():
-            symbol = row['symbol']
-            #print "downloading ",id, symbol
-            id+=1            
-            ohlc = self.mfeed.getOhlc(symbol)
-            if (ohlc is None):
-                continue
-            #add 'px' column
-            #print "intc",ohlc['Adj Close']
-            table.loc[index,'px'] = round(ohlc['Adj Close'][-1],2)
-            start = timer()
-            print "processing",symbol
-            #print self.sgyInx
-            for sgyname in self.sgyInx:
-                #if not sgyname in self.sgyInfo:
-                sgx = self.sgyInx[sgyname]
-                #if sgx.needPriceData()==True:
-                sgx.cleanup()
-                sgx.setupParam(self.params.sgyparam[sgyname])
-                sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
-                if (self.params.verbose):
-                    print ohlc
-                #TODO if backtest skip this?
-                #strategy should only return 1 buy signal column
-                indarr = sgx.getIndicators()
-                for cn in indarr:
-                    table.loc[index,cn] = indarr[cn]
-                
-                # if backtest...
-                if (self.params.hasBackTest):
-                    self.backtest.runBackTest(symbol,ohlc)
-                    pass
-            end = timer()  
-            print "\ttime",round(end - start,3)
-        if (self.params.hasBackTest):
-            backtestDf = self.backtest.getBackTestResult()
-            print "========================="
-            print backtestDf
-            print "========================="
-            self.saveExcelFile(backtestDf,self.getSaveFileName(),1) #offset=1
-        return table
+   
    
 
     def process(self, args=""):
@@ -594,7 +454,7 @@ class MarketScan:
         #return self.procMarketData()
         
 if __name__ == "__main__":
-    obj = MarketScan()
+    obj = marketscan()
     obj.standalone()
     
  

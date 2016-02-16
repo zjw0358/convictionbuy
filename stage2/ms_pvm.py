@@ -40,57 +40,6 @@ class ms_pvm(BaseIndNoPx):
         #self.mtd = marketdata.MarketData()
         return        
 
-    
-
-    
-     
-        
-    #main routine       
-    def process0(self,tablein,param):
-        self.setupParam(param)
-        download = 0  #default = download
-        ticklist = tablein['symbol']
-        #extract 'download' option
-        param1={}
-        for op in param:
-            if op == 'download':
-                download = 1
-            else:
-                param1[op]=""
-                
-        if (download == 1):
-            df = self.downloadData(ticklist)            
-        else:
-            df = self.loadData(self.pvmfile)                    
-
-        if df.empty:
-            print "error happened, unable to process ms_pvm, return original table"
-            return tablein
-            
-        col = ['symbol'] # df.columns.values  #
-        # the output would be symbol + column in criteria
-        df,cols = self.mtd.evalCriteria(df,param1,col)        
-        #df1 = df[df['symbol'].isin(ticklist)]
-        #merge df1 & tablein
-        df1 = pandas.merge(tablein,df,how='inner')
-        return df1
-
-    # move to marketdata later   
-    def main(self):
-        params = ms_paramparser.ms_paramparser()
-        params.parseOption(sys.argv[1:])
-        if (params.tickdf.empty):
-            df = self.mtd.loadSymbolLstFile(params.symbolLstFile)
-            df = self.mtd.getSymbolByPid(df,params.pid)[['symbol']]
-        else:
-            df = params.tickdf
-        if (not 'ms_pvm' in params.sgyparam):
-            args = dict((k,'') for k in self.columns)
-        else:
-            args = params.sgyparam['ms_pvm']
-        df = self.process(df,args)
-        print df
-        pass  
 #------------------------------------------------------------------------
     def _adjustDividendDate(self,oridatestr):
         try:

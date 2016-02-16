@@ -36,6 +36,8 @@ class BaseIndNoPx(object):
         self.param = param
         if ('debug' in param):
             self.debug = True
+        if ('verbose' in param):
+            self.verbose = param['verbose']
         return
 
     def runIndicator(self,symbol,ohlc,param={}):
