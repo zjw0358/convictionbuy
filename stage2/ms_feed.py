@@ -17,7 +17,7 @@ class ms_feed:
         self.sinaapi = SinaMarketData()
         self.yahoofeed = FeederYahoo()
         self.googfeed = FeederGoogle()
-        print "ms_feed initOption"
+        #print "ms_feed initOption"
         self.datacfg = ms_config.MsDataCfg("")
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/") 
         pass
@@ -75,7 +75,8 @@ class ms_feed:
             sina =  row['sina']            
             ohlc = self._downloadOhlc(symbol,sina,goog,googexg)  
             #if (ohlc is None):
-            #    continue            
+        #if (self.params.verbose>1):
+        #    print table
         return table
         pass        
 
@@ -83,6 +84,8 @@ class ms_feed:
     # split it
     # TODO should be savemd by default
     def download(self, argstr=""):
+        sys.stdout.write("download")
+        start = timer()
         if (argstr==""):
             args = sys.argv[1:]
         else:
@@ -92,6 +95,8 @@ class ms_feed:
         self.initOption(params)
         df1 = params.getSymbolDf()
         self._downloadAll(df1)
+        end = timer()
+        print "finished with time",round(end - start,3)
  
     def getOhlc(self,symbol,sinasymbol,googsymbol,googexg):   
         self.ohlcid += 1

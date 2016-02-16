@@ -33,7 +33,7 @@ class ms_paramparser:
         pass
     #params = array(split)
     def parseOption(self, params):
-        print "paramater:",params
+        #print "paramater:",params
         self.initParams()
                 
         try:
@@ -42,7 +42,7 @@ class ms_paramparser:
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
-        print "list",opts
+        print "%-20s:%-50s" % ("parameter dict",opts)
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.symbolLstFile = arg
@@ -92,19 +92,19 @@ class ms_paramparser:
         if self.help == True:
             sys.exit()
 
-        print "use ", self.symbolLstFile
-        print "start date", self.startdate
-        print "end date", self.enddate
-        print "portfolio id mask ",self.pid
-        print "use chart",self.haschart
+        print "%-20s: %-50s" % ("use", self.symbolLstFile)
+        print "%-20s: %-50s" % ("start date", self.startdate)
+        print "%-20s: %-50s" % ("end date", self.enddate)
+        print "%-20s: %-50s" % ("portfolio id mask ",self.pid)
+        print "%-20s: %-50s" % ("use chart",self.haschart)
         if (self.haschart):
-            print "chart param",self.chartparam
-        print "load marketdata", self.loadmd
-        print "save marketdata", self.savemd
-        print "backtest", self.hasBackTest
-        print "feeder", self.feed
-        print "verbose", self.verbose
-        print "=========================="
+            print "%-20s: %-50s" % ("chart param",self.chartparam)
+        print "%-20s: %-50s" % ("load marketdata", self.loadmd)
+        print "%-20s: %-50s" % ("save marketdata", self.savemd)
+        print "%-20s: %-50s" % ("backtest", self.hasBackTest)
+        print "%-20s: %-50s" % ("feeder", self.feed)
+        print "%-20s: %-50s" % ("verbose", self.verbose)
+        print "...................."
         
         #if ("sina" in self.feed):
         #    self.sinaapi = SinaMarketData()
@@ -134,10 +134,12 @@ class ms_paramparser:
 
     def getSymbolDf(self):
         if self.tickdf.empty:
-            print "loading from symbolfile..."
+            if (self.verbose>0):
+                print "loading from symbolfile..."
             df = self.mtd.loadSymbolLstFile(self.symbolLstFile)
             df = self.mtd.getSymbolByPid(df,self.pid)[['symbol','sina','goog','googexg']]
         else:
-            print "using ticklist from command line..."            
+            if (self.verbose>0):
+                print "using ticklist from command line..."            
             df = self.tickdf  
         return df

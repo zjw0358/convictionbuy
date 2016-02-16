@@ -143,7 +143,7 @@ class CbDaemon:
             print cmd.modulestr,"Not a valid func",cmd.funcstr
             return
             
-        print "Running",cmd.title
+        print "\nRunning[",cmd.title,"]"
         arg = cmd.paramstr + self.globalsetting
         
         try:

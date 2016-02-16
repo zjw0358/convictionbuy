@@ -28,7 +28,7 @@ from collections import OrderedDict
 class marketscan:
     class RawData:
         def __init__(self):
-            print "raw data init"
+            #print "raw data init"
             self.ohlc = {}
             self.table = {}
             self.strategy = {}
@@ -194,7 +194,7 @@ class marketscan:
         self.rawData[self.params.feed] = marketscan.RawData()
         feedData = self.rawData[self.params.feed]
         feedData.table = symboldf 
-        print "Loading task, feed=",self.params.feed
+        sys.stdout.write("loadDataTask")
         start = timer()
         for index, row in symboldf.iterrows():
             symbol = row['symbol']
@@ -211,7 +211,7 @@ class marketscan:
 
        
         end = timer()  
-        print "\ttime",round(end - start,3)        
+        print " finished with time",round(end - start,3)        
         return feedData 
     
     def getStrategyCache(self,feedData, symbol,sgyname):
@@ -365,11 +365,12 @@ class marketscan:
         #merge here -- because there is no only NoPriceModule.
         table = pandas.merge(feedData.table,df1,how='inner')
         print "=== screening ===="
-        
+        #print self.params.sgyparam
         #outputCol = OrderedDict({'symbol':1,'px':1})
         #outputCol = ['symbol','px']
         
-        for sgyname in self.sgyInx:
+        #for sgyname in self.sgyInx:
+        for sgyname in self.params.sgyparam:
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==True: #allow ms_zack to run scan
                 print "screening ",sgyname
@@ -395,7 +396,9 @@ class marketscan:
         
         #get columne we need only!    
 
-        print table          
+        print table
+        print "...................."
+        print len(table),"/",len(feedData.table.index),"=",round(len(table)*100.0/len(feedData.table.index),2),"%"
         
         #save filted csv file
         self.saveTableFile(table)

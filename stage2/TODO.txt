@@ -42,6 +42,7 @@ TOP task
 
 策略-
 加入dividend .. done
+BABA 16/1/28 高开后放量跌破1H，要等待1H支撑，支撑有效
 验证上面的策略
 
 daemon-
