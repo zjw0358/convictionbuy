@@ -13,6 +13,7 @@ import sys
 import datetime
 import marketdata
 import ms_config
+import ms_paramparser
 from timeit import default_timer as timer
         
 from bs4 import BeautifulSoup
@@ -28,70 +29,35 @@ class data_zacks:
         #self.rankPattern = '[\d\D]*Zacks[\D]*Rank[/s]*: (.)[\d\D]*'
 
         self.rankPattern = '[\d\D]*Zacks[\D]*Rank[\s]?: (.)[\d\D]*'
-        self.erdPattern = '^window.app_data_earnings[\d\D]*\\"data\\"[ :\\[]*(.*)]'
+        
+        #self.erdPattern = '^window.app_data_earnings[\d\D]*\\"data\\"[ :\\[]*(.*)]'         #format change
+        self.erdPattern = '[\d\D]*var obj = [\d\D]*earnings_announcements_earnings_table[\D]*:([\d\D]*?)]  ][\d\D]*'
         self.cqestCol = ['cq0','cq7','cq30','cq60','cq90']
-        self.erdonly = False
         self.columns = ['rank','indurank','indutotal','etf','abrt','abr1w','abr1m','abr2m',\
             'abr3m','numbr'] + self.cqestCol
         self.allcols = ['symbol','exg'] + self.columns
-        self.pid = 0
 
-        self.option = ""
-        self.tickdf = pandas.DataFrame()            
+        #self.pid = 0
+        #self.option = ""
+        #self.tickdf = pandas.DataFrame()            
+        
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg("")  # default = datafile, cb_config.cfg
         self.mkdataFile=self.cfg.getDataConfig("marketdata") #"./marketdata.csv"
-        self.cachefolder = self.cfg.getDataConfig("folder","../cache/")
-        self.outputfn = self.cachefolder + "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'         
+        self.cachefolder = self.cfg.getDataConfig("cache","../cache/")
+        self.appfolder = self.cfg.getDataConfig("folder","./appdata/")
+        self.outputfn = self.appfolder + "msdata_zack_" + datetime.datetime.now().strftime("%Y-%m-%d") + '.csv'         
 
-    def parseOption(self):
-        self.ticklist=[]
-        try:
-            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:h", ["filename", "ticklist","zackfile","pid","merge","erd"])
-        except getopt.GetoptError:
-            print "parameter error"
-            sys.exit()
-        for opt, arg in opts:
-            if opt in ("-f", "--filename"):
-                self.mkdataFile = arg
-            #elif opt in ("-t", "--start"):
-            #    self.starttick = arg
-            elif opt in ("-t","--ticklist"):
-                tdict = self.mtd.parseTickLst(arg)
-                #print tdict
-                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
-                for co in self.columns:
-                    self.tickdf[co]=""
-                #print self.tickdf
-            elif opt in ("-r","--zackfile"):
-                self.zackfile = arg
-            elif opt in ("-i","--pid"):
-                idLst = arg.split(",")
-                self.pid = self.mtd.parsePidLst(idLst)
-            elif opt in ("-h"):
-                self.usage()
-                sys.exit()
-            elif opt in ("--merge"):
-                self.option = "merge" #merge zackfile with others in symbolfile
-            elif opt in ("--erd"):
-                self.erdonly = True                
-        print "symbolfile=",self.mkdataFile
-        print "ticklist==="
-        if not self.tickdf.empty:
-            print self.tickdf
-        #print "zackfile=",self.zackfile
-        return
-        
-    def usage(self):
-        print "run zack_data.py -t aapl " #update aapl only
-        print "run zack_data.py -r zackfile -t aapl --merge" #merge with zackfile
-        print "run zack_data.py -i 1,2,3 "
 
-    def parseJson(self,content):
+         
+    
+    def parseJson0(self,content):
         #remove \"
-        #content = re.sub("\\", 'abcd', content)
-        content = '['+content.replace('\\\"', '')+']'
-        #print content        
+        #content = re.sub("\\", 'abcd', content)        
+        #replace \" with empty
+        #content = '['+content.replace('\\\"', '')+']'
+        content = content.replace('\\\"', '')
+        print content
         outer = json.loads(content)
         erlst=[]
         if (len(outer)>0):
@@ -100,9 +66,24 @@ class data_zacks:
                     erlst.append(outer[idx]['Date'])
 
         return erlst
+
+    def _parseJson(self,content):
+        #replace \" with empty
+        #content = '['+content.replace('\\\"', '')+']'
+        content = content.replace('\\\"', '')+'] ]'
+        #print content
+        outer = json.loads(content)
+        erlst=[]
+        if (len(outer)>0):
+            for idx in range(0,len(outer)):
+                erlst.append(outer[idx][0])
+
+        return erlst
         
     #get earning date
     def getERD(self,symbol):
+        if (self.params.verbose>0):
+            start = timer()
         url = "http://www.zacks.com/stock/research/"+symbol+"/earnings-announcements"
         page =urllib2.urlopen(url)
         soup = BeautifulSoup(page.read(),"html.parser")
@@ -111,18 +92,25 @@ class data_zacks:
             txt = item.string
             if txt==None:
                 continue
-            '''else:
-                print index,"=",txt'''
+            #else:
+            #    print index,"=",txt
             an = re.match(self.erdPattern,txt)
             if an!=None:
                 str1=an.group(1)
                 #print str1
-                erlst = self.parseJson(str1)
+                erlst = self._parseJson(str1)
                 if (len(erlst)!=0):
                     self.saveErdFile(symbol,erlst)
+                    if (self.params.verbose>0):
+                        end = timer()
+                        print "\tget earning date",round(end-start,3)
                     return
 
-        print "\tEarning date not found"    
+        print "\t",symbol,"Earning date not found" 
+        if (self.params.verbose>0):
+            end = timer()
+            print "\twaste time",round(end-start,3)
+
         return
      
     def saveErdFile(self,symbol,erlst):
@@ -232,7 +220,8 @@ class data_zacks:
         
     #first try             
     def getEstimate(self, symbol):
-        start = timer()
+        if (self.params.verbose>0):
+            start = timer()
         self.isEtf = False #reset
         url = "http://www.zacks.com/stock/quote/" + symbol + "/detailed-estimates"
         try:
@@ -240,9 +229,12 @@ class data_zacks:
         except:
             print "unable to get",symbol,"estimate,skip"
             return None
-        end = timer()
-        print "\tget estimate data",(end-start)
-        start = timer()
+            
+        if (self.params.verbose>0):
+            end = timer()
+            print "\tget estimate data",round((end-start),3)
+            start = timer()            
+
         soup = BeautifulSoup(page)
         epsEstmDct = {}
         isetf = self.parseETF(soup)        
@@ -279,8 +271,9 @@ class data_zacks:
             if idx < tdlen:
                 epsEstmDct[self.cqestCol[idx]] = tdLst[idx].string
         '''
-        end = timer()
-        print "\tparse estimate data",(end-start)
+        if (self.params.verbose>0):
+            end = timer()
+            print "\tparse estimate data",round((end-start),3)
 
         return epsEstmDct
     
@@ -303,12 +296,15 @@ class data_zacks:
             dct.update(estdct)        
         else:
             return None #not proceding further
-        start = timer()
+        if (self.params.verbose>0):
+            start = timer()
+            
         abrdct = self.getBrokerRecom(symbol)
         if abrdct!=None:
             dct.update(abrdct)
-        end = timer()    
-        print "\tbroker recom",(end-start)             
+        if (self.params.verbose>0):
+            end = timer()    
+            print "\tbroker recom",round((end-start),3)
 
         return dct
   
@@ -352,10 +348,137 @@ class data_zacks:
             missLst.append("Current ABR")
             
         if len(missLst)>0:
-            print "Missing list:",missLst            
-    
+            print "Missing list:",missLst
+                        
+        
+    def download(self, argstr=""):
+        sys.stdout.write("download ms_feed")
+        start = timer()        
+        if (argstr==""):
+            args = sys.argv[1:]
+        else:
+            args= argstr.split()
+        self.params = ms_paramparser.ms_paramparser()
+        self.params.parseOption(args) 
+        df = self.params.getSymbolDf()
+        self._downloadData(df)
+        end = timer()
+        print "finished with time",round(end - start,3)
+        
+    def _downloadData(self, dfup):
+        lenticklst = len(dfup.index)  
+        allLst = {}
+        allCol = self.allcols
+        for key in allCol:
+            lst = []
+            allLst[key] = lst
+
+        if (self.params.verbose>0):
+            print "total",lenticklst,"ticks to be updated"
       
-    def updateData(self):     
+             
+        idx = 0
+        for index, row in dfup.iterrows():
+            if (self.params.verbose>0):
+                print "downloading ",idx,row['symbol']
+                
+            idx += 1
+            self.getERD(row['symbol'])
+            
+            #if (self.erdonly):
+            #    continue 
+                
+            rowdct = self.getZackData(row['symbol'])
+            if rowdct==None:
+                continue
+                
+            #line = row['symbol'] + ',' + row['exg']
+            line = ""
+            rowdct['symbol'] = row['symbol']
+            #rowdct['exg'] = row['exg']
+            if (len(rowdct)==1):
+                print "No zack information",row['symbol']
+
+            self.verifyCol(rowdct)  
+            for key in self.allcols:
+                lst = allLst[key]
+                if key in rowdct:
+                    lst.append(rowdct[key])
+                    line = line + rowdct[key] + ","
+                else:
+                    lst.append("")   
+                    line = line + "" + ","                    
+
+        if (self.erdonly):
+            if (self.params.verbose>0):
+                print "ERD download complete"
+            return
+            
+       
+        #delete bak file?        
+        mf = pandas.DataFrame(allLst,columns = allCol)        
+        if (self.params.verbose>0):
+            print mf
+        mf.to_csv(self.outputfn,sep=',',index=False)
+        
+        #update dataconfig
+        self.cfg.saveDataConfig("zack",self.outputfn)              
+        pass       
+################################################################################        
+# main routine
+################################################################################            
+if __name__ == "__main__":
+    obj = data_zacks()
+    obj.download()
+    #obj.getERD('BBL')    
+    
+'''
+    def parseOption0(self):
+        self.ticklist=[]
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "f:t:r:i:h", ["filename", "ticklist","zackfile","pid","merge","erd"])
+        except getopt.GetoptError:
+            print "parameter error"
+            sys.exit()
+        for opt, arg in opts:
+            if opt in ("-f", "--filename"):
+                self.mkdataFile = arg
+            #elif opt in ("-t", "--start"):
+            #    self.starttick = arg
+            elif opt in ("-t","--ticklist"):
+                tdict = self.mtd.parseTickLst(arg)
+                #print tdict
+                self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
+                for co in self.columns:
+                    self.tickdf[co]=""
+                #print self.tickdf
+            elif opt in ("-r","--zackfile"):
+                self.zackfile = arg
+            elif opt in ("-i","--pid"):
+                idLst = arg.split(",")
+                self.pid = self.mtd.parsePidLst(idLst)
+            elif opt in ("-h"):
+                self.usage()
+                sys.exit()
+            elif opt in ("--merge"):
+                self.option = "merge" #merge zackfile with others in symbolfile
+            elif opt in ("--erd"):
+                self.erdonly = True                
+        print "symbolfile=",self.mkdataFile
+        print "ticklist==="
+        if not self.tickdf.empty:
+            print self.tickdf
+        #print "zackfile=",self.zackfile
+        return
+        
+    def usage(self):
+        print "run zack_data.py -t aapl " #update aapl only
+        print "run zack_data.py -r zackfile -t aapl --merge" #merge with zackfile
+        print "run zack_data.py -i 1,2,3 "
+
+  
+      
+    def updateData0(self):     
         print "Loading marketdata file",self.mkdataFile
         symbolTable = self.mtd.loadSymbolLstFile(self.mkdataFile)
         df = symbolTable[symbolTable['rank']>0]
@@ -449,15 +572,5 @@ class data_zacks:
         self.parseOption()
         self.updateData()
         print "Done,exit..."
-  
-        
-################################################################################        
-# main routine
-################################################################################            
-if __name__ == "__main__":
-    obj = zack_data()
-    obj.process()
-    #obj.getERD('BBL')    
-    
-
-
+'''  
+#---------------------------------------------

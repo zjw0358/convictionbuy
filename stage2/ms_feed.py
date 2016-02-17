@@ -84,7 +84,7 @@ class ms_feed:
     # split it
     # TODO should be savemd by default
     def download(self, argstr=""):
-        sys.stdout.write("download")
+        sys.stdout.write("download ms_feed")
         start = timer()
         if (argstr==""):
             args = sys.argv[1:]
