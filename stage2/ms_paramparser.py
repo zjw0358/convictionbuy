@@ -119,7 +119,7 @@ class ms_paramparser:
                     l_sgy[token] = param #first one is strategy
                 else:
                     print "debug_test",token
-                    if (token[0]!='@'): #we don't split by = if we see @,because @ is a metadata
+                    if (token[0]!='@'): #we don't split by = if we see @,because @ is a metadata,e.g. @colname=4
                         k= token.split('=')
                         if (len(k)>1):
                             param[k[0]] = k[1]

@@ -43,17 +43,28 @@ TOP task
 策略-
 加入dividend .. done
 BABA 16/1/28 高开后放量跌破1H，要等待1H支撑，支撑有效
+vol突破ma10,close>open
 验证上面的策略
 
 daemon-
 -v 和 -vv输出更多信息 .. done
 reload daemon.cfg  .. done
 log 写入到dailyreport
+reset strategy,重新计算所有策略
+
 
 ms-
 使用整个-g作为buy signal(即组合指标)
 pvm数据很滞后..自行计算new dividend date .. done
-
+goog15m 是否实时,单独下载RHT得到空白文件
+重新下载数据后必须重新计算table
+支持组合任务
+1hbuydmima50 no ear data?px没更新
+ma50 计算结果延时太大(1h/15m)
+download1h -t FEYE —feed goog1h?
+1H 数据会变化的，需要load1h执行scan
+download1h->load1h->ohlc -t WMT —feed goog1h
+15m突破ma50 较有效
 
 动态执行命令-
 动态测试任意策略

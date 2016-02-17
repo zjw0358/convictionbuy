@@ -20,8 +20,8 @@ class st_sma(ind_ma):
         else:
             self.nbar = 2
             
-        if 'volra' in param:
-            self.volra = int(param['volra'])
+        if 'volra' in param:            
+            self.volra = float(param['volra'])
         else:
             self.volra = 2
             

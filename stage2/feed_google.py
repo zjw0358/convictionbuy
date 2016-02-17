@@ -78,12 +78,12 @@ class FeederGoogle:
                         continue
 
                 dateLst.append(idx)
-                closeLst.append(float(row[3]))
+                closeLst.append(float(row[0]))
                 highLst.append(float(row[1]))
                 lowLst.append(float(row[2]))
-                openLst.append(float(row[0]))
+                openLst.append(float(row[3]))
                 volumeLst.append(int(row[4]))
-                adjCloseLst.append(float(row[3]))
+                adjCloseLst.append(float(row[0]))
                 idx += 1
         except:
             print "error when reading google data, exit..."
