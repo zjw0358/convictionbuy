@@ -124,7 +124,8 @@ class CbDaemon:
         #print "listCmd"
         for command in self.cmdlst:
             cmd = self.cmdlst[command]
-            print command,"\t - ",cmd.descstr
+            s = "%-20s - %-50s" % (command,cmd.descstr)
+            print s
         pass
         
     def runCmd(self,cmd):

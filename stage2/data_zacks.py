@@ -191,7 +191,7 @@ class data_zacks:
             abr[key] = tdLst[idAbrLst[key]].string
         #industry rank by abr
         irba = soup.find("td",attrs={'class':"alpha"},text="Industry Rank by ABR") 
-        irbatxt = irba.nextSibling.nextSibling.string
+        irbatxt = irba.nextSibling.nextSibling.string  #possibly return None
         pattern = "([\d]+)[\s]*of[\s]*([\d]+)"
         an = re.match(pattern,irbatxt)
         indurank = ""
@@ -352,7 +352,7 @@ class data_zacks:
                         
         
     def download(self, argstr=""):
-        sys.stdout.write("download ms_feed")
+        print ("download zack data")
         start = timer()        
         if (argstr==""):
             args = sys.argv[1:]
@@ -378,9 +378,8 @@ class data_zacks:
       
              
         idx = 0
-        for index, row in dfup.iterrows():
-            if (self.params.verbose>0):
-                print "downloading ",idx,row['symbol']
+        for index, row in dfup.iterrows():            
+            print "downloading ",idx,row['symbol']
                 
             idx += 1
             self.getERD(row['symbol'])
@@ -409,10 +408,10 @@ class data_zacks:
                     lst.append("")   
                     line = line + "" + ","                    
 
-        if (self.erdonly):
-            if (self.params.verbose>0):
-                print "ERD download complete"
-            return
+        #if (self.erdonly):
+        #    if (self.params.verbose>0):
+        #        print "ERD download complete"
+        #    return
             
        
         #delete bak file?        

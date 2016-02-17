@@ -21,11 +21,16 @@ class ind_ma(BaseIndPx):
         self.ma50=[]
         self.ma100=[]
         self.ma200=[]
+        self.volma20ra=[]
         # pandas.core.series.Series()
         if plen >= 10:
             self.ma10 = pandas.stats.moments.rolling_mean(px,10).tolist()
             self.ind['ma10'] = round(self.ma10[-1],2)
             #df['ma10']=self.ma10
+        if plen >= 20:
+            vol = df['Volume']
+            volma20 = pandas.stats.moments.rolling_mean(vol,20)
+            self.volma20ra = vol/volma20
         if plen >= 50:
             self.ma50 = pandas.stats.moments.rolling_mean(px,50).tolist()
             self.ind['ma50'] = round(self.ma50[-1],2)

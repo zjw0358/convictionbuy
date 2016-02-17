@@ -168,8 +168,9 @@ class StrategyPattern(object):
 
         return buysg,sellsg
         
-    #fast cross above slow line  - buy (and keep n bar)
-    #fast cross below slow line  - sell
+    # fast cross above slow line  - buy (and keep n bar)
+    # fast cross below slow line  - sell
+    # this is major cross pattern
     def cross(self, fast, slow, nbar = 1,offset = 0):
         prevFast = fast[0]
         prevSlow = slow[0]
@@ -232,7 +233,35 @@ class StrategyPattern(object):
             sellsg.append(sellsignal)
             
         return buysg,sellsg
-
+    
+    # Two factors cross
+    def cross2factors(self,f1,f2,slow,f2thr):
+        prevF1 = f1[0]
+        prevF2 = f2[0]
+        prevSlow = slow[0]
+        buysg = []
+        sellsg = []        
+        
+        for idx, curSlow in enumerate(slow):
+            buysignal = ""
+            sellsignal = ""
+            currentF1 = f1[idx]
+            currentF2 = f2[idx]
+            
+            if (prevF1 < prevSlow) and (currentF1 > curSlow) and (currentF2 > f2thr):                
+                buysignal = "buy"
+                    
+            if (prevF2 > prevSlow) and (currentF1 < curSlow) and (currentF2 > f2thr):                
+                sellsignal = "sell"
+                                        
+            prevF1 = currentF1
+            prevF2 = currentF2
+            prevSlow = curSlow
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)            
+        return buysg,sellsg
+        pass
+        
     #e.g rsi crossabove 30 means buy signal
     # rsi crossabove 70 means sell signal
     def crossValue(self, bline, sline, buyValue, sellValue, nbar):

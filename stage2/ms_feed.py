@@ -19,7 +19,7 @@ class ms_feed:
         self.googfeed = FeederGoogle()
         #print "ms_feed initOption"
         self.datacfg = ms_config.MsDataCfg("")
-        self.cachepath = self.datacfg.getDataConfig("folder","../cache/") 
+        self.cachepath = self.datacfg.getDataConfig("cache","../cache/") 
         pass
      
     def initOption(self, params):        
@@ -84,7 +84,7 @@ class ms_feed:
     # split it
     # TODO should be savemd by default
     def download(self, argstr=""):
-        sys.stdout.write("download ms_feed")
+        sys.stdout.write("download")
         start = timer()
         if (argstr==""):
             args = sys.argv[1:]
