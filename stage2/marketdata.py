@@ -254,7 +254,7 @@ class MarketData:
                 
                                                         
         #crstr += "(1)"
-        print "to evaluate criteria(logical) = ", crstr
+        print "\tto evaluate criteria(logical) = ", crstr
         outputcol = coldict.keys()
         filteredCols = []
         # get enable columns only list

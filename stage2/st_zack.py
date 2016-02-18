@@ -18,7 +18,7 @@ class st_zack(BaseIndNoPx):
         self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg("")
         self.zackfile = self.cfg.getDataConfig("zack")
-        self.cachefolder = self.cfg.getDataConfig("folder")
+        self.cachefolder = self.cfg.getDataConfig("cache","../cache/")
         self.hasCachedDF = False
         BaseIndNoPx.__init__(self)
         return    

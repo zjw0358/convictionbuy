@@ -27,16 +27,15 @@ class BaseIndPx(object):
         return "This is Base indicator with Price data needed"
     
     # called in marketscan.py?
-    def setupParam(self,param):
-        '''        
-        print "setup baseIndPx"
-        self.mtd = marketdata.MarketData()
-        self.param = {}
-        self.cleanup()
-        '''
+    def setupParam(self,param):        
         self.param = param
         if ('debug' in param):
             self.debug = True
+            
+        if ('verbose' in param):
+            self.verbose = int(param['verbose'])
+        else:
+            self.verbose = 0
         return
     #return df & column list    
     

@@ -40,8 +40,7 @@ class marketscan:
         pandas.set_option('display.expand_frame_repr', False) #expand wide dataframe
         pandas.set_option('display.max_rows', 1500)
         #pandas.set_option('display.width', 100)
-        #pandas.set_option('max_colwidth', 600)
-        
+        #pandas.set_option('max_colwidth', 600)        
         #pandas.set_option('display.float_format', lambda x: '%.3f' % x)
                 
         self.outputpath = "../result/"
@@ -52,8 +51,7 @@ class marketscan:
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
-        self.cachepath = self.datacfg.getDataConfig("folder","../cache/")  
-        #self.verbose = int(self.datacfg.getDataConfig("verbose","0"))  
+        self.cachepath = self.datacfg.getDataConfig("folder","../cache/")           
         self.sgyInx={}
         self.rawData = {} #MarketScan.RawData()
         
@@ -85,12 +83,12 @@ class marketscan:
         #load all strategy
         #sys.path.insert(0, "../strategies/")
         self.sgyInx = {}
-        for sgy in sgyLst:
-            print sgy
+        for sgy in sgyLst:            
             module_meta = __import__(sgy, globals(), locals(), [sgy])
             c = getattr(module_meta, sgy) 
             myobject = c() # construct module
-            print "created strategy=",sgy
+            sgyLst[sgy]['verbose'] = self.params.verbose
+            print "created strategy",sgy,sgyLst[sgy]            
             self.sgyInx[sgy] = myobject            
             if self.params.help == True:
                 print sgy,myobject.usage()
@@ -373,9 +371,9 @@ class marketscan:
         for sgyname in self.params.sgyparam:
             sgx = self.sgyInx[sgyname]
             if sgx.needPriceData()==True: #allow ms_zack to run scan
-                print "screening ",sgyname
+                #print "screening ",sgyname
                 sgx = self.sgyInx[sgyname]
-                print "screen param",self.params.sgyparam[sgyname]
+                print "screening",sgyname,self.params.sgyparam[sgyname]
                 sgx.setupParam(self.params.sgyparam[sgyname])
                 table,cls = sgx.runScan(table)
                 

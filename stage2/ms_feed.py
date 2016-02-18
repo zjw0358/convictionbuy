@@ -22,9 +22,7 @@ class ms_feed:
         self.cachepath = self.datacfg.getDataConfig("cache","../cache/") 
         pass
      
-    def initOption(self, params):        
-        #self.verbose = int(self.datacfg.getDataConfig("verbose","0")) 
-        #print "verbose=",self.verbose
+    def initOption(self, params):                
         self.params = params
         self.ohlcid = 0;   
     
