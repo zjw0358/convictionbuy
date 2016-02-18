@@ -105,9 +105,9 @@ class ms_paramparser:
         print "%-20s: %-50s" % ("feeder", self.feed)
         print "%-20s: %-50s" % ("verbose", self.verbose)
         print "...................."
+
+        return opts
         
-        #if ("sina" in self.feed):
-        #    self.sinaapi = SinaMarketData()
     def parseStrategy(self,arg):
         print "parseStrategy",arg
         l_sgy = {}

@@ -192,7 +192,7 @@ class marketscan:
         self.rawData[self.params.feed] = marketscan.RawData()
         feedData = self.rawData[self.params.feed]
         feedData.table = symboldf 
-        sys.stdout.write("loadDataTask")
+        print "loadDataTask..."
         start = timer()
         for index, row in symboldf.iterrows():
             symbol = row['symbol']
@@ -209,7 +209,7 @@ class marketscan:
 
        
         end = timer()  
-        print " finished with time",round(end - start,3)        
+        print "\tfinished with time",round(end - start,3)        
         return feedData 
     
     def getStrategyCache(self,feedData, symbol,sgyname):
@@ -422,7 +422,7 @@ class marketscan:
     def printOhlcTask(self,arg):
         #feed=""
         #symbol = arg.upper()
-        print arg
+        #print arg
         print "======================"
         self.parseOption(arg.split())
         feed = self.params.feed

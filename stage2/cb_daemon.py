@@ -6,6 +6,8 @@ from collections import OrderedDict
 import pandas
 import cb_report
 import re
+import ms_paramparser
+
 
 class CbDaemon:
     class Command:
@@ -23,6 +25,7 @@ class CbDaemon:
         self.datacfg = ms_config.MsDataCfg("")
         #self.scaner = marketscan.MarketScan()
         #self.feeder = ms_feed.ms_feed()
+        self.params = ms_paramparser.ms_paramparser()
         self.cmdlst = OrderedDict()
         #self.modulelst = {'marketscan.py':self.scaner,'ms_feed.py':self.feeder}
         self.moduledct = {}
@@ -144,7 +147,7 @@ class CbDaemon:
             print cmd.modulestr,"Not a valid func",cmd.funcstr
             return
             
-        print "\nRunning[",cmd.title,"]"
+        print "\nRunning[",cmd.title,"]",cmd.modulestr,cmd.funcstr
         arg = cmd.paramstr + self.globalsetting
         
         try:
@@ -168,10 +171,10 @@ class CbDaemon:
 
     def findCmdOrFunc(self,arg):
         if (arg in self.cmdlst):
-            return self.cmdlst[arg]
+            return self.cmdlst[arg]  #download1h
         else:
             for cmd in self.cmdlst:                
-                if arg == self.cmdlst[cmd].funcstr:
+                if arg == self.cmdlst[cmd].funcstr: #download func
                     return self.cmdlst[cmd]
         return None
         
@@ -183,11 +186,34 @@ class CbDaemon:
             cmd = self.findCmdOrFunc(command)
             if (cmd is not None):
                 newcmd = CbDaemon.Command()
-                param = an.group(2)                
+                newparam = an.group(2)
+                oldparam = cmd.paramstr
+                
+                opt1 = self.params.parseOption(newparam.split())
+                opt2 = self.params.parseOption(oldparam.split())  
+                opt1dict={}
+                opt2dict={}
+                for item1,item2 in opt1:
+                    opt1dict[item1]=item2
+                for item1,item2 in opt2:
+                    opt2dict[item1]=item2
+                opt2dict.update(opt1dict)
+                print opt2dict
+                '''  
+                print opt1
+                print "======"
+                print opt2
+                opt1dict = {opt1[i]: opt1[i+1] for i in range(0, len(opt1), 2)}
+                opt2dict = {opt2[i]: opt2[i+1] for i in range(0, len(opt2), 2)}
+                
+                opt2dict.update(opt1dict)
+                print "======"
+                print opt2dict
+                '''                                             
                 newcmd.modulestr = cmd.modulestr
                 newcmd.title = "flytask"
                 newcmd.funcstr = cmd.funcstr
-                newcmd.paramstr = param
+                newcmd.paramstr = newparam
                 self.runCmd(newcmd)                
                 return True
             else:

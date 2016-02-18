@@ -61,7 +61,7 @@ class MarketData:
         df = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])
         lst=['']*len(tdict)
         df['sina']=lst
-        df['goog']=lst
+        df['goog']=tdict.keys()
         df['googexg']=lst
         return df
 

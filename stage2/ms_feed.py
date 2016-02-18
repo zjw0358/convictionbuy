@@ -82,7 +82,7 @@ class ms_feed:
     # split it
     # TODO should be savemd by default
     def download(self, argstr=""):
-        sys.stdout.write("download")
+        print "ms_feed downloading..."
         start = timer()
         if (argstr==""):
             args = sys.argv[1:]
@@ -92,9 +92,10 @@ class ms_feed:
         params.parseOption(args)
         self.initOption(params)
         df1 = params.getSymbolDf()
+        
         self._downloadAll(df1)
         end = timer()
-        print "finished with time",round(end - start,3)
+        print "\tfinished with time",round(end - start,3)
  
     def getOhlc(self,symbol,sinasymbol,googsymbol,googexg):   
         self.ohlcid += 1
