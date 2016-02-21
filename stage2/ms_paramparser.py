@@ -32,7 +32,7 @@ class ms_paramparser:
         self.verbose = 0
         pass
     #params = array(split)
-    def parseOption(self, params):
+    def parseOption(self, params, display=True):
         #print "paramater:",params
         self.initParams()
                 
@@ -42,7 +42,9 @@ class ms_paramparser:
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
-        print "%-20s:%-50s" % ("parameter dict",opts)
+            
+        if (display):
+            print "%-20s:%-50s" % ("parameter dict",opts)
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.symbolLstFile = arg
@@ -84,32 +86,28 @@ class ms_paramparser:
             startday = datetime.date.today() - datetime.timedelta(days=365)
             self.startdate = startday.strftime("%Y-%m-%d")
 
-        #if not self.sgyparam:
-        #    self.sgyparam = self.loadCfg(self.mscfg)
-            
-        #load strategy
-        #self.loadStrategy(self.sgyparam)           
-        if self.help == True:
-            sys.exit()
-
-        print "%-20s: %-50s" % ("use", self.symbolLstFile)
-        print "%-20s: %-50s" % ("start date", self.startdate)
-        print "%-20s: %-50s" % ("end date", self.enddate)
-        print "%-20s: %-50s" % ("portfolio id mask ",self.pid)
-        print "%-20s: %-50s" % ("use chart",self.haschart)
-        if (self.haschart):
-            print "%-20s: %-50s" % ("chart param",self.chartparam)
-        print "%-20s: %-50s" % ("load marketdata", self.loadmd)
-        print "%-20s: %-50s" % ("save marketdata", self.savemd)
-        print "%-20s: %-50s" % ("backtest", self.hasBackTest)
-        print "%-20s: %-50s" % ("feeder", self.feed)
-        print "%-20s: %-50s" % ("verbose", self.verbose)
-        print "...................."
+        
+        #if self.help == True:
+        #    sys.exit()
+        if (display):
+            print "%-20s: %-50s" % ("use", self.symbolLstFile)
+            print "%-20s: %-50s" % ("start date", self.startdate)
+            print "%-20s: %-50s" % ("end date", self.enddate)
+            print "%-20s: %-50s" % ("portfolio id mask ",self.pid)
+            print "%-20s: %-50s" % ("use chart",self.haschart)
+            if (self.haschart):
+                print "%-20s: %-50s" % ("chart param",self.chartparam)
+            print "%-20s: %-50s" % ("load marketdata", self.loadmd)
+            print "%-20s: %-50s" % ("save marketdata", self.savemd)
+            print "%-20s: %-50s" % ("backtest", self.hasBackTest)
+            print "%-20s: %-50s" % ("feeder", self.feed)
+            print "%-20s: %-50s" % ("verbose", self.verbose)
+            print "...................."
 
         return opts
         
     def parseStrategy(self,arg):
-        print "parseStrategy",arg
+        #print "parseStrategy",arg
         l_sgy = {}
         for item in arg.split(","):
             idx = 0
@@ -129,7 +127,7 @@ class ms_paramparser:
                         token = token[1:]
                         param[token] = ""
                 idx += 1
-        print l_sgy
+        #print l_sgy
         return l_sgy
 
     def getSymbolDf(self):

@@ -82,8 +82,7 @@ class ms_feed:
     # split it
     # TODO should be savemd by default
     def download(self, argstr=""):
-        print "ms_feed downloading..."
-        start = timer()
+
         if (argstr==""):
             args = sys.argv[1:]
         else:
@@ -93,6 +92,8 @@ class ms_feed:
         self.initOption(params)
         df1 = params.getSymbolDf()
         
+        print "ms_feed downloading..."
+        start = timer()
         self._downloadAll(df1)
         end = timer()
         print "\tfinished with time",round(end - start,3)

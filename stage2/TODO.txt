@@ -35,41 +35,58 @@ run marketscan.py -g st_sma&ma10b<20&ma10b<ma10s&px>ma200&ma50b<20,st_dmi&dmi_bu
 4746    SAP   72.78   70.40     17      9      3     2.67        6
 5714   GOOG  651.16  566.77     15      7      6     1.60        7
 
-**merge reuter／zack 前后文件的工具
+
+===============
+优化1Hbuy的策略.
+
+
+QCOM 2016-02-12 
+
+
+===============
 
 2016-02-18
 用法整理
 JNJ,WMT 数据缺失,需要使用原有的参数
-download -t JNJ,WMT --feed goog15m —savemd
+download15m -t JNJ,WMT --feed goog15m —savemd
+download15m -t JNJ,WMT就可以了
+ohlc1h -t AAPL 打印ohlc数据
 
 
 2016-02-13
 TOP task
+当选出某些策略的时候能否同时显示perf? 使用st_perf?(最优化的情况是 获取最晚的指标，然后计算自那天起的performance) ... 暂时使用st_perf
+pivot point接近时提醒？
+merge reuter／zack 前后文件的工具 TBD
 
 策略-
 加入dividend .. done
 BABA 16/1/28 高开后放量跌破1H，要等待1H支撑，支撑有效
 vol突破ma10,close>open .. on going
-
+1hbuy 使用nbar=1..done
 
 daemon-
--v 和 -vv输出更多信息 .. done
+-v 0 1 2 输出更多信息 .. done
 reload daemon.cfg  .. done
 log 写入到dailyreport
-reset strategy,重新计算所有策略
+reset strategy, run_indicator的时候会判断cache的strategy是否一致(比较参数)..done
+组合task..done
+task排序?按读入顺序..done
+
 
 
 ms-
 使用整个-g作为buy signal(即组合指标)
 pvm数据很滞后..自行计算new dividend date .. done
-goog15m 是否实时,单独下载RHT得到空白文件,能否单独下载某个文件
+goog15m 是否实时,单独下载RHT得到空白文件,能否单独下载某个文件..done
 goog1h数据略有延时，做实盘的话该指标比较滞后，能否先提炼出接近突破的数据然后结合15m来看
-修改nbar无效，需要reset_strategy
+修改nbar无效，需要reset_strategy..done
+如果有st_perf的计算平均return?
 
 
-重新下载数据后必须重新计算table
+
+重新下载数据后必须重新计算table..即每次load之后都必须重新计算数据...done
 支持组合任务
-当选出某些策略的时候能否同时显示perf? 使用st_perf?(最优化的情况是 获取最晚的指标，然后计算自那天起的performance)
 
 
 1hbuydmima50 no earning data?px没更新

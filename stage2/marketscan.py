@@ -32,6 +32,7 @@ class marketscan:
             self.ohlc = {}
             self.table = {}
             self.strategy = {}
+            self.dirty = True
             pass
             
     def __init__(self):
@@ -164,6 +165,7 @@ class marketscan:
         df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
         return df
         
+   
     # iterate all modules to see if there is price data module
     # return True - pricedata module
     # return False - no pricedata module
@@ -173,17 +175,8 @@ class marketscan:
             if sgx.needPriceData()==True:
                 return True
         return False
-    '''
-    def addSP500(self,df):
-        df1 = df[df['symbol'].isin(['^GSPC'])]
-        if df1.empty:
-            print "no sp500"
-            df.loc[len(df)+1,'symbol'] = self.sp500    
-        else:
-            print "sp500 in"
-
-        return
-    ''' 
+   
+    # load data into cache from file
     def loadDataTask(self,args=""):
         if (args!=""):
             #called by daemon
@@ -206,41 +199,36 @@ class marketscan:
                 print symbol,"doesn't have ohlc data"
                 continue
             feedData.ohlc[symbol] = ohlc
-
-       
         end = timer()  
+        feedData.dirty = True
         print "\tfinished with time",round(end - start,3)        
         return feedData 
     
-    def getStrategyCache(self,feedData, symbol,sgyname):
-        #save to stategy 
-        if (sgyname not in feedData.strategy):
-            feedData.strategy[sgyname] = {}
-        sgycache = feedData.strategy[sgyname]
-        
-        if (symbol not in sgycache):                  
-            sgycache[symbol] = {}
+   
+    def _hasStrategyCache(self, feedData, symbol, sgyname, sgyparam):
+        cacheflag = True
+        if ((sgyname,symbol) in feedData.strategy):
+            sgycache = feedData.strategy[(sgyname,symbol)]
+            #compare param
+            for key in sgyparam:
+                if (key!="verbose") and (sgyparam[key]!='') and (sgycache[key]!=sgyparam[key]) :
+                    cacheflag = False
+                    break
+            if (cacheflag):
+                #print symbol,sgyname,"has cache",sgycache
+                return True #has cache
             
-        sgysymbol = sgycache[symbol]
-        #print sgysymbol
-        return sgysymbol
-    '''    
-    def getStrategyCache(self,feedData, sgyname):
-        #save to stategy 
-        if (sgyname not in feedData.strategy):
-            feedData.strategy[sgyname] = {}
-        sgycache = feedData.strategy[sgyname]
-        return sgycache
-    ''' 
-    def debug(self):
+        #else create new strategy record
+        feedData.strategy[(sgyname,symbol)] = {}
+        cache = feedData.strategy[(sgyname,symbol)]
+        cache.update(sgyparam)
+        return False
+    
+    
+    def _resetStrategyCache(self, feedData):
+        feedData.strategy.clear()
         pass
 
-    def scanTask0(self,args=""):        
-        try:
-            self._scanTask(args)
-        except:
-            print "Unexpected error:", sys.exc_info()[0]
-            pass
 
     #support one arg only
     def scanTask(self,args=""):
@@ -252,12 +240,8 @@ class marketscan:
         for symbol in df1['symbol']:
             tickdct[symbol]=1
         
-        outputCol = OrderedDict({'symbol':1,'px':1})  
-        #feedData.table = df1 #deepcopy?  TODO
-        #table = feedData.table
-        #print type(table),id(table)
-        #print type(feedData.table),id(feedData.table)
-        #sys.exit()
+        # output column
+        outputCol = OrderedDict({'symbol':1,'px':1}) 
         # load prescan module        
         noPxModule = True
         for sgyname in self.sgyInx:
@@ -272,12 +256,17 @@ class marketscan:
                 #print tblout
                 #merge tblout & df1
                 df1 = pandas.merge(tblout,df1,how='inner')                
+                
             else:
                 noPxModule = False
         
     
         try:
             feedData = self.rawData[self.params.feed]      
+            if (feedData.dirty):
+                print "clear current [",self.params.feed,"] strategy cache"
+                feedData.strategy.clear()
+            feedData.dirty = False
         except:
             #not load yest
             #feedData = self.loadDataTask(args)
@@ -308,25 +297,15 @@ class marketscan:
                 continue
                 
             ohlc = feedData.ohlc[symbol]
-            
-            #???
-            #if (ohlc is None):
-            #    continue                
-            
-            #modify the original table
-            #print index,symbol,len(ohlc) #ohlc['Adj Close'][-1]
-            #print ohlc['Adj Close'].iloc[-1]
             feedData.table.loc[index,'px'] = round(ohlc['Adj Close'].iloc[-1],2)
-                        
-
             
             if (self.params.verbose > 1): 
                 start = timer()
                 print "processing",symbol
                 
             for sgyname in self.sgyInx:                    
-                sgysymbol = self.getStrategyCache(feedData, symbol, sgyname)
-                if not sgysymbol: 
+                cacheflag = self._hasStrategyCache(feedData, symbol, sgyname, self.params.sgyparam[sgyname])
+                if not cacheflag: 
                     sgx = self.sgyInx[sgyname]                    
                     if (sgx.needPriceData()):
                         if (self.params.verbose > 1): 
@@ -338,14 +317,15 @@ class marketscan:
                         #read indicator
                         for cn in indarr:
                             feedData.table.loc[index,cn] = indarr[cn]
-                            sgysymbol[cn] = indarr[cn]                            
+                            #sgysymbol[cn] = indarr[cn]                            
+                            
                 else:
                     #indarr = sgysymbol  
                     pass # do noting                      
 
-
-                if (self.params.verbose > 0):
-                    print ohlc
+                # not allow to ohlc, we can use task [ohlc] instead
+                #if (self.params.verbose > 0):
+                #    print ohlc
 
                 
                 # if backtest...
@@ -396,6 +376,10 @@ class marketscan:
 
         print table
         print "...................."
+        headers = 'index\t' + '\t'.join(table.dtypes.index)
+        print headers #print column again
+                        
+        print "...................."
         print len(table),"/",len(feedData.table.index),"=",round(len(table)*100.0/len(feedData.table.index),2),"%"
         
         #save filted csv file
@@ -418,17 +402,24 @@ class marketscan:
         self.loadDataTask()
         self.scanTask()
         pass
-  
-    def printOhlcTask(self,arg):
-        #feed=""
-        #symbol = arg.upper()
-        #print arg
+    '''
+    def resetStrategy(self,arg):
         print "======================"
         self.parseOption(arg.split())
         feed = self.params.feed
-        
-        #print feed
-        #print self.params.tickdf
+        print "reset strategy",feed
+        if (feed not in self.rawData):
+            return
+            
+        feedData = self.rawData[feed]
+        feedData.strategy = {}
+        pass
+    '''
+          
+    def printOhlcTask(self,arg):
+        print "======================"
+        self.parseOption(arg.split())
+        feed = self.params.feed        
         
         if (feed not in self.rawData):
             print "Not loaded data yet"            
@@ -438,9 +429,12 @@ class marketscan:
         for index, row in self.params.tickdf.iterrows():
             symbol = row['symbol']
             if (symbol in feedData.ohlc):
-                print feedData.ohlc[symbol]                
+                print feedData.ohlc[symbol]
+                headers = 'index\t' + '\t'.join(feedData.ohlc[symbol].dtypes.index)
+                print headers
             else:
-                print "Not found"        
+                print "Not found"  
+              
         pass
           
    

@@ -42,17 +42,17 @@ class st_perf(BaseIndPx):
         pmax = 0
         plen = len(px)
         if plen >= 2:
-            p1d = round((px[-1]/px[-2] - 1)*100,2) 
+            p1d = round((px.iloc[-1]/px.iloc[-2] - 1)*100,2) 
         if plen >= 4*7:
-            p4w = round((px[-1]/px[-4*7] - 1)*100,2)
+            p4w = round((px.iloc[-1]/px.iloc[-4*7] - 1)*100,2)
         if plen >= 12*7:
-            p12w = round((px[-1]/px[-12*7] - 1)*100,2)
+            p12w = round((px.iloc[-1]/px.iloc[-12*7] - 1)*100,2)
         if plen >= 24*7:
-            p24w = round((px[-1]/px[-24*7] - 1)*100,2)
+            p24w = round((px.iloc[-1]/px.iloc[-24*7] - 1)*100,2)
         if len(px) >= 1*7:
-            p1w = round((px[-1]/px[-1*7] - 1)*100,2)
+            p1w = round((px.iloc[-1]/px.iloc[-1*7] - 1)*100,2)
 
-        pmax = round((px[-1]/px[0] - 1) * 100,2)
+        pmax = round((px.iloc[-1]/px.iloc[0] - 1) * 100,2)
         
         
         self.ind['p1d'] = p1d

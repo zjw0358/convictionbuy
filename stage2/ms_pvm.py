@@ -33,7 +33,7 @@ class ms_pvm(BaseIndNoPx):
         self.colcode = "&f=sp5j1a2l1r5yq"
         self.cfg = ms_config.MsDataCfg("")
         self.pvmfile = self.cfg.getDataConfig("pvm")
-        self.cachefolder = self.cfg.getDataConfig("folder")
+        #self.cachefolder = self.cfg.getDataConfig("folder")
         self.hasCachedDF = False
         self.today = datetime.datetime.now()
         BaseIndNoPx.__init__(self)
@@ -98,7 +98,8 @@ class ms_pvm(BaseIndNoPx):
         
         table = pandas.DataFrame(allLst,columns=self.columns)
         return table
-        
+    
+    # strategy process  
     def process(self,tablein):        
         ticklist = tablein['symbol']
         param = OrderedDict()
@@ -129,14 +130,15 @@ class ms_pvm(BaseIndNoPx):
             
         
                           
-        '''
-        if df.empty:
-            print "error happened, unable to process ms_pvm, return original table"
-            return tablein
-        '''
+        
+        #if df.empty:
+        #    print "error happened, unable to process ms_pvm, return original table"
+        #    return tablein
+        
         df1 = pandas.merge(tablein,df,how='inner')
         return df1,cols
-        
+    
+    
     def download(self,argstr=""):
         if (argstr==""):
             args = sys.argv[1:]
@@ -168,10 +170,10 @@ class ms_pvm(BaseIndNoPx):
                 symstr += symbol
                 if idx<(lenlist-1) and (idx%limit!=0):
                     symstr +="+"
-                    
-                if idx%limit==0:
-                    #print idx,symstr
+                #print idx,symstr
+                if idx%limit==0:                    
                     url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
+                    #print url
                     response = urllib2.urlopen(url)
                     cr = csv.reader(response)
                     for row in cr:
@@ -187,13 +189,14 @@ class ms_pvm(BaseIndNoPx):
                         #retidx +=1
                     symstr=""
                     
-            if symstr!="":
-                #print "last get",symstr
+            if symstr!="":                
                 url = "http://finance.yahoo.com/d/quotes.csv?s=" + symstr + self.colcode
+                #print "last get",url
                 response = urllib2.urlopen(url)
                 cr = csv.reader(response)
                 for row in cr:
                     for rowid,item in enumerate(row):
+                        dataLst[rowid].append(item)
                         '''
                         if rowid==0:
                             dataLst[rowid].append(item)

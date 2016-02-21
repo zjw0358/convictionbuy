@@ -9,7 +9,7 @@ import re
 import ms_paramparser
 
 
-class CbDaemon:
+class cb_daemon:
     class Command:
         def __init__(self):
             self.modulestr=""
@@ -67,7 +67,8 @@ class CbDaemon:
         pass
 
     def config(self, args=""):
-        self.globalsetting = " " + args
+        if (args!=""):
+            self.globalsetting = " " + args
         print "global setting", self.globalsetting
         '''
         flag = False
@@ -100,7 +101,7 @@ class CbDaemon:
     def loadConfig(self):
         #print self.msconfig.getSections()
         for sect in self.msconfig.getSections():
-            cmd = CbDaemon.Command()
+            cmd = cb_daemon.Command()
             cmd.modulestr = self.msconfig.getConfig(sect,'cmd')
             cmd.title = sect
             cmd.funcstr = self.msconfig.getConfig(sect,'func')
@@ -131,6 +132,14 @@ class CbDaemon:
             print s
         pass
         
+    def combinationTask(self,args):
+        tasklst = args.split(',')
+        print "combination task",tasklst
+        for task in tasklst:
+            if (task in self.cmdlst):
+                self.runCmd(self.cmdlst[task])        
+        pass
+           
     def runCmd(self,cmd):
         try:
         #module = self.modulelst[cmd.modulestr]
@@ -169,6 +178,8 @@ class CbDaemon:
         typelst=param.split()
         self.onetime(typelst)
 
+    #not allow match funcstr only
+    '''
     def findCmdOrFunc(self,arg):
         if (arg in self.cmdlst):
             return self.cmdlst[arg]  #download1h
@@ -177,20 +188,22 @@ class CbDaemon:
                 if arg == self.cmdlst[cmd].funcstr: #download func
                     return self.cmdlst[cmd]
         return None
-        
+    '''
+     
     def flytask(self,cmdstr):
         pattern = "([\w\.]*) ([\d\D]*)"
         an = re.match(pattern,cmdstr)
         if an!=None:
             command = an.group(1)
-            cmd = self.findCmdOrFunc(command)
-            if (cmd is not None):
-                newcmd = CbDaemon.Command()
+            #cmd = self.findCmdOrFunc(command)
+            if (command in self.cmdlst):
+                cmd = self.cmdlst[command]
+                newcmd = cb_daemon.Command()
                 newparam = an.group(2)
                 oldparam = cmd.paramstr
                 
-                opt1 = self.params.parseOption(newparam.split())
-                opt2 = self.params.parseOption(oldparam.split())  
+                opt1 = self.params.parseOption(newparam.split(),False)
+                opt2 = self.params.parseOption(oldparam.split(),False)  
                 opt1dict={}
                 opt2dict={}
                 for item1,item2 in opt1:
@@ -198,7 +211,11 @@ class CbDaemon:
                 for item1,item2 in opt2:
                     opt2dict[item1]=item2
                 opt2dict.update(opt1dict)
-                print opt2dict
+
+                #            for opt2dict
+                mparam = ''.join(['%s %s ' % (key,value) for (key,value) in opt2dict.items()])
+                #print mparam
+                
                 '''  
                 print opt1
                 print "======"
@@ -213,7 +230,7 @@ class CbDaemon:
                 newcmd.modulestr = cmd.modulestr
                 newcmd.title = "flytask"
                 newcmd.funcstr = cmd.funcstr
-                newcmd.paramstr = newparam
+                newcmd.paramstr = mparam
                 self.runCmd(newcmd)                
                 return True
             else:
@@ -263,5 +280,5 @@ class CbDaemon:
         
 
 if __name__ == "__main__":
-    obj = CbDaemon()
+    obj = cb_daemon()
     obj.process()

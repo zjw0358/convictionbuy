@@ -316,7 +316,7 @@ class data_zacks:
         for key in self.allcols:
             lst = []
             allLst[key] = lst
-        print "number of columns =",len(allLst) 
+        #print "number of columns =",len(allLst) 
         table = pandas.DataFrame(allLst,columns=self.allcols)
         
         fp = open(fileName,'r',-1)
