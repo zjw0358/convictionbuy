@@ -128,11 +128,11 @@ class ind_dmi(BaseIndPx):
         self.adx = atr1 + sp.wma(dx,length)
         #debug
         #df0['ang'] = ratio
-        '''
+
         df0['di+']=self.pdi
         df0['di-']=self.ndi
-        '''
-        df0['adx'] = self.adx        
+        df0['adx'] = self.adx
+
         #print df0
         pass  
         

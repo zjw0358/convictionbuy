@@ -12,27 +12,32 @@ class Ordermg:
         self.pendingOrder = ""
         self.totalTrade = 0
         self.win = 0
-        self.winrate = 0.
+        self.winrate = ""
         self.gainreturn = 0.
         self.maxgainp = 0.
         self.maxlossp = 0.
         
-    def endTrade(self,row,index):
-        avgpx = (row['High']+row['Low']+row['Close']+row['Open'])/4
-        self.closePos(index,float(avgpx),row['Close'],row['Adj Close'])        
-        if (self.totalTrade==0):
-            self.winrate = 0
+    def endTrade(self, row, index):
+        avgpx = (row['High'] + row['Low'] + row['Close'] + row['Open'])/4
+        self.closePos(index, float(avgpx), row['Close'], row['Adj Close'])
+        if (self.totalTrade == 0):
+            self.winrate = "N/A"
         else:
-            self.winrate = round(float(self.win)/self.totalTrade,2)
-        self.gainreturn = round(self.gainloss/self.power,2)
+            self.winrate = "%.2f %%" % (round(float(self.win*100.0)/self.totalTrade, 2))
+
+        self.gainreturn = "%.2f %%" % round(self.gainloss*100.0/self.power, 2)
+        self.maxgainstr = "%.2f %%" % round(self.maxgainp, 2)
+        self.maxlossstr = "%.2f %%" % round(self.maxlossp, 2)
+        '''
         print "================================"
-        print "Total Trade",self.totalTrade
-        print "Win Rate%",round(self.winrate*100,2)
-        print "Gain/Loss",self.gainloss
-        print "Return%",round(self.gainreturn*100,2)
-        print "Max Gain%",round(self.maxgainp,2)
-        print "Max Loss%",round(self.maxlossp,2)
+        print "Total Trade", self.totalTrade
+        print "Win Rate%", self.winrate #round(self.winrate*100,2)
+        print "Gain/Loss", self.gainloss
+        print "Return%", self.gainreturn #round(self.gainreturn*100,2)
+        print "Max Gain%", "%.2f %%" % round(self.maxgainp, 2)
+        print "Max Loss%", "%.2f %%" % round(self.maxlossp, 2)
         print "================================"
+        '''
         #print self.totalTrade,self.winrate,self.gainloss, self.gainreturn, self.maxgainp, self.maxlossp
         
     # close a position
@@ -63,7 +68,7 @@ class Ordermg:
             ratio = adjclose / close
             avgpx = avgpx * ratio
         
-        print "buy@",index,"px=",avgpx
+        print "buy@", index, "px=", avgpx
         self.shares = self.power / avgpx
         self.position = "buy"
         pass    
@@ -119,15 +124,22 @@ class Ordermg:
     
 class ms_backtest:
     def __init__(self):
+        self.beginBackTest()
+        pass
+
+    def beginBackTest(self):
         self.symbols = []
         self.totalTrade = []
         self.winrate = []
         self.gain=[]
         self.gainreturn = []
+        self.maxgain = []
+        self.maxloss = []
+        #self.btdf = pandas.DataFrame(columns=['symbol', 'total trade', 'winrate', 'gain_loss', 'return'])
         pass
-        
+
     def runBackTest(self,sym,ohlc):
-        print ohlc
+        #print ohlc
         ordermg = Ordermg()
         ordermg.beginTrade()
         print "==============================="
@@ -147,17 +159,21 @@ class ms_backtest:
         #lastRow = ohlc.tail(1).value()
         lastRow = ohlc.iloc[-1] 
         lastidx = ohlc.index[-1]
-        ordermg.endTrade(lastRow,lastidx)
+        ordermg.endTrade(lastRow, lastidx)
         
         self.symbols.append(sym)
         self.totalTrade.append(ordermg.totalTrade)
         self.winrate.append(ordermg.winrate)
         self.gain.append(ordermg.gainloss)
-        self.gainreturn.append(ordermg.gainreturn)        
+        self.gainreturn.append(ordermg.gainreturn)
+        self.maxgain.append(ordermg.maxgainstr)
+        self.maxloss.append(ordermg.maxlossstr)
         pass
         
     def getBackTestResult(self):
-        return pandas.DataFrame({'symbol':self.symbols,'total trade':self.totalTrade,'win rate':self.winrate,'gain':self.gain,'return%':self.gainreturn},columns=\
-        ['symbol','total trade','win rate','gain','return%'])
+        return pandas.DataFrame({'symbol': self.symbols, 'total trade': self.totalTrade, 'win rate%': self.winrate,
+                                 'gain': self.gain, 'return%': self.gainreturn, 'maxgain%': self.maxgain, 'maxloss%':
+                                 self.maxloss},
+                                columns = ['symbol', 'total trade', 'win rate%', 'gain', 'return%', 'maxgain%', 'maxloss%'])
         pass
         

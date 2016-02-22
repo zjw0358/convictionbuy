@@ -30,6 +30,7 @@ class ms_paramparser:
         self.tickdf = pandas.DataFrame({},columns=['symbol','exg','sina','goog','googexg'])                
         self.sgyparam = {}
         self.verbose = 0
+        self.tailoffset = 0
         pass
     #params = array(split)
     def parseOption(self, params, display=True):
@@ -37,8 +38,9 @@ class ms_paramparser:
         self.initParams()
                 
         try:
-            opts, args = getopt.getopt(params, "v:f:t:s:e:i:g:c:h", \
-                ["filename", "ticklist", "startdate","enddate","pid","strategy","help","chart","savemd","loadmd","backtest","feed=","verbose"])
+            opts, args = getopt.getopt(params, "v:f:t:s:e:i:g:c:h",
+                ["filename", "ticklist", "startdate", "enddate", "pid", "strategy", "help", "chart", "savemd",
+                 "loadmd", "backtest", "feed=", "verbose", "tailoffset=", "buy=", "sell="])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
@@ -79,7 +81,13 @@ class ms_paramparser:
                 self.feed = arg
             elif opt in ("-v","--verbose"):
                 self.verbose = int(arg)
-                
+            elif opt in ("--tailoffset"):
+                self.tailoffset = int(arg)
+            elif opt in ("--buy"):
+                self.buydict = self.parseBuy(arg)
+            elif opt in ("--sell"):
+                self.selldict = self.parseSell(arg)
+
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
         if not self.startdate:
@@ -105,7 +113,13 @@ class ms_paramparser:
             print "...................."
 
         return opts
-        
+
+    def parseBuy(self, arg):
+        tokens = arg.split(',')
+
+        self.buydict = self.parseBuy(arg)
+
+
     def parseStrategy(self,arg):
         #print "parseStrategy",arg
         l_sgy = {}

@@ -35,24 +35,27 @@ class st_sma(ind_ma):
         tsup = TradeSupport()
         px = ohlc['Adj Close']
         if (self.ma10):
-            # not using divergencyCross 
+            # not using divergencyCross
             buysg,sellsg = sp.cross(px, self.ma10, self.nbar)
             tsup.getLastSignal(buysg,sellsg,self.ind,'ma10b','ma10s')
-            '''
             ohlc['ma10b']=buysg
             ohlc['ma10s']=sellsg
-            ohlc['ma10']=self.ma10
-            '''
-        if (self.ma50):
+            #ohlc['ma10']=self.ma10
+
+        if self.ma50:
             buysg,sellsg = sp.cross(px, self.ma50, self.nbar)
-            tsup.getLastSignal(buysg,sellsg, self.ind,'ma50b','ma50s')            
+            tsup.getLastSignal(buysg, sellsg, self.ind, 'ma50b', 'ma50s')
+            ohlc['ma50b'] = buysg
+            ohlc['ma50s'] = sellsg
 
         if (self.ma50 and self.ma10):
-            buysg,sellsg = sp.cross(self.ma10, self.ma50, self.nbar)
-            tsup.getLastSignal(buysg,sellsg, self.ind,'ma1050b','ma1050s')            
+            buysg, sellsg = sp.cross(self.ma10, self.ma50, self.nbar)
+            tsup.getLastSignal(buysg, sellsg, self.ind, 'ma1050b', 'ma1050s')
+            ohlc['ma1050b'] = buysg
+            ohlc['ma1050s'] = sellsg
             # ready to cross above
             flag1 = (self.ma10[-1] > self.ma50[-1]*0.97)
-            dif1 =  (self.ma50[-1]-self.ma10[-1])
+            dif1 = (self.ma50[-1]-self.ma10[-1])
             dif2 = (self.ma50[-2]-self.ma10[-2])
             dif3 = (self.ma50[-3]-self.ma10[-3])
             flag2 = (dif1<dif2) and (dif2<dif3) and (dif1>0)

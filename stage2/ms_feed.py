@@ -150,6 +150,8 @@ class ms_feed:
             
         #for sina 1H/5m data, load all
         if ("sina" in self.params.feed or "goog" in self.params.feed):
+            if self.params.tailoffset>0:
+                ohlc.drop(ohlc.tail(self.params.tailoffset).index,inplace=True)
             return ohlc
         
         ohlc.index = pandas.to_datetime(ohlc.index)  

@@ -49,6 +49,7 @@ class marketscan:
         #self.mscfg = "./marketscan.cfg" #??
         self.mtd = marketdata.MarketData()
         self.mfeed = ms_feed.ms_feed()
+        self.backtest = ms_backtest.ms_backtest()
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
@@ -70,8 +71,8 @@ class marketscan:
         params = self.params
         params.parseOption(args)
         self.mfeed.initOption(params) # must change feed params
-        if (params.hasBackTest):
-            self.backtest = ms_backtest.ms_backtest()
+        #if (params.hasBackTest):
+        #    self.backtest = ms_backtest.ms_backtest()
             
         if not params.sgyparam:
             #params.sgyparam = self.loadCfg(self.mscfg)
@@ -160,11 +161,12 @@ class marketscan:
         #except:
         #    print "exception when write to excel ",outputFnXls
         pass    
-            
+
+    '''
     def getSymbolByRank(self,table,rmin,rmax):
         df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
         return df
-        
+    '''
    
     # iterate all modules to see if there is price data module
     # return True - pricedata module
@@ -224,11 +226,6 @@ class marketscan:
         cache.update(sgyparam)
         return False
     
-    
-    def _resetStrategyCache(self, feedData):
-        feedData.strategy.clear()
-        pass
-
 
     #support one arg only
     def scanTask(self,args=""):
@@ -293,15 +290,15 @@ class marketscan:
                 continue
             #ohlc = self.mfeed.getOhlc(symbol)
             if (symbol not in feedData.ohlc):
-                print symbol,"not in cache"
+                print symbol, "not in cache"
                 continue
                 
             ohlc = feedData.ohlc[symbol]
-            feedData.table.loc[index,'px'] = round(ohlc['Adj Close'].iloc[-1],2)
+            feedData.table.loc[index, 'px'] = round(ohlc['Adj Close'].iloc[-1],2)
             
             if (self.params.verbose > 1): 
                 start = timer()
-                print "processing",symbol
+                print "processing", symbol
                 
             for sgyname in self.sgyInx:                    
                 cacheflag = self._hasStrategyCache(feedData, symbol, sgyname, self.params.sgyparam[sgyname])
@@ -309,10 +306,10 @@ class marketscan:
                     sgx = self.sgyInx[sgyname]                    
                     if (sgx.needPriceData()):
                         if (self.params.verbose > 1): 
-                            print "\t",sgyname
+                            print "\t", sgyname
                         sgx.cleanup()
                         sgx.setupParam(self.params.sgyparam[sgyname])
-                        sgx.runIndicator(symbol,ohlc,self.params.sgyparam[sgyname])
+                        sgx.runIndicator(symbol, ohlc, self.params.sgyparam[sgyname])
                         indarr = sgx.getIndicators()
                         #read indicator
                         for cn in indarr:
@@ -323,14 +320,9 @@ class marketscan:
                     #indarr = sgysymbol  
                     pass # do noting                      
 
-                # not allow to ohlc, we can use task [ohlc] instead
-                #if (self.params.verbose > 0):
-                #    print ohlc
-
-                
                 # if backtest...
                 if (self.params.hasBackTest):
-                    self.backtest.runBackTest(symbol,ohlc)
+                    self.backtest.runBackTest(symbol, ohlc)
                     pass
             
             if (self.params.verbose > 1): 
@@ -388,11 +380,7 @@ class marketscan:
         if self.params.haschart:
             print "=== csv chart ==="
             self.csvchart.drawChart(table,self.chartparam)
-        
-        ''' 
-        print "===============original table ============="   
-        print feedData.table
-        '''
+
         return table
         #print self.rawData
         pass
@@ -402,21 +390,87 @@ class marketscan:
         self.loadDataTask()
         self.scanTask()
         pass
-    '''
-    def resetStrategy(self,arg):
-        print "======================"
+
+    # move to module
+    def back_test(self, arg):
         self.parseOption(arg.split())
         feed = self.params.feed
-        print "reset strategy",feed
+
         if (feed not in self.rawData):
+            print "Not loaded data yet"
             return
-            
-        feedData = self.rawData[feed]
-        feedData.strategy = {}
+
+        feed_data = self.rawData[feed]
+        self.backtest.beginBackTest()
+        for index, row in self.params.tickdf.iterrows():
+            symbol = row['symbol']
+            if symbol in feed_data.ohlc:
+                ohlc = feed_data.ohlc[symbol]
+                self.combine_signal(ohlc)
+                self.backtest.runBackTest(symbol, ohlc)
+                #print feed_data.ohlc[symbol]
+                #headers = 'index\t' + '\t'.join(feed_data.ohlc[symbol].dtypes.index)
+               # print headers
+            else:
+                print "Not found"
+
+        backtestDf = self.backtest.getBackTestResult()
+        print "========================="
+        print backtestDf
+        print "========================="
         pass
-    '''
+
+    def combine_signal(self, ohlc):
+        buydct={'ma10b': 0, 'ma50b': 0, 'ma1050b': 0}
+        selldct={'ma10s': 0}
+        #alldct = buydct
+        #alldct.update(selldct)
+
+        signallst = []
+        for row_index, row in ohlc.iterrows():
+            signal = ""
+            for bs in buydct:
+                if row[bs] == "buy":
+                    buydct[bs] = 1
+
+            for ss in selldct:
+                if row[ss] == "sell":
+                    selldct[ss] = 1
+
+            buy_flag = True
+            for bs in buydct:
+                if buydct[bs] != 1:
+                    buy_flag = False
+
+
+            all_sell_flag = True
+            one_sell_flag = False
+            for ss in selldct:
+                if selldct[ss] != 1:
+                    all_sell_flag = False
+                else:
+                    one_sell_flag = True
+
+            if one_sell_flag:
+                # reset buydict
+                buy_flag = False
+                for bs in buydct:
+                    buydct[bs] = 0
+
+            if all_sell_flag:
+                signal = "sell"
+                for ss in selldct:
+                    selldct[ss] = 0
+            if buy_flag:
+                signal = "buy"
+                for key in buydct:
+                    buydct[key] = 0
+
+            signallst.append(signal)
+        ohlc['signal'] = signallst
+        pass
           
-    def printOhlcTask(self,arg):
+    def printOhlcTask(self, arg):
         print "======================"
         self.parseOption(arg.split())
         feed = self.params.feed        
@@ -424,13 +478,13 @@ class marketscan:
         if (feed not in self.rawData):
             print "Not loaded data yet"            
             return
-        feedData = self.rawData[feed]
-        
+
+        feed_data = self.rawData[feed]
         for index, row in self.params.tickdf.iterrows():
             symbol = row['symbol']
-            if (symbol in feedData.ohlc):
-                print feedData.ohlc[symbol]
-                headers = 'index\t' + '\t'.join(feedData.ohlc[symbol].dtypes.index)
+            if symbol in feed_data.ohlc:
+                print feed_data.ohlc[symbol]
+                headers = 'index\t' + '\t'.join(feed_data.ohlc[symbol].dtypes.index)
                 print headers
             else:
                 print "Not found"  

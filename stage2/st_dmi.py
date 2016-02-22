@@ -38,16 +38,22 @@ class st_dmi(ind_dmi):
     '''
     TODO probably there is a false signal,e.g crossbelow happen after buy signal,should we discard the buy signal?
     '''
-    def algoStrategy(self,ohlc):
+    def algoStrategy(self, ohlc):
         sp = StrategyPattern()
         tsup = TradeSupport()
         buysg,sellsg = sp.divergencyCross(self.pdi, self.ndi, 2)
-        closesg = sp.covergency(self.pdi, self.ndi, 2)
+        # TODO closesg = sp.covergency(self.pdi, self.ndi, 2)
+
         #diff = self.pdi/self.ndi
         #process these signale for backtest
+
+        '''
         signal = map(sp.mergeSignal, buysg,sellsg,closesg)
         ohlc['signal'] = signal
-        
+        '''
+
+        ohlc['dmibuy'] = buysg
+        ohlc['dmisell'] = sellsg
         '''
         if (self.debug):
             ohlc['buysignal'] = buysg
@@ -58,6 +64,7 @@ class st_dmi(ind_dmi):
             print ohlc
         '''
         self.ind['dmi_dif'] = self.pdi[-1]/self.ndi[-1]
+        #ohlc['dmi_dif'] = self.pdi/self.ndi
         tsup.getLastSignal(buysg,sellsg, self.ind,'dmi_buy','dmi_sell')
         pass    
         
