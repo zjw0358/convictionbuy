@@ -72,10 +72,10 @@ class st_sma(ind_ma):
                     lastsell = idx
                 buyval = ma50bsg[idx]
                 if (buyval == "buy"):
-                    if idx-lastsell < self.dist50:
-                        sig = ""
-                    else:
+                    if lastsell >= 0 and idx-lastsell > self.dist50:
                         sig = "buy"
+                    else:
+                        sig = ""
                 distsg.append(sig)
             ohlc['dist50'] = distsg
 

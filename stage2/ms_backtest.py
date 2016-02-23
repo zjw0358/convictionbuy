@@ -246,14 +246,14 @@ class ms_backtest:
                                 columns = ['symbol', 'total trade', 'win rate%', 'gain', 'return%', 'maxgain%', 'maxloss%'])
         print "==============================="
         print df
-        tt = df['total trade'].mean()
+        tt = df['total trade'].sum()
         wr = df['win rate%'].mean()
-        ga = df['gain'].mean()
-        rt = df['return%'].mean()
+        ga = df['gain'].sum()/tt
+        rt = df['return%'].sum()/tt
         mg = df['maxgain%'].max()
         ml = df['maxloss%'].max()
 
-        sumdf = pandas.DataFrame({'name': ['average'], 'avg trade': [tt], 'win rate%': [wr],
+        sumdf = pandas.DataFrame({'name': ['average'], 'avg trade': [tt/len(df.index)], 'win rate%': [wr],
                                  'gain': [ga], 'return%': [rt], 'maxgain%': [mg], 'maxloss%': [ml]},
                                 columns = ['name', 'avg trade', 'win rate%', 'gain', 'return%', 'maxgain%', 'maxloss%'])
         print "..............................."
