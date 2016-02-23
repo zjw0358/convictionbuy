@@ -20,11 +20,16 @@ class st_sma(ind_ma):
         else:
             self.nbar = 2
             
-        if 'volra' in param:            
+        if 'volra' in param:
             self.volra = float(param['volra'])
         else:
             self.volra = 2
-            
+
+        if 'dist50' in param:
+            self.dist50 = float(param['dist50'])
+        else:
+            self.dist50 = 30
+
         ind_ma.runIndicator(self,symbol,ohlc,param)
         self.algoStrategy(ohlc)
         pass
@@ -42,17 +47,39 @@ class st_sma(ind_ma):
             ohlc['ma10s']=sellsg
             #ohlc['ma10']=self.ma10
 
+        ma50bsg = []
         if self.ma50:
             buysg,sellsg = sp.cross(px, self.ma50, self.nbar)
             tsup.getLastSignal(buysg, sellsg, self.ind, 'ma50b', 'ma50s')
             ohlc['ma50b'] = buysg
             ohlc['ma50s'] = sellsg
+            ma50bsg = buysg
+
 
         if (self.ma50 and self.ma10):
             buysg, sellsg = sp.cross(self.ma10, self.ma50, self.nbar)
             tsup.getLastSignal(buysg, sellsg, self.ind, 'ma1050b', 'ma1050s')
             ohlc['ma1050b'] = buysg
             ohlc['ma1050s'] = sellsg
+
+            # find the distance
+            #self.dist50 = 20
+            lastsell = -self.dist50
+            distsg = []
+            for idx, val in enumerate(sellsg):
+                sig = ""
+                if val == "sell":
+                    lastsell = idx
+                buyval = ma50bsg[idx]
+                if (buyval == "buy"):
+                    if idx-lastsell < self.dist50:
+                        sig = ""
+                    else:
+                        sig = "buy"
+                distsg.append(sig)
+            ohlc['dist50'] = distsg
+
+
             # ready to cross above
             flag1 = (self.ma10[-1] > self.ma50[-1]*0.97)
             dif1 = (self.ma50[-1]-self.ma10[-1])

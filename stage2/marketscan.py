@@ -15,9 +15,6 @@ import marketdata  #->ms_marketdata
 import ms_csvchart
 import ms_backtest
 import pandas
-#import xlsxwriter
-from feed_sina import SinaMarketData
-from feed_yahoo import FeederYahoo
 import ms_paramparser
 import ms_config
 import ms_feed
@@ -130,43 +127,7 @@ class marketscan:
             saveFileName = saveFileName + addstr + "_"
         return saveFileName
 
-    def saveExcelFile(self,table,saveFileName,offset = 2):
-        # save to excel
-        #try:
-        outputFnXls = self.outputpath + saveFileName + datetime.datetime.now().strftime("%Y-%m-%d") + '.xls'
-        writer = pandas.ExcelWriter(outputFnXls, engine='xlsxwriter')            
-        table.to_excel(writer, index=False, sheet_name='report')
-        workbook = writer.book
-        worksheet = writer.sheets['report']
 
-        format1 = workbook.add_format({'bg_color': '#FFC7CE','font_color': '#9C0006','bold': True})
-        format2 = workbook.add_format({'bg_color': '#C6EFCE','font_color': '#006100','bold': True})
-        #find the two largest and smallest value
-        #offset = 2 #symbol,exg            
-        for col in table:
-            if col=='symbol' or col=='exg':
-                continue
-            lvalue = table[col].max()
-            svalue = table[col].min()
-            lidx = table[col].idxmax()
-            sidx = table[col].idxmin()
-            #print lidx,lvalue,sidx,svalue
-            #worksheet.write('B1', 'Cost', format1)            
-            worksheet.write_string(lidx+1,offset,str(lvalue),format1)
-            worksheet.write_string(sidx+1,offset,str(svalue),format2)
-            offset+=1
-
-        writer.save()
-        print "Finish wrote to ",outputFnXls
-        #except:
-        #    print "exception when write to excel ",outputFnXls
-        pass    
-
-    '''
-    def getSymbolByRank(self,table,rmin,rmax):
-        df = table[(table['rank']<=rmax) & (table['rank']>=rmin)]
-        return df
-    '''
    
     # iterate all modules to see if there is price data module
     # return True - pricedata module
@@ -402,74 +363,38 @@ class marketscan:
 
         feed_data = self.rawData[feed]
         self.backtest.beginBackTest()
-        for index, row in self.params.tickdf.iterrows():
+        tickdf = self.params.getSymbolDf()
+        for index, row in tickdf.iterrows():
             symbol = row['symbol']
             if symbol in feed_data.ohlc:
                 ohlc = feed_data.ohlc[symbol]
-                self.combine_signal(ohlc)
-                self.backtest.runBackTest(symbol, ohlc)
+                self.backtest.combineSignal(ohlc, self.params.buydict, self.params.selldict)
+                self.backtest.runBackTest(symbol, ohlc, self.params.verbose)
                 #print feed_data.ohlc[symbol]
                 #headers = 'index\t' + '\t'.join(feed_data.ohlc[symbol].dtypes.index)
                # print headers
             else:
                 print "Not found"
 
-        backtestDf = self.backtest.getBackTestResult()
-        print "========================="
-        print backtestDf
-        print "========================="
+        backtestDf = self.backtest.printBackTestResult()
+        #print "==============================="
+        #print backtestDf
+
+        #print "========================="
         pass
 
-    def combine_signal(self, ohlc):
-        buydct={'ma10b': 0, 'ma50b': 0, 'ma1050b': 0}
-        selldct={'ma10s': 0}
-        #alldct = buydct
-        #alldct.update(selldct)
+    def printTableTask(self, arg):
+        print "======================"
+        self.parseOption(arg.split())
+        feed = self.params.feed
 
-        signallst = []
-        for row_index, row in ohlc.iterrows():
-            signal = ""
-            for bs in buydct:
-                if row[bs] == "buy":
-                    buydct[bs] = 1
+        if (feed not in self.rawData):
+            print "Not loaded data yet"
+            return
 
-            for ss in selldct:
-                if row[ss] == "sell":
-                    selldct[ss] = 1
+        feed_data = self.rawData[feed]
+        print feed_data.table
 
-            buy_flag = True
-            for bs in buydct:
-                if buydct[bs] != 1:
-                    buy_flag = False
-
-
-            all_sell_flag = True
-            one_sell_flag = False
-            for ss in selldct:
-                if selldct[ss] != 1:
-                    all_sell_flag = False
-                else:
-                    one_sell_flag = True
-
-            if one_sell_flag:
-                # reset buydict
-                buy_flag = False
-                for bs in buydct:
-                    buydct[bs] = 0
-
-            if all_sell_flag:
-                signal = "sell"
-                for ss in selldct:
-                    selldct[ss] = 0
-            if buy_flag:
-                signal = "buy"
-                for key in buydct:
-                    buydct[key] = 0
-
-            signallst.append(signal)
-        ohlc['signal'] = signallst
-        pass
-          
     def printOhlcTask(self, arg):
         print "======================"
         self.parseOption(arg.split())

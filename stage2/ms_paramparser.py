@@ -84,9 +84,9 @@ class ms_paramparser:
             elif opt in ("--tailoffset"):
                 self.tailoffset = int(arg)
             elif opt in ("--buy"):
-                self.buydict = self.parseBuy(arg)
+                self.parseBuy(arg)
             elif opt in ("--sell"):
-                self.selldict = self.parseSell(arg)
+                self.parseSell(arg)
 
         if self.enddate == "":
             self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -115,9 +115,14 @@ class ms_paramparser:
         return opts
 
     def parseBuy(self, arg):
-        tokens = arg.split(',')
+        tokens = arg.split('&')
+        self.buydict = {key: 0 for key in tokens}
 
-        self.buydict = self.parseBuy(arg)
+
+    def parseSell(self, arg):
+        tokens = arg.split('&')
+        self.selldict = {key: 0 for key in tokens}
+
 
 
     def parseStrategy(self,arg):
