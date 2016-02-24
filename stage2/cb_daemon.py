@@ -145,13 +145,13 @@ class cb_daemon:
         #module = self.modulelst[cmd.modulestr]
             if (cmd.modulestr not in self.moduledct):
                 module_meta = __import__(cmd.modulestr, globals(), locals(), [cmd.modulestr])
-                c = getattr(module_meta, cmd.modulestr) 
+                c = getattr(module_meta, cmd.modulestr)
                 module = c() # construct module
                 self.moduledct[cmd.modulestr] = module
             else:
                 module = self.moduledct[cmd.modulestr]
-            
-            ptrfunc = getattr(module,cmd.funcstr) 
+
+            ptrfunc = getattr(module,cmd.funcstr)
         except:
             print cmd.modulestr,"Not a valid func",cmd.funcstr
             return

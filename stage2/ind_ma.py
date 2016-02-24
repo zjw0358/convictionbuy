@@ -13,7 +13,7 @@ class ind_ma(BaseIndPx):
     '''
     ma10,ma50,ma200
     '''
-    def algoFunc(self, df):
+    def _algoFunc(self, df):
         plen = len(df)  
         #px = df['Adj Close']
         px = df['Close']
@@ -49,4 +49,4 @@ class ind_ma(BaseIndPx):
     def runIndicator(self,symbol,ohlc,param={}):
         #self.setupParam(param)     
         #self.close_px = ohlc['Adj Close']
-        self.algoFunc(ohlc)
+        self._algoFunc(ohlc)

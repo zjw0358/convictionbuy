@@ -20,6 +20,11 @@ import ms_config
 import ms_feed
 from collections import OrderedDict
 
+# global func ---------------------------------
+g_marketscan = None
+def importStrategy(sgyname, symbol, ohlc):
+    return g_marketscan.importStrategy(sgyname, symbol, ohlc)
+    pass
 
 
 class marketscan:
@@ -30,6 +35,7 @@ class marketscan:
             self.table = {}
             self.strategy = {}
             self.dirty = True
+
             pass
             
     def __init__(self):
@@ -53,7 +59,8 @@ class marketscan:
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/")           
         self.sgyInx={}
         self.rawData = {} #MarketScan.RawData()
-        
+        global g_marketscan
+        g_marketscan = self
         #self.sp500 = "^GSPC" #?
         #self.nmuBest = 1 #??      
           
@@ -92,9 +99,43 @@ class marketscan:
             if self.params.help == True:
                 print sgy,myobject.usage()
                 
-        return 
-        
+        return
+
+    # import indicator
+    def importStrategy(self, sgyname, symbol, ohlc):
+        sgx = self._getStrategyInx(sgyname)
+        self._runStrategy(symbol, ohlc, sgyname)
+        return sgx
+
+
+    def _getStrategyInx(self, sgy):
+        if sgy not in self.sgyInx:
+            module_meta = __import__(sgy, globals(), locals(), [sgy])
+            c = getattr(module_meta, sgy)
+            myobject = c() # construct module
+            if sgy not in self.params.sgyparam:
+                self.params.sgyparam[sgy] = {}
+            self.params.sgyparam[sgy]['verbose'] = self.params.verbose
+            print "created strategy", sgy, self.params.sgyparam[sgy]
+            self.sgyInx[sgy] = myobject
+        return self.sgyInx[sgy]
    
+    def _runStrategy(self, symbol, ohlc, sgyname):
+        cacheflag = self._hasStrategyCache(self.feedData, symbol, sgyname, self.params.sgyparam[sgyname])
+        if not cacheflag:
+            sgx = self.sgyInx[sgyname]
+            if sgx.needPriceData():
+                if self.params.verbose > 1:
+                    print "\t", sgyname
+                sgx.cleanup()
+                sgx.setupParam(self.params.sgyparam[sgyname])
+                # ohlc = self.feedData.ohlc[symbol]
+                sgx.runIndicator(symbol, ohlc, self.params.sgyparam[sgyname])
+                #indarr = sgx.getIndicators()
+                #for cn in indarr:
+                #    self.feedData.table.loc[index,cn] = indarr[cn]
+        return  self.sgyInx[sgyname]
+
 
         
     def saveTableFile(self,table,addstr=""):
@@ -220,14 +261,14 @@ class marketscan:
         
     
         try:
-            feedData = self.rawData[self.params.feed]      
-            if (feedData.dirty):
+            self.feedData = self.rawData[self.params.feed]
+            if (self.feedData.dirty):
                 print "clear current [",self.params.feed,"] strategy cache"
-                feedData.strategy.clear()
-            feedData.dirty = False
+                self.feedData.strategy.clear()
+            self.feedData.dirty = False
         except:
             #not load yest
-            #feedData = self.loadDataTask(args)
+            #self.feedData = self.loadDataTask(args)
             print "you need to load data firstly. e.g.(load1d)"
             return
       
@@ -235,34 +276,34 @@ class marketscan:
         #TODO
         if (noPxModule):
             print "No px module to run, done."
-            feedData.table = pandas.merge(feedData.table,df1,how='outer')
-            table = pandas.merge(feedData.table,df1,how='inner') #create new table
+            self.feedData.table = pandas.merge(self.feedData.table,df1,how='outer')
+            table = pandas.merge(self.feedData.table,df1,how='inner') #create new table
             print table
             return table
             
-        print "total", len(feedData.table.index),"symbols selected to run indicator/strategy"
+        print "total", len(self.feedData.table.index),"symbols selected to run indicator/strategy"
         
         
         # loop each symbol
-        for index, row in feedData.table.iterrows():
+        for index, row in self.feedData.table.iterrows():
             symbol = row['symbol']
             if (symbol not in tickdct):
                 #print "skip",symbol
                 continue
             #ohlc = self.mfeed.getOhlc(symbol)
-            if (symbol not in feedData.ohlc):
+            if (symbol not in self.feedData.ohlc):
                 print symbol, "not in cache"
                 continue
                 
-            ohlc = feedData.ohlc[symbol]
-            feedData.table.loc[index, 'px'] = round(ohlc['Adj Close'].iloc[-1],2)
+            ohlc = self.feedData.ohlc[symbol]
+            self.feedData.table.loc[index, 'px'] = round(ohlc['Adj Close'].iloc[-1],2)
             
             if (self.params.verbose > 1): 
                 start = timer()
                 print "processing", symbol
                 
             for sgyname in self.sgyInx:                    
-                cacheflag = self._hasStrategyCache(feedData, symbol, sgyname, self.params.sgyparam[sgyname])
+                cacheflag = self._hasStrategyCache(self.feedData, symbol, sgyname, self.params.sgyparam[sgyname])
                 if not cacheflag: 
                     sgx = self.sgyInx[sgyname]                    
                     if (sgx.needPriceData()):
@@ -274,7 +315,7 @@ class marketscan:
                         indarr = sgx.getIndicators()
                         #read indicator
                         for cn in indarr:
-                            feedData.table.loc[index,cn] = indarr[cn]
+                            self.feedData.table.loc[index,cn] = indarr[cn]
                             #sgysymbol[cn] = indarr[cn]                            
                             
                 else:
@@ -292,9 +333,9 @@ class marketscan:
         
 
         #filter work
-        #table=feedData.table[(feedData.table['symbol'].isin(df1['symbol']))]
+        #table=self.feedData.table[(self.feedData.table['symbol'].isin(df1['symbol']))]
         #merge here -- because there is no only NoPriceModule.
-        table = pandas.merge(feedData.table,df1,how='inner')
+        table = pandas.merge(self.feedData.table,df1,how='inner')
         print "=== screening ===="
         #print self.params.sgyparam
         #outputCol = OrderedDict({'symbol':1,'px':1})
@@ -333,7 +374,7 @@ class marketscan:
         print headers #print column again
                         
         print "...................."
-        print len(table),"/",len(feedData.table.index),"=",round(len(table)*100.0/len(feedData.table.index),2),"%"
+        print len(table),"/",len(self.feedData.table.index),"=",round(len(table)*100.0/len(self.feedData.table.index),2),"%"
         
         #save filted csv file
         self.saveTableFile(table)
