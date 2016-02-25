@@ -24,8 +24,8 @@ class ind_ma(BaseIndPx):
         self.volma20ra=[]
         # pandas.core.series.Series()
         if plen >= 10:
-            self.ma10 = pandas.stats.moments.rolling_mean(px,10).tolist()
-            self.ind['ma10'] = round(self.ma10[-1], 2)
+            self.ma10 = pandas.stats.moments.rolling_mean(px, 10) #.tolist()
+            self.ind['ma10'] = round(self.ma10.iloc[-1], 2)
             #df['ma10']=self.ma10
         if plen >= 20:
             vol = df['Volume']

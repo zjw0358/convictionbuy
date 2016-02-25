@@ -39,7 +39,7 @@ class st_sma(ind_ma):
         sp = StrategyPattern()
         tsup = TradeSupport()
         px = ohlc['Adj Close']
-        if (self.ma10):
+        if (not self.ma10.empty):
             # not using divergencyCross
             buysg,sellsg = sp.cross(px, self.ma10, self.nbar)
             tsup.getLastSignal(buysg,sellsg,self.ind,'ma10b','ma10s')
@@ -48,7 +48,7 @@ class st_sma(ind_ma):
             #ohlc['ma10']=self.ma10
 
         ma50bsg = []
-        if self.ma50:
+        if not self.ma50.empty:
             buysg,sellsg = sp.cross(px, self.ma50, self.nbar)
             tsup.getLastSignal(buysg, sellsg, self.ind, 'ma50b', 'ma50s')
             ohlc['ma50b'] = buysg
@@ -56,7 +56,7 @@ class st_sma(ind_ma):
             ma50bsg = buysg
 
 
-        if (self.ma50 and self.ma10):
+        if (not self.ma50.empty) and (not self.ma10.empty):
             buysg, sellsg = sp.cross(self.ma10, self.ma50, self.nbar)
             tsup.getLastSignal(buysg, sellsg, self.ind, 'ma1050b', 'ma1050s')
             ohlc['ma1050b'] = buysg
@@ -81,6 +81,7 @@ class st_sma(ind_ma):
 
 
             # ready to cross above
+            '''
             flag1 = (self.ma10[-1] > self.ma50[-1]*0.97)
             dif1 = (self.ma50[-1]-self.ma10[-1])
             dif2 = (self.ma50[-2]-self.ma10[-2])
@@ -90,7 +91,7 @@ class st_sma(ind_ma):
                 self.ind['ma1050e']=1
             else:
                 self.ind['ma1050e']=0
-            
+            '''
         #too lag, how about px cross MA50
         '''
         l1=len(self.ma50)

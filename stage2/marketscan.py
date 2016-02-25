@@ -217,7 +217,7 @@ class marketscan:
             sgycache = feedData.strategy[(sgyname,symbol)]
             #compare param
             for key in sgyparam:
-                if (key!="verbose") and (sgyparam[key]!='') and (sgycache[key]!=sgyparam[key]) :
+                if (key!="verbose") and (sgyparam[key]!='') and (sgycache[key] != sgyparam[key]):
                     cacheflag = False
                     break
             if (cacheflag):
