@@ -234,7 +234,7 @@ class StrategyPattern(object):
             
         return buysg,sellsg
     
-    # Two factors cross
+    # Two factors cross, F1 cross slow line, F2 > threshold
     def cross2factors(self,f1,f2,slow,f2thr):
         prevF1 = f1[0]
         prevF2 = f2[0]

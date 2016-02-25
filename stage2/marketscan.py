@@ -57,7 +57,7 @@ class marketscan:
         self.params = ms_paramparser.ms_paramparser()
         self.datacfg = ms_config.MsDataCfg("")
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/")           
-        self.sgyInx={}
+        self.sgyInxDct={}
         self.rawData = {} #MarketScan.RawData()
         global g_marketscan
         g_marketscan = self
@@ -85,17 +85,19 @@ class marketscan:
             self.loadStrategy(params.sgyparam)           
    
         
-    def loadStrategy(self,sgyLst):
+    def loadStrategy(self, sgyParamDct):
         #load all strategy
         #sys.path.insert(0, "../strategies/")
-        self.sgyInx = {}
-        for sgy in sgyLst:            
+        self.sgyInxDct = {}
+        self.sgyInxAllDct = {}
+        for sgy in sgyParamDct:
             module_meta = __import__(sgy, globals(), locals(), [sgy])
             c = getattr(module_meta, sgy) 
             myobject = c() # construct module
-            sgyLst[sgy]['verbose'] = self.params.verbose
-            print "created strategy",sgy,sgyLst[sgy]            
-            self.sgyInx[sgy] = myobject            
+            sgyParamDct[sgy]['verbose'] = self.params.verbose
+            print "created strategy", sgy, sgyParamDct[sgy]
+            self.sgyInxDct[sgy] = myobject
+            self.sgyInxAllDct[sgy] = myobject
             if self.params.help == True:
                 print sgy,myobject.usage()
                 
@@ -107,9 +109,9 @@ class marketscan:
         self._runStrategy(symbol, ohlc, sgyname)
         return sgx
 
-
+    # TODO update sgyInxDct
     def _getStrategyInx(self, sgy):
-        if sgy not in self.sgyInx:
+        if sgy not in self.sgyInxAllDct:
             module_meta = __import__(sgy, globals(), locals(), [sgy])
             c = getattr(module_meta, sgy)
             myobject = c() # construct module
@@ -117,13 +119,13 @@ class marketscan:
                 self.params.sgyparam[sgy] = {}
             self.params.sgyparam[sgy]['verbose'] = self.params.verbose
             print "created strategy", sgy, self.params.sgyparam[sgy]
-            self.sgyInx[sgy] = myobject
-        return self.sgyInx[sgy]
+            self.sgyInxAllDct[sgy] = myobject
+        return self.sgyInxAllDct[sgy]
    
     def _runStrategy(self, symbol, ohlc, sgyname):
         cacheflag = self._hasStrategyCache(self.feedData, symbol, sgyname, self.params.sgyparam[sgyname])
         if not cacheflag:
-            sgx = self.sgyInx[sgyname]
+            sgx = self.sgyInxAllDct[sgyname]
             if sgx.needPriceData():
                 if self.params.verbose > 1:
                     print "\t", sgyname
@@ -134,13 +136,13 @@ class marketscan:
                 #indarr = sgx.getIndicators()
                 #for cn in indarr:
                 #    self.feedData.table.loc[index,cn] = indarr[cn]
-        return  self.sgyInx[sgyname]
+        #return  self.sgyInxAllDct[sgyname]
 
 
         
     def saveTableFile(self,table,addstr=""):
         saveFileName = "scan_"
-        for sgyname in self.sgyInx:
+        for sgyname in self.sgyInxDct:
             saveFileName += sgyname
             saveFileName +="_"
             
@@ -160,7 +162,7 @@ class marketscan:
      
     def getSaveFileName(self,addstr=""):
         saveFileName = "scan_"
-        for sgyname in self.sgyInx:
+        for sgyname in self.sgyInxDct:
             saveFileName += sgyname
             saveFileName +="_"
             
@@ -174,8 +176,8 @@ class marketscan:
     # return True - pricedata module
     # return False - no pricedata module
     def hasPriceDataModule(self):
-        for sgyname in self.sgyInx:
-            sgx = self.sgyInx[sgyname]
+        for sgyname in self.sgyInxDct:
+            sgx = self.sgyInxDct[sgyname]
             if sgx.needPriceData()==True:
                 return True
         return False
@@ -243,8 +245,8 @@ class marketscan:
         outputCol = OrderedDict({'symbol':1,'px':1}) 
         # load prescan module        
         noPxModule = True
-        for sgyname in self.sgyInx:
-            sgx = self.sgyInx[sgyname]
+        for sgyname in self.sgyInxDct:
+            sgx = self.sgyInxDct[sgyname]
             if sgx.needPriceData()==False:
                 print "total", len(df1.index),"symbols selected to be processed by",sgyname
                 sgx.setupParam(self.params.sgyparam[sgyname])
@@ -302,10 +304,10 @@ class marketscan:
                 start = timer()
                 print "processing", symbol
                 
-            for sgyname in self.sgyInx:                    
+            for sgyname in self.sgyInxDct:
                 cacheflag = self._hasStrategyCache(self.feedData, symbol, sgyname, self.params.sgyparam[sgyname])
                 if not cacheflag: 
-                    sgx = self.sgyInx[sgyname]                    
+                    sgx = self.sgyInxDct[sgyname]
                     if (sgx.needPriceData()):
                         if (self.params.verbose > 1): 
                             print "\t", sgyname
@@ -341,12 +343,12 @@ class marketscan:
         #outputCol = OrderedDict({'symbol':1,'px':1})
         #outputCol = ['symbol','px']
         
-        #for sgyname in self.sgyInx:
-        for sgyname in self.params.sgyparam:
-            sgx = self.sgyInx[sgyname]
+        for sgyname in self.sgyInxDct:
+        #for sgyname in self.params.sgyparam:
+            sgx = self.sgyInxDct[sgyname]
             if sgx.needPriceData()==True: #allow ms_zack to run scan
                 #print "screening ",sgyname
-                sgx = self.sgyInx[sgyname]
+                sgx = self.sgyInxDct[sgyname]
                 print "screening",sgyname,self.params.sgyparam[sgyname]
                 sgx.setupParam(self.params.sgyparam[sgyname])
                 table,cls = sgx.runScan(table)
