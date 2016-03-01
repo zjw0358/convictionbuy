@@ -25,7 +25,7 @@ class st_k(BaseIndPx):
         delta = s1 - s2
         #ohlc['delta'] = delta
         # ohlc
-        buysg, sellsg = self.sp.crossValue(delta, delta, 0, 0, 2)
+        buysg, sellsg = self.sp.crossValue(delta, delta, 0, 0, 1)
         ohlc['ag50b'] = buysg
         ohlc['ag50s'] = sellsg
         self.tsup.getLastSignal(buysg, sellsg, self.ind, 'ag50b','ag50s')
@@ -38,5 +38,10 @@ class st_k(BaseIndPx):
         buysg, sellsg = self.sp.crossValue(delta, delta, 0, 0, 2)
         ohlc['ag10b'] = buysg
         ohlc['ag10s'] = sellsg
-        self.tsup.getLastSignal(buysg, sellsg, self.ind, 'ag10b','ag10s')
+
+        # get all signal idx
+        ag10bidx, ag10sidx = self.tsup.getLastSignal(buysg, sellsg, self.ind, 'ag10b', 'ag10s')
+        vol10bidx = ind_ma.ind['vol10b']
+        ma10bidx = ind_ma.ind['ma10b']
+
         pass

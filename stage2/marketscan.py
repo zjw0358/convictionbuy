@@ -452,8 +452,13 @@ class marketscan:
             symbol = row['symbol']
             if symbol in feed_data.ohlc:
                 print feed_data.ohlc[symbol]
-                headers = 'index\t' + '\t'.join(feed_data.ohlc[symbol].dtypes.index)
-                print headers
+                print "--------"
+                tostr = feed_data.ohlc[symbol].to_string()
+                endidx = tostr.index("\n")
+                header = tostr[:endidx]
+                print header
+                #headers = 'index\t' + '\t'.join(feed_data.ohlc[symbol].dtypes.index)
+                #print headers
             else:
                 print "Not found"  
               

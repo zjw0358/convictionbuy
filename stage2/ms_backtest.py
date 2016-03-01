@@ -23,7 +23,7 @@ class Ordermg:
         avgpx = (row['High'] + row['Low'] + row['Close'] + row['Open'])/4
         self.closePos(index, float(avgpx), row['Close'], row['Adj Close'])
         if (self.totalTrade == 0):
-            self.winrate = 1.0
+            self.winrate = 0
         else:
             self.winrate = round(float(self.win*100.0)/self.totalTrade, 2)
 
@@ -138,6 +138,7 @@ class ms_backtest:
         self.symbols = []
         self.totalTrade = []
         self.winrate = []
+        self.win = []
         self.gain=[]
         self.gainreturn = []
         self.maxgain = []
@@ -146,24 +147,38 @@ class ms_backtest:
         pass
 
     def combineSignal(self, ohlc, buydct, selldct):
-        #buydct={'ma10b': 0, 'ma50b': 0, 'ma1050b': 0}
-        #selldct={'ma10s': 0}
-        #alldct = buydct
-        #alldct.update(selldct)
+        #tmpbuydct = buydct.copy()
+
         def cleardct(dct):
             for key in dct:
                 dct[key] = 0
             pass
+
+
+        def buyspread(dct):
+            minv = 100000
+            maxv = 0
+            spread = 6
+            for key in dct:
+                minv = min(dct[key], minv)
+                maxv = max(dct[key], maxv)
+            if (maxv-minv) > spread:
+                return False
+            else:
+                return True
+            pass
+
         #print buydct,selldct
         cleardct(buydct)
         cleardct(selldct)
 
         signallst = []
+        idx = 1
         for row_index, row in ohlc.iterrows():
             signal = ""
             for bs in buydct:
                 if row[bs] == "buy":
-                    buydct[bs] = 1
+                    buydct[bs] = idx
 
             for ss in selldct:
                 if row[ss] == "sell":
@@ -171,7 +186,7 @@ class ms_backtest:
 
             buy_flag = True
             for bs in buydct:
-                if buydct[bs] != 1:
+                if buydct[bs] == 0:
                     buy_flag = False
 
 
@@ -193,11 +208,13 @@ class ms_backtest:
                 signal = "sell"
                 for ss in selldct:
                     selldct[ss] = 0
+
             if buy_flag:
-                signal = "buy"
+                if buyspread(buydct):
+                    signal = "buy"
                 for key in buydct:
                     buydct[key] = 0
-
+            idx += 1
             signallst.append(signal)
         ohlc['signal'] = signallst
         pass
@@ -233,38 +250,49 @@ class ms_backtest:
         self.symbols.append(sym)
         self.totalTrade.append(ordermg.totalTrade)
         self.winrate.append(ordermg.winrate)
+        self.win.append(ordermg.win)
         self.gain.append(ordermg.gainloss)
         self.gainreturn.append(ordermg.gainreturn)
         self.maxgain.append(ordermg.maxgainp)
         self.maxloss.append(ordermg.maxlossp)
+
         pass
         
     def printBackTestResult(self):
-        df = pandas.DataFrame({'symbol': self.symbols, 'total trade': self.totalTrade, 'win rate%': self.winrate,
+        df = pandas.DataFrame({'symbol': self.symbols, 'total trade': self.totalTrade, 'win trade': self.win, 'win rate%': self.winrate,
                                  'gain': self.gain, 'return%': self.gainreturn, 'maxgain%': self.maxgain, 'maxloss%':
                                  self.maxloss},
-                                columns = ['symbol', 'total trade', 'win rate%', 'gain', 'return%', 'maxgain%', 'maxloss%'])
+                                columns = ['symbol', 'total trade', 'win trade', 'win rate%', 'gain', 'return%', 'maxgain%', 'maxloss%'])
+        df = df[df['total trade']!=0]
         print "==============================="
         print df
         tt = df['total trade'].sum()
-        wr = df['win rate%'].mean()
-        ga = df['gain'].sum()/tt
-        rt = df['return%'].sum()/tt
+        wt = df['win trade'].sum()
+        wr = "%.2f %%" % (wt * 100.0 / tt)
+        tga = df['gain'].sum()
+        trt = df['return%'].sum()
         mg = df['maxgain%'].max()
         ml = df['maxloss%'].max()
 
-        sumdf = pandas.DataFrame({'name': ['average'], 'avg trade': [tt/len(df.index)], 'win rate%': [wr],
-                                 'gain': [ga], 'return%': [rt], 'maxgain%': [mg], 'maxloss%': [ml]},
-                                columns = ['name', 'avg trade', 'win rate%', 'gain', 'return%', 'maxgain%', 'maxloss%'])
+        sumdf = pandas.DataFrame({'total trade': [tt], 'win trade': [wt], 'win rate%': [wr],
+                                 'total gain': [tga], 'avg gain': [tga/tt], 'total return%': [trt],
+                                  'avg return%': [trt/tt], 'maxgain%': [mg], 'maxloss%': [ml]},
+                                 columns=['total trade', 'win trade', 'win rate%', 'total gain', 'avg gain',
+                                          'total return%', 'avg return%', 'maxgain%', 'maxloss%'])
         print "..............................."
         print sumdf
         # save to csv
-        outputFn = "../result/backtest_" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M") + '.csv'
+        ts = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
+        outputFn = "../result/backtest_" + ts + '.csv'
+        sumfn =  "../result/backtest_" + ts + '_summary.csv'
         try:
             df.to_csv(outputFn, sep=',', index=False)
             print "Finish wrote to ", outputFn
+            sumdf.to_csv(sumfn, sep=',', index=False)
+            print "Finish wrote to ", sumfn
+
         except:
-            print "exception when write to csv ", outputFn
+            print "exception when write to csv ", outputFn, sumfn
 
 
         return df

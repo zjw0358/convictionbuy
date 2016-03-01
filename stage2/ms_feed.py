@@ -35,27 +35,23 @@ class ms_feed:
             sys.stdout.write(s)      
             #print "downloading ",self.downloadid, symbol       
         
-        try:
-            if ("sina" in self.params.feed):
-                ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
-            elif ("yahoo" in self.params.feed):
-                ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
-            elif ("goog" in self.params.feed):
-                ohlc = self.googfeed.reqMarketData(googsymbol,googexg,self.params.feed)
-            else:
-                ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)        
-        
-            self.saveOhlc(symbol,ohlc,self.params.feed)
+        #try:
+        if ("sina" in self.params.feed):
+            ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
+        elif ("yahoo" in self.params.feed):
+            ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
+        elif ("goog" in self.params.feed):
+            ohlc = self.googfeed.reqMarketData(googsymbol,googexg,self.params.feed)
+        else:
+            ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)
+
+        self.saveOhlc(symbol,ohlc,self.params.feed)
             
-        except:
-            self.numError += 1
-            print "System/Network Error when retrieving ",symbol," skip it"
-            return None
-            '''
-            if numError>3:
-                print "too many errors when downloading symbol data, exit now"
-                sys.exit()
-            '''
+        #except:
+        #    self.numError += 1
+        #    print "System/Network Error when retrieving ",symbol," skip it"
+        #    return None
+
         if (self.params.verbose > 0): 
             end = timer()
             print "\ttime",round(end - start,3)

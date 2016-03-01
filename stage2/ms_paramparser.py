@@ -117,7 +117,14 @@ class ms_paramparser:
     def parseBuy(self, arg):
         tokens = arg.split('&')
         self.buydict = {key: 0 for key in tokens}
-
+        '''
+        for item in tokens:
+            order = item.split(':')
+            if len(order)>1:
+                self.buydict[order[0]] = int(order[1])
+            else:
+                self.buydict[order[0]] = 0
+        '''
 
     def parseSell(self, arg):
         tokens = arg.split('&')

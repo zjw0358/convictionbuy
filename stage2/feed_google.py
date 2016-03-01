@@ -4,6 +4,8 @@ import pandas
 import csv
 import marketdata
 import ms_config
+import datetime
+import sys
 
 class FeederGoogle:
     def __init__(self):
@@ -18,6 +20,13 @@ class FeederGoogle:
                 print key,self.googdict[key]
         '''
         pass
+
+    def getDateTime(self, s):
+        #t = datetime.datetime.fromtimestamp(int(s)).strftime('%Y-%m-%d %H:%M:%S')
+        #return t
+        return datetime.datetime.fromtimestamp(int(s))
+
+
     '''
     # for 15m data
     http://www.networkerror.org/component/content/article/1-technical-wootness/44-googles-undocumented-finance-api.html
@@ -32,22 +41,23 @@ class FeederGoogle:
     2.6,2.6,2.6,2.6,100
     http://www.google.com/finance/getprices?i=3600&p=30d&f=d,o,h,l,c,v&df=cpct&q=AAPL
     '''
-    def reqMarketData(self,symbol,exg,param=""):
-        freq = '300'
-        duration='10d'
+    def reqMarketData(self, symbol, exg, param=""):
+        freq = 300
+        duration = '10d'
         if ('1h' in param):
-            freq='3600'
-            duration='30d'
+            freq = 3600
+            duration = '30d'
         elif ('15m' in param):
-            freq='900'
-            duration='20d'
+            freq = 900
+            duration = '20d'
         
-        url = "http://www.google.com/finance/getprices?i=%s&p=%s&f=o,h,l,c,v&df=cpct&q=%s" % (freq,duration,symbol)
+        url = "http://www.google.com/finance/getprices?i=%d&p=%s&f=d,o,h,l,c,v&df=cpct&q=%s" \
+              % (freq, duration, symbol)
         #exg = self.googdict[symbol]
         if (exg!=""):
             url=url+"&x="+exg
      
-        #print url   
+        #print url
         try:
             response = urllib2.urlopen(url)
         except:
@@ -66,28 +76,36 @@ class FeederGoogle:
         
         reader = csv.reader(response)
         idx = 0
-        try:
-            for row in reader:
-                if (not flag):
-                    if ("TIMEZONE_OFFSET" in row[0]):
-                        flag = True
-                        idx = 0
-                        continue
-                    else:
-                        idx += 1                    
-                        continue
+        startt = datetime.datetime.now()
+        #try:
+        for row in reader:
+            if not flag:
+                if ("TIMEZONE_OFFSET" in row[0]):
+                    flag = True
+                    idx = 0
+                    continue
+                else:
+                    idx += 1
+                    continue
 
-                dateLst.append(idx)
-                closeLst.append(float(row[0]))
-                highLst.append(float(row[1]))
-                lowLst.append(float(row[2]))
-                openLst.append(float(row[3]))
-                volumeLst.append(int(row[4]))
-                adjCloseLst.append(float(row[0]))
-                idx += 1
-        except:
-            print "error when reading google data, exit..."
-            return
+            if row[0].startswith('a'):
+                startt = self.getDateTime(row[0][1:])
+                newt = startt
+            else:
+                delta = int(row[0]) * freq
+                newt = startt + datetime.timedelta(seconds=delta)
+            dateLst.append(newt)
+            closeLst.append(float(row[1]))
+            highLst.append(float(row[2]))
+            lowLst.append(float(row[3]))
+            openLst.append(float(row[4]))
+            volumeLst.append(int(row[5]))
+            adjCloseLst.append(float(row[1]))
+            idx += 1
+        #except:
+        #    print sys.exc_info()[0]
+        #    print "error when reading google data, exit..."
+        #    return
             
         #dateLst.reverse()
         #openLst.reverse()
@@ -97,9 +115,9 @@ class FeederGoogle:
         #volumeLst.reverse()
         #adjCloseLst.reverse()
         
-        ohlc = pandas.DataFrame({'Open':openLst,'High':highLst,'Low':lowLst,\
-            'Close':closeLst,'Volume':volumeLst,'Adj Close':adjCloseLst},\
-            columns=['Open','High','Low','Close','Volume','Adj Close'],index = dateLst)        
+        ohlc = pandas.DataFrame({'Open': openLst, 'High': highLst, 'Low': lowLst,
+                                 'Close': closeLst, 'Volume': volumeLst, 'Adj Close': adjCloseLst},
+                                columns=['Open', 'High', 'Low', 'Close', 'Volume', 'Adj Close'], index=dateLst)
         ohlc.index.name = 'Date'
         #print ohlc
         return ohlc

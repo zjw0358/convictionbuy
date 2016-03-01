@@ -11,7 +11,7 @@ def send_gmail(attachment,filedate):
     test_str="CB_daily_report_"+filedate
     serverAddr = "smtp.gmail.com"
     me="wirelesser@gmail.com"
-    me_password="Cv60faqq"
+    me_password="nopasswd"
     you="wirelesser@gmail.com"
     msg = MIMEMultipart()
     msg['Subject'] = test_str
@@ -59,7 +59,7 @@ def send_mail_in_office(attachment,filedate):
     #me="zhour@garena.com"
     me="wirelesser@gmail.com"
     #me_password="cv80faqq"
-    me_password="Cv60faqq"
+    me_password="nopasswd"
     you="wirelesser@gmail.com"
     msg = MIMEMultipart()
     msg['Subject'] = test_str

@@ -235,7 +235,7 @@ class StrategyPattern(object):
         return buysg,sellsg
     
     # Two factors cross, F1 cross slow line, F2 > threshold
-    def cross2factors(self,f1,f2,slow,f2thr):
+    def cross2factors0(self,f1,f2,slow,f2thr):
         prevF1 = f1[0]
         prevF2 = f2[0]
         prevSlow = slow[0]
@@ -259,9 +259,55 @@ class StrategyPattern(object):
             prevSlow = curSlow
             buysg.append(buysignal)
             sellsg.append(sellsignal)            
-        return buysg,sellsg
+        return buysg, sellsg
         pass
-        
+
+    #must > threshold in nbar
+    def cross2factors(self, f1, f2, slow, f2thr, nbar):
+        prevF1 = f1[0]
+        prevF2 = f2[0]
+        prevSlow = slow[0]
+        buysg = []
+        sellsg = []
+        buyflag = False
+        buyidx = 0
+        for idx, curSlow in enumerate(slow):
+            buysignal = ""
+            sellsignal = ""
+            currentF1 = f1[idx]
+            currentF2 = f2[idx]
+
+            if buyflag:
+                if currentF2 > f2thr:
+                    if (idx-buyidx) < nbar:
+                        buysignal = "buy"
+                        buyidx = 0
+                    else:
+                        buyflag = False
+                else:
+                    if (idx-buyidx) >= nbar:
+                         buyflag = False
+                         buyidx = 0
+            else:
+                if (prevF1 < prevSlow) and (currentF1 > curSlow):
+                    #print currentF1,curSlow,currentF2
+                    if currentF2 > f2thr:
+                        buysignal = "buy"
+                    else:
+                        buyflag = True
+                        buyidx = idx
+
+
+            if (prevF2 > prevSlow) and (currentF1 < curSlow) and (currentF2 > f2thr):
+                sellsignal = "sell"
+
+            prevF1 = currentF1
+            prevF2 = currentF2
+            prevSlow = curSlow
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)
+        return buysg, sellsg
+        pass
     #e.g rsi crossabove 30 means buy signal
     # rsi crossabove 70 means sell signal
     def crossValue(self, bline, sline, buyValue, sellValue, nbar):
@@ -404,9 +450,9 @@ class StrategyPattern(object):
             
         return closesg
          
-    #fast cross above slow, and keep divengency moving at least n bars 
-    #divergency cross
-    def divergencyCross(self, fast, slow, nbar):
+    # fast cross above slow, and keep divengency moving at least n bars
+    # divergency cross, too strict, should only check dif
+    def divergencyCross0(self, fast, slow, nbar):
         prevFast = fast[0]
         prevSlow = slow[0]
         buysg = []
@@ -459,10 +505,62 @@ class StrategyPattern(object):
             prevSlow = curSlow
             buysg.append(buysignal)
             sellsg.append(sellsignal)
-        
-            
         return buysg,sellsg
 
+    def divergencyCross(self, fast, slow, nbar):
+        prevFast = fast[0]
+        prevSlow = slow[0]
+        buysg = []
+        sellsg = []
+        buyflag = False
+        buycount = 1
+        sellflag = False
+        sellcount = 1
+        buydif = 0
+        selldif = 0
+        for idx, curSlow in enumerate(slow):
+            buysignal = ""
+            sellsignal = ""
+            currentFast = fast[idx]
+
+            if buyflag:
+                newdif = currentFast - curSlow
+                if newdif >= buydif:
+                    buycount += 1
+                    if buycount == nbar:
+                        buysignal = "buy"
+                        buyflag = False
+                        buycount = 1
+                else:
+                    buyflag = False
+                    buycount = 1
+                pass
+            else:
+                if (prevFast < prevSlow) and (currentFast > curSlow):
+                    buyflag = True
+                    buydif = currentFast > curSlow
+
+            if sellflag:
+                newdif = curSlow - currentFast
+                if newdif >= selldif:
+                    sellcount += 1
+                    if sellcount == nbar:
+                        sellsignal = "sell"
+                        sellcount = 1
+                        sellflag = False
+                else:
+                    sellcount = 1
+                    sellflag = False
+            else:
+                if (prevFast > prevSlow) and (currentFast < curSlow):
+                    sellflag = True
+                    selldif = curSlow - currentFast
+
+            prevFast = currentFast
+            prevSlow = curSlow
+            buysg.append(buysignal)
+            sellsg.append(sellsignal)
+        return buysg,sellsg
 
     def trueRange(self,high,close,low):
         return max(max(high-low,abs(high-close)),abs(low-close))
