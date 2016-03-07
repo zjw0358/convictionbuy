@@ -411,6 +411,7 @@ class marketscan:
             symbol = row['symbol']
             if symbol in feed_data.ohlc:
                 ohlc = feed_data.ohlc[symbol]
+                #print symbol,"backtest"
                 self.backtest.combineSignal(ohlc, self.params.buydict, self.params.selldict)
                 self.backtest.runBackTest(symbol, ohlc, self.params.verbose)
                 #print feed_data.ohlc[symbol]

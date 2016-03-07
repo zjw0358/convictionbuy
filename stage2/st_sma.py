@@ -28,6 +28,12 @@ class st_sma(ind_ma):
         else:
             self.dist50 = 20
 
+        if 'dist200' in param:
+            self.dist200 = float(param['dist200'])
+        else:
+            self.dist200 = 50
+
+
         ind_ma.runIndicator(self,symbol,ohlc,param)
         #print "process st_sma",symbol
         self.algoStrategy(symbol, ohlc)
@@ -77,7 +83,7 @@ class st_sma(ind_ma):
             #self.dist50 = 20
             lastsell = -self.dist50
             distsg = []
-            for idx, val in enumerate(ohlc['ma50s']):
+            for idx, val in enumerate(ohlc['ma1050s']):
                 sig = ""
                 if val == "sell":
                     lastsell = idx
@@ -120,11 +126,35 @@ class st_sma(ind_ma):
         '''
         l1=len(self.ma50)
         l2=len(self.ma200)
+        #print l1,l2,symbol
         if (l1==l2 and l1>0):
             #print "test golder and death"
-            buysg,sellsg = sp.cross(self.ma50, self.ma200, self.nbar)
-            #print sellsg
-            tsup.getLastSignal(buysg,sellsg, self.ind,'ma50200b','ma50200s')          
+            buysg, sellsg = sp.cross(self.ma50, self.ma200, self.nbar)
+            ohlc['ma50200s'] = sellsg
+            tsup.getLastSignal(buysg, sellsg, self.ind,'ma50200b', 'ma50200s')
+            '''
+            lastsell = -self.dist200
+            distsg = []
+            for idx, val in enumerate(ohlc['ma50200s']):
+                sig = ""
+                if val == "sell":
+                    lastsell = idx
+
+                buyval = buysg[idx]
+                if (buyval == "buy"):
+
+                    #TODO test
+                    if symbol=="QCOM":
+                        print "dist200",idx,lastsell,self.dist200
+
+                    if lastsell >= 0 and idx-lastsell > self.dist200:
+                        sig = "buy"
+                    else:
+                        sig = ""
+                distsg.append(sig)
+            ohlc['dist200'] = distsg
+            tsup.getLastSignal(distsg, [], self.ind, 'dist200', '')
+            '''
         
         #support line
         #print self.ma50

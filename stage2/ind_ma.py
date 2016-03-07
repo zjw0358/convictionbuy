@@ -15,12 +15,12 @@ class ind_ma(BaseIndPx):
     '''
     def _algoFunc(self, df):
         plen = len(df)  
-        #px = df['Adj Close']
+
         px = df['Close']
         self.ma10=[]
         self.ma50 = pandas.Series()
         self.ma100=[]
-        self.ma200=[]
+        self.ma200 = pandas.Series()
         self.volma20ra=[]
         # pandas.core.series.Series()
         if plen >= 10:
@@ -49,6 +49,5 @@ class ind_ma(BaseIndPx):
         #print df
     #main process routine
     def runIndicator(self,symbol,ohlc,param={}):
-        #self.setupParam(param)     
-        #self.close_px = ohlc['Adj Close']
+        #print symbol,len(ohlc)
         self._algoFunc(ohlc)

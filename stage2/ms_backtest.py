@@ -147,7 +147,18 @@ class ms_backtest:
         pass
 
     def combineSignal(self, ohlc, buydct, selldct):
-        #tmpbuydct = buydct.copy()
+        flag = True
+        for key in buydct:
+            if key not in ohlc:
+                flag = False
+
+        for key in selldct:
+            if key not in ohlc:
+                flag = False
+
+        if (not flag):
+            ohlc['signal'] = ['']*len(ohlc)
+            return
 
         def cleardct(dct):
             for key in dct:
@@ -266,6 +277,8 @@ class ms_backtest:
         df = df[df['total trade']!=0]
         print "==============================="
         print df
+        if len(df)==0:
+            return df
         tt = df['total trade'].sum()
         wt = df['win trade'].sum()
         wr = "%.2f %%" % (wt * 100.0 / tt)

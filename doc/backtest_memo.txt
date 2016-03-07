@@ -137,3 +137,23 @@ Finish wrote to  ../result/backtest_2016-02-26-15-20.csv
 0  summary            8          7   87.50 %  438.81     4.39     12.36      0.12
 Finish wrote to  ../result/backtest_2016-02-26-15-31.csv
 
+
+
+     symbol      px  ma10b  ma50b  ma50s  ag50b  ma1050b  dist50  vol10b  dmi_dif  dmi_buy
+24      MGM   18.73      7      7     61     47        1       7       7     2.94        6
+27     MSFT   50.72      9      2      3     47        0       2       8     1.61        4
+42     CSCO   25.58     14     14     42     13       13      14      14     4.74       13
+51      VMW   45.55      9      2      3      0        1       2       9     2.25        8
+87     QCOM   45.60      8      5     20      3        0       5       8     2.91        5
+109    KITE   44.59      6      4     42    NaN        0     NaN       8     1.92        3
+116    BIDU  159.78      7      7     99      0        2       7       6     4.18        6
+120     BLK  310.50      7      6     35      5        1       6       7     2.21        6
+145    WYNN   70.28      9      7     44      6        5       7       8     5.01        9
+158     TRV  106.86      7      6     15      4        0     NaN       7     2.53        6
+183  G3B.SI    2.71      5      4     19      1        1     NaN       4     4.20        6
+....................
+index	symbol	px	ma10b	ma50b	ma50s	ag50b	ma1050b	dist50	vol10b	dmi_dif	dmi_buy
+....................
+11 / 185 = 5.95 %
+Finish wrote to  ../result/scan_st_sma_st_dmi_2016-03-07.csv
+
