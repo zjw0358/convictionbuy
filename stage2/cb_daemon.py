@@ -21,7 +21,8 @@ class cb_daemon:
             pass
             
     def __init__(self):
-        self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg")
+        self.sgyfile = "cb_daemon.cfg"
+        self.msconfig = ms_config.MsDataCfg(self.sgyfile)
         self.datacfg = ms_config.MsDataCfg("")
         #self.scaner = marketscan.MarketScan()
         #self.feeder = ms_feed.ms_feed()
@@ -38,15 +39,15 @@ class cb_daemon:
         #for key in self.setting:
         #    self.setting[key] = self.datacfg.getDataConfig(key,self.setting[key])
             
-        self.internalcmd = {'list':(self.listCmd,"list task"),
-        'help':(self.help,"help"),
-        'exit':(self.exit,'exit program'),
-        'runtype':(self.runtype,"run tasks by type"),
-        'reload':(self.reload,'reload config'),
-        'config':(self.config,'config running parameter')}
+        self.internalcmd = {'list':(self.listCmd, 'list task'),
+        'help':(self.help,'help'),
+        'exit':(self.exit, 'exit program'),
+        'runtype':(self.runtype,'run tasks by type'),
+        'reload':(self.reload, 'reload config'),
+        'config':(self.config, 'config running parameter')}
         
         pass
-        
+
     def parseOption(self):
         params = sys.argv[1:]
         try:
@@ -92,8 +93,10 @@ class cb_daemon:
         '''
         pass
         
-    def reload(self):
-        self.msconfig = ms_config.MsDataCfg("cb_daemon.cfg")
+    def reload(self, filename=""    ):
+        if (filename != ""):
+            self.sgyfile = filename
+        self.msconfig = ms_config.MsDataCfg(self.sgyfile)
         self.cmdlst.clear()
         self.loadConfig()
         print "reload done"
@@ -237,7 +240,7 @@ class cb_daemon:
                 #internal command with param,e.g. runtype
                 if command in self.internalcmd:
                     param = an.group(2)  
-                    func,desc=self.internalcmd[command] 
+                    func, desc = self.internalcmd[command]
                     func(param)                                                 
                     return True
         return False
@@ -249,11 +252,11 @@ class cb_daemon:
             inputstr = raw_input()
             inputlower = inputstr.lower()
             print "========================"
-            if (inputlower in self.cmdlst):
+            if (inputlower in self.cmdlst):  #strategy
                 #print "you are typing",inputstr
                 self.runCmd(self.cmdlst[inputstr])
             elif (inputlower in self.internalcmd):
-                func,desc=self.internalcmd[inputstr]
+                func,desc = self.internalcmd[inputstr]
                 func()
             else:
                 if not self.flytask(inputstr):
