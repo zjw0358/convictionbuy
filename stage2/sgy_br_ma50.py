@@ -19,7 +19,7 @@ class sgy_br_ma50(BaseIndPx):
         if (not flag):
             ohlc['signal'] = ['']*len(ohlc)
             return
-
+        tsup = TradeSupport()
         def cleardct(dct):
             for key in dct:
                 dct[key] = 0
@@ -88,12 +88,13 @@ class sgy_br_ma50(BaseIndPx):
             idx += 1
             signallst.append(signal)
         ohlc['brkout'] = signallst
+        tsup.getLastSignal(signallst, signallst, self.ind, 'brkoutb', 'brkouts')
 
 
     def runIndicator(self, symbol, ohlc, param={}):
         st_sma = importStrategy("st_sma", symbol, ohlc)
         st_dmi = importStrategy("st_dmi", symbol, ohlc)
-
+        '''
         dist50idx = ag50bidx = dmibidx = ma10bidx = ma50bidx = vol10bidx = -1
         spread = 6
         if 'dmi_buy' in st_dmi.ind:
@@ -109,10 +110,7 @@ class sgy_br_ma50(BaseIndPx):
 
         if 'dist50' in st_sma.ind:
             dist50idx = st_sma.ind['dist50']
-        '''
-        if 'dist200' in st_sma.ind:
-            dist200idx = st_sma.ind['dist200']
-        '''
+
 
         lst = [dmibidx, ag50bidx, ma10bidx, ma50bidx, vol10bidx, dist50idx ]
         #print lst
@@ -143,13 +141,15 @@ class sgy_br_ma50(BaseIndPx):
         self.ind['dist50'] = dist50idx
 
         #print symbol, "ma10b:", ma10bidx, "ma50b:", ma50bidx, "vol10b:", vol10bidx, "dmibuy:", dmibidx
-
+        '''
         buydct = {'dmibuy':0, 'ag50b':0, 'ma10b':0, 'ma50b':0, 'vol10b':0, 'dist50':0}
         selldct = {'ma10s':0, 'ma50s':0, 'ma1050s':0, 'dmisell':0}
         self._combineSignal(ohlc, buydct, selldct)
         pass
 
+    '''
     def runScan(self, df):
         df = df[df['brkout']=="buy"]
         return df, df.columns.values
+    '''
 

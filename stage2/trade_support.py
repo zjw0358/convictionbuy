@@ -8,14 +8,14 @@ class TradeSupport:
         sellidx = float('nan')
         if buysg:
             for idx,sig in enumerate(buysg[::-1]):
-                if (sig!=""):
+                if (sig == "buy"):
                     buyidx = idx
                     break;
             indct[buykey] = (buyidx)
 
         if sellsg:
             for idx,sig in enumerate(sellsg[::-1]):
-                if (sig!=""):
+                if (sig == "sell"):
                     #print idx,sig
                     sellidx = idx
                     break;
