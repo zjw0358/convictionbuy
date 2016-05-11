@@ -1,12 +1,8 @@
-'''
-"marketscan.py -f <portfolio_file> -g "strategy&ckd=2015-03-12" -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
-'''
 import getopt
 import datetime
 import sys
 import os
 from timeit import default_timer as timer
-
 
 import pandas.io.data as web
 import pandas
@@ -50,19 +46,21 @@ class marketscan:
         self.outputpath = "../result/"
 
         #self.mscfg = "./marketscan.cfg" #??
-        self.mtd = marketdata.MarketData()
         self.mfeed = ms_feed.ms_feed()
         self.backtest = ms_backtest.ms_backtest()
         self.csvchart = ms_csvchart.ms_csvchart()
         self.params = ms_paramparser.ms_paramparser()
+        self.mtd = marketdata.MarketData()
         self.datacfg = ms_config.MsDataCfg("")
         self.cachepath = self.datacfg.getDataConfig("folder","../cache/")           
         self.sgyInxDct={}
-        self.rawData = {} #MarketScan.RawData()
+        self.rawData = {}  # MarketScan.RawData()
+        self.app_param = ms_paramparser.AppParam()
         global g_marketscan
         g_marketscan = self
-        #self.sp500 = "^GSPC" #?
-        #self.nmuBest = 1 #??      
+
+        # cahce the last result
+
           
         return
 
@@ -70,10 +68,9 @@ class marketscan:
         print "marketscan.py -f <portfolio_file> -g strategy&parameter=value -i portfolio_id_mask(0:all) -t 'MSFT,AAPL' [-s 2010-01-01 -e 2014-12-30]"
         print 'run marketscan.py -g "st_perf" -i 1,2,3 --loadmd -h'
  
-    def parseOption(self,args): 
-        #print "parse option"        
+    def parseOption(self, args):
         params = self.params
-        params.parseOption(args)
+        self.app_param = params.parseOption(args)
         self.mfeed.initOption(params) # must change feed params
         #if (params.hasBackTest):
         #    self.backtest = ms_backtest.ms_backtest()
@@ -229,17 +226,17 @@ class marketscan:
         cache = feedData.strategy[(sgyname,symbol)]
         cache.update(sgyparam)
         return False
-    
 
-    #support one arg only
-    def scanTask(self,args=""):
-        if (args!=""): #called by daemon
+    def scanTask(self, args=""):
+        if args != "":  # called by daemon
             self.parseOption(args.split())  
-            
-        df1 = self.params.getSymbolDf()
+
+        # move these code to mtd
+        # df1 = self.params.getSymbolDf()
+        df1 = self.mtd.get_symbol_df(self.app_param)
         tickdct = {}
         for symbol in df1['symbol']:
-            tickdct[symbol]=1
+            tickdct[symbol] = 1
         
         # output column
         outputCol = OrderedDict({'symbol':1,'px':1}) 
@@ -274,8 +271,8 @@ class marketscan:
             print "you need to load data firstly. e.g.(load1d)"
             return
       
-        #merge prescan df with table, possible to save to original table?(save time)
-        #TODO
+        # merge prescan df with table, possible to save to original table?(save time)
+        # TODO
         if (noPxModule):
             print "No px module to run, done."
             self.feedData.table = pandas.merge(self.feedData.table,df1,how='outer')
@@ -334,17 +331,17 @@ class marketscan:
                 print "\ttime",round(end - start,3)     
         
 
-        #filter work
-        #table=self.feedData.table[(self.feedData.table['symbol'].isin(df1['symbol']))]
-        #merge here -- because there is no only NoPriceModule.
+        # filter work
+        # table=self.feedData.table[(self.feedData.table['symbol'].isin(df1['symbol']))]
+        # merge here -- because there is no only NoPriceModule.
         table = pandas.merge(self.feedData.table,df1,how='inner')
         print "=== screening ===="
-        #print self.params.sgyparam
-        #outputCol = OrderedDict({'symbol':1,'px':1})
-        #outputCol = ['symbol','px']
+        # print self.params.sgyparam
+        # outputCol = OrderedDict({'symbol':1,'px':1})
+        # outputCol = ['symbol','px']
         
         for sgyname in self.sgyInxDct:
-        #for sgyname in self.params.sgyparam:
+        # for sgyname in self.params.sgyparam:
             sgx = self.sgyInxDct[sgyname]
             if sgx.needPriceData()==True: #allow ms_zack to run scan
                 #print "screening ",sgyname
@@ -385,8 +382,11 @@ class marketscan:
             print "=== csv chart ==="
             self.csvchart.drawChart(table,self.chartparam)
 
+        #self.mtd.getSymbolDfbyDf(table)
+        self.mtd.save_last_result_df(table)
+
+
         return table
-        #print self.rawData
         pass
           
     def standalone(self):

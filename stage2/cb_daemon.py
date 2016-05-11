@@ -10,41 +10,37 @@ import ms_paramparser
 
 
 class cb_daemon:
-    class Command:
+    class Task:
         def __init__(self):
-            self.modulestr=""
-            self.funcstr=""
-            self.descstr=""
-            self.paramstr=""
-            self.typestr=""
-            self.title=""
+            self.module_str = ""
+            self.func_str = ""
+            self.desc_str = ""
+            self.param_str = ""
+            self.config_str =""
+            self.type_str = ""
+            self.title = ""
             pass
             
     def __init__(self):
         self.sgyfile = "cb_daemon.cfg"
         self.msconfig = ms_config.MsDataCfg(self.sgyfile)
         self.datacfg = ms_config.MsDataCfg("")
-        #self.scaner = marketscan.MarketScan()
-        #self.feeder = ms_feed.ms_feed()
         self.params = ms_paramparser.ms_paramparser()
-        self.cmdlst = OrderedDict()
+        self.task_lst = OrderedDict()
         #self.modulelst = {'marketscan.py':self.scaner,'ms_feed.py':self.feeder}
         self.moduledct = {}
         self.interactive = False
         self.report = cb_report.CbReport()
-        self.loadConfig()
+        self.load_task_config()
         self.typelst = ["download","load",""]
-        self.globalsetting = ""
-        #self.setting = {'verbose':'0','timer':'1'}
-        #for key in self.setting:
-        #    self.setting[key] = self.datacfg.getDataConfig(key,self.setting[key])
-            
-        self.internalcmd = {'list':(self.listCmd, 'list task'),
-        'help':(self.help,'help'),
-        'exit':(self.exit, 'exit program'),
-        'runtype':(self.runtype,'run tasks by type'),
-        'reload':(self.reload, 'reload config'),
-        'config':(self.config, 'config running parameter')}
+        self.global_setting = ""
+
+        self.internalcmd = {'list': (self.listCmd, 'list task'),
+                            'help': (self.help, 'help'),
+                            'exit': (self.exit, 'exit program'),
+                            'runtype': (self.runtype, 'run tasks by type'),
+                            'reload': (self.reload, 'reload config'),
+                            'config': (self.config, 'config running parameter')}
         
         pass
 
@@ -68,9 +64,10 @@ class cb_daemon:
         pass
 
     def config(self, args=""):
-        if (args!=""):
-            self.globalsetting = " " + args
-        print "global setting", self.globalsetting
+        if args != "":
+            self.global_setting = " " + args
+        print "change global setting", self.global_setting
+
         '''
         flag = False
         allsetting = args.split(',')
@@ -97,23 +94,24 @@ class cb_daemon:
         if (filename != ""):
             self.sgyfile = filename
         self.msconfig = ms_config.MsDataCfg(self.sgyfile)
-        self.cmdlst.clear()
-        self.loadConfig()
+        self.task_lst.clear()
+        self.load_task_config()
         print "reload done"
-        
-    def loadConfig(self):
-        #print self.msconfig.getSections()
+
+    # load task config file
+    def load_task_config(self):
         for sect in self.msconfig.getSections():
-            cmd = cb_daemon.Command()
-            cmd.modulestr = self.msconfig.getConfig(sect,'cmd')
-            cmd.title = sect
-            cmd.funcstr = self.msconfig.getConfig(sect,'func')
-            cmd.paramstr = self.msconfig.getConfig(sect,'param')
-            cmd.descstr = self.msconfig.getConfig(sect,'desc')#.encode('utf-8')
-            cmd.typestr = self.msconfig.getConfig(sect,'type')#.encode('utf-8')            
+            task = cb_daemon.Task()
+            task.module_str = self.msconfig.getConfig(sect, 'module')
+            task.title = sect
+            task.func_str = self.msconfig.getConfig(sect, 'func')
+            task.param_str = self.msconfig.getConfig(sect, 'param')
+            task.config_str = self.msconfig.getConfig(sect, 'config')
+            task.desc_str = self.msconfig.getConfig(sect, 'desc')  # .encode('utf-8')
+            task.type_str = self.msconfig.getConfig(sect, 'type')  # .encode('utf-8')
             
-            if (cmd.modulestr!=""):
-                self.cmdlst[sect.lower()] = cmd            
+            if task.module_str != "":
+                self.task_lst[sect.lower()] = task
         pass
         
     def help(self):
@@ -129,51 +127,66 @@ class cb_daemon:
         
     def listCmd(self):
         #print "listCmd"
-        for command in self.cmdlst:
-            cmd = self.cmdlst[command]
+        for command in self.task_lst:
+            cmd = self.task_lst[command]
             s = "%-20s - %-50s" % (command,cmd.descstr)
             print s
         pass
-        
-    def combinationTask(self,args):
-        tasklst = args.split(',')
-        print "combination task",tasklst
-        for task in tasklst:
-            if (task in self.cmdlst):
-                self.runCmd(self.cmdlst[task])        
-        pass
-           
-    def runCmd(self,cmd):
-        try:
-        #module = self.modulelst[cmd.modulestr]
-            if (cmd.modulestr not in self.moduledct):
-                module_meta = __import__(cmd.modulestr, globals(), locals(), [cmd.modulestr])
-                c = getattr(module_meta, cmd.modulestr)
-                module = c() # construct module
-                self.moduledct[cmd.modulestr] = module
-            else:
-                module = self.moduledct[cmd.modulestr]
 
-            ptrfunc = getattr(module,cmd.funcstr)
+    # combine task, use the previous out as the input
+    def combination_task(self, args):
+        task_lst = args.split(',')
+        print "combination task", task_lst
+        for task in task_lst:
+            if task in self.task_lst:
+                print "display global setting", self.global_setting
+                self.run_task(self.task_lst[task])
+        pass
+
+    '''
+       run a command
+    '''
+    def run_task(self, task):
+        try:
+            # module = self.modulelst[task.module_str]
+            if task.module_str not in self.moduledct:  # create module on the fly
+                module_meta = __import__(task.module_str, globals(), locals(), [task.module_str])
+                c = getattr(module_meta, task.module_str)
+                module = c()  # construct module
+                self.moduledct[task.module_str] = module
+            else:
+                module = self.moduledct[task.module_str]
+
+            ptr_func = getattr(module, task.func_str)
+
         except:
-            print cmd.modulestr,"Not a valid func",cmd.funcstr
+            # print(traceback.format_exc())
+            print task.module_str, "Not a valid func", task.func_str
             return
             
-        print "\nRunning[",cmd.title,"]",cmd.modulestr,cmd.funcstr
-        arg = cmd.paramstr + self.globalsetting
-        
+        print "\nRunning[", task.title, "]", task.module_str, task.func_str
+
+        if task.config_str != "":
+            print "task.config_str", task.config_str
+            self.config(task.config_str)  # set config parameter
+
+        param = task.param_str
+        print "self.global_setting", self.global_setting
+
+
         try:
-            ret=ptrfunc(arg)
+            if task.func_str != "combination_task":  # normal task
+                param += self.global_setting
+            print "run task", param
+            print self.global_setting
+            ret = ptr_func(param)
         except Exception as err:
             #traceback.print_tb(err.__traceback__)
             print(traceback.format_exc())
             sys.exit()
-        
 
-        #if (cmd.retstr=='table'):
-        #    pass
-        if (type(ret)==pandas.core.frame.DataFrame):
-            self.report.addTable(cmd.title,cmd.descstr,ret)
+        if type(ret) == pandas.core.frame.DataFrame:
+            self.report.addTable(task.title, task.desc_str, ret)
             pass
     
     def runtype(self,param=""):
@@ -181,27 +194,30 @@ class cb_daemon:
         typelst=param.split()
         self.onetime(typelst)
 
-    #not allow match funcstr only
+    #not allow match func_str only
     '''
     def findCmdOrFunc(self,arg):
-        if (arg in self.cmdlst):
-            return self.cmdlst[arg]  #download1h
+        if (arg in self.task_lst):
+            return self.task_lst[arg]  #download1h
         else:
-            for cmd in self.cmdlst:                
-                if arg == self.cmdlst[cmd].funcstr: #download func
-                    return self.cmdlst[cmd]
+            for cmd in self.task_lst:
+                if arg == self.task_lst[cmd].func_str: #download func
+                    return self.task_lst[cmd]
         return None
     '''
-     
+
+    '''
+    dynamic running task
+    '''
     def flytask(self,cmdstr):
         pattern = "([\w\.]*) ([\d\D]*)"
         an = re.match(pattern,cmdstr)
         if an!=None:
             command = an.group(1)
             #cmd = self.findCmdOrFunc(command)
-            if (command in self.cmdlst):
-                cmd = self.cmdlst[command]
-                newcmd = cb_daemon.Command()
+            if (command in self.task_lst):
+                cmd = self.task_lst[command]
+                newcmd = cb_daemon.Task()
                 newparam = an.group(2)
                 oldparam = cmd.paramstr
                 
@@ -230,11 +246,11 @@ class cb_daemon:
                 print "======"
                 print opt2dict
                 '''                                             
-                newcmd.modulestr = cmd.modulestr
+                newcmd.module_str = cmd.modulestr
                 newcmd.title = "flytask"
-                newcmd.funcstr = cmd.funcstr
-                newcmd.paramstr = mparam
-                self.runCmd(newcmd)                
+                newcmd.func_str = cmd.funcstr
+                newcmd.param_str = mparam
+                self.run_task(newcmd)
                 return True
             else:
                 #internal command with param,e.g. runtype
@@ -249,27 +265,27 @@ class cb_daemon:
     def daemon(self):
         while (True):
             print "\n========================\nEnter command:"
-            inputstr = raw_input()
-            inputlower = inputstr.lower()
+            input_str = raw_input()
+            input_lower = input_str.lower()
             print "========================"
-            if (inputlower in self.cmdlst):  #strategy
-                #print "you are typing",inputstr
-                self.runCmd(self.cmdlst[inputstr])
-            elif (inputlower in self.internalcmd):
-                func,desc = self.internalcmd[inputstr]
+            if input_lower in self.task_lst:  # strategy
+                # print "you are typing", input_str
+                self.run_task(self.task_lst[input_str])
+            elif (input_lower in self.internalcmd):
+                func,desc = self.internalcmd[input_str]
                 func()
             else:
-                if not self.flytask(inputstr):
+                if not self.flytask(input_str):
                     print "Not a valid command,exiting..."
 
         pass 
     #run once
     def onetime(self,typelst):
-        for cmd in self.cmdlst:
-            task = self.cmdlst[cmd]
+        for cmd in self.task_lst:
+            task = self.task_lst[cmd]
             if (task.typestr not in typelst):
                 continue
-            self.runCmd(task)
+            self.run_task(task)
         self.report.printPdf()
         pass
                  

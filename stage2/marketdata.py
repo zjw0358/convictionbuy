@@ -3,14 +3,11 @@ import datetime
 import sys
 import csv
 import pandas
-
+import ms_config
 # evaluation criteria on the fly
 from collections import OrderedDict
 import re
-'''
-load market data
 
-'''
 class MarketData:
     def __init__(self):
         '''
@@ -39,9 +36,16 @@ class MarketData:
         #        'Materials':'Basic Industries','Capital Goods':'xlb','Health Care':'xlv','Consumer Services':'xly', \
         #        'Utilities':'Public Utilities'}              
 
+        self.cfg = ms_config.MsDataCfg("")
+        self.symbol_list_file = self.cfg.getDataConfig("marketdata")
+        self.lrlst = pandas.Series()
+        self.symbol_col_lst = ['symbol', 'sina', 'goog', 'googexg', 'exg']
+        # self.dflr = pandas.DataFrame({}, columns=['symbol', 'exg', 'sina', 'goog', 'googexg'])  # last result df
+        # self.dfall = self.dflr
         return
-        
-    #aapl.o,msft.o...   
+
+
+    #aapl#o,msft#o...
     def parseTickLst(self,line):
         items = line.split(",") #update ticklist only 
         tdict = {}
@@ -64,6 +68,8 @@ class MarketData:
         df['goog']=tdict.keys()
         df['googexg']=lst
         return df
+
+
 
       
     #google style portfolio file
@@ -99,7 +105,7 @@ class MarketData:
         return tickdf
  
     # load the marketdata.csv   
-    def loadSymbolLstFile(self,fileName):
+    def loadSymbolLstFile(self, fileName):
         #symbol,rank,name,sector,industry,pid,exg,
         fp = open(fileName,'r',-1)
         symbolLst = []
@@ -274,7 +280,7 @@ class MarketData:
         error2 = 0.95
         for index, row in df.iterrows():
             adjc = row['Adj Close']
-            cl =  row['Close']
+            cl = row['Close']
             ratio = adjc/cl
             if (ratio>error1 or ratio<error2):                
                 df.loc[index,'High'] = row['High']*ratio
@@ -290,3 +296,32 @@ class MarketData:
             print "exception when write to csv ",path
             
         print "Finish wrote to ",path
+
+    # get symbol df from file
+    def get_symbol_df(self, app_param):
+        df = self.loadSymbolLstFile(app_param.symbol_lst_file)
+        dfall = df[self.symbol_col_lst]
+
+        if app_param.ulr:
+            if not self.lrlst.empty:
+                retdf = dfall[(dfall['symbol'].isin(self.lrlst))]
+                retdf = retdf[self.symbol_col_lst]
+                return retdf
+
+        if app_param.tick_df.empty:
+            if app_param.verbose > 0:
+                print "loading from symbol list file..."
+            # df = self.loadSymbolLstFile(app_param.symbol_lst_file)
+            # self.dfall = df[['symbol', 'sina', 'goog', 'googexg']]
+            df = self.getSymbolByPid(df, app_param.pid)[['symbol', 'sina', 'goog', 'googexg']]
+        else:
+            if app_param.verbose > 0:
+                print "using tick list from command line..."
+            df = app_param.tick_df
+
+        return df
+
+    def save_last_result_df(self, dflr):
+        self.lrlst = dflr['symbol']
+        pass
+

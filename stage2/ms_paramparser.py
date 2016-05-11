@@ -8,13 +8,54 @@ import datetime
 import marketdata
 import ms_config
 
+
+# Application parameter
+class AppParam:
+    def __init__(self):
+        self.ulr = False
+        self.end_date = ""
+        self.start_date = ""
+        self.help = False
+        self.has_chart = False
+        self.savemd = False
+        self.loadmd = False
+        self.hasBackTest = False
+        self.feed = ""  # yahoo feeder
+        self.pid = 1  # 0-dow30,1-zr focus list,2-jpm/zack list
+        self.tick_df = pandas.DataFrame({}, columns=['symbol','exg','sina','goog','googexg'])
+        self.sgy_param = {}
+        self.verbose = 0
+        self.tail_offset = 0
+        self.symbol_lst_file = ""
+        self.display = True
+        self.chart_param = ""
+
+    def show_params(self):
+        if self.display:
+            print "%-20s: %-50s" % ("use", self.symbol_lst_file)
+            print "%-20s: %-50s" % ("start date", self.start_date)
+            print "%-20s: %-50s" % ("end date", self.end_date)
+            print "%-20s: %-50s" % ("portfolio id mask ", self.pid)
+            print "%-20s: %-50s" % ("use chart", self.has_chart)
+            if self.has_chart:
+                print "%-20s: %-50s" % ("chart param", self.chart_param)
+            print "%-20s: %-50s" % ("load marketdata", self.loadmd)
+            print "%-20s: %-50s" % ("save marketdata", self.savemd)
+            print "%-20s: %-50s" % ("backtest", self.hasBackTest)
+            print "%-20s: %-50s" % ("feeder", self.feed)
+            print "%-20s: %-50s" % ("verbose", self.verbose)
+            print "%-20s: %-50s" % ("use last result", self.ulr)
+            print "...................."
+
 class ms_paramparser:
     def __init__(self):
         #TODO move parse pid here later
-        self.mtd = marketdata.MarketData()
         self.cfg = ms_config.MsDataCfg("") 
-        self.symbolLstFile = self.cfg.getDataConfig("marketdata") 
+        self.symbolLstFile = self.cfg.getDataConfig("marketdata")
+        self.mtd = marketdata.MarketData()
+        self.ulr = False
         self.initParams()
+        self.app_param = AppParam()
         pass
         
     def initParams(self):
@@ -32,7 +73,8 @@ class ms_paramparser:
         self.verbose = 0
         self.tailoffset = 0
         pass
-    #params = array(split)
+    # params = array(split)
+
     def parseOption(self, params, display=True):
         #print "paramater:",params
         self.initParams()
@@ -40,49 +82,59 @@ class ms_paramparser:
         try:
             opts, args = getopt.getopt(params, "v:f:t:s:e:i:g:c:h",
                 ["filename", "ticklist", "startdate", "enddate", "pid", "strategy", "help", "chart", "savemd",
-                 "loadmd", "backtest", "feed=", "verbose", "tailoffset=", "buy=", "sell="])
+                 "loadmd", "uselastresult", "backtest", "feed=", "verbose", "tailoffset=", "buy=", "sell="])
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
             
-        if (display):
-            print "%-20s:%-50s" % ("parameter dict",opts)
+        if display:
+            print "%-20s:%-50s" % ("parameter dict", opts)
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
                 self.symbolLstFile = arg
-                #self.option = 1
+                self.app_param.symbol_lst_file = arg
             elif opt in ("-t", "--ticklist"):
-                #tdict = self.mtd.parseTickLst(arg)
-                #self.tickdf = pandas.DataFrame(list(tdict.iteritems()),columns=['symbol','exg'])                
                 self.tickdf = self.mtd.parseTickLstDf(arg)
+                self.app_param.tick_df = self.mtd.parseTickLstDf(arg)
             elif opt in ("-s", "--startdate"):
                 self.startdate = arg
+                self.app_param.start_date = arg
             elif opt in ("-e", "--enddate"):
                 self.enddate = arg
+                self.app_param.end_date = arg
             elif opt in ("-i", "--pid"):
                 idLst = arg.split(",")
                 self.pid = self.mtd.parsePidLst(idLst)
+                self.app_param.pid = self.mtd.parsePidLst(idLst)
             elif opt in ("-g", "--strategy"):
                 self.sgyparam = self.parseStrategy(arg)
+                self.app_param.sgy_param = self.parseStrategy(arg)
             elif opt in ("-h", "--help"):
                 self.usage()
                 self.help=True                                   
-            elif opt in ("-c","--chart"):
+            elif opt in ("-c", "--chart"):
                 self.haschart = True
                 self.chartparam = arg
-            elif opt in ("--backtest"):
+            elif opt in "--backtest":
                 self.hasBackTest = True
-                #self.backtest = ms_backtest.ms_backtest()
-            elif opt in ("--savemd"):
+            elif opt in "--savemd":
                 self.savemd = True
-            elif opt in ("--loadmd"):
+                self.app_param.savemd = True
+            elif opt in "--loadmd":
                 self.loadmd = True
-            elif opt in ("--feed"):
+                self.app_param.loadmd = True
+            elif opt in "--feed":
                 self.feed = arg
+                self.app_param.feed = arg
+            elif opt in "--uselastresult":
+                self.ulr = True
+                self.app_param.ulr = True
             elif opt in ("-v","--verbose"):
                 self.verbose = int(arg)
-            elif opt in ("--tailoffset"):
+                self.app_param.verbose = int(arg)
+            elif opt in "--tailoffset":
                 self.tailoffset = int(arg)
+                self.app_param.tail_offset = int(arg)
             elif opt in ("--buy"):
                 self.parseBuy(arg)
             elif opt in ("--sell"):
@@ -94,25 +146,28 @@ class ms_paramparser:
             startday = datetime.date.today() - datetime.timedelta(days=365)
             self.startdate = startday.strftime("%Y-%m-%d")
 
-        
-        #if self.help == True:
-        #    sys.exit()
-        if (display):
+        if self.app_param.symbol_lst_file == "":
+            self.app_param.symbol_lst_file = self.cfg.getDataConfig("marketdata")
+
+        '''
+        if display:
             print "%-20s: %-50s" % ("use", self.symbolLstFile)
             print "%-20s: %-50s" % ("start date", self.startdate)
             print "%-20s: %-50s" % ("end date", self.enddate)
             print "%-20s: %-50s" % ("portfolio id mask ",self.pid)
-            print "%-20s: %-50s" % ("use chart",self.haschart)
-            if (self.haschart):
+            print "%-20s: %-50s" % ("use chart", self.haschart)
+            if self.haschart:
                 print "%-20s: %-50s" % ("chart param",self.chartparam)
             print "%-20s: %-50s" % ("load marketdata", self.loadmd)
             print "%-20s: %-50s" % ("save marketdata", self.savemd)
             print "%-20s: %-50s" % ("backtest", self.hasBackTest)
             print "%-20s: %-50s" % ("feeder", self.feed)
             print "%-20s: %-50s" % ("verbose", self.verbose)
+            print "%-20s: %-50s" % ("use last result", self.ulr)
             print "...................."
-
-        return opts
+        '''
+        self.app_param.show_params()
+        return self.app_param
 
     def parseBuy(self, arg):
         tokens = arg.split('&')
@@ -157,6 +212,7 @@ class ms_paramparser:
         return l_sgy
 
     def getSymbolDf(self):
+        print "ms_paramparser getSymbolDf, ERROR please move to MTD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         if self.tickdf.empty:
             if (self.verbose>0):
                 print "loading from symbolfile..."
