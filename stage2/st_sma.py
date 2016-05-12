@@ -70,10 +70,9 @@ class st_sma(ind_ma):
 
             # TODO
             # #buysg,sellsg = sp.supportline(px, self.ma50, self.nbar)
-            #tsup.getLastSignal(buysg, sellsg, self.ind, 'sup50', 'res50')
+            # tsup.getLastSignal(buysg, sellsg, self.ind, 'sup50', 'res50')
 
-
-        if (not self.ma50.empty) and (not self.ma10.empty):
+        if not self.ma50.empty and not self.ma10.empty:
             buysg, sellsg = sp.cross(self.ma10, self.ma50, self.nbar)
             tsup.getLastSignal(buysg, sellsg, self.ind, 'ma1050b', 'ma1050s')
             ohlc['ma1050b'] = buysg
@@ -87,12 +86,13 @@ class st_sma(ind_ma):
                 sig = ""
                 if val == "sell":
                     lastsell = idx
-                    #print "dist50",idx
+                    # print "dist50",idx
                 buyval = ma50bsg[idx]
-                if (buyval == "buy"):
-                    #TODO test
+                if buyval == "buy":
+                    '''  # TODO test
                     if symbol=="QCOM":
-                        print "dist50",idx,lastsell,self.dist50
+                        print "dist50", idx, lastsell, self.dist50
+                    '''
                     if lastsell >= 0 and idx-lastsell > self.dist50:
                         sig = "buy"
                     else:
@@ -100,7 +100,6 @@ class st_sma(ind_ma):
                 distsg.append(sig)
             ohlc['dist50'] = distsg
             tsup.getLastSignal(distsg, [], self.ind, 'dist50', '')
-            #print self.ind
 
             # ready to cross above
             '''

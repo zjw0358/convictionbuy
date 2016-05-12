@@ -3,7 +3,9 @@ from ind_base_px import BaseIndPx
 from st_pattern import StrategyPattern
 from trade_support import TradeSupport
 
+'''
 
+'''
 class st_k(BaseIndPx):
     def __init__(self):
         self.sp = StrategyPattern()
@@ -13,7 +15,6 @@ class st_k(BaseIndPx):
         pass
 
     def _algo(self, ohlc):
-
         pass
 
     def runIndicator(self, symbol, ohlc, param={}):

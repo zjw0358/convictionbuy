@@ -409,7 +409,7 @@ class data_zacks:
                     line = line + "" + ","                    
 
         #if (self.erdonly):
-        #    if (self.params.verbose>0):
+        #    if (self.app_params.verbose>0):
         #        print "ERD download complete"
         #    return
             

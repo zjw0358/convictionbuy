@@ -1,6 +1,3 @@
-'''
-parameter parser
-'''
 import getopt
 import sys
 import pandas
@@ -30,6 +27,9 @@ class AppParam:
         self.display = True
         self.chart_param = ""
 
+    def reset_parames(self):
+        self.__init__()
+
     def show_params(self):
         if self.display:
             print "%-20s: %-50s" % ("use", self.symbol_lst_file)
@@ -49,15 +49,17 @@ class AppParam:
 
 class ms_paramparser:
     def __init__(self):
-        #TODO move parse pid here later
-        self.cfg = ms_config.MsDataCfg("") 
-        self.symbolLstFile = self.cfg.getDataConfig("marketdata")
+        # TODO move parse pid here later
         self.mtd = marketdata.MarketData()
+        self.cfg = ms_config.MsDataCfg("")
+        '''
+        self.symbolLstFile = self.cfg.getDataConfig("marketdata")
         self.ulr = False
         self.initParams()
+        '''
         self.app_param = AppParam()
         pass
-        
+    '''
     def initParams(self):
         self.enddate = ""
         self.startdate = ""
@@ -73,12 +75,15 @@ class ms_paramparser:
         self.verbose = 0
         self.tailoffset = 0
         pass
-    # params = array(split)
+    '''
+    def get_parsed_opts(self):
+        return self.opts
 
+    # app_params = array(split)
     def parseOption(self, params, display=True):
-        #print "paramater:",params
-        self.initParams()
-                
+        # self.initParams()
+        self.app_param.reset_parames()
+
         try:
             opts, args = getopt.getopt(params, "v:f:t:s:e:i:g:c:h",
                 ["filename", "ticklist", "startdate", "enddate", "pid", "strategy", "help", "chart", "savemd",
@@ -86,65 +91,74 @@ class ms_paramparser:
         except getopt.GetoptError:
             print "parse option error"
             sys.exit()
-            
+
+        self.opts = opts
+
         if display:
             print "%-20s:%-50s" % ("parameter dict", opts)
         for opt, arg in opts:
             if opt in ("-f", "--filename"):
-                self.symbolLstFile = arg
+                # self.symbolLstFile = arg
                 self.app_param.symbol_lst_file = arg
             elif opt in ("-t", "--ticklist"):
-                self.tickdf = self.mtd.parseTickLstDf(arg)
+                # self.tickdf = self.mtd.parseTickLstDf(arg)
                 self.app_param.tick_df = self.mtd.parseTickLstDf(arg)
             elif opt in ("-s", "--startdate"):
-                self.startdate = arg
+                # self.startdate = arg
                 self.app_param.start_date = arg
             elif opt in ("-e", "--enddate"):
-                self.enddate = arg
+                # self.enddate = arg
                 self.app_param.end_date = arg
             elif opt in ("-i", "--pid"):
                 idLst = arg.split(",")
-                self.pid = self.mtd.parsePidLst(idLst)
+                # self.pid = self.mtd.parsePidLst(idLst)
                 self.app_param.pid = self.mtd.parsePidLst(idLst)
             elif opt in ("-g", "--strategy"):
-                self.sgyparam = self.parseStrategy(arg)
+                # self.sgyparam = self.parseStrategy(arg)
                 self.app_param.sgy_param = self.parseStrategy(arg)
             elif opt in ("-h", "--help"):
                 self.usage()
-                self.help=True                                   
+                # self.help=True
+                self.app_param.help = True
             elif opt in ("-c", "--chart"):
-                self.haschart = True
-                self.chartparam = arg
+                # self.haschart = True
+                # self.chartparam = arg
+                self.app_param.has_chart = True
+                self.app_param.chart_param = arg
+
             elif opt in "--backtest":
-                self.hasBackTest = True
+                # self.hasBackTest = True
+                self.app_param.hasBackTest = True
             elif opt in "--savemd":
-                self.savemd = True
+                #self.savemd = True
                 self.app_param.savemd = True
             elif opt in "--loadmd":
-                self.loadmd = True
+                # self.loadmd = True
                 self.app_param.loadmd = True
             elif opt in "--feed":
-                self.feed = arg
+                # self.feed = arg
                 self.app_param.feed = arg
             elif opt in "--uselastresult":
-                self.ulr = True
+                # self.ulr = True
                 self.app_param.ulr = True
             elif opt in ("-v","--verbose"):
-                self.verbose = int(arg)
+                # self.verbose = int(arg)
                 self.app_param.verbose = int(arg)
             elif opt in "--tailoffset":
-                self.tailoffset = int(arg)
+                # self.tailoffset = int(arg)
                 self.app_param.tail_offset = int(arg)
-            elif opt in ("--buy"):
+            elif opt in "--buy":
                 self.parseBuy(arg)
-            elif opt in ("--sell"):
+            elif opt in "--sell":
                 self.parseSell(arg)
 
-        if self.enddate == "":
-            self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
-        if not self.startdate:
-            startday = datetime.date.today() - datetime.timedelta(days=365)
-            self.startdate = startday.strftime("%Y-%m-%d")
+        if self.app_param.end_date == "":
+            # self.enddate = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.app_param.end_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        if not self.app_param.start_date:
+            start_day = datetime.date.today() - datetime.timedelta(days=365)
+            # self.startdate = startday.strftime("%Y-%m-%d")
+            self.app_param.start_date = start_day.strftime("%Y-%m-%d")
 
         if self.app_param.symbol_lst_file == "":
             self.app_param.symbol_lst_file = self.cfg.getDataConfig("marketdata")
@@ -171,7 +185,8 @@ class ms_paramparser:
 
     def parseBuy(self, arg):
         tokens = arg.split('&')
-        self.buydict = {key: 0 for key in tokens}
+        #self.buydict = {key: 0 for key in tokens}
+        self.app_param.buydict = {key: 0 for key in tokens}
         '''
         for item in tokens:
             order = item.split(':')
@@ -183,7 +198,8 @@ class ms_paramparser:
 
     def parseSell(self, arg):
         tokens = arg.split('&')
-        self.selldict = {key: 0 for key in tokens}
+        # self.selldict = {key: 0 for key in tokens}
+        self.app_param.selldict = {key: 0 for key in tokens}
 
 
 
@@ -210,7 +226,7 @@ class ms_paramparser:
                 idx += 1
         #print l_sgy
         return l_sgy
-
+    '''
     def getSymbolDf(self):
         print "ms_paramparser getSymbolDf, ERROR please move to MTD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         if self.tickdf.empty:
@@ -223,3 +239,4 @@ class ms_paramparser:
                 print "using ticklist from command line..."            
             df = self.tickdf  
         return df
+    '''

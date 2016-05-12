@@ -16,7 +16,7 @@ class sgy_br_ma50(BaseIndPx):
             if key not in ohlc:
                 flag = False
 
-        if (not flag):
+        if not flag:
             ohlc['signal'] = ['']*len(ohlc)
             return
         tsup = TradeSupport()

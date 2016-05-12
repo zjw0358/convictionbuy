@@ -17,42 +17,40 @@ class ms_feed:
         self.sinaapi = SinaMarketData()
         self.yahoofeed = FeederYahoo()
         self.googfeed = FeederGoogle()
-        #print "ms_feed initOption"
         self.datacfg = ms_config.MsDataCfg("")
-        self.cachepath = self.datacfg.getDataConfig("cache","../cache/") 
+        self.cachepath = self.datacfg.getDataConfig("cache", "../cache/")
         pass
      
     def initOption(self, params):                
-        self.params = params
-        self.ohlcid = 0;   
-    
+        self.app_param = params
+        self.ohlcid = 0
 
-    def _downloadOhlc(self,symbol,sinasymbol,googsymbol,googexg):
+    def _downloadOhlc(self, symbol, sinasymbol, googsymbol, googexg):
         self.downloadid += 1        
-        if (self.params.verbose > 0): 
+        if self.app_param.verbose > 0:
             start = timer()
-            s = 'downloading %d %s' %(self.downloadid , symbol)
+            s = 'downloading %d %s' % (self.downloadid, symbol)
             sys.stdout.write(s)      
-            #print "downloading ",self.downloadid, symbol       
+            # print "downloading ",self.downloadid, symbol
         
         #try:
-        if ("sina" in self.params.feed):
-            ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
-        elif ("yahoo" in self.params.feed):
-            ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
-        elif ("goog" in self.params.feed):
-            ohlc = self.googfeed.reqMarketData(googsymbol,googexg,self.params.feed)
+        if "sina" in self.app_param.feed:
+            ohlc = self.sinaapi.reqHisData(sinasymbol, self.app_param.feed)
+        elif "yahoo" in self.app_param.feed:
+            ohlc = self.yahoofeed.reqHisData(symbol, self.app_param.feed, self.app_param.start_date, self.app_param.end_date)
+        elif "goog" in self.app_param.feed:
+            ohlc = self.googfeed.reqMarketData(googsymbol, googexg, self.app_param.feed)
         else:
-            ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)
+            ohlc = web.get_data_yahoo(symbol, self.app_param.start_date, self.app_param.end_date)
 
-        self.saveOhlc(symbol,ohlc,self.params.feed)
+        self.saveOhlc(symbol, ohlc, self.app_param.feed)
             
         #except:
         #    self.numError += 1
         #    print "System/Network Error when retrieving ",symbol," skip it"
         #    return None
 
-        if (self.params.verbose > 0): 
+        if (self.app_param.verbose > 0):
             end = timer()
             print "\ttime",round(end - start,3)
             
@@ -69,7 +67,7 @@ class ms_feed:
             sina =  row['sina']            
             ohlc = self._downloadOhlc(symbol,sina,goog,googexg)  
             #if (ohlc is None):
-        #if (self.params.verbose>1):
+        #if (self.app_params.verbose>1):
         #    print table
         return table
         pass        
@@ -83,10 +81,11 @@ class ms_feed:
             args = sys.argv[1:]
         else:
             args= argstr.split()
-        params = ms_paramparser.ms_paramparser()
-        params.parseOption(args)
-        self.initOption(params)
-        df1 = params.getSymbolDf()
+        param_parser = ms_paramparser.ms_paramparser()
+        app_param = param_parser.parseOption(args)
+        self.initOption(app_param)
+        #df1 = app_params.getSymbolDf()
+        df1 = self.mtd.get_symbol_df(app_param)
         
         print "ms_feed downloading..."
         start = timer()
@@ -96,7 +95,7 @@ class ms_feed:
  
     def getOhlc(self,symbol,sinasymbol,googsymbol,googexg):   
         self.ohlcid += 1
-        if (self.params.verbose > 1): 
+        if (self.app_param.verbose > 1):
             start = timer()
             s = "loading from cache %d %s." % (self.ohlcid, symbol)
             sys.stdout.write(s)      
@@ -107,7 +106,7 @@ class ms_feed:
         if ohlc.empty:
             print symbol," marketdata is not in cache, skip it"
             return None
-        if (self.params.verbose > 1):             
+        if (self.app_param.verbose > 1):
             end = timer()  
             print "\ttime",round(end - start,3)
             
@@ -123,7 +122,7 @@ class ms_feed:
             symbol = row['symbol']
             goog = row['goog']
             googexg = row['googexg']
-            sina =  row['sina']
+            sina = row['sina']
             
             ohlc = self.getOhlc(symbol,sina,goog,googexg)  
             if (ohlc is None):
@@ -132,11 +131,11 @@ class ms_feed:
         pass
     
     # TODO, if time range is null then load all  
-    def loadOhlc(self,symbol):
-        filename = self.cachepath + symbol + "_ohlc_" + self.params.feed + ".csv"
-        if (self.params.verbose > 1): 
+    def loadOhlc(self, symbol):
+        filename = self.cachepath + symbol + "_ohlc_" + self.app_param.feed + ".csv"
+        if self.app_param.verbose > 1:
             sys.stdout.write(filename) 
-            #print "loading",filename
+            # print "loading",filename
 
         try:
             ohlc = pandas.read_csv(filename,index_col=['Date'])
@@ -144,20 +143,20 @@ class ms_feed:
             ohlc = pandas.DataFrame()
             return ohlc
             
-        #for sina 1H/5m data, load all
-        if ("sina" in self.params.feed or "goog" in self.params.feed):
-            if self.params.tailoffset>0:
-                ohlc.drop(ohlc.tail(self.params.tailoffset).index,inplace=True)
+        # for sina 1H/5m data, load all
+        if "sina" in self.app_param.feed or "goog" in self.app_param.feed:
+            if self.app_param.tail_offset > 0:
+                ohlc.drop(ohlc.tail(self.app_param.tail_offset).index, inplace=True)
             return ohlc
         
         ohlc.index = pandas.to_datetime(ohlc.index)  
-        date1 = datetime.datetime.strptime(self.params.startdate,'%Y-%m-%d')
-        date2 = datetime.datetime.strptime(self.params.enddate,'%Y-%m-%d')
-        #print date1,date2
-        #unable to get next business day
+        date1 = datetime.datetime.strptime(self.app_param.start_date, '%Y-%m-%d')
+        date2 = datetime.datetime.strptime(self.app_param.end_date, '%Y-%m-%d')
+        # print date1,date2
+        # unable to get next business day
         start = -1
         end = -1
-        for idx,item in enumerate(ohlc.index):
+        for idx, item in enumerate(ohlc.index):
             #print item,type(item)
             #print idx,item
             if (start==-1 and item >= date1):
@@ -190,43 +189,3 @@ class ms_feed:
 if __name__ == "__main__":
     obj = ms_feed()
     obj.download()
-'''       
-# API for marketscan
-def getOhlc0(self,symbol,sinasymbol,googsymbol,googexg):
-    start = timer()
-    
-    self.ohlcid += 1
-    if (self.params.loadmd):
-        print "loading from cache ",self.ohlcid, symbol  
-        ohlc = self.loadOhlc(symbol)
-        if ohlc.empty:
-            print symbol," marketdata is not in cache, skip it"
-            return None    
-    else:
-        print "downloading ",self.ohlcid, symbol       
-        try:
-            if ("sina" in self.params.feed):
-                ohlc = self.sinaapi.reqHisData(sinasymbol,self.params.feed)
-            elif ("yahoo" in self.params.feed):
-                ohlc = self.yahoofeed.reqHisData(symbol,self.params.feed,self.params.startdate, self.params.enddate)
-            elif ("goog" in self.params.feed):
-                ohlc = self.googfeed.reqMarketData(googsymbol,googexg,self.params.feed)
-            else:
-                ohlc = web.get_data_yahoo(symbol, self.params.startdate, self.params.enddate)
-        
-            if (self.params.savemd): 
-                self.saveOhlc(symbol,ohlc,self.params.feed)
-            
-        except:
-            self.numError += 1
-            print "System/Network Error when retrieving ",symbol," skip it"
-            return None
-            
-    # adjust adj close price.
-    
-    ohlc = self.mtd.adjClosePrice(ohlc)       
-    
-    end = timer()  
-    print "\ttime",round(end - start,3)
-    return ohlc
-'''               

@@ -67,14 +67,15 @@ class Ordermg:
             if self.verbose > 0:
                 print "%-8s%04d%-10s%.2f%-10s%.2f" % ("sell@", index, ",px=", round(avgpx,2), ",gain=", round(gl, 2))
             
-    def openPos(self,index,avgpx,close,adjclose):
+    def openPos(self, index, avgpx, close, adjclose):
         if ((abs(avgpx-adjclose)/adjclose*100)>5):
             #check if stock split
             ratio = adjclose / close
             avgpx = avgpx * ratio
 
         if self.verbose > 0:
-            print "%-8s%04d%-10s%.2f" % ("buy@", index, ",px=", avgpx)
+            #print "%-8s%04d%-10s%.2f" % ("buy@", index, ",px=", avgpx)
+            print "%-8s%14s%-10s%.2f" % ("buy@", index, ",px=", avgpx)
 
         self.shares = self.power / avgpx
         self.position = "buy"
@@ -156,7 +157,7 @@ class ms_backtest:
             if key not in ohlc:
                 flag = False
 
-        if (not flag):
+        if not flag:
             ohlc['signal'] = ['']*len(ohlc)
             return
 
